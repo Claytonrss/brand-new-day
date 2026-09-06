@@ -8,7 +8,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { basename } from 'node:path';
 
-const glbPath = process.argv[2] ?? 'spider-man_brand_new_day-v2.glb';
+const glbPath = process.argv[2] ?? 'public/models/spider-man_brand_new_day-v2.glb';
 
 const buf = readFileSync(glbPath);
 const { size } = statSync(glbPath);
