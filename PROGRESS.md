@@ -104,17 +104,17 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ## Fase 3.2 — Look Dev / Protótipo visual
 
-- [ ] Criar protótipo visual mínimo para validar direção de arte
-- [ ] Completar Look Dev v1 (câmera, enquadramento, escala, luz)
-- [ ] Completar Look Dev v2 (tipografia, composição, integração texto/personagem)
+- [x] Criar protótipo visual mínimo para validar direção de arte
+- [x] Completar Look Dev v1 (câmera, enquadramento, escala, luz)
+- [x] Completar Look Dev v2 (tipografia, composição, integração texto/personagem)
 - [ ] Completar Look Dev v3 se rubrica visual tiver item crítico < 4
-- [ ] Aprovar visualmente a primeira dobra em mobile e desktop
+- [x] Aprovar visualmente a primeira dobra em mobile e desktop
 
 **Critério de saída da Fase 3.2:**
-- [ ] Primeira dobra tem impacto visual aprovado
-- [ ] Câmera, luz, contraste e texto funcionam no mobile principal
+- [x] Primeira dobra tem impacto visual aprovado
+- [x] Câmera, luz, contraste e texto funcionam no mobile principal
 - [ ] Decisão consciente sobre nível de post-processing por perfil
-- [ ] Primeira dobra, composição mobile e integração texto/personagem receberam nota mínima 4
+- [x] Primeira dobra, composição mobile e integração texto/personagem receberam nota mínima 4
 
 ---
 
@@ -188,7 +188,7 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.4 — Template de PR
 
-- [ ] Criar `docs/templates/pr.md` com template obrigatório
+- [x] Criar `docs/templates/pr.md` com template obrigatório
 
 ### 7.5 — Conventional Commits
 
