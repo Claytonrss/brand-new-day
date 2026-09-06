@@ -61,7 +61,7 @@ Carregar apenas quando a tarefa exigir:
 4. Implementar seguindo Design Bible e composition rules.
 5. Rodar `bash scripts/verify-all.sh` antes de push.
 6. Commit com Conventional Commits.
-7. PR com evidências (screenshots, FPS, rubrica visual).
+7. **PR Obrigatório com Evidências:** Todo PR DEVE obrigatoriamente incluir no seu corpo/descrição o log de saída real do `pnpm verify` (lint, typecheck, unit test, build e test:visual), a tabela de rubrica visual preenchida com nota >= 4 e a relação de evidências (screenshots dos viewports 390px, 430px e 1440px).
 
 ## 6. Comandos
 
@@ -76,12 +76,13 @@ pnpm verify           # All gates (lint + typecheck + test + build)
 pnpm inspect:glb      # Inspect GLB asset metadata
 ```
 
-## 7. Qualidade Visual
+## 7. Qualidade Visual & Regra de PRs
 
 - Design é a feature principal — implementação funcional sem impacto visual não está pronta.
 - Verify revisa composição, hierarquia visual e impressão de portfólio.
 - Rubrica visual com nota mínima 4 para bloqueantes (ver `docs/design/visual-rubric.md`).
 - Playwright screenshots em 390x844, 430x932 e 1440x900.
+- **Regra de Ouro do PR:** PR sem evidências anexadas no corpo (logs de teste + rubrica + evidências visuais) não pode ser aberto nem aprovado.
 
 ## 8. Asset 3D
 

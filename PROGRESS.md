@@ -188,7 +188,7 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.4 — Template de PR
 
-- [ ] Criar `docs/templates/pr.md` com template obrigatório
+- [x] Criar `docs/templates/pr.md` com template obrigatório
 
 ### 7.5 — Conventional Commits
 
