@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
 
@@ -24,6 +25,7 @@ export function SpiderManModel({
   const { scene, nodes } = useGLTF(MODEL_PATH, false, true, extendLoader);
   const groupRef = useRef<THREE.Group>(null);
   const headBoneRef = useRef<THREE.Object3D | null>(null);
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useEffect(() => {
     useGLTF.preload(MODEL_PATH, false, true, extendLoader);
@@ -60,19 +62,19 @@ export function SpiderManModel({
   }, [scene, nodes]);
 
   useFrame((state, delta) => {
-    if (!pointerTracking) return;
+    if (!pointerTracking || prefersReducedMotion) return;
 
     const pointerX = state.pointer.x; // -1 to 1
     const pointerY = state.pointer.y; // -1 to 1
 
     targetRotation.current.y = THREE.MathUtils.lerp(
       targetRotation.current.y,
-      pointerX * 0.3,
+      pointerX * 0.15,
       1 - Math.exp(-4 * delta),
     );
     targetRotation.current.x = THREE.MathUtils.lerp(
       targetRotation.current.x,
-      -pointerY * 0.2,
+      -pointerY * 0.3,
       1 - Math.exp(-4 * delta),
     );
 

@@ -5,14 +5,14 @@ import { BREAKPOINTS } from '../../design/breakpoints';
 
 const HERO_KEYFRAMES = {
   mobile: {
-    position: new THREE.Vector3(0, 0.3, 3.6),
+    position: new THREE.Vector3(0, 0.45, 18),
     lookAt: new THREE.Vector3(0, 0.45, 0),
-    fov: 42,
+    fov: 35,
   },
   desktop: {
-    position: new THREE.Vector3(0, 0.2, 4.2),
-    lookAt: new THREE.Vector3(0, 0.4, 0),
-    fov: 35,
+    position: new THREE.Vector3(0, 0.45, 16),
+    lookAt: new THREE.Vector3(0, 0.45, 0),
+    fov: 30,
   },
 } as const;
 
