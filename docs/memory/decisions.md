@@ -40,3 +40,41 @@
     - Mobile Pro Max: `430x932`
     - Desktop Standard: `1440x900`
   - Gate visual acionado via `pnpm verify` / `pnpm test:visual`.
+
+---
+
+## ADR-004: Camera Rig — Motor de Scroll Storytelling
+
+**Data:** 2026-09-06  
+**Status:** ✅ Aprovado
+
+### Contexto
+
+O projeto precisa de um motor de câmera que responda ao scroll para criar
+narrativas cinematográficas entre as seções (Hero → Evolution → Arsenal →
+FullBody). A câmera atual é estática (Hero apenas).
+
+### Decisão
+
+Implementar um camera rig baseado em:
+- **Objeto mutável alvo** (position, lookAt, fov) atualizado por GSAP ScrollTrigger
+- **Suavização** via lerp no useFrame com k=3 (frame-rate independent)
+- **Condicionais por breakpoint** (768px) para keyframes mobile/desktop
+- **Resize sem teleporte** com debounce ~150ms e transição suave
+
+### Alternativas Consideradas
+
+1. **GSAP ScrollTrigger direto na câmera** — rejeitado: sem suavização, teleporte
+   em resize
+2. **useFrame puro sem ScrollTrigger** — rejeitado: sem sincronização precisa com
+   scroll position
+3. **Biblioteca externa (react-scroll-parallax)** — rejeitado: dependência
+   desnecessária, GSAP já está no stack
+
+### Consequências
+
+- ✅ Reutilizável em Evolution, Arsenal, FullBody
+- ✅ Suavização consistente (lerp k=3)
+- ✅ Resize sem teleporte (debounce + transição)
+- ⚠️ Complexidade adicional no HeroCamera.tsx
+- ⚠️ Necessita validação de performance (scroll smoothness ≥ 55 FPS)
