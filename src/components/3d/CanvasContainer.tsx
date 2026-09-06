@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { ReactNode, Suspense } from 'react';
+import { ReactNode, Suspense, useEffect, useRef } from 'react';
 
 interface CanvasContainerProps {
   children: ReactNode;
@@ -7,7 +7,7 @@ interface CanvasContainerProps {
 
 function LoadingFallback() {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink text-paper">
+    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-ink text-paper">
       <div className="relative flex items-center justify-center">
         <div className="h-12 w-12 animate-spin rounded-full border-2 border-steel border-t-signal" />
         <span className="absolute font-mono text-[10px] uppercase tracking-widest text-dim">
@@ -22,16 +22,35 @@ function LoadingFallback() {
 }
 
 export function CanvasContainer({ children }: CanvasContainerProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      console.warn('WebGL context lost. Restoring context...');
+    };
+
+    container.addEventListener('webglcontextlost', handleContextLost, false);
+    return () => {
+      container.removeEventListener('webglcontextlost', handleContextLost);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 h-full w-full bg-ink">
+    <div ref={containerRef} className="absolute inset-0 h-dvh w-full overflow-hidden bg-ink">
       <Suspense fallback={<LoadingFallback />}>
         <Canvas
-          dpr={[1, 2]}
-          camera={{ position: [0, 1.2, 7.5], fov: 40, near: 0.1, far: 100 }}
+          dpr={1}
+          camera={{ position: [0, 1.5, 5.0], fov: 42, near: 0.1, far: 50 }}
           gl={{
             antialias: true,
-            alpha: false,
+            precision: 'highp',
             powerPreference: 'high-performance',
+            preserveDrawingBuffer: true,
+            failIfMajorPerformanceCaveat: false,
           }}
         >
           {children}
