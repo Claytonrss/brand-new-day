@@ -1,31 +1,38 @@
 import { useThree } from '@react-three/fiber';
+import { HeroCamera } from './HeroCamera';
+import { heroModelPosition, TARGET_HEAD_Y } from './heroModelLayout';
 import { SpiderManModel } from './SpiderManModel';
+import { COLORS } from '../../design/tokens';
+import { BREAKPOINTS } from '../../design/breakpoints';
 
 export function HeroScene() {
-  const { viewport } = useThree();
+  const { size } = useThree();
 
-  const isMobile = viewport.width < 5.5;
+  const isMobile = size.width < BREAKPOINTS.MOBILE;
   const modelScale = isMobile ? 0.9 : 1.1;
-  const modelPosition: [number, number, number] = isMobile ? [0, -1.2, 0] : [1.0, -1.2, 0];
+  const targetHeadY = isMobile ? TARGET_HEAD_Y.mobile : TARGET_HEAD_Y.desktop;
+  const modelPosition = heroModelPosition(modelScale, targetHeadY, isMobile ? 0 : 1.0);
 
   return (
     <>
-      <color attach="background" args={['#0a0a0c']} />
+      <HeroCamera />
+
+      <color attach="background" args={[COLORS.ink]} />
 
       {/* Bright ambient light to ensure visibility */}
-      <ambientLight color="#ffffff" intensity={2.2} />
+      <ambientLight color={COLORS.paper} intensity={2.2} />
 
       {/* Main Front Key Light */}
-      <directionalLight position={[2, 4, 5]} color="#ffffff" intensity={4.0} />
+      <directionalLight position={[2, 4, 5]} color={COLORS.paper} intensity={4.0} />
 
       {/* Cool Steel Fill Light */}
-      <directionalLight position={[-4, 2, 3]} color="#2c3b4c" intensity={3.0} />
+      <directionalLight position={[-4, 2, 3]} color={COLORS.steel} intensity={3.0} />
 
       {/* Dramatic Warm Rim Light */}
-      <directionalLight position={[-4, 5, -4]} color="#7a1f24" intensity={8.0} />
+      <directionalLight position={[-4, 5, -4]} color={COLORS.oxide} intensity={8.0} />
 
       {/* Red Eye Accent Light */}
-      <pointLight position={[0, 2, 2.5]} color="#c23b34" intensity={5.0} distance={8} />
+      <pointLight position={[0, 2, 2.5]} color={COLORS.signal} intensity={5.0} distance={8} />
 
       <SpiderManModel
         scale={modelScale}
