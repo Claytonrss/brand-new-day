@@ -1,0 +1,55 @@
+# Spider-Man: Brand New Day — 3D Portfolio Experience
+
+Uma experiência web 3D cinematográfica construída para demonstrar direção de arte moderna, engenharia WebGL e frontend de alta performance.
+
+> **Visual & Technical Showcase**  
+> Inspirado na atmosfera urbana e isolada de Peter Parker pós-No Way Home, integrando o modelo 3D do Spider-Man a uma narrativa interativa guiada por scroll.
+
+---
+
+## 🛠️ Tech Stack
+
+| Camada | Tecnologia |
+|---|---|
+| Framework | Vite 8 + React 19 + TypeScript 5.9 |
+| Estilo | Tailwind CSS v4 |
+| 3D Engine | Three.js + `@react-three/fiber` v9 + `@react-three/drei` v10 |
+| Efeitos Visuais | `@react-three/postprocessing` v3 |
+| Animações & Scroll | GSAP ScrollTrigger |
+| Testes | Vitest (Unit) + Playwright (Visual Regression) |
+| Package Manager | `pnpm` (v9+) |
+
+---
+
+## 🚀 Comandos
+
+```bash
+pnpm dev              # Iniciar servidor de desenvolvimento
+pnpm build            # Build de produção (TypeScript + Vite)
+pnpm typecheck        # Checagem estática de tipos TS
+pnpm lint             # Linter com ESLint
+pnpm test             # Testes unitários com Vitest
+pnpm test:visual      # Testes de regressão visual com Playwright
+pnpm verify           # Rodar todos os gates de qualidade
+pnpm inspect:glb      # Inspeção de metadados do modelo GLB
+```
+
+---
+
+## 🎨 Palette & Design Tokens
+
+- `ink` (`#0a0a0c`) — Fundo principal profundo
+- `concrete` (`#141417`) — Superfícies e cards
+- `steel` (`#2c3b4c`) — Detalhes secundários e iluminação fria
+- `oxide` (`#7a1f24`) — Accent de iluminação rim light
+- `signal` (`#c23b34`) — Accent máximo de destaque
+- `paper` (`#e9e5da`) — Texto e tipografia principal
+- `dim` (`#6b6a63`) — Texto secundário
+
+---
+
+## 📜 Créditos e Licença dos Assets 3D
+
+- Modelo 3D: **Spider-Man: Brand New Day (v2)**
+- Autor: Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-v2-50.4mb))
+- Licença: CC-BY 4.0 (Atribuição obrigatória mantida na aplicação)

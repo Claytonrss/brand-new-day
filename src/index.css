@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Design tokens — docs/design/design-bible.md */
+  --color-ink: #0a0a0c;
+  --color-concrete: #141417;
+  --color-steel: #2c3b4c;
+  --color-oxide: #7a1f24;
+  --color-signal: #c23b34;
+  --color-paper: #e9e5da;
+  --color-dim: #6b6a63;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

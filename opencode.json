@@ -1,0 +1,236 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "model": "opencode-go/deepseek-v4-flash",
+  "permission": {
+    "edit": "ask",
+    "bash": "ask",
+    "skill": {
+      "*": "allow"
+    }
+  },
+  "agent": {
+    "orchestrator": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "prompt": "YOU ARE A DELEGATION-ONLY ORCHESTRATOR FOR A DESIGN-FIRST 3D PORTFOLIO.\n\nNever implement code, edit files, run build/test commands, write docs, or perform visual judgment yourself. Your job is to route work to the correct agent, enforce phase order, and stop the workflow when a gate is red.\n\nPhase order:\n1. explore reference projects and current repo\n2. plan docs/specs/ADRs/design direction\n3. implement only from approved specs\n4. verify with deterministic gates and Playwright evidence\n5. security-audit for assets, links, env, dependencies\n6. git agent opens PR only with real evidence\n\nHard stops:\n- No implementation without approved Scene Spec.\n- No PR with failing or empty validation evidence.\n- No visual approval before Playwright screenshots/evidence exist.\n- No desktop-only solution; mobile is primary.\n- No npm/yarn; use pnpm.\n- No direct push to main.\n\nDelegate model:\n- Use explore for read-only mapping.\n- Use plan for architecture, Design Bible, Scene Specs and ADRs.\n- Use implement-frontend for React/R3F/UI work.\n- Use implement-general for scripts, CI, config and asset pipeline.\n- Use test-writer for unit/visual tests.\n- Use verify for all gates and evidence reports.\n- Use security-audit for license, secrets, external links and GLB metadata.\n- Use docs to update durable documentation.\n- Use git for commits, push and PR.",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "pnpm *": "deny",
+          "npm *": "deny",
+          "npx *": "deny",
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git add*": "deny",
+          "git status*": "allow",
+          "git log --oneline*": "allow",
+          "git branch*": "allow",
+          "git diff": "allow",
+          "node --version*": "allow"
+        },
+        "task": {
+          "*": "deny",
+          "explore": "allow",
+          "plan": "allow",
+          "implement-frontend": "allow",
+          "implement-general": "allow",
+          "verify": "allow",
+          "security-audit": "allow",
+          "test-writer": "allow",
+          "git": "allow",
+          "docs": "allow"
+        }
+      }
+    },
+    "explore": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Read-only codebase explorer - maps specs, docs and code patterns.",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "rg *": "allow",
+          "find *": "allow",
+          "ls *": "allow",
+          "cat *": "allow",
+          "sed -n*": "allow",
+          "git status": "allow",
+          "git diff": "allow",
+          "git log*": "allow"
+        }
+      }
+    },
+    "plan": {
+      "mode": "subagent",
+      "model": "opencode-go/glm-5.2",
+      "description": "Transforms approved specs into detailed, verifiable implementation tasks with ordering and parallelization.",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "implement-frontend": {
+      "mode": "subagent",
+      "model": "opencode-go/qwen3.7-plus",
+      "description": "Implements React/R3F frontend - scenes, components, camera rig, post-processing, mobile-first responsive.",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "git push --force*": "deny",
+          "git reset --hard*": "deny",
+          "pnpm build*": "allow",
+          "pnpm lint*": "allow",
+          "pnpm test*": "allow",
+          "pnpm typecheck*": "allow",
+          "pnpm install*": "allow",
+          "pnpm dev*": "allow",
+          "node scripts/*.mjs*": "allow",
+          "git status*": "allow",
+          "git diff*": "allow"
+        }
+      }
+    },
+    "implement-general": {
+      "mode": "subagent",
+      "model": "opencode-go/minimax-m3",
+      "description": "General implementation - scripts, CI, configs, asset pipeline, tooling.",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "git push --force*": "deny",
+          "git reset --hard*": "deny",
+          "pnpm build*": "allow",
+          "pnpm lint*": "allow",
+          "pnpm test*": "allow",
+          "pnpm typecheck*": "allow",
+          "pnpm install*": "allow",
+          "pnpm dev*": "allow",
+          "pnpm exec playwright*": "allow",
+          "node scripts/*.mjs*": "allow",
+          "bash scripts/*.sh*": "allow",
+          "git status*": "allow",
+          "git diff*": "allow"
+        }
+      }
+    },
+    "test-writer": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Writes unit tests, Playwright visual tests, and improves coverage.",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "git push --force*": "deny",
+          "git reset --hard*": "deny",
+          "pnpm test*": "allow",
+          "pnpm build*": "allow",
+          "pnpm lint*": "allow",
+          "pnpm typecheck*": "allow",
+          "pnpm exec playwright*": "allow",
+          "git status*": "allow",
+          "git diff*": "allow"
+        }
+      }
+    },
+    "verify": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Checks acceptance criteria, runs tests, lint, build, visual evidence and reports gaps.",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "git push --force*": "deny",
+          "git reset --hard*": "deny",
+          "bash scripts/verify-all.sh*": "allow",
+          "bash scripts/collect-visual-evidence.sh*": "allow",
+          "pnpm run *": "allow",
+          "pnpm exec playwright*": "allow",
+          "node scripts/*.mjs*": "allow",
+          "git status*": "allow",
+          "git diff*": "allow"
+        }
+      }
+    },
+    "security-audit": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Reviews security: asset licensing, secrets, external links, GLB metadata.",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "rg *": "allow",
+          "find *": "allow",
+          "cat *": "allow",
+          "sed -n*": "allow",
+          "node scripts/inspect-glb.mjs*": "allow",
+          "git status": "allow",
+          "git diff": "allow"
+        }
+      }
+    },
+    "git": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Git operations - commits, pushes, and creates PRs. Uses Conventional Commits (EN) and PR descriptions (pt-BR).",
+      "temperature": 0.0,
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "git push --force*": "deny",
+          "git reset --hard*": "deny",
+          "rtk git *": "allow",
+          "rtk gh *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git add*": "allow",
+          "git commit*": "allow",
+          "git branch*": "allow",
+          "git checkout*": "allow",
+          "git switch*": "allow"
+        }
+      }
+    },
+    "docs": {
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-flash",
+      "description": "Documentation agent - updates project docs, specs, STATE, memory files, design docs.",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "rm *": "deny",
+          "rm -rf *": "deny",
+          "ls *": "allow",
+          "find *": "allow",
+          "rg *": "allow",
+          "cat *": "allow"
+        }
+      }
+    }
+  }
+}
