@@ -19,20 +19,20 @@ export function HeroScene() {
 
       <color attach="background" args={[COLORS.ink]} />
 
-      {/* Bright ambient light to ensure visibility */}
-      <ambientLight color={COLORS.paper} intensity={2.2} />
+      {/* Base fill — near-black ambient preserves chiaroscuro */}
+      <ambientLight color={COLORS.ink} intensity={2.2} />
 
-      {/* Main Front Key Light */}
-      <directionalLight position={[2, 4, 5]} color={COLORS.paper} intensity={4.0} />
+      {/* Key light — warm paper from upper-right */}
+      <directionalLight position={[5, 8, 3]} color={COLORS.paper} intensity={2.2} />
 
-      {/* Cool Steel Fill Light */}
-      <directionalLight position={[-4, 2, 3]} color={COLORS.steel} intensity={3.0} />
+      {/* Cool steel fill from left-behind */}
+      <pointLight position={[-4, 2, -2]} color={COLORS.steel} intensity={4} />
 
-      {/* Dramatic Warm Rim Light */}
-      <directionalLight position={[-4, 5, -4]} color={COLORS.oxide} intensity={8.0} />
+      {/* Warm oxide rim — carves the silhouette */}
+      <pointLight position={[3, 1, 4]} color={COLORS.oxide} intensity={8} />
 
-      {/* Red Eye Accent Light */}
-      <pointLight position={[0, 2, 2.5]} color={COLORS.signal} intensity={5.0} distance={8} />
+      {/* Signal red accent — subtle eye/mask highlight */}
+      <pointLight position={[-2, 3, 5]} color={COLORS.signal} intensity={5} />
 
       <SpiderManModel
         scale={modelScale}

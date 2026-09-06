@@ -6,7 +6,7 @@ test.describe('Hero section', () => {
 
     // Check title text
     const title = page.locator('h1');
-    await expect(title).toContainText('NINGUÊM SABE.');
+    await expect(title).toContainText('NINGUÉM SABE.');
 
     // Check header metadata
     await expect(page.getByText('Portfolio Showcase')).toBeVisible();
