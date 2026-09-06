@@ -11,6 +11,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const LERP_K = 3;
 const EVOLUTION_SECTION_ID = '#evolution-section';
+const ARSENAL_SECTION_ID = '#arsenal-section';
+
+/** Arsenal scroll phases — fraction of arsenal section scroll */
+const ARSENAL_PHASE1_END = 0.4; // evolutionEnd → arsenalStart (axis crossing)
 
 /**
  * Scroll-driven camera rig with lerp smoothing.
@@ -43,7 +47,8 @@ export function CameraRig() {
 
   // Current lookAt (lerped separately to avoid quaternion issues)
   const currentLookAt = useRef(new THREE.Vector3(0, 0.45, 0));
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const evolutionTriggerRef = useRef<ScrollTrigger | null>(null);
+  const arsenalTriggerRef = useRef<ScrollTrigger | null>(null);
   const resizeTimerRef = useRef<number>(0);
 
   // Set initial camera state from keyframes
@@ -69,61 +74,111 @@ export function CameraRig() {
     cam.updateProjectionMatrix();
   }, [camera, isMobile]);
 
-  // Build ScrollTrigger for evolution section
+  // Helper: set target from keyframe values
+  const setTargetFromKeyframe = (kf: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number }) => {
+    target.current.px = kf.position[0];
+    target.current.py = kf.position[1];
+    target.current.pz = kf.position[2];
+    target.current.lx = kf.lookAt[0];
+    target.current.ly = kf.lookAt[1];
+    target.current.lz = kf.lookAt[2];
+    target.current.fov = kf.fov;
+  };
+
+  // Helper: lerp target between two keyframes
+  const lerpBetween = (
+    from: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number },
+    to: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number },
+    t: number,
+  ) => {
+    target.current.px = THREE.MathUtils.lerp(from.position[0], to.position[0], t);
+    target.current.py = THREE.MathUtils.lerp(from.position[1], to.position[1], t);
+    target.current.pz = THREE.MathUtils.lerp(from.position[2], to.position[2], t);
+    target.current.lx = THREE.MathUtils.lerp(from.lookAt[0], to.lookAt[0], t);
+    target.current.ly = THREE.MathUtils.lerp(from.lookAt[1], to.lookAt[1], t);
+    target.current.lz = THREE.MathUtils.lerp(from.lookAt[2], to.lookAt[2], t);
+    target.current.fov = THREE.MathUtils.lerp(from.fov, to.fov, t);
+  };
+
+  // Build ScrollTriggers for evolution and arsenal sections
   useEffect(() => {
     const bp = isMobile ? 'mobile' : 'desktop';
 
-    // Kill previous trigger (cleanup on breakpoint change)
-    scrollTriggerRef.current?.kill();
-    scrollTriggerRef.current = null;
+    // Kill previous triggers (cleanup on breakpoint change)
+    evolutionTriggerRef.current?.kill();
+    evolutionTriggerRef.current = null;
+    arsenalTriggerRef.current?.kill();
+    arsenalTriggerRef.current = null;
 
-    // Reduced motion: stay at hero keyframe, no scroll animation
-    if (prefersReducedMotion) return;
+    // Reduced motion: stay at arsenal final keyframe (static fallback)
+    if (prefersReducedMotion) {
+      const arsenalEnd = CAMERA_KEYFRAMES.arsenalEnd[bp];
+      setTargetFromKeyframe(arsenalEnd);
+      return;
+    }
 
     const evolutionSection = document.querySelector(EVOLUTION_SECTION_ID);
-    if (!evolutionSection) return;
+    const arsenalSection = document.querySelector(ARSENAL_SECTION_ID);
 
     const hero = CAMERA_KEYFRAMES.hero[bp];
     const evoStart = CAMERA_KEYFRAMES.evolutionStart[bp];
     const evoEnd = CAMERA_KEYFRAMES.evolutionEnd[bp];
+    const arsenalStart = CAMERA_KEYFRAMES.arsenalStart[bp];
+    const arsenalEnd = CAMERA_KEYFRAMES.arsenalEnd[bp];
 
-    const trigger = ScrollTrigger.create({
-      trigger: evolutionSection,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: true,
-      onUpdate: (self) => {
-        const p = self.progress; // 0 → 1
+    // Evolution ScrollTrigger
+    if (evolutionSection) {
+      const evoTrigger = ScrollTrigger.create({
+        trigger: evolutionSection,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate: (self) => {
+          const p = self.progress; // 0 → 1
 
-        if (p <= 0.3) {
-          // Phase 1: Hero → Evolution start (0% → 30%)
-          const t = p / 0.3;
-          target.current.px = THREE.MathUtils.lerp(hero.position[0], evoStart.position[0], t);
-          target.current.py = THREE.MathUtils.lerp(hero.position[1], evoStart.position[1], t);
-          target.current.pz = THREE.MathUtils.lerp(hero.position[2], evoStart.position[2], t);
-          target.current.lx = THREE.MathUtils.lerp(hero.lookAt[0], evoStart.lookAt[0], t);
-          target.current.ly = THREE.MathUtils.lerp(hero.lookAt[1], evoStart.lookAt[1], t);
-          target.current.lz = THREE.MathUtils.lerp(hero.lookAt[2], evoStart.lookAt[2], t);
-          target.current.fov = THREE.MathUtils.lerp(hero.fov, evoStart.fov, t);
-        } else {
-          // Phase 2: Evolution start → Evolution end (30% → 100%)
-          const t = (p - 0.3) / 0.7;
-          target.current.px = THREE.MathUtils.lerp(evoStart.position[0], evoEnd.position[0], t);
-          target.current.py = THREE.MathUtils.lerp(evoStart.position[1], evoEnd.position[1], t);
-          target.current.pz = THREE.MathUtils.lerp(evoStart.position[2], evoEnd.position[2], t);
-          target.current.lx = THREE.MathUtils.lerp(evoStart.lookAt[0], evoEnd.lookAt[0], t);
-          target.current.ly = THREE.MathUtils.lerp(evoStart.lookAt[1], evoEnd.lookAt[1], t);
-          target.current.lz = THREE.MathUtils.lerp(evoStart.lookAt[2], evoEnd.lookAt[2], t);
-          target.current.fov = THREE.MathUtils.lerp(evoStart.fov, evoEnd.fov, t);
-        }
-      },
-    });
+          if (p <= 0.3) {
+            // Phase 1: Hero → Evolution start (0% → 30%)
+            const t = p / 0.3;
+            lerpBetween(hero, evoStart, t);
+          } else {
+            // Phase 2: Evolution start → Evolution end (30% → 100%)
+            const t = (p - 0.3) / 0.7;
+            lerpBetween(evoStart, evoEnd, t);
+          }
+        },
+      });
+      evolutionTriggerRef.current = evoTrigger;
+    }
 
-    scrollTriggerRef.current = trigger;
+    // Arsenal ScrollTrigger — lateral orbit axis crossing
+    if (arsenalSection) {
+      const arsenalTrigger = ScrollTrigger.create({
+        trigger: arsenalSection,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        onUpdate: (self) => {
+          const p = self.progress; // 0 → 1
+
+          if (p <= ARSENAL_PHASE1_END) {
+            // Phase 1: Evolution end → Arsenal start (axis crossing, 0% → 40%)
+            const t = p / ARSENAL_PHASE1_END;
+            lerpBetween(evoEnd, arsenalStart, t);
+          } else {
+            // Phase 2: Arsenal start → Arsenal end (close-up refinement, 40% → 100%)
+            const t = (p - ARSENAL_PHASE1_END) / (1 - ARSENAL_PHASE1_END);
+            lerpBetween(arsenalStart, arsenalEnd, t);
+          }
+        },
+      });
+      arsenalTriggerRef.current = arsenalTrigger;
+    }
 
     return () => {
-      trigger.kill();
-      scrollTriggerRef.current = null;
+      evolutionTriggerRef.current?.kill();
+      evolutionTriggerRef.current = null;
+      arsenalTriggerRef.current?.kill();
+      arsenalTriggerRef.current = null;
     };
   }, [camera, isMobile, prefersReducedMotion]);
 
