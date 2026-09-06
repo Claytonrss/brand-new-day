@@ -4,7 +4,7 @@ export function HeroOverlay() {
       {/* Top Header / Metadata */}
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="h-2 w-2 rounded-full bg-signal shadow-[0_0_8px_#c23b34]" />
+          <span className="h-2 w-2 rounded-full bg-signal shadow-[0_0_8px_#c23b34]" aria-hidden="true" />
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
             Portfolio Showcase
           </span>
@@ -27,6 +27,22 @@ export function HeroOverlay() {
           em cima, sozinho, sob a máscara.
         </p>
       </div>
+
+      {/* CC-BY Attribution Footer */}
+      <footer className="pointer-events-auto mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60 sm:mt-12">
+        <p>
+          Modelo 3D "Spider-Man Brand New Day" por{' '}
+          <a
+            href="https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80"
+          >
+            Eskze
+          </a>
+          , licenciado sob CC-BY 4.0
+        </p>
+      </footer>
     </div>
   );
 }
