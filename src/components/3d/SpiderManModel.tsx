@@ -14,6 +14,24 @@ interface SpiderManModelProps {
   rotation?: [number, number, number];
 }
 
+/**
+ * Window-level pointer tracking.
+ * Normalized to [-1, 1] range. Works even when Canvas is pointer-events:none
+ * (required for scroll storytelling where Canvas is behind scrollable content).
+ */
+const windowPointer = { x: 0, y: 0 };
+
+function useWindowPointer() {
+  useEffect(() => {
+    const handler = (e: PointerEvent) => {
+      windowPointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      windowPointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('pointermove', handler);
+    return () => window.removeEventListener('pointermove', handler);
+  }, []);
+}
+
 export function SpiderManModel({
   pointerTracking = true,
   scale = 1,
@@ -26,6 +44,9 @@ export function SpiderManModel({
   const groupRef = useRef<THREE.Group>(null);
   const headBoneRef = useRef<THREE.Object3D | null>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+
+  // Track pointer at window level (works with pointer-events:none Canvas)
+  useWindowPointer();
 
   useEffect(() => {
     useGLTF.preload(MODEL_PATH, false, true, extendLoader);
@@ -61,11 +82,11 @@ export function SpiderManModel({
     }
   }, [scene, nodes]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!pointerTracking || prefersReducedMotion) return;
 
-    const pointerX = state.pointer.x; // -1 to 1
-    const pointerY = state.pointer.y; // -1 to 1
+    const pointerX = windowPointer.x; // -1 to 1
+    const pointerY = windowPointer.y; // -1 to 1
 
     targetRotation.current.y = THREE.MathUtils.lerp(
       targetRotation.current.y,

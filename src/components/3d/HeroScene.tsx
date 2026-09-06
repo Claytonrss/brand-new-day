@@ -1,10 +1,14 @@
 import { useThree } from '@react-three/fiber';
-import { HeroCamera } from './HeroCamera';
 import { heroModelPosition, TARGET_HEAD_Y } from './heroModelLayout';
 import { SpiderManModel } from './SpiderManModel';
 import { COLORS } from '../../design/tokens';
 import { BREAKPOINTS } from '../../design/breakpoints';
 
+/**
+ * Hero scene — base lighting rig + shared model.
+ * Camera is handled by CameraRig (scroll-driven).
+ * @see docs/specs/evolution-chest-symbol.md §5
+ */
 export function HeroScene() {
   const { size } = useThree();
 
@@ -15,8 +19,6 @@ export function HeroScene() {
 
   return (
     <>
-      <HeroCamera />
-
       <color attach="background" args={[COLORS.ink]} />
 
       {/* Base fill — near-black ambient preserves chiaroscuro */}
