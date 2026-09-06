@@ -40,7 +40,7 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 h-dvh w-full overflow-hidden bg-ink">
+    <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-ink">
       <Suspense fallback={<LoadingFallback />}>
         <Canvas
           dpr={1}
