@@ -4,8 +4,10 @@ import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { HeroScene } from './components/3d/HeroScene';
 import { EvolutionScene } from './components/3d/EvolutionScene';
+import { ArsenalScene } from './components/3d/ArsenalScene';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
+import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -45,7 +47,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - Canvas is fixed (never unmounts), contains all 3D content
  * - CameraRig drives camera through scroll-driven keyframes
  * - HTML sections define scroll height and contain overlays
- * - Hero: 100vh, Evolution: 150vh
+ * - Hero: 100vh, Evolution: 150vh, Arsenal: 150vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -65,6 +67,7 @@ export function App() {
           <CameraRig />
           <HeroScene />
           <EvolutionScene />
+          <ArsenalScene />
         </CanvasContainer>
       </ErrorBoundary>
 
@@ -82,6 +85,15 @@ export function App() {
           aria-label="Evolution"
         >
           <EvolutionOverlay />
+        </section>
+
+        {/* Arsenal — 150vh scroll-driven, lateral orbit axis crossing */}
+        <section
+          id="arsenal-section"
+          className="relative h-[150vh]"
+          aria-label="Arsenal"
+        >
+          <ArsenalOverlay />
         </section>
       </div>
     </main>
