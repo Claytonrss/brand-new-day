@@ -1,11 +1,10 @@
 import { useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
 
 const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
-
-useGLTF.preload(MODEL_PATH);
 
 interface SpiderManModelProps {
   pointerTracking?: boolean;
@@ -20,9 +19,15 @@ export function SpiderManModel({
   position = [0, -3.8, 0],
   rotation = [0, 0, 0],
 }: SpiderManModelProps) {
-  const { scene, nodes } = useGLTF(MODEL_PATH);
+  const gl = useThree((state) => state.gl);
+  const extendLoader = useMemo(() => extendGltfLoaderWithKtx2(gl), [gl]);
+  const { scene, nodes } = useGLTF(MODEL_PATH, false, true, extendLoader);
   const groupRef = useRef<THREE.Group>(null);
   const headBoneRef = useRef<THREE.Object3D | null>(null);
+
+  useEffect(() => {
+    useGLTF.preload(MODEL_PATH, false, true, extendLoader);
+  }, [extendLoader]);
 
   const targetRotation = useRef({ x: 0, y: 0 });
 
@@ -63,12 +68,12 @@ export function SpiderManModel({
     targetRotation.current.y = THREE.MathUtils.lerp(
       targetRotation.current.y,
       pointerX * 0.3,
-      delta * 4,
+      1 - Math.exp(-4 * delta),
     );
     targetRotation.current.x = THREE.MathUtils.lerp(
       targetRotation.current.x,
       -pointerY * 0.2,
-      delta * 4,
+      1 - Math.exp(-4 * delta),
     );
 
     if (headBoneRef.current) {

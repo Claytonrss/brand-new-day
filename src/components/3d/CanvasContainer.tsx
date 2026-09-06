@@ -44,11 +44,11 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
       <Suspense fallback={<LoadingFallback />}>
         <Canvas
           dpr={1}
-          camera={{ position: [0, 1.5, 5.0], fov: 42, near: 0.1, far: 50 }}
+          camera={{ near: 0.1, far: 50 }}
           gl={{
-            antialias: true,
-            precision: 'highp',
-            powerPreference: 'high-performance',
+            antialias: false,
+            precision: 'mediump',
+            powerPreference: 'default',
             preserveDrawingBuffer: true,
             failIfMajorPerformanceCaveat: false,
           }}
