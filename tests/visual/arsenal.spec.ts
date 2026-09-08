@@ -4,6 +4,10 @@ test.describe('Arsenal section', () => {
   test('shows arsenal copy after scrolling past evolution', async ({ page }, testInfo) => {
     await page.goto('/');
 
+    // Wait for cinematic loader to disappear
+    const loader = page.locator('[role="progressbar"]');
+    await expect(loader).toBeHidden({ timeout: 60_000 });
+
     // Wait for WebGL canvas to load
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
@@ -38,6 +42,10 @@ test.describe('Arsenal section', () => {
   test('arsenal section has correct ARIA landmarks', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for cinematic loader to disappear
+    const loader = page.locator('[role="progressbar"]');
+    await expect(loader).toBeHidden({ timeout: 60_000 });
+
     // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
@@ -61,6 +69,10 @@ test.describe('Arsenal section', () => {
 
   test('arsenal copy is left-aligned and does not overflow', async ({ page }) => {
     await page.goto('/');
+
+    // Wait for cinematic loader to disappear
+    const loader = page.locator('[role="progressbar"]');
+    await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas
     const canvas = page.locator('canvas');
