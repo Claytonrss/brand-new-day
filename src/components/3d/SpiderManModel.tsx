@@ -44,6 +44,7 @@ export function SpiderManModel({
   const groupRef = useRef<THREE.Group>(null);
   const headBoneRef = useRef<THREE.Object3D | null>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const hasHover = useMediaQuery('(hover: hover)');
 
   // Track pointer at window level (works with pointer-events:none Canvas)
   useWindowPointer();
@@ -53,6 +54,9 @@ export function SpiderManModel({
   }, [extendLoader]);
 
   const targetRotation = useRef({ x: 0, y: 0 });
+  const idleTime = useRef(0);
+  const isIdle = useRef(false);
+  const lastPointerMove = useRef(Date.now());
 
   useEffect(() => {
     scene.traverse((child) => {
@@ -111,16 +115,37 @@ export function SpiderManModel({
     const pointerX = windowPointer.x; // -1 to 1
     const pointerY = windowPointer.y; // -1 to 1
 
-    targetRotation.current.y = THREE.MathUtils.lerp(
-      targetRotation.current.y,
-      pointerX * 0.15,
-      1 - Math.exp(-4 * delta),
-    );
-    targetRotation.current.x = THREE.MathUtils.lerp(
-      targetRotation.current.x,
-      -pointerY * 0.3,
-      1 - Math.exp(-4 * delta),
-    );
+    // Detect idle: no pointer movement for 3 seconds
+    const pointerMagnitude = Math.abs(pointerX) + Math.abs(pointerY);
+    if (pointerMagnitude > 0.01) {
+      lastPointerMove.current = Date.now();
+      isIdle.current = false;
+    } else if (Date.now() - lastPointerMove.current > 3000) {
+      isIdle.current = true;
+    }
+
+    // Touch devices (no hover) always use idle drift
+    if (!hasHover) {
+      isIdle.current = true;
+    }
+
+    let targetX: number;
+    let targetY: number;
+
+    if (isIdle.current) {
+      // Autonomous idle drift — slow sine wave
+      idleTime.current += delta * 0.3;
+      targetX = Math.sin(idleTime.current * 0.7) * 0.08; // subtle pitch (±0.08 rad)
+      targetY = Math.sin(idleTime.current) * 0.12; // subtle yaw (±0.12 rad)
+    } else {
+      // Mouse tracking — Beat 1 spec: yaw ±0.48 rad, pitch ±0.24 rad
+      targetX = -pointerY * 0.24; // pitch
+      targetY = pointerX * 0.48; // yaw
+    }
+
+    const t = 1 - Math.exp(-4 * delta);
+    targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, targetX, t);
+    targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, targetY, t);
 
     if (headBoneRef.current) {
       headBoneRef.current.rotation.y = targetRotation.current.y;
