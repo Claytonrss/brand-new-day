@@ -12,6 +12,8 @@ import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
 import { FullBodyOverlay } from './components/ui/FullBodyOverlay';
 import { CinematicLoader } from './components/ui/CinematicLoader';
+import { ChapterCard } from './components/ui/ChapterCard';
+import { ProgressBar } from './components/ui/ProgressBar';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -51,7 +53,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - Canvas is fixed (never unmounts), contains all 3D content
  * - CameraRig drives camera through scroll-driven keyframes
  * - HTML sections define scroll height and contain overlays
- * - Hero: 100vh, Evolution: 150vh, Arsenal: 150vh, FullBody: 100vh
+ * - Chapter cards (100vh each) act as cinematic transitions between sections
+ * - ProgressBar shows scroll progress on right edge
+ *
+ * Layout: Hero (100vh) → Chapter1 (100vh) → Evolution (150vh) →
+ *         Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) = 700vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -61,6 +67,9 @@ export function App() {
 
   return (
     <LenisProvider>
+      {/* Scroll progress indicator */}
+      <ProgressBar />
+
       {/* Cinematic loader — shows during GLB asset loading */}
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
 
@@ -91,6 +100,13 @@ export function App() {
           <HeroOverlay />
         </section>
 
+        {/* Chapter 1: MUDANÇA — 100vh cinematic transition card */}
+        <ChapterCard
+          title="MUDANÇA"
+          subtitle="Capítulo 2"
+          position="before-evolution"
+        />
+
         {/* Evolution — 150vh scroll-driven */}
         <section
           id="evolution-section"
@@ -99,6 +115,13 @@ export function App() {
         >
           <EvolutionOverlay />
         </section>
+
+        {/* Chapter 2: REVELAÇÃO — 100vh cinematic transition card */}
+        <ChapterCard
+          title="REVELAÇÃO"
+          subtitle="Capítulo 4"
+          position="before-fullbody"
+        />
 
         {/* Arsenal — 150vh scroll-driven, lateral orbit axis crossing */}
         <section

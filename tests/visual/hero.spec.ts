@@ -5,7 +5,7 @@ test.describe('Hero section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear (GLB asset loading)
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Check title text
