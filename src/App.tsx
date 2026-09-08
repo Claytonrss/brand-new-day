@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from 'react';
 
+import { LenisProvider } from './components/LenisProvider';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { HeroScene } from './components/3d/HeroScene';
@@ -54,6 +55,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  */
 export function App() {
   return (
+    <LenisProvider>
     <main className="relative w-full overflow-x-hidden bg-ink text-paper">
       {/* 3D R3F Canvas Layer — fixed, never unmounts */}
       <ErrorBoundary
@@ -97,5 +99,6 @@ export function App() {
         </section>
       </div>
     </main>
+    </LenisProvider>
   );
 }
