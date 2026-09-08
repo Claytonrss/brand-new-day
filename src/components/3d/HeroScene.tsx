@@ -21,20 +21,46 @@ export function HeroScene() {
     <>
       <color attach="background" args={[COLORS.ink]} />
 
-      {/* Base fill — near-black ambient preserves chiaroscuro */}
-      <ambientLight color={COLORS.ink} intensity={2.2} />
+      {/* Ambient fill — subtle cool steel, not ink (preserves detail in shadows) */}
+      <ambientLight color={COLORS.steel} intensity={0.35} />
 
-      {/* Key light — warm paper from upper-right */}
-      <directionalLight position={[5, 8, 3]} color={COLORS.paper} intensity={2.2} />
+      {/* Key light — warm paper from upper-right, casts shadows */}
+      <directionalLight
+        position={[5, 8, 3]}
+        color={COLORS.paper}
+        intensity={3.0}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-bias={-0.0005}
+      />
 
-      {/* Cool steel fill from left-behind */}
-      <pointLight position={[-4, 2, -2]} color={COLORS.steel} intensity={4} />
+      {/* Warm oxide rim — carves the silhouette (physical units: ~30cd) */}
+      <pointLight
+        position={[3, 1, 4]}
+        color={COLORS.oxide}
+        intensity={30}
+        distance={10}
+        decay={2}
+      />
 
-      {/* Warm oxide rim — carves the silhouette */}
-      <pointLight position={[3, 1, 4]} color={COLORS.oxide} intensity={8} />
+      {/* Signal red accent rim — eye/mask highlight (~15cd) */}
+      <pointLight
+        position={[-2, 3, 5]}
+        color={COLORS.signal}
+        intensity={15}
+        distance={8}
+        decay={2}
+      />
 
-      {/* Signal red accent — subtle eye/mask highlight */}
-      <pointLight position={[-2, 3, 5]} color={COLORS.signal} intensity={5} />
+      {/* Cool steel fill from left-behind (~14cd) */}
+      <pointLight
+        position={[-4, 2, -2]}
+        color={COLORS.steel}
+        intensity={14}
+        distance={12}
+        decay={2}
+      />
 
       <SpiderManModel
         scale={modelScale}

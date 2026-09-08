@@ -34,12 +34,19 @@ const CHEST_Y = {
  */
 export function EvolutionScene() {
   const spotlightRef = useRef<THREE.SpotLight>(null);
-  const targetHelperRef = useRef<THREE.Object3D>(null);
+  const targetRef = useRef<THREE.Object3D>(new THREE.Object3D());
   const progressRef = useRef(0);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
   const chestY = isMobile ? CHEST_Y.mobile : CHEST_Y.desktop;
+
+  // Attach spotlight target properly (must be done via effect, not JSX prop)
+  useEffect(() => {
+    if (spotlightRef.current) {
+      spotlightRef.current.target = targetRef.current;
+    }
+  }, []);
 
   // Track scroll progress for Beat 2
   useEffect(() => {
@@ -101,16 +108,14 @@ export function EvolutionScene() {
       spotlightRef.current.position.z = THREE.MathUtils.lerp(0.8, 0.7, sweepT);
     }
 
-    // Keep target helper at chest symbol for spotlight to aim at
-    if (targetHelperRef.current) {
-      targetHelperRef.current.position.set(0, chestY, 0);
-    }
+    // Keep target at chest symbol for spotlight to aim at
+    targetRef.current.position.set(0, chestY, 0);
   });
 
   return (
     <>
-      {/* Spotlight target — aims at the chest symbol */}
-      <object3D ref={targetHelperRef} position={[0, chestY, 0]} />
+      {/* Spotlight target — aims at the chest symbol (must be in scene graph) */}
+      <primitive object={targetRef.current} position={[0, chestY, 0]} />
 
       {/* Beat 2 — "a luz atravessa o símbolo" */}
       <spotLight
@@ -118,7 +123,6 @@ export function EvolutionScene() {
         color={COLORS.signal}
         intensity={0}
         position={[-0.4, chestY + 0.8, 0.8]}
-        target={targetHelperRef.current ?? undefined}
         angle={0.5}
         penumbra={0.6}
         distance={3}

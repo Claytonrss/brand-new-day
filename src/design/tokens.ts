@@ -13,4 +13,5 @@ export const COLORS = {
   signal: new THREE.Color('#c23b34'),
   paper: new THREE.Color('#e9e5da'),
   dim: new THREE.Color('#6b6a63'),
+  glow: new THREE.Color('#eaf4ff'),
 } as const;

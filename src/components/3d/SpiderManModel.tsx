@@ -58,8 +58,8 @@ export function SpiderManModel({
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        mesh.castShadow = false;
-        mesh.receiveShadow = false;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
 
         if (mesh.material) {
           const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
@@ -68,8 +68,31 @@ export function SpiderManModel({
               mat instanceof THREE.MeshStandardMaterial ||
               mat instanceof THREE.MeshPhysicalMaterial
             ) {
-              mat.roughness = Math.max(mat.roughness, 0.4);
-              mat.metalness = Math.min(mat.metalness, 0.6);
+              const nameLower = (mat.name ?? '').toLowerCase();
+              const isEye = nameLower.includes('eye') || nameLower.includes('lens');
+              const isChestSymbol = nameLower.includes('chest') || nameLower.includes('symbol');
+              const isMetal = mat.metalness > 0.5;
+
+              if (isEye) {
+                // Eyes: emissive glow for bloom to pick up
+                mat.emissive = new THREE.Color('#eaf4ff'); // COLORS.glow
+                mat.emissiveIntensity = 1.2;
+                mat.roughness = 0.1;
+              } else if (isChestSymbol) {
+                // Chest symbol: subtle emissive glow
+                mat.emissive = new THREE.Color('#eaf4ff'); // COLORS.glow
+                mat.emissiveIntensity = 0.6;
+                mat.roughness = 0.3;
+              } else if (isMetal) {
+                // Metallic parts (web-shooter, hardware): shiny metal
+                mat.roughness = 0.25;
+                mat.metalness = 0.85;
+              } else {
+                // Suit fabric: matte, low metalness
+                mat.roughness = 0.55;
+                mat.metalness = 0.3;
+              }
+
               mat.needsUpdate = true;
             }
           }
@@ -108,7 +131,7 @@ export function SpiderManModel({
   });
 
   return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
+    <group ref={groupRef} position={position} rotation={rotation} scale={scale} castShadow userData={{ modelReady: true }}>
       <primitive object={scene} />
     </group>
   );
