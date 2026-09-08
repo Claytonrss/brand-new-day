@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from 'react';
+import { Component, Suspense, useState, type ReactNode } from 'react';
 
 import { LenisProvider } from './components/LenisProvider';
 import { CanvasContainer } from './components/3d/CanvasContainer';
@@ -6,9 +6,12 @@ import { CameraRig } from './components/3d/CameraRig';
 import { HeroScene } from './components/3d/HeroScene';
 import { EvolutionScene } from './components/3d/EvolutionScene';
 import { ArsenalScene } from './components/3d/ArsenalScene';
+import { FullBodyScene } from './components/3d/FullBodyScene';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
+import { FullBodyOverlay } from './components/ui/FullBodyOverlay';
+import { CinematicLoader } from './components/ui/CinematicLoader';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -48,14 +51,19 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - Canvas is fixed (never unmounts), contains all 3D content
  * - CameraRig drives camera through scroll-driven keyframes
  * - HTML sections define scroll height and contain overlays
- * - Hero: 100vh, Evolution: 150vh, Arsenal: 150vh
+ * - Hero: 100vh, Evolution: 150vh, Arsenal: 150vh, FullBody: 100vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
  */
 export function App() {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <LenisProvider>
+      {/* Cinematic loader — shows during GLB asset loading */}
+      {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
+
     <main className="relative w-full overflow-x-hidden bg-ink text-paper">
       {/* 3D R3F Canvas Layer — fixed, never unmounts */}
       <ErrorBoundary
@@ -66,10 +74,13 @@ export function App() {
         }
       >
         <CanvasContainer>
-          <CameraRig />
-          <HeroScene />
-          <EvolutionScene />
-          <ArsenalScene />
+          <Suspense fallback={null}>
+            <CameraRig />
+            <HeroScene />
+            <EvolutionScene />
+            <ArsenalScene />
+            <FullBodyScene />
+          </Suspense>
         </CanvasContainer>
       </ErrorBoundary>
 
@@ -96,6 +107,15 @@ export function App() {
           aria-label="Arsenal"
         >
           <ArsenalOverlay />
+        </section>
+
+        {/* FullBody — 100vh, final reveal */}
+        <section
+          id="fullbody-section"
+          className="relative h-dvh"
+          aria-label="FullBody"
+        >
+          <FullBodyOverlay />
         </section>
       </div>
     </main>

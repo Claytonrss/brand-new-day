@@ -50,10 +50,10 @@ export function CameraRig() {
 
     // Reduced motion: stay at final keyframe (static fallback)
     if (prefersReducedMotion) {
-      const arsenalEnd = CAMERA_KEYFRAMES.arsenalEnd[bp];
-      target.current.position.set(...arsenalEnd.position);
-      target.current.lookAt.set(...arsenalEnd.lookAt);
-      target.current.fov = arsenalEnd.fov;
+      const fullBody = CAMERA_KEYFRAMES.fullBody[bp];
+      target.current.position.set(...fullBody.position);
+      target.current.lookAt.set(...fullBody.lookAt);
+      target.current.fov = fullBody.fov;
       current.current.position.copy(target.current.position);
       current.current.lookAt.copy(target.current.lookAt);
       current.current.fov = target.current.fov;

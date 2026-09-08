@@ -1,3 +1,5 @@
+import { SplitTextHeadline } from './SplitTextHeadline';
+
 /**
  * Evolution section overlay — copy and composition.
  *
@@ -18,14 +20,12 @@ export function EvolutionOverlay() {
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
           A mudança
         </p>
-        <h2
+        <SplitTextHeadline
+          text="ALGO NELE ESTÁ MUDANDO."
+          as="h2"
           id="evolution-title"
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"
-        >
-          Algo nele
-          <br />
-          está mudando.
-        </h2>
+        />
         <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
           Anos de noites sem nome cobraram um preço. O que começou como cansaço
           virou outra coisa — algo que nem Peter consegue explicar.

@@ -52,12 +52,26 @@ export const CAMERA_PATH: Record<'mobile' | 'desktop', CameraPathSegment[]> = {
       from: CAMERA_KEYFRAMES.evolutionEnd.mobile,
       to: CAMERA_KEYFRAMES.arsenalStart.mobile,
     },
-    // Arsenal orbit (65-100%)
+    // Arsenal orbit (65-85%)
     {
       scrollStart: 0.65,
-      scrollEnd: 1.0,
+      scrollEnd: 0.85,
       from: CAMERA_KEYFRAMES.arsenalStart.mobile,
       to: CAMERA_KEYFRAMES.arsenalEnd.mobile,
+    },
+    // Arsenal → FullBody transition (85-95%)
+    {
+      scrollStart: 0.85,
+      scrollEnd: 0.95,
+      from: CAMERA_KEYFRAMES.arsenalEnd.mobile,
+      to: CAMERA_KEYFRAMES.fullBody.mobile,
+    },
+    // FullBody static (95-100%)
+    {
+      scrollStart: 0.95,
+      scrollEnd: 1.0,
+      from: CAMERA_KEYFRAMES.fullBody.mobile,
+      to: CAMERA_KEYFRAMES.fullBody.mobile,
     },
   ],
   desktop: [
@@ -89,12 +103,26 @@ export const CAMERA_PATH: Record<'mobile' | 'desktop', CameraPathSegment[]> = {
       from: CAMERA_KEYFRAMES.evolutionEnd.desktop,
       to: CAMERA_KEYFRAMES.arsenalStart.desktop,
     },
-    // Arsenal orbit (65-100%)
+    // Arsenal orbit (65-85%)
     {
       scrollStart: 0.65,
-      scrollEnd: 1.0,
+      scrollEnd: 0.85,
       from: CAMERA_KEYFRAMES.arsenalStart.desktop,
       to: CAMERA_KEYFRAMES.arsenalEnd.desktop,
+    },
+    // Arsenal → FullBody transition (85-95%)
+    {
+      scrollStart: 0.85,
+      scrollEnd: 0.95,
+      from: CAMERA_KEYFRAMES.arsenalEnd.desktop,
+      to: CAMERA_KEYFRAMES.fullBody.desktop,
+    },
+    // FullBody static (95-100%)
+    {
+      scrollStart: 0.95,
+      scrollEnd: 1.0,
+      from: CAMERA_KEYFRAMES.fullBody.desktop,
+      to: CAMERA_KEYFRAMES.fullBody.desktop,
     },
   ],
 };

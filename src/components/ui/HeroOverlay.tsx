@@ -1,3 +1,5 @@
+import { SplitTextHeadline } from './SplitTextHeadline';
+
 export function HeroOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex min-h-dvh flex-col justify-between p-6 sm:p-12 md:p-16">
@@ -19,9 +21,12 @@ export function HeroOverlay() {
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
           Spider-Man: Brand New Day
         </p>
-        <h1 id="hero-title" className="mt-2 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[64px] lg:text-[80px]">
-          NINGUÉM SABE.
-        </h1>
+        <SplitTextHeadline
+          text="NINGUÉM SABE."
+          as="h1"
+          id="hero-title"
+          className="mt-2 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[64px] lg:text-[80px]"
+        />
         <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
           Quatro anos depois de desaparecer da memória de todos que ama, Peter Parker ainda está lá
           em cima, sozinho, sob a máscara.

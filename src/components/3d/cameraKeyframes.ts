@@ -17,7 +17,8 @@ export type KeyframeName =
   | 'evolutionStart'
   | 'evolutionEnd'
   | 'arsenalStart'
-  | 'arsenalEnd';
+  | 'arsenalEnd'
+  | 'fullBody';
 
 interface KeyframeValues {
   position: readonly [number, number, number];
@@ -50,5 +51,11 @@ export const CAMERA_KEYFRAMES: Record<KeyframeName, Record<Breakpoint, KeyframeV
     // Final close-up on wrist/web-shooter
     mobile: { position: [-2.7, -2.5, 3.6], lookAt: [-0.9, -2.6, 0.1], fov: 34 },
     desktop: { position: [-2.5, -3.2, 3.0], lookAt: [-0.5, -3.3, 0], fov: 28 },
+  },
+  fullBody: {
+    // Full body reveal — camera pulls back to show entire character
+    // Composition: centered, silhouette strong, title in short blocks
+    mobile: { position: [0, -1.0, 11], lookAt: [0, -3.0, 0], fov: 50 },
+    desktop: { position: [0, -1.0, 16], lookAt: [0, -4.0, 0], fov: 42 },
   },
 } as const;

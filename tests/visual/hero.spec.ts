@@ -4,6 +4,10 @@ test.describe('Hero section', () => {
   test('loads hero copy and renders webgl canvas', async ({ page }, testInfo) => {
     await page.goto('/');
 
+    // Wait for cinematic loader to disappear (GLB asset loading)
+    const loader = page.locator('[role="progressbar"]');
+    await expect(loader).toBeHidden({ timeout: 60_000 });
+
     // Check title text
     const title = page.locator('h1');
     await expect(title).toContainText('NINGUÉM SABE.');
