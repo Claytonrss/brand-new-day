@@ -27,8 +27,8 @@ interface KeyframeValues {
 
 export const CAMERA_KEYFRAMES: Record<KeyframeName, Record<Breakpoint, KeyframeValues>> = {
   hero: {
-    mobile: { position: [0, 0.45, 18], lookAt: [0, 0.45, 0], fov: 35 },
-    desktop: { position: [0, 0.45, 16], lookAt: [0, 0.45, 0], fov: 30 },
+    mobile: { position: [0, 0.35, 7.2], lookAt: [0, 0.35, 0], fov: 42 },
+    desktop: { position: [0.9, 0.3, 6.0], lookAt: [0, 0.3, 0], fov: 34 },
   },
   evolutionStart: {
     // Camera pushes in toward chest symbol. Chest is at ~y=-1.5 (mobile) / ~y=-2.0 (desktop)

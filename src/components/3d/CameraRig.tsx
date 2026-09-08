@@ -1,184 +1,123 @@
+import { useRef, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BREAKPOINTS } from '../../design/breakpoints';
-import { CAMERA_KEYFRAMES } from './cameraKeyframes';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { CAMERA_PATH } from './cameraPath';
+import { CAMERA_KEYFRAMES } from './cameraKeyframes';
+import { BREAKPOINTS } from '../../design/breakpoints';
 
-gsap.registerPlugin(ScrollTrigger);
-
-const LERP_K = 3;
-const EVOLUTION_SECTION_ID = '#evolution-section';
-const ARSENAL_SECTION_ID = '#arsenal-section';
-
-/** Arsenal scroll phases — fraction of arsenal section scroll */
-const ARSENAL_PHASE1_END = 0.4; // evolutionEnd → arsenalStart (axis crossing)
+const LERP_K = 2; // Retuned from 3 to 2 for smoother feel with Lenis
 
 /**
  * Scroll-driven camera rig with lerp smoothing.
- * Shared across Hero, Evolution, and future sections.
+ * Uses a single master ScrollTrigger covering the entire page,
+ * with piecewise segments from cameraPath.ts — no dead zones by construction.
  *
  * Architecture:
- * - GSAP ScrollTrigger updates a mutable target object
- * - useFrame lerps the actual camera toward the target (k=3, frame-rate independent)
+ * - GSAP ScrollTrigger (master) updates a mutable target object
+ * - useFrame lerps the actual camera toward the target (k=2, frame-rate independent)
  * - Breakpoint changes trigger smooth re-targeting (no teleport)
  * - Resize debounced at ~150ms with ScrollTrigger.refresh()
  *
- * @see docs/specs/evolution-chest-symbol.md §6
  * @see docs/design/mobile-first.md
+ * @see docs/design/composition-rules.md
  */
 export function CameraRig() {
   const { camera, size } = useThree();
-  const isMobile = size.width < BREAKPOINTS.MOBILE;
+  const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
-  // Mutable target updated by ScrollTrigger, read by useFrame
   const target = useRef({
-    px: 0,
-    py: 0.45,
-    pz: 18,
-    lx: 0,
-    ly: 0.45,
-    lz: 0,
-    fov: 35,
+    position: new THREE.Vector3(),
+    lookAt: new THREE.Vector3(),
+    fov: 30,
   });
 
-  // Current lookAt (lerped separately to avoid quaternion issues)
-  const currentLookAt = useRef(new THREE.Vector3(0, 0.45, 0));
-  const evolutionTriggerRef = useRef<ScrollTrigger | null>(null);
-  const arsenalTriggerRef = useRef<ScrollTrigger | null>(null);
+  const current = useRef({
+    position: new THREE.Vector3(),
+    lookAt: new THREE.Vector3(),
+    fov: 30,
+  });
+
+  const masterTriggerRef = useRef<ScrollTrigger | null>(null);
   const resizeTimerRef = useRef<number>(0);
 
-  // Set initial camera state from keyframes
-  useEffect(() => {
-    const cam = camera as THREE.PerspectiveCamera;
-    const bp = isMobile ? 'mobile' : 'desktop';
-    const hero = CAMERA_KEYFRAMES.hero[bp];
-
-    // Initialize target at hero keyframe
-    target.current.px = hero.position[0];
-    target.current.py = hero.position[1];
-    target.current.pz = hero.position[2];
-    target.current.lx = hero.lookAt[0];
-    target.current.ly = hero.lookAt[1];
-    target.current.lz = hero.lookAt[2];
-    target.current.fov = hero.fov;
-
-    // Snap camera to target immediately (no lerp on first mount)
-    cam.position.set(target.current.px, target.current.py, target.current.pz);
-    cam.fov = target.current.fov;
-    currentLookAt.current.set(target.current.lx, target.current.ly, target.current.lz);
-    cam.lookAt(currentLookAt.current);
-    cam.updateProjectionMatrix();
-  }, [camera, isMobile]);
-
-  // Helper: set target from keyframe values
-  const setTargetFromKeyframe = (kf: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number }) => {
-    target.current.px = kf.position[0];
-    target.current.py = kf.position[1];
-    target.current.pz = kf.position[2];
-    target.current.lx = kf.lookAt[0];
-    target.current.ly = kf.lookAt[1];
-    target.current.lz = kf.lookAt[2];
-    target.current.fov = kf.fov;
-  };
-
-  // Helper: lerp target between two keyframes
-  const lerpBetween = (
-    from: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number },
-    to: { position: readonly [number, number, number]; lookAt: readonly [number, number, number]; fov: number },
-    t: number,
-  ) => {
-    target.current.px = THREE.MathUtils.lerp(from.position[0], to.position[0], t);
-    target.current.py = THREE.MathUtils.lerp(from.position[1], to.position[1], t);
-    target.current.pz = THREE.MathUtils.lerp(from.position[2], to.position[2], t);
-    target.current.lx = THREE.MathUtils.lerp(from.lookAt[0], to.lookAt[0], t);
-    target.current.ly = THREE.MathUtils.lerp(from.lookAt[1], to.lookAt[1], t);
-    target.current.lz = THREE.MathUtils.lerp(from.lookAt[2], to.lookAt[2], t);
-    target.current.fov = THREE.MathUtils.lerp(from.fov, to.fov, t);
-  };
-
-  // Build ScrollTriggers for evolution and arsenal sections
+  // Master scroll timeline — single trigger covering entire page
   useEffect(() => {
     const bp = isMobile ? 'mobile' : 'desktop';
+    const path = CAMERA_PATH[bp];
 
-    // Kill previous triggers (cleanup on breakpoint change)
-    evolutionTriggerRef.current?.kill();
-    evolutionTriggerRef.current = null;
-    arsenalTriggerRef.current?.kill();
-    arsenalTriggerRef.current = null;
-
-    // Reduced motion: stay at arsenal final keyframe (static fallback)
+    // Reduced motion: stay at final keyframe (static fallback)
     if (prefersReducedMotion) {
       const arsenalEnd = CAMERA_KEYFRAMES.arsenalEnd[bp];
-      setTargetFromKeyframe(arsenalEnd);
+      target.current.position.set(...arsenalEnd.position);
+      target.current.lookAt.set(...arsenalEnd.lookAt);
+      target.current.fov = arsenalEnd.fov;
+      current.current.position.copy(target.current.position);
+      current.current.lookAt.copy(target.current.lookAt);
+      current.current.fov = target.current.fov;
       return;
     }
 
-    const evolutionSection = document.querySelector(EVOLUTION_SECTION_ID);
-    const arsenalSection = document.querySelector(ARSENAL_SECTION_ID);
+    // Initialize from first keyframe
+    const firstKf = path[0].from;
+    target.current.position.set(...firstKf.position);
+    target.current.lookAt.set(...firstKf.lookAt);
+    target.current.fov = firstKf.fov;
 
-    const hero = CAMERA_KEYFRAMES.hero[bp];
-    const evoStart = CAMERA_KEYFRAMES.evolutionStart[bp];
-    const evoEnd = CAMERA_KEYFRAMES.evolutionEnd[bp];
-    const arsenalStart = CAMERA_KEYFRAMES.arsenalStart[bp];
-    const arsenalEnd = CAMERA_KEYFRAMES.arsenalEnd[bp];
+    current.current.position.copy(target.current.position);
+    current.current.lookAt.copy(target.current.lookAt);
+    current.current.fov = target.current.fov;
 
-    // Evolution ScrollTrigger
-    if (evolutionSection) {
-      const evoTrigger = ScrollTrigger.create({
-        trigger: evolutionSection,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress; // 0 → 1
+    // Kill previous master trigger (cleanup on breakpoint change)
+    masterTriggerRef.current?.kill();
+    masterTriggerRef.current = null;
 
-          if (p <= 0.3) {
-            // Phase 1: Hero → Evolution start (0% → 30%)
-            const t = p / 0.3;
-            lerpBetween(hero, evoStart, t);
-          } else {
-            // Phase 2: Evolution start → Evolution end (30% → 100%)
-            const t = (p - 0.3) / 0.7;
-            lerpBetween(evoStart, evoEnd, t);
-          }
-        },
-      });
-      evolutionTriggerRef.current = evoTrigger;
-    }
+    // Single master ScrollTrigger for entire page
+    const st = ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: (self) => {
+        const progress = self.progress; // 0-1 for entire page
 
-    // Arsenal ScrollTrigger — lateral orbit axis crossing
-    if (arsenalSection) {
-      const arsenalTrigger = ScrollTrigger.create({
-        trigger: arsenalSection,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress; // 0 → 1
+        // Find which segment we're in
+        const segment = path.find(
+          (s) => progress >= s.scrollStart && progress <= s.scrollEnd,
+        );
 
-          if (p <= ARSENAL_PHASE1_END) {
-            // Phase 1: Evolution end → Arsenal start (axis crossing, 0% → 40%)
-            const t = p / ARSENAL_PHASE1_END;
-            lerpBetween(evoEnd, arsenalStart, t);
-          } else {
-            // Phase 2: Arsenal start → Arsenal end (close-up refinement, 40% → 100%)
-            const t = (p - ARSENAL_PHASE1_END) / (1 - ARSENAL_PHASE1_END);
-            lerpBetween(arsenalStart, arsenalEnd, t);
-          }
-        },
-      });
-      arsenalTriggerRef.current = arsenalTrigger;
-    }
+        if (segment) {
+          // Calculate local progress within segment (0-1)
+          const segmentRange = segment.scrollEnd - segment.scrollStart;
+          const localProgress =
+            segmentRange > 0 ? (progress - segment.scrollStart) / segmentRange : 0;
+
+          // Interpolate between from and to
+          target.current.position.set(
+            THREE.MathUtils.lerp(segment.from.position[0], segment.to.position[0], localProgress),
+            THREE.MathUtils.lerp(segment.from.position[1], segment.to.position[1], localProgress),
+            THREE.MathUtils.lerp(segment.from.position[2], segment.to.position[2], localProgress),
+          );
+          target.current.lookAt.set(
+            THREE.MathUtils.lerp(segment.from.lookAt[0], segment.to.lookAt[0], localProgress),
+            THREE.MathUtils.lerp(segment.from.lookAt[1], segment.to.lookAt[1], localProgress),
+            THREE.MathUtils.lerp(segment.from.lookAt[2], segment.to.lookAt[2], localProgress),
+          );
+          target.current.fov = THREE.MathUtils.lerp(
+            segment.from.fov,
+            segment.to.fov,
+            localProgress,
+          );
+        }
+      },
+    });
+    masterTriggerRef.current = st;
 
     return () => {
-      evolutionTriggerRef.current?.kill();
-      evolutionTriggerRef.current = null;
-      arsenalTriggerRef.current?.kill();
-      arsenalTriggerRef.current = null;
+      masterTriggerRef.current?.kill();
+      masterTriggerRef.current = null;
     };
   }, [camera, isMobile, prefersReducedMotion]);
 
@@ -200,18 +139,18 @@ export function CameraRig() {
     const alpha = 1 - Math.exp(-LERP_K * delta);
 
     // Lerp position
-    cam.position.x = THREE.MathUtils.lerp(cam.position.x, target.current.px, alpha);
-    cam.position.y = THREE.MathUtils.lerp(cam.position.y, target.current.py, alpha);
-    cam.position.z = THREE.MathUtils.lerp(cam.position.z, target.current.pz, alpha);
+    current.current.position.lerp(target.current.position, alpha);
 
     // Lerp lookAt target
-    currentLookAt.current.x = THREE.MathUtils.lerp(currentLookAt.current.x, target.current.lx, alpha);
-    currentLookAt.current.y = THREE.MathUtils.lerp(currentLookAt.current.y, target.current.ly, alpha);
-    currentLookAt.current.z = THREE.MathUtils.lerp(currentLookAt.current.z, target.current.lz, alpha);
-    cam.lookAt(currentLookAt.current);
+    current.current.lookAt.lerp(target.current.lookAt, alpha);
 
     // Lerp FOV
-    cam.fov = THREE.MathUtils.lerp(cam.fov, target.current.fov, alpha);
+    current.current.fov = THREE.MathUtils.lerp(current.current.fov, target.current.fov, alpha);
+
+    // Apply to camera
+    cam.position.copy(current.current.position);
+    cam.lookAt(current.current.lookAt);
+    cam.fov = current.current.fov;
     cam.updateProjectionMatrix();
   });
 
