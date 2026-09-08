@@ -5,7 +5,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  workers: process.env.CI ? 2 : 3,
+  timeout: 120_000, // 120s for heavier pipeline (50MB GLB + Environment HDR + post-processing + desktop rendering)
   reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
   outputDir: 'test-results/playwright',
   use: {
