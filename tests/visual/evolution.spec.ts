@@ -22,7 +22,7 @@ test.describe('Evolution section', () => {
     // Check evolution title is visible
     const evolutionTitle = page.locator('#evolution-title');
     await expect(evolutionTitle).toBeVisible();
-    await expect(evolutionTitle).toContainText('Algo nele');
+    await expect(evolutionTitle).toContainText('ALGO NELE');
 
     // Check kicker
     await expect(page.getByText('A mudança')).toBeVisible();

@@ -1,3 +1,5 @@
+import { SplitTextHeadline } from './SplitTextHeadline';
+
 /**
  * Arsenal section overlay — copy and composition.
  *
@@ -18,14 +20,12 @@ export function ArsenalOverlay() {
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
           O que sobrou
         </p>
-        <h2
+        <SplitTextHeadline
+          text="SEM APOIO. SÓ O ESSENCIAL."
+          as="h2"
           id="arsenal-title"
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"
-        >
-          Sem apoio.
-          <br />
-          Só o essencial.
-        </h2>
+        />
         <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
           Sem Stark, sem SHIELD, sem ninguém para ligar. Só o que ele mesmo
           construiu nos pulsos — e a cidade que continua escolhendo proteger.
