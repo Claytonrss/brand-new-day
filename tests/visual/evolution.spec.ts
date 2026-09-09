@@ -5,7 +5,7 @@ test.describe('Evolution section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for WebGL canvas to load
@@ -15,8 +15,8 @@ test.describe('Evolution section', () => {
     // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll to evolution section (past the 100vh hero)
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 1.5));
+    // Scroll to evolution section (past hero 100vh + chapter1 card 100vh = 200vh)
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2.5));
     await page.waitForTimeout(2000);
 
     // Check evolution title is visible
@@ -39,15 +39,15 @@ test.describe('Evolution section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to evolution
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 1.5));
+    // Scroll to evolution (past hero 100vh + chapter1 card 100vh)
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2.5));
     await page.waitForTimeout(1000);
 
     // Check ARIA

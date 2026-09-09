@@ -5,7 +5,7 @@ test.describe('Arsenal section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for WebGL canvas to load
@@ -15,8 +15,8 @@ test.describe('Arsenal section', () => {
     // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll past hero (100vh) and evolution (150vh) to arsenal section
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3));
+    // Scroll past hero (100vh) + chapter1 (100vh) + evolution (150vh) + chapter2 (100vh) = 450vh to arsenal
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
     await page.waitForTimeout(2000);
 
     // Check arsenal title is visible
@@ -43,15 +43,15 @@ test.describe('Arsenal section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3));
+    // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
     await page.waitForTimeout(1000);
 
     // Check ARIA label on section
@@ -71,15 +71,15 @@ test.describe('Arsenal section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3));
+    // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
     await page.waitForTimeout(1000);
 
     // Check that the section container is left-aligned (justify-start)

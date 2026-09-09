@@ -5,7 +5,7 @@ test.describe('FullBody section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for WebGL canvas to load
@@ -42,7 +42,7 @@ test.describe('FullBody section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas
@@ -70,7 +70,7 @@ test.describe('FullBody section', () => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear
-    const loader = page.locator('[role="progressbar"]');
+    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
     await expect(loader).toBeHidden({ timeout: 60_000 });
 
     // Wait for canvas

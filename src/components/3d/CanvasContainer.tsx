@@ -3,6 +3,8 @@ import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { ReactNode, Suspense } from 'react';
 import { EffectsStack } from './EffectsStack';
+import { Particles } from './Particles';
+import { PerformanceMonitor } from './PerformanceMonitor';
 
 interface CanvasContainerProps {
   children: ReactNode;
@@ -36,8 +38,11 @@ function LoadingFallback() {
  * - Shadows enabled for grounded lighting
  * - Environment map (city preset) for PBR metallic reflections
  * - Post-processing: Bloom → Vignette → Noise (EffectsStack)
+ * - Atmospheric particles (Particles) for cinematic depth
+ * - Adaptive quality (PerformanceMonitor) for consistent FPS
  *
  * @see docs/design/design-bible.md
+ * @see docs/design/quality-matrix.md
  */
 export function CanvasContainer({ children }: CanvasContainerProps) {
   return (
@@ -63,7 +68,12 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
             });
           }}
         >
-          {children}
+          {/* PerformanceMonitor wraps children to provide QualityContext */}
+          <PerformanceMonitor>
+            {children}
+            {/* Atmospheric particles — cinematic depth */}
+            <Particles />
+          </PerformanceMonitor>
           {/* Environment loads async — own Suspense prevents blocking canvas */}
           <Suspense fallback={null}>
             <Environment preset="city" background={false} />
