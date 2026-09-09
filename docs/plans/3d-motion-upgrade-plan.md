@@ -233,7 +233,7 @@ Cada wave exige: branch `feat/<slug>` → Scene Spec (se mudar composição) →
 - **ADR-010:** Instrumentação de performance (`window.__perf`) e política de dpr.
 
 **A criar nas próximas waves:**
-- **ADR-011:** Câmera por curva de Catmull-Rom com easing por beat (Wave B).
+- **ADR-011:** Câmera por curva de Catmull-Rom com easing por beat (Wave B) — ✅ criado.
 - **ADR-012:** Movimento procedural do rig — additive sobre rest pose Mixamo (Wave A).
 - **ADR-013:** Shaders autorais via `onBeforeCompile` com fallback por tier (Wave C).
 - **ADR-014:** (condicional) Re-export/repose do GLB — só se A4 falhar.
