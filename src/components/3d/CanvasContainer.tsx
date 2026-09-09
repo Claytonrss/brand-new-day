@@ -73,12 +73,13 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
             {children}
             {/* Atmospheric particles — cinematic depth */}
             <Particles />
+            {/* Post-processing — adapts to quality profile */}
+            <EffectsStack />
           </PerformanceMonitor>
           {/* Environment loads async — own Suspense prevents blocking canvas */}
           <Suspense fallback={null}>
             <Environment preset="city" background={false} />
           </Suspense>
-          <EffectsStack />
         </Canvas>
       </Suspense>
     </div>
