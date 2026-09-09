@@ -47,11 +47,17 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
   const totalFramesRef = useRef(0);
   const currentTierRef = useRef<QualityTier>('high');
 
+  // Initial tier detection: reduced-motion → low, mobile → medium, desktop → high
+  const getInitialTier = (): QualityTier => {
+    if (prefersReducedMotion) return 'low';
+    if (isMobile) return 'medium';
+    return 'high';
+  };
+
   // React state for context value (only updates on tier change)
-  const [profile, setProfile] = useState<QualityProfile>(() => {
-    if (prefersReducedMotion) return QUALITY_PROFILES.low;
-    return QUALITY_PROFILES.high;
-  });
+  const [profile, setProfile] = useState<QualityProfile>(
+    QUALITY_PROFILES[getInitialTier()]
+  );
 
   // Force low tier if prefers-reduced-motion
   useEffect(() => {

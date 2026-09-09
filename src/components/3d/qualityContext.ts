@@ -14,7 +14,20 @@ export interface QualityProfile {
   dpr: number;
   shadows: boolean;
   particles: boolean;
-  bloom: boolean;
+  bloom: {
+    intensity: number;
+    luminanceThreshold: number;
+    enabled: boolean;
+  };
+  vignette: {
+    darkness: number;
+    enabled: boolean;
+  };
+  noise: {
+    opacity: number;
+    enabled: boolean;
+  };
+  multisampling: number;
 }
 
 export const QUALITY_PROFILES: Record<QualityTier, QualityProfile> = {
@@ -23,21 +36,30 @@ export const QUALITY_PROFILES: Record<QualityTier, QualityProfile> = {
     dpr: 2,
     shadows: true,
     particles: true,
-    bloom: true,
+    bloom: { intensity: 0.85, luminanceThreshold: 0.8, enabled: true },
+    vignette: { darkness: 0.6, enabled: true },
+    noise: { opacity: 0.032, enabled: true },
+    multisampling: 4,
   },
   medium: {
     tier: 'medium',
     dpr: 1.5,
     shadows: true,
     particles: true,
-    bloom: true,
+    bloom: { intensity: 0.45, luminanceThreshold: 0.9, enabled: true },
+    vignette: { darkness: 0.45, enabled: true },
+    noise: { opacity: 0, enabled: false },
+    multisampling: 0,
   },
   low: {
     tier: 'low',
     dpr: 1,
     shadows: false,
     particles: false,
-    bloom: false,
+    bloom: { intensity: 0, luminanceThreshold: 1, enabled: false },
+    vignette: { darkness: 0.3, enabled: true },
+    noise: { opacity: 0, enabled: false },
+    multisampling: 0,
   },
 } as const;
 
