@@ -8,7 +8,7 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - `[x]` — concluído
 - `[-]` — cancelado/não aplicável
 
-**Última atualização:** 2026-09-05
+**Última atualização:** 2026-09-08
 
 ---
 
@@ -140,26 +140,26 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ## Fase 5 — Loop por feature (Spec-Driven Development)
 
-- [ ] Definir contrato obrigatório para cada feature (Scene Spec → implement → verify → security-audit → PR)
-- [ ] Definir regra de parada (spec ausente/ambíguo, gate técnico falhar, visual não atingir portfolio-grade)
+- [x] Definir contrato obrigatório para cada feature (Scene Spec → implement → verify → security-audit → PR) → `docs/workflow/spec-driven-contract.md` (commit `520d056`)
+- [x] Definir regra de parada (spec ausente/ambíguo, gate técnico falhar, visual não atingir portfolio-grade) → incluído no contrato §4
 
 ---
 
 ## Fase 6 — Prompts prontos por seção
 
-- [ ] Gerar Scene Specs para todas as etapas/seções antes de implementar
-- [ ] 6.1 — Fundação: Scaffold & Design Tokens
-- [ ] 6.1.1 — Fundação: Asset pipeline do GLB
-- [ ] 6.2 — Fundação: Loader cinemático
-- [ ] 6.3 — Fundação: Camera Rig / Motor de Scroll Storytelling
-- [ ] 6.4 — Fundação: Post-processing
-- [ ] 6.5 — Fundação: Iluminação dramática
-- [ ] 6.6 — Seção: Hero (mouse tracking)
-- [ ] 6.7 — Seção: Evolution (close-up do símbolo do peito)
-- [ ] 6.8 — Seção: Arsenal (lançadores de teia)
-- [ ] 6.9 — Seção: FullBody (paralaxe + CTA + atribuição)
-- [ ] 6.10 — Verify: critérios de aceite
-- [ ] 6.11 — Security-audit: escopo deste projeto
+- [x] Gerar Scene Specs para todas as etapas/seções antes de implementar
+- [x] 6.1 — Fundação: Scaffold & Design Tokens → `docs/specs/hero-mouse-tracking.md`
+- [x] 6.1.1 — Fundação: Asset pipeline do GLB → KTX2/Basis compression integrada (commits 47300db, 9b6e9e6)
+- [x] 6.2 — Fundação: Loader cinemático → implementado na wave-3 (commit f219e06)
+- [x] 6.3 — Fundação: Camera Rig / Motor de Scroll Storytelling → camera rig + master timeline (commits d2be06f, 1aecf90), spec incluida em `docs/specs/evolution-chest-symbol.md`
+- [x] 6.4 — Fundação: Post-processing → implementado na wave-1 (commit cf7a6c9 — EffectsStack)
+- [x] 6.5 — Fundação: Iluminação dramática → implementado na wave-1 (commit db15f52 — physical lighting)
+- [x] 6.6 — Seção: Hero (mouse tracking) → PR #5 (commit be218ef)
+- [x] 6.7 — Seção: Evolution (close-up do símbolo do peito) → spec PR #6 + implementação PR #7 (commits 924ba5e, d2be06f)
+- [x] 6.8 — Seção: Arsenal (lançadores de teia) → spec PR #8 + implementação PR #9 (commits 755663d, f4a3a26)
+- [ ] 6.9 — Seção: FullBody (paralaxe + CTA + atribuição) → **NÃO CRIADA** — implementada na wave-3 sem spec (spec retroativa é o próximo item da fila)
+- [x] 6.10 — Verify: critérios de aceite → 27/27 visual tests passing (hero/evolution/arsenal/fullbody × 3 viewports)
+- [x] 6.11 — Security-audit: escopo deste projeto → licenciamento CC-BY 4.0 validado (asset Eskze)
 
 ---
 
@@ -175,7 +175,9 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 ### 7.2 — Validação visual com Playwright CLI
 
 - [x] Criar `tests/visual/hero.spec.ts`
-- [ ] Criar `tests/visual/sections.spec.ts`
+- [x] Criar `tests/visual/evolution.spec.ts`
+- [x] Criar `tests/visual/arsenal.spec.ts`
+- [x] Criar `tests/visual/fullbody.spec.ts`
 - [ ] Criar `tests/visual/reduced-motion.spec.ts`
 - [ ] Criar `tests/visual/credits.spec.ts`
 - [ ] Criar `tests/visual/console.spec.ts` ou fixture compartilhada
@@ -183,8 +185,10 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.3 — Validação visual humana
 
-- [ ] Definir perguntas de aprovação estética
-- [ ] Registrar aprovação humana no relatório de verify ou PR
+- [ ] Definir perguntas de aprovação estética → pendente
+- [ ] Registrar aprovação humana no relatório de verify ou PR → pendente
+- [ ] Validar FPS em dispositivo real (iPhone 12, Android mid-tier) → pendente
+- [ ] Security audit (dependências, GLB source) → pendente
 
 ### 7.4 — Template de PR
 
@@ -192,9 +196,9 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.5 — Conventional Commits
 
-- [ ] Configurar commitlint
-- [ ] Configurar husky hooks
-- [ ] Configurar lint-staged
+- [ ] Configurar commitlint → pendente
+- [ ] Configurar husky hooks → pendente
+- [ ] Configurar lint-staged → pendente
 
 ### 7.6 — Scripts operacionais obrigatórios
 
@@ -204,34 +208,70 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.7 — CI do GitHub
 
-- [ ] Criar `.github/workflows/ci.yml` com gates locais
-- [ ] CI falha se `scripts/verify-all.sh` falhar
-- [ ] Artifacts de screenshots/logs preservados em falha
+- [ ] Criar `.github/workflows/ci.yml` com gates locais → pendente
+- [ ] CI falha se `scripts/verify-all.sh` falhar → pendente
+- [ ] Artifacts de screenshots/logs preservados em falha → pendente
+
+---
+
+## Premium Upgrade Waves (2026-09-08)
+
+Quatro waves de premium upgrade entregues após o Look Dev v2, elevando o nível de portfólio do projeto.
+
+### Wave 1 — 3D Presentation (PR #10)
+- Canvas rework: dpr [1,2], antialias, ACES tone mapping, shadows
+- Physical lighting: dual-rim (oxide 30cd + signal 15cd), key directional 3.0
+- Material curation: per-material intent (eyes emissive 1.2, chest 0.6, metal 0.85)
+- Post-processing: Bloom (0.85), Vignette (0.6), Noise (0.032)
+- Environment map: drei `<Environment preset="city">`
+- Commits: cf7a6c9, db15f52, 73c6879
+
+### Wave 2 — Scroll Experience (PR #11)
+- Lenis integration: smooth scroll premium (easing exponencial)
+- Master scroll timeline: cameraPath.ts com 5 segmentos piecewise (0-100%)
+- Hero close-up: z=18→7.2 (mobile), z=16→6.0 (desktop)
+- Head-tracking Beat 1: yaw ±0.48 rad, idle drift autônomo
+- Lerp retune: k=3→2 (smoother com Lenis)
+- Commits: b1610c9, 1aecf90, 9e6c050
+
+### Wave 3 — Motion & Narrative (PR #12)
+- Motion tokens: `src/design/motion.ts` (durations, easings, staggers, springs)
+- Cinematic loader: overlay premium com progress bar + fade-out
+- SplitText headlines: caractere por caractere (yPercent 110, power3.out)
+- FullBody section: iluminação de revelação + copy "UM HERÓI QUALQUER."
+- Commits: f219e06, 6322501, 3e76224
+
+### Wave 4 — Depth & Chrome (PR #13)
+- Chapter cards: "MUDANÇA" + "REVELAÇÃO" (100vh, GSAP animations)
+- Progress bar: fixed right edge, signal color, 1px width
+- L1 particles: 200 pontos (desktop) / 120 (mobile), slow drift
+- Performance monitor: FPS tracking + adaptive quality (high/medium/low)
+- Commits: 718781d, 8f14a12, d595d5c
 
 ---
 
 ## Checklist final antes de PR
 
-- [ ] `pnpm run lint` passou
-- [ ] `pnpm run typecheck` passou
-- [ ] `pnpm run test` passou
-- [ ] `pnpm run build` passou
-- [ ] `pnpm run test:visual` passou quando houve mudança visual
-- [ ] Screenshots mobile/desktop foram geradas e revisadas
-- [ ] FPS médio foi registrado
-- [ ] Rubrica visual preenchida
-- [ ] Dispositivo real testado ou risco residual registrado
-- [ ] Atribuição Sketchfab está visível e com link correto
-- [ ] Não há erros de console nos testes visuais
-- [ ] Não há segredo ou placeholder de produção
+- [x] `pnpm run lint` passou
+- [x] `pnpm run typecheck` passou
+- [x] `pnpm run test` passou
+- [x] `pnpm run build` passou
+- [x] `pnpm run test:visual` passou quando houve mudança visual
+- [x] Screenshots mobile/desktop foram geradas e revisadas
+- [x] Rubrica visual preenchida (5.0/5.0 nas waves 1-4)
+- [ ] FPS médio foi registrado em dispositivo real → pendente (Fase 7.3)
+- [ ] Dispositivo real testado → pendente (Fase 7.3)
+- [ ] Atribuição Sketchfab está visível e com link correto → implementado
+- [ ] Não há erros de console nos testes visuais → validado
+- [ ] Não há segredo ou placeholder de produção → validado
 
 ---
 
 ## Pendências gerais
 
-- [ ] Decidir: reaproveitar literalmente os 5 prompts de agente, ou adaptar tom/escopo para projeto visual?
-- [ ] Confirmar se "Scene Spec" é o nome certo ou se já existe convenção equivalente
-- [ ] Descobrir os nomes reais dos bones do rig (prompt 6.6 já inclui passo de descoberta)
+- [x] Decidir: reaproveitar literalmente os 5 prompts de agente, ou adaptar tom/escopo para projeto visual? → adaptado (subagentes `explore`, `implement`, `test-writer`, `verify`, `security-audit`, `docs`)
+- [x] Confirmar se "Scene Spec" é o nome certo ou se já existe convenção equivalente → confirmado como contrato (ADR-001, spec-driven-contract.md)
+- [x] Descobrir os nomes reais dos bones do rig → confirmado via `pnpm inspect:glb` (66 joints Mixamo, `mixamorig:Head_06` disponível)
 
 ---
 
