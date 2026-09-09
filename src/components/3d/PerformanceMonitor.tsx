@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../design/breakpoints';
 import {
@@ -15,6 +15,106 @@ const FPS_THRESHOLD_LOW = 30;
 
 /** Minimum frames before degradation kicks in (avoid false positives) */
 const WARMUP_FRAMES = 120;
+
+/** Per-frame metrics exposed for the debug HUD and automated budget tests. */
+export interface PerfSnapshot {
+  fps: number;
+  ms: number;
+  calls: number;
+  triangles: number;
+  programs: number;
+  geometries: number;
+  textures: number;
+}
+
+declare global {
+  interface Window {
+    __perf?: PerfSnapshot;
+  }
+}
+
+/** Smoothing factor for the FPS readout (raw 1/delta is too jittery). */
+const FPS_SMOOTHING = 0.1;
+
+/**
+ * Publishes `window.__perf` every frame: FPS, ms/frame, draw calls, triangles.
+ *
+ * `gl.info` is read with `autoReset` disabled, so the numbers belong to the
+ * previously rendered frame — which is exactly what a budget assertion wants.
+ *
+ * @see docs/specs/headroom-lighting.md §8
+ */
+function PerfProbe() {
+  const gl = useThree((state) => state.gl);
+  const snapshot = useRef<PerfSnapshot>({
+    fps: 0,
+    ms: 0,
+    calls: 0,
+    triangles: 0,
+    programs: 0,
+    geometries: 0,
+    textures: 0,
+  });
+
+  useEffect(() => {
+    gl.info.autoReset = false;
+    window.__perf = snapshot.current;
+    return () => {
+      gl.info.autoReset = true;
+      delete window.__perf;
+    };
+  }, [gl]);
+
+  useFrame((_, delta) => {
+    const stats = snapshot.current;
+    const instant = 1 / Math.max(delta, 1e-4);
+
+    stats.fps = stats.fps === 0 ? instant : stats.fps + (instant - stats.fps) * FPS_SMOOTHING;
+    stats.ms = delta * 1000;
+    stats.calls = gl.info.render.calls;
+    stats.triangles = gl.info.render.triangles;
+    stats.programs = gl.info.programs?.length ?? 0;
+    stats.geometries = gl.info.memory.geometries;
+    stats.textures = gl.info.memory.textures;
+
+    gl.info.reset();
+  });
+
+  return null;
+}
+
+/**
+ * Applies the profile to the renderer: device pixel ratio and shadow maps.
+ *
+ * Lives inside the Canvas because `dpr` is a renderer concern, while the
+ * profile itself is produced by `PerformanceMonitor` (also inside the Canvas).
+ */
+function QualityAdapter({ profile }: { profile: QualityProfile }) {
+  const setDpr = useThree((state) => state.setDpr);
+  const gl = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+
+  useEffect(() => {
+    setDpr(profile.dpr);
+  }, [profile.dpr, setDpr]);
+
+  useEffect(() => {
+    gl.shadowMap.enabled = profile.shadows;
+    gl.shadowMap.needsUpdate = true;
+    // Shadow defines are compiled into materials — invalidate them once.
+    scene.traverse((object) => {
+      const mesh = object as { material?: unknown };
+      const material = mesh.material;
+      if (!material) return;
+      const materials = Array.isArray(material) ? material : [material];
+      for (const entry of materials) {
+        (entry as { needsUpdate?: boolean }).needsUpdate = true;
+      }
+    });
+  }, [gl, profile.shadows, scene]);
+
+  return null;
+}
 
 /**
  * PerformanceMonitor — adaptive quality controller.
@@ -32,7 +132,7 @@ const WARMUP_FRAMES = 120;
  * 3. Particle density
  *
  * The profile is shared via QualityContext so Particles, EffectsStack,
- * and CanvasContainer can react without prop drilling.
+ * LightRig and QualityAdapter can react without prop drilling.
  *
  * @see docs/design/quality-matrix.md
  * @see docs/design/performance-design.md
@@ -122,6 +222,8 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
 
   return (
     <QualityContext.Provider value={profile}>
+      <QualityAdapter profile={profile} />
+      <PerfProbe />
       {children}
     </QualityContext.Provider>
   );
