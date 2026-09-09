@@ -3,10 +3,10 @@ import { Component, Suspense, useState, type ReactNode } from 'react';
 import { LenisProvider } from './components/LenisProvider';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
-import { HeroScene } from './components/3d/HeroScene';
-import { EvolutionScene } from './components/3d/EvolutionScene';
-import { ArsenalScene } from './components/3d/ArsenalScene';
-import { FullBodyScene } from './components/3d/FullBodyScene';
+import { Stage } from './components/3d/Stage';
+import { LightRig } from './components/3d/lighting/LightRig';
+import { BeatProvider } from './components/3d/beat/BeatProvider';
+import { PerfHud } from './components/ui/PerfHud';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
@@ -73,6 +73,9 @@ export function App() {
       {/* Cinematic loader — shows during GLB asset loading */}
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
 
+      {/* Developer metrics overlay — only with ?debug=1 */}
+      <PerfHud />
+
     <main className="relative w-full overflow-x-hidden bg-ink text-paper">
       {/* 3D R3F Canvas Layer — fixed, never unmounts */}
       <ErrorBoundary
@@ -84,11 +87,11 @@ export function App() {
       >
         <CanvasContainer>
           <Suspense fallback={null}>
-            <CameraRig />
-            <HeroScene />
-            <EvolutionScene />
-            <ArsenalScene />
-            <FullBodyScene />
+            <BeatProvider>
+              <CameraRig />
+              <Stage />
+              <LightRig />
+            </BeatProvider>
           </Suspense>
         </CanvasContainer>
       </ErrorBoundary>

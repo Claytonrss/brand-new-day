@@ -33,7 +33,8 @@ export interface QualityProfile {
 export const QUALITY_PROFILES: Record<QualityTier, QualityProfile> = {
   high: {
     tier: 'high',
-    dpr: 2,
+    // 1.75 keeps retina sharpness while freeing ~23% of the pixels of dpr 2
+    dpr: 1.75,
     shadows: true,
     particles: true,
     bloom: { intensity: 0.85, luminanceThreshold: 0.8, enabled: true },
@@ -43,7 +44,7 @@ export const QUALITY_PROFILES: Record<QualityTier, QualityProfile> = {
   },
   medium: {
     tier: 'medium',
-    dpr: 1.5,
+    dpr: 1.25,
     shadows: true,
     particles: true,
     bloom: { intensity: 0.45, luminanceThreshold: 0.9, enabled: true },
