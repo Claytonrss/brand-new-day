@@ -41,34 +41,27 @@
 - PR #11: Wave 2 (scroll experience)
 - PR #12: Wave 3 (motion & narrative)
 - PR #13: Wave 4 (depth & chrome)
+- PR #14: docs sync (PROGRESS, STATE, ADRs)
+- PR #15: FullBody spec retroativa (Fase 6.9)
+- PR #16: adaptive post-processing (Fase 3.2)
 
 ## Próximos Passos (fila priorizada)
 
-1. **Scene Spec retroativa do FullBody** (Fase 6.9)
-   - FullBody foi implementado na wave-3 sem spec
-   - Criar spec retroativa para validar implementação
-   - Branch: `docs/fullbody-spec-retroactive`
-
-2. **Post-processing por perfil de dispositivo** (Fase 3.2)
-   - EffectsStack atualmente incondicional
-   - Degradar conforme quality-matrix.md (mobile vs desktop)
-   - Branch: `feat/adaptive-post-processing`
-
-3. **Testes visuais faltantes** (Fase 7.2)
+1. **Testes visuais faltantes** (Fase 7.2)
    - `reduced-motion.spec.ts`
    - `credits.spec.ts`
    - `console.spec.ts`
    - Branch: `test/visual-gaps`
 
-4. **commitlint + husky + lint-staged** (Fase 7.5)
+2. **commitlint + husky + lint-staged** (Fase 7.5)
    - Pre-commit hooks para qualidade
    - Branch: `chore/commit-hooks`
 
-5. **CI do GitHub** (Fase 7.7)
+3. **CI do GitHub** (Fase 7.7)
    - GitHub Actions para verify + visual tests
    - Branch: `ci/github-actions`
 
-6. **Validação humana** (Fase 7.3)
+4. **Validação humana** (Fase 7.3)
    - FPS em dispositivo real (iPhone 12, Android mid-tier)
    - Security audit (dependências, GLB source)
    - Aprovação final do stakeholder
@@ -84,8 +77,8 @@
 
 ## Métricas
 
-- **Commits:** 29+ (4 iniciais + 25 waves/specs/fixes)
-- **PRs:** 13 (todos merged)
+- **Commits:** 35+ (4 iniciais + 31 waves/specs/fixes/docs)
+- **PRs:** 16 (todos merged)
 - **Visual tests:** 27/27 passing
 - **Rubrica visual:** 5.0/5.0
 - **GLB size:** 22.4 MB (optimized)

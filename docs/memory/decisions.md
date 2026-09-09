@@ -147,3 +147,52 @@ Implementar 4 componentes independentes:
 - ✅ Performance monitor com histerese (evita oscilação)
 - ⚠️ Camera path recalculado (percentagens mudaram)
 - ⚠️ Visual tests atualizados (scroll amounts)
+
+---
+
+## ADR-007: Adaptive Post-Processing per Device Profile
+
+**Data:** 2026-09-08  
+**Status:** ✅ Aprovado
+
+### Contexto
+O EffectsStack era incondicional (bloom + vignette + noise sempre ativos), causando performance ruim em mobile e desperdício de GPU em dispositivos que não precisam de todos os efeitos.
+
+### Decisão
+Implementar post-processing adaptativo baseado em quality profile:
+
+**Quality Presets:**
+- **High** (desktop): bloom 0.85/0.8, vignette 0.6, noise 0.032, MSAA 4x
+- **Medium** (mobile): bloom 0.45/0.9, vignette 0.45, noise disabled, MSAA 0
+- **Low** (reduced-motion): bloom disabled, vignette 0.3, noise disabled, MSAA 0
+
+**Initial Tier Detection:**
+- `prefers-reduced-motion` → low
+- mobile (max-width: 768px) → medium
+- desktop → high
+
+**FPS Degradation:**
+- Mantida lógica de histerese (evita oscilação)
+- Degradação automática high → medium → low baseada em FPS
+
+**Rationale:**
+- Desktop mantém qualidade máxima (rubrica 5.0)
+- Mobile reduz carga GPU (≤2 efeitos ativos)
+- Reduced-motion respeita preferências de acessibilidade
+- Performance monitor já existia, só precisava integrar com EffectsStack
+
+### Alternativas Consideradas
+1. **EffectsStack incondicional** — rejeitado: performance ruim em mobile
+2. **CSS media queries para desabilitar efeitos** — rejeitado: não integra com quality context
+3. **User agent detection** — rejeitado: frágil, não considera preferências do usuário
+4. **Lighthouse CI thresholds** — rejeitado: não é real-time, não adapta dinamicamente
+
+### Consequências
+- ✅ Desktop 1440×900 pixel-identical (rubrica 5.0 preservada)
+- ✅ Mobile 390/430 com bloom reduzido (0.45 vs 0.85)
+- ✅ Noise desabilitado em mobile (performance)
+- ✅ MSAA desabilitado em mobile (performance)
+- ✅ Reduced-motion respeitado (bloom desabilitado)
+- ✅ FPS degradation funcional (high → medium → low)
+- ⚠️ Visual tests mobile mostram bloom reduzido (esperado)
+- ⚠️ EffectsStack agora depende de quality context (acoplamento)
