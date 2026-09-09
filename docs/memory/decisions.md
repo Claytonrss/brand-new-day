@@ -196,3 +196,131 @@ Implementar post-processing adaptativo baseado em quality profile:
 - ✅ FPS degradation funcional (high → medium → low)
 - ⚠️ Visual tests mobile mostram bloom reduzido (esperado)
 - ⚠️ EffectsStack agora depende de quality context (acoplamento)
+
+---
+
+## ADR-008: BeatController como única fonte de verdade narrativa
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #17)
+
+### Contexto
+
+Cada cena controlava seu próprio `ScrollTrigger` (o `EvolutionScene` tinha um
+privado; `CameraRig` tinha o master), e as demais seções não tinham nenhum —
+então luz, câmera e overlays não compartilhavam estado. Qualquer efeito novo
+(Wave B: câmera; Wave A: rig; Wave C: shaders) precisaria de mais um trigger.
+
+### Decisão
+
+Um único `BeatProvider` com um master `ScrollTrigger` (`document.body`,
+`top top` → `bottom bottom`, `scrub: true`) publicando
+`{ beat, t, progress, velocity }`:
+
+- `beat` — id do beat, dispara re-render do React (6 vezes por scroll completo)
+- `t` — progresso local dentro do beat (0-1), lido por frame via ref
+- `progress` — progresso global
+- `velocity` — progresso/segundo (`self.getVelocity()` normalizado pela altura
+  da viewport), groundwork para a Wave B (FOV punch, dolly lag)
+
+A timeline (`beats.ts`) usa exatamente as mesmas fronteiras de `cameraPath.ts`,
+garantindo luz e câmera em sincronia por construção.
+
+### Alternativas Consideradas
+
+1. **Manter um trigger por cena** — rejeitado: estado duplicado, ordem de
+   atualização imprevisível
+2. **Contexto de React atualizado por frame** — rejeitado: re-render a 60fps
+3. **Store externo (zustand)** — rejeitado: dependência nova para um estado que
+   é lido quase todo dentro de `useFrame`
+
+### Consequências
+
+- ✅ Um único ponto de extensão para as waves B, A, C, D
+- ✅ Luz e câmera sempre no mesmo beat
+- ⚠️ Todo consumidor novo depende de `BeatProvider` estar montado
+
+---
+
+## ADR-009: Slots de luz permanentes (proibido montar/desmontar luz em runtime)
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #17)
+
+### Contexto
+
+A primeira implementação da Wave F montava o conjunto de luzes de cada beat e
+desmontava o anterior com dissolve de 450 ms. A medição mostrou o oposto do
+esperado: `gl.info.programs` crescia de 10 para 27 ao longo do scroll, com
+stalls de 200–600 ms — porque adicionar/remover luz muda os defines do shader
+(`NUM_POINT_LIGHTS`) e força recompilação de programa.
+
+### Decisão
+
+Seis slots de luz permanentes (`ambient`, `key`, `rim`, `accent`, `fill`,
+`sweep`). Beats alteram **apenas** intensidade, posição, cor e distância, com
+dissolve `1 - Math.exp(-6·delta)`. Nenhuma luz é montada ou desmontada após o
+primeiro frame.
+
+Regras derivadas, cobertas por `tests/unit/lighting.test.ts`:
+
+- exatamente **1** emissor de sombra (`key` directional, 1024)
+- **nenhuma** point light com `castShadow` (cubemap = 6 passes)
+- todo slot declara `base` (valores sempre ativos) + overrides por beat
+
+O rig base reproduz o composite aprovado no Look Dev v2 — o rig do Hero ficava
+aceso em todas as seções —, de modo que a mudança é neutra visualmente.
+
+### Alternativas Consideradas
+
+1. **Mount por beat com dissolve** — rejeitado: recompilação de shader, stalls
+   medidos de 200–600 ms
+2. **Desligar luzes ociosas com `visible = false`** — rejeitado: três continua
+   excluindo a luz do `lightsArray`, com o mesmo efeito de recompilação
+3. **Reduzir intensidade a zero e manter sombras** — rejeitado: passes de sombra
+   são o custo dominante, não a contagem de luzes
+
+### Consequências
+
+- ✅ Draw calls por frame: 118–120 → 44–46 (−62 %)
+- ✅ `programs` estável em 10 durante todo o scroll
+- ⚠️ Contagem de luzes não cai por beat (6 constantes) — o custo de fragment
+  shader permanece; a alavanca real eram as passes de sombra
+- ⚠️ Beat 2 perde a auto-sombra do spot nesta wave; volta na Wave C via shader
+  dedicado
+
+---
+
+## ADR-010: Instrumentação de performance e política de dpr
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #17)
+
+### Contexto
+
+Não havia como medir o custo real da cena: o `PerformanceMonitor` só rastreava
+FPS para degradar o tier, e os PRs anteriores registravam rubrica 5.0 sem
+evidência mensurável. O dpr também era fixo em `[1, 2]` no Canvas, ignorando o
+perfil.
+
+### Decisão
+
+- `PerfProbe` publica `window.__perf` com
+  `{ fps, ms, calls, triangles, programs, geometries, textures }`, lendo
+  `gl.info` com `autoReset = false`
+- `PerfHud` (DOM, fora do canvas) exibe as métricas com `?debug=1`
+- `QualityAdapter` aplica `profile.dpr` e `gl.shadowMap.enabled` ao renderer
+- Política de dpr: **1.75 (high) / 1.25 (medium) / 1 (low)**
+
+### Alternativas Consideradas
+
+1. **Medir só FPS** — rejeitado: não explica *onde* está o custo
+2. **HUD dentro do canvas** — rejeitado: não é DOM, não serve a testes
+3. **Manter dpr 2 / 1.5** — rejeitado: fill rate é o gargalo em mobile e a
+   diferença de nitidez é marginal
+
+### Consequências
+
+- ✅ Orçamento passível de asserção automatizada (Wave G)
+- ✅ Evidência mensurável nos PRs em vez de impressão subjetiva
+- ⚠️ FPS medido em headless é inválido (SwiftShader) — exige dispositivo real

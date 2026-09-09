@@ -8,7 +8,7 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - `[x]` — concluído
 - `[-]` — cancelado/não aplicável
 
-**Última atualização:** 2026-09-08
+**Última atualização:** 2026-09-09
 
 ---
 
@@ -280,3 +280,39 @@ Quatro waves de premium upgrade entregues após o Look Dev v2, elevando o nível
 - Este documento deve ser atualizado após cada fase concluída
 - Decisões importantes devem ser registradas em `docs/memory/decisions.md` como ADRs
 - Estado atual deve ser registrado em `docs/STATE.md`
+
+---
+
+## Waves de Movimento e Efeitos 3D (2026-09-09)
+
+Plano mestre: `docs/plans/3d-motion-upgrade-plan.md`.
+Diagnóstico que originou o plano: o GLB tem `animations: 0` e o único
+movimento do personagem era 1 bone (cabeça); a câmera era interpolação linear
+sem easing; as 4 scenes ficavam montadas permanentemente (~10 luzes, 3
+emissores de sombra).
+
+### Wave F — Headroom (PR #17, merged)
+
+- [x] F1 — `LightRig` + `lightCues`: 6 slots permanentes, 1 emissor de sombra,
+      sem sombra de point light (substitui as 4 scenes permanentes)
+- [x] F2 — `PerfProbe` (`window.__perf`) + `PerfHud` (`?debug=1`)
+- [x] F3 — dpr 1.75 / 1.25 / 1 + `QualityAdapter` aplicando perfil ao renderer
+- [x] F4 — auditoria do asset: texturas ok (30 webp, 3.0 MB); peso é geometria
+      não comprimida (~19 MB) → item **F4b**, fora desta wave
+- [x] `BeatProvider` + `beats.ts` — fonte única de beat (ADR-008)
+- [x] Testes unitários: `tests/unit/beat.test.ts`, `tests/unit/lighting.test.ts`
+
+**Medições:** draw calls 118–120 → 44–46 (−62 %) · `programs` estável em 10 ·
+triângulos/frame ~506 k → ~458 k. FPS não mensurável em headless (SwiftShader).
+
+**Pendente:** FPS em dispositivo real · aprovação visual humana de
+iluminação/impacto · F4b (GLB ≤ 15 MB).
+
+### Wave B — Câmera cinematográfica (próxima)
+
+- [ ] B1 — `cameraPath.v2.ts`: Catmull-Rom + reparam. por arco + easing por beat
+- [ ] B2 — Arsenal: interpolação esférica (órbita real cruzando o eixo)
+- [ ] B3 — `beatController` → FOV punch e dolly lag por velocidade do Lenis
+- [ ] B4 — handheld noise (fbm de baixa frequência)
+- [ ] B5 — corrigir `prefers-reduced-motion` (hoje fixa a câmera em `fullBody`
+      para a página inteira, `CameraRig.tsx:52-61`)
