@@ -225,14 +225,18 @@ Cada wave exige: branch `feat/<slug>` → Scene Spec (se mudar composição) →
 
 ---
 
-## 7. ADRs a criar
+## 7. ADRs
 
-- **ADR-007:** Movimento procedural do rig (sem clips no GLB) — additive sobre rest pose Mixamo.
-- **ADR-008:** Câmera por curva de Catmull-Rom com easing por beat (fim do lerp linear).
-- **ADR-009:** `beatController` como única fonte de verdade de estado narrativo.
-- **ADR-010:** Shaders autorais via `onBeforeCompile` com fallback por tier.
-- **ADR-011:** Política de luzes por beat (≤ 4 ativas, ≤ 2 shadow casters).
-- **ADR-012:** (condicional) Re-export/repose do GLB — só se A4 falhar.
+**Criados (Wave F, PR #17):**
+- **ADR-008:** `BeatController` como única fonte de verdade de estado narrativo.
+- **ADR-009:** Slots de luz permanentes (proibido montar/desmontar luz em runtime).
+- **ADR-010:** Instrumentação de performance (`window.__perf`) e política de dpr.
+
+**A criar nas próximas waves:**
+- **ADR-011:** Câmera por curva de Catmull-Rom com easing por beat (Wave B).
+- **ADR-012:** Movimento procedural do rig — additive sobre rest pose Mixamo (Wave A).
+- **ADR-013:** Shaders autorais via `onBeforeCompile` com fallback por tier (Wave C).
+- **ADR-014:** (condicional) Re-export/repose do GLB — só se A4 falhar.
 
 ---
 

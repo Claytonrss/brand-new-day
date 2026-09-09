@@ -1,8 +1,20 @@
 # STATE.md — spiderman-landing
 
-## Estado Atual (2026-09-08)
+## Estado Atual (2026-09-09)
 
-**Fase:** Premium upgrade completo (4 waves entregues)
+**Fase:** Upgrade de movimento/efeitos 3D — Wave F (headroom) entregue, Wave B (câmera) em seguida
+
+### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
+
+- **Wave F — Headroom (PR #17, merged):** `BeatProvider` como fonte única de
+  beat; `LightRig` com 6 slots de luz permanentes; `Stage`; remoção das 4
+  scenes; `window.__perf` + `PerfHud` (`?debug=1`); dpr 1.75/1.25/1.
+  - Draw calls por frame: **118–120 → 44–46** (−62 %)
+  - `programs` estável em 10 (antes crescia 10 → 27 no scroll)
+  - Evidências: `docs/evidence/wave-f-headroom/` (36 screenshots before/after)
+- **Próxima:** Wave B — câmera cinematográfica (curva de Catmull-Rom, orbit
+  esférico no Arsenal, punch de FOV por velocidade, correção do
+  `prefers-reduced-motion`)
 
 ### Implementado
 - 4 seções: Hero, Evolution, Arsenal, FullBody
@@ -44,8 +56,17 @@
 - PR #14: docs sync (PROGRESS, STATE, ADRs)
 - PR #15: FullBody spec retroativa (Fase 6.9)
 - PR #16: adaptive post-processing (Fase 3.2)
+- PR #17: Wave F — headroom (iluminação por beat com slots fixos)
 
 ## Próximos Passos (fila priorizada)
+
+0. **Wave B — câmera cinematográfica** (`feat/cinematic-camera-path`)
+   - Curva de Catmull-Rom com reparam. por arco + easing por beat
+   - Orbit esférico no Arsenal (fim do dolly reto)
+   - FOV punch / dolly lag por velocidade do Lenis
+   - Correção do `prefers-reduced-motion` (hoje trava em `fullBody`)
+0. **F4b — comprimir geometria do GLB** (meshopt/quantização; exige re-export + ADR)
+0. **FPS em dispositivo real** (iPhone 12 / Android mid) — bloqueia critério de performance
 
 1. **Testes visuais faltantes** (Fase 7.2)
    - `reduced-motion.spec.ts`
@@ -74,12 +95,20 @@
 - ADR-004: Camera Rig — ScrollTrigger + lerp k=3 + debounce resize
 - ADR-005: Lenis over ScrollSmoother (smooth scroll premium)
 - ADR-006: Wave 4 depth/chrome (chapter cards, particles, performance monitor)
+- ADR-007: Adaptive post-processing per device profile
+- ADR-008: BeatController como única fonte de verdade narrativa
+- ADR-009: Slots de luz permanentes (proibido montar/desmontar luz em runtime)
+- ADR-010: Instrumentação de performance (`window.__perf`) e política de dpr
 
 ## Métricas
 
 - **Commits:** 35+ (4 iniciais + 31 waves/specs/fixes/docs)
 - **PRs:** 16 (todos merged)
-- **Visual tests:** 27/27 passing
-- **Rubrica visual:** 5.0/5.0
-- **GLB size:** 22.4 MB (optimized)
+- **Visual tests:** 48 (47 + 1 reexecutado isolado por timeout de ambiente)
+- **Unit tests:** 11 (beat timeline + invariantes de iluminação)
+- **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —
+  critérios de iluminação/impacto da Wave F aguardam aprovação humana
+- **Draw calls/frame:** 44–46 (tier medium/high) · 11–13 (low) — antes 118–120
+- **GLB size:** 22.4 MB (22.4 MB dos quais ~19 MB são geometria **não
+  comprimida** — item F4b em aberto; budget é ≤ 15 MB)
 - **Total page height:** 700vh (4 seções + 2 chapter cards)
