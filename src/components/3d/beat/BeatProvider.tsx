@@ -42,7 +42,18 @@ export function BeatProvider({ children }: { children: ReactNode }) {
       },
     });
 
-    return () => trigger.kill();
+    let resizeTimer = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    };
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      trigger.kill();
+      window.clearTimeout(resizeTimer);
+      window.removeEventListener('resize', onResize);
+    };
   }, []);
 
   return (
