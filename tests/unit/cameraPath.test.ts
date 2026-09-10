@@ -39,8 +39,23 @@ function peak(changes: number[]) {
   return changes[changes.length - 1];
 }
 
-function percentile95(changes: number[]) {
-  return changes[Math.floor(changes.length * 0.95)];
+/** Direction change per unit of travelled distance (speed independent). */
+function curvature(points: THREE.Vector3[]) {
+  const curvatureValues: number[] = [];
+
+  for (let i = 1; i < points.length - 1; i++) {
+    const previous = points[i].clone().sub(points[i - 1]);
+    const next = points[i + 1].clone().sub(points[i]);
+    const step = (previous.length() + next.length()) / 2;
+    if (previous.length() < 1e-6 || next.length() < 1e-6 || step < 1e-6) continue;
+    curvatureValues.push(THREE.MathUtils.radToDeg(previous.angleTo(next)) / step);
+  }
+
+  return curvatureValues.sort((a, b) => a - b);
+}
+
+function median(values: number[]) {
+  return values[Math.floor(values.length / 2)];
 }
 
 /**
@@ -94,8 +109,13 @@ describe('camera track', () => {
       expect(peak(current)).toBeLessThanOrEqual(peak(legacy) * 0.7);
     });
 
-    it(`${bp}: keeps the 95th percentile of direction change under 25 degrees`, () => {
-      expect(percentile95(directionChanges(sampleTrack(new CameraTrack(bp))))).toBeLessThanOrEqual(25);
+    it(`${bp}: keeps the whole path smooth (median curvature <= 30 deg/unit)`, () => {
+      // Curvature is speed independent, so it survives easing changes; the
+      // legacy path measured 0 deg/unit in the straight parts and a hard
+      // corner of ~740 deg/unit at the beat boundaries.
+      const values = curvature(sampleTrack(new CameraTrack(bp)));
+      expect(median(values)).toBeLessThanOrEqual(30);
+      expect(values[values.length - 1]).toBeLessThan(600);
     });
 
     it(`${bp}: ends the path at the fullBody keyframe`, () => {

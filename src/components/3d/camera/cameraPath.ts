@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CAMERA_KEYFRAMES } from '../cameraKeyframes';
-import { WRIST_POSITION, type BeatId } from '../beat/beats';
+import { CHEST_Y, WRIST_POSITION, type BeatId } from '../beat/beats';
+import { ANCHORS } from '../rig/anchorStore';
 
 export type Breakpoint = 'mobile' | 'desktop';
 
@@ -20,8 +21,10 @@ const ARC = {
   endAzimuth: 43 * DEG,
   startRadius: 5.4,
   endRadius: 3.9,
-  startHeight: 0.2,
-  endHeight: 0.0,
+  // Below the wrist: the web-shooter sits on the underside of the forearm,
+  // so the camera has to look up at it.
+  startHeight: -0.8,
+  endHeight: -0.6,
   /** Sinusoidal elevation so the arc is not flat. */
   lift: 0.35,
 } as const;
@@ -81,10 +84,13 @@ export interface CameraSpan {
 /** Control-point index → beat mapping. See spec §6.3. */
 export const CAMERA_SPANS: readonly CameraSpan[] = [
   { beat: 'hero', fromIndex: 0, toIndex: 0, ease: 'linear' },
-  { beat: 'chapter1', fromIndex: 0, toIndex: 1, ease: 'smoothstep' },
-  { beat: 'evolution', fromIndex: 1, toIndex: 3, ease: 'easeInOutCubic' },
-  { beat: 'chapter2', fromIndex: 3, toIndex: 4, ease: 'smoothstep' },
-  { beat: 'arsenal', fromIndex: 4, toIndex: 8, ease: 'smoothstep' },
+  // Linear mid-journey: any ease-in-out zeroes the velocity at both ends, so
+  // the camera stops at every beat boundary — the "rigid" feel reported in
+  // review. Only the final landing eases.
+  { beat: 'chapter1', fromIndex: 0, toIndex: 1, ease: 'linear' },
+  { beat: 'evolution', fromIndex: 1, toIndex: 3, ease: 'linear' },
+  { beat: 'chapter2', fromIndex: 3, toIndex: 4, ease: 'linear' },
+  { beat: 'arsenal', fromIndex: 4, toIndex: 8, ease: 'linear' },
   { beat: 'fullBody', fromIndex: 8, toIndex: 10, ease: 'easeOutCubic' },
 ] as const;
 
@@ -159,11 +165,23 @@ export class CameraTrack {
   private readonly lookAtCurve: THREE.CatmullRomCurve3;
   private readonly fovs: number[];
   private readonly count: number;
+  /**
+   * Authored anchor per beat, used to compute the runtime correction.
+   *
+   * The authored keyframes were written against assumed subject positions that
+   * were wrong for the desktop layout (model at x ≈ 1.02, keyframes aimed at
+   * x = 0): the Evolution beat framed the armpit and the Arsenal beat missed
+   * the web-shooter. Correcting against the measured skeleton keeps the
+   * authored composition offset while aiming at the real joint.
+   */
+  private readonly authoredAnchor: Map<BeatId, THREE.Vector3>;
+  private readonly correction: THREE.Vector3;
 
   constructor(breakpoint: Breakpoint) {
     this.breakpoint = breakpoint;
     const kf = CAMERA_KEYFRAMES;
     const arc = arsenalArc(breakpoint);
+    const wrist = WRIST_POSITION[breakpoint];
     const end = kf.evolutionEnd[breakpoint];
     const overshoot = new THREE.Vector3(
       end.position[0],
@@ -219,6 +237,11 @@ export class CameraTrack {
     }
 
     this.count = positions.length;
+    this.authoredAnchor = new Map<BeatId, THREE.Vector3>([
+      ['evolution', new THREE.Vector3(0, CHEST_Y[breakpoint], 0)],
+      ['arsenal', new THREE.Vector3(wrist[0], wrist[1], wrist[2])],
+    ]);
+    this.correction = new THREE.Vector3();
     this.positionCurve = new THREE.CatmullRomCurve3(positions, false, 'centripetal', 0.5);
     this.lookAtCurve = new THREE.CatmullRomCurve3(lookAts, false, 'centripetal', 0.5);
   }
@@ -239,7 +262,24 @@ export class CameraTrack {
     this.lookAtCurve.getPoint(u, out.lookAt);
     out.fov = this.sampleFov(u);
 
+    this.applyAnchorCorrection(beat, out);
+
     return out;
+  }
+
+  /**
+   * Shift the whole beat segment so it aims at the measured joint, preserving
+   * the authored composition offset.
+   */
+  private applyAnchorCorrection(beat: BeatId, out: CameraSample): void {
+    const authored = this.authoredAnchor.get(beat);
+    if (!authored || !ANCHORS.ready) return;
+
+    const measured = beat === 'evolution' ? ANCHORS.chest : ANCHORS.wrist;
+    this.correction.copy(measured).sub(authored);
+
+    out.position.add(this.correction);
+    out.lookAt.add(this.correction);
   }
 
   /** Static framing for a beat — used by `prefers-reduced-motion`. */

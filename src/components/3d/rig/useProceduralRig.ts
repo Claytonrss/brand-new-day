@@ -5,7 +5,10 @@ import { fbm } from '../../../design/noise';
 import type { BeatId } from '../beat/beats';
 import type { QualityTier } from '../qualityContext';
 import {
+  headYawTarget,
+  HEAD_BIAS_FACTOR,
   idleDrift,
+  HEAD_LIMIT,
   MOTION,
   offsetQuaternion,
   softClamp,
@@ -15,6 +18,7 @@ import {
 } from './rigBones';
 import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from './poses';
 import { Spring } from './spring';
+import { updateAnchors } from './anchorStore';
 
 /** Head chain — the head leads, neck and upper spine follow. See spec §7.2. */
 const HEAD_CHAIN = [
@@ -23,8 +27,7 @@ const HEAD_CHAIN = [
   { role: 'spine2' as BoneRole, k: 1.8, weight: 0.15 },
 ];
 
-/** Beat 1 limits (memorable-moments.md): yaw 25-30°, pitch 12-15°. */
-const HEAD_LIMIT = { yaw: 0.48, pitch: 0.24 };
+
 
 export interface RigDebugState {
   head: [number, number, number, number];
@@ -53,6 +56,8 @@ export interface ProceduralRigOptions {
   pointerRef: RefObject<{ x: number; y: number }>;
   headTracking: boolean;
   hasHover: boolean;
+  /** Model group rotation (Y) — the neutral head yaw compensates for it. */
+  baseYaw?: number;
   tier: QualityTier;
   prefersReducedMotion: boolean;
   debug?: boolean;
@@ -75,6 +80,7 @@ export function useProceduralRig({
   pointerRef,
   headTracking,
   hasHover,
+  baseYaw = 0,
   tier,
   prefersReducedMotion,
   debug = false,
@@ -83,7 +89,7 @@ export function useProceduralRig({
     const map = new Map<string, Spring>();
     for (const role of POSE_ROLES) {
       for (let axis = 0; axis < 3; axis++) {
-        map.set(`${role}:${axis}`, new Spring(0, 9, 1));
+        map.set(`${role}:${axis}`, new Spring(0, 5.5, 1));
       }
     }
     return map;
@@ -123,6 +129,9 @@ export function useProceduralRig({
   }, [poseSprings, headSprings]);
 
   useFrame((_, delta) => {
+    // Anchors first: camera, lighting and post-processing read them every frame
+    updateAnchors(bones);
+
     if (debug && typeof window !== 'undefined') {
       const read = (role: BoneRole): [number, number, number, number] => {
         const bone = bones[role];
@@ -177,11 +186,11 @@ export function useProceduralRig({
       if (idleOnly) {
         idleRef.current += delta;
         const drift = idleDrift(idleRef.current);
-        targetYaw = drift.yaw;
+        targetYaw = baseYaw * HEAD_BIAS_FACTOR + drift.yaw;
         targetPitch = drift.pitch;
       } else {
         const pointer = pointerRef.current;
-        targetYaw = softClamp(pointer?.x ?? 0, HEAD_LIMIT.yaw);
+        targetYaw = headYawTarget(pointer?.x ?? 0, baseYaw);
         targetPitch = softClamp(-(pointer?.y ?? 0), HEAD_LIMIT.pitch);
       }
     }

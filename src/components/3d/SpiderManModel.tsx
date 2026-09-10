@@ -75,6 +75,7 @@ export function SpiderManModel({
     pointerRef,
     headTracking: pointerTracking,
     hasHover,
+    baseYaw: rotation[1],
     tier: profile.tier,
     prefersReducedMotion,
     debug,

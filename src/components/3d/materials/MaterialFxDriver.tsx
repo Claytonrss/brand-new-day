@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { useBeat } from '../beat/beatContext';
 import type { BeatId } from '../beat/beats';
 import { CHEST_Y, WRIST_POSITION } from '../beat/beats';
+import { ANCHORS } from '../rig/anchorStore';
 import { FX } from './fxUniforms';
 import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
 
@@ -30,17 +31,18 @@ const K = 3;
 /** World-space anchors for the depth-of-field target, per beat. */
 export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): THREE.Vector3 {
   const wrist = isMobile ? WRIST_POSITION.mobile : WRIST_POSITION.desktop;
-  const chestY = isMobile ? CHEST_Y.mobile : CHEST_Y.desktop;
 
   switch (beat) {
+    // Focus the measured joints, falling back to the authored anchors only
+    // before the rig has published them.
     case 'evolution':
-      return out.set(0, chestY, 0);
+      return ANCHORS.ready ? out.copy(ANCHORS.chest) : out.set(0, CHEST_Y[isMobile ? 'mobile' : 'desktop'], 0);
     case 'arsenal':
-      return out.set(wrist[0], wrist[1], wrist[2]);
+      return ANCHORS.ready ? out.copy(ANCHORS.wrist) : out.set(wrist[0], wrist[1], wrist[2]);
     case 'fullBody':
-      return out.set(0, -1.5, 0);
+      return out.copy(ANCHORS.hips).setY(ANCHORS.hips.y + 1.2);
     default:
-      return out.set(0, isMobile ? 0.45 : 0.4, 0);
+      return out.copy(ANCHORS.head);
   }
 }
 
@@ -106,7 +108,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
     const inBeat = beat === 'evolution';
     const sweep = inBeat ? Math.max(0, Math.sin(Math.min(Math.max((t - 0.5) / 0.2, 0), 1) * Math.PI)) : 0;
     FX.uSweep.value = THREE.MathUtils.lerp(FX.uSweep.value, sweep * strength, alpha);
-    FX.uSweepY.value = isMobile ? CHEST_Y.mobile : CHEST_Y.desktop;
+    FX.uSweepY.value = ANCHORS.ready ? ANCHORS.chest.y : CHEST_Y[isMobile ? 'mobile' : 'desktop'];
 
     bokehRef.current = THREE.MathUtils.lerp(
       bokehRef.current,
