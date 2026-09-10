@@ -8,19 +8,39 @@ motivo, o impacto e o caminho de saída.
 ## TD-001: Piscada da máscara é estilizada, não anatômica
 
 **Aberto em:** 2026-09-09 (PR #26)
-**Status:** aceito como débito — baseline entregue
+**Status:** **mitigado** — opções E+D implementadas; caminho definitivo (B) segue aberto
 **Impacto:** baixo (detalhe de acabamento, não afeta composição nem performance)
 
-### O que existe hoje
+### O que existe hoje (E+D)
 
-O asset **não tem pálpebras**: os olhos são as lentes (`Lense`, `LEDl`, `LEDr`),
-geometria rígida. A piscada atual é um **obturador no shader**
-(`materials/lensShader.ts` + `materials/blink.ts`): o emissivo fecha numa fenda
-central e reabre, com cadência aleatória de 2,6–7,2 s e duração de 180 ms.
-Controlável por `?blink=off|subtle|full`; desligado em `prefers-reduced-motion`.
+O asset **não tem pálpebras**: os olhos são as lentes (`Lense`), geometria
+rígida. A piscada é um **obturador no shader** (`materials/lensShader.ts` +
+`materials/blink.ts`):
 
-Verificado: 7 testes unitários (curva, cadência, determinismo) + 6 testes de
-browser (dispara em janela razoável; zerado em reduced-motion).
+- **E** — pálpebra superior e inferior na cor do traje fecham até se encontrar
+  no meio (cobertura total no ápice), sombreadas pelo normal da lente para não
+  parecer adesivo.
+- **D** — a lente comprime verticalmente em direção ao próprio centro (30% no
+  ápice), então lê como olho fechando, não como brilho sumindo.
+- O eixo da pálpebra vem do **bounding box real do mesh** (`measureLidBounds`),
+  não do UV — elimina o risco de fenda horizontal em mesh com UV rotacionado.
+- Cadência aleatória de 2,6–7,2 s, duração 180 ms. `?blink=off|subtle|full|hold`
+  (`hold` prende fechado para revisão). Desligado em `prefers-reduced-motion`.
+
+**Medição de aceite:** na região do rosto, os pixels com luminância >200 caem
+**98,1%** e os >240 caem **99,6%** no ápice (critério era ≥80%).
+Evidência: `docs/evidence/wave-d-interaction/{1440,390}-lens-{off,subtle,hold}.png`.
+
+Verificado: 11 testes unitários (curva, cadência, determinismo, bounds, uniforms)
++ 6 testes de browser.
+
+### Achado durante a medição
+
+O brilho visível dos olhos **não** vem do `Lense` — os meshes `LEDl/LEDr`
+compartilham um material sem nome, mapeado como tecido. A pálpebra fecha o
+`Lense` (que cobre as duas lentes num mesh só) e isso já apaga o brilho; mapear
+os `LED` como lente é possível, mas hoje eles não emitem. Fica anotado para
+quando o material for renomeado no re-export.
 
 ### Por que é débito
 

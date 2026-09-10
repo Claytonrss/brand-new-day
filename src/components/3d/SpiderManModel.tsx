@@ -62,7 +62,10 @@ export function SpiderManModel({
 
   // Material curation — physical intent + authorial shader layer (Wave C)
   useEffect(() => {
-    curateMaterials(scene);
+    const result = curateMaterials(scene);
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug')) {
+      (window as unknown as Record<string, unknown>).__materials = result;
+    }
   }, [scene]);
 
   // Capture the authored pose before any layer touches it

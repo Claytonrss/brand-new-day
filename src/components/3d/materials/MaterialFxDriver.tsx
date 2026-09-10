@@ -60,6 +60,8 @@ export interface FxBlinkDebug {
   at: number;
   /** Start time of the blink currently playing, or -1. */
   start: number;
+  /** How many blinks have played — robust signal for tests. */
+  count: number;
 }
 
 export interface FxDebugState {
@@ -83,11 +85,29 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
   const { beat, stateRef } = useBeat();
   const anchor = useMemo(() => new THREE.Vector3(), []);
   const bokehRef = useRef(TARGETS.hero.bokeh);
-  const blinkRef = useRef({ at: 0, start: -1, seed: 0 });
+  const blinkRef = useRef({ at: 0, start: -1, seed: 0, count: 0 });
   const debug = useMemo(
     () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
     [],
   );
+
+  const publish = (visible: boolean, web: number, sweep: number, rim: number, lens: number) => {
+    if (!debug || typeof window === 'undefined') return;
+    window.__fx = {
+      rim,
+      web,
+      sweep,
+      lens,
+      bokeh: bokehRef.current,
+      blink: visible ? FX.uBlink.value : 0,
+      blinkState: {
+        at: blinkRef.current.at,
+        start: blinkRef.current.start,
+        count: blinkRef.current.count,
+      },
+      beat,
+    };
+  };
 
   useFrame(({ clock }, delta) => {
     const targets = TARGETS[beat];
@@ -101,11 +121,16 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
       FX.uLensPulse.value = 1;
       FX.uRimStrength.value = 0;
       FX.uBlink.value = 0;
+      // still publish, otherwise the debug probe disappears under reduced motion
+      publish(true, 0, 0, 0, 1);
       return;
     }
 
     // --- stylised blink (mask lenses have no eyelids) ----------------------
-    if (BLINK_MODE === 'off') {
+    if (BLINK_MODE === 'hold') {
+      // pinned closed for visual review
+      FX.uBlink.value = 1;
+    } else if (BLINK_MODE === 'off') {
       FX.uBlink.value = 0;
     } else {
       const blink = blinkRef.current;
@@ -124,6 +149,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
         FX.uBlink.value = closure;
         if (now - blink.start > 0.2) {
           blink.start = -1;
+          blink.count += 1;
           blink.seed += 1;
           blink.at = nextBlinkAt(now, blink.seed);
         }
@@ -155,18 +181,13 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
     );
     dofAnchor(beat, isMobile, anchor);
 
-    if (debug) {
-      window.__fx = {
-        rim: FX.uRimStrength.value,
-        web: FX.uWebStrength.value,
-        lens: FX.uLensPulse.value,
-        sweep: FX.uSweep.value,
-        bokeh: bokehRef.current,
-        blink: FX.uBlink.value,
-        blinkState: { at: blinkRef.current.at, start: blinkRef.current.start },
-        beat,
-      };
-    }
+    publish(
+      true,
+      FX.uWebStrength.value,
+      FX.uSweep.value,
+      FX.uRimStrength.value,
+      FX.uLensPulse.value,
+    );
   });
 
   return { anchor, bokehRef };

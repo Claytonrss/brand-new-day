@@ -131,6 +131,19 @@ export function useInteraction() {
   }, [camera, direction, prefersReducedMotion, profile.tier, stateRef]);
 
   // --- per-frame integration ----------------------------------------------
+  const publish = () => {
+    if (!debug || typeof window === 'undefined') return;
+    window.__interaction = {
+      yaw: INTERACTION.yaw,
+      pitch: INTERACTION.pitch,
+      dragging: INTERACTION.dragging,
+      cameraKick: INTERACTION.cameraKick,
+      shotId: INTERACTION.shotId,
+      rimX: INTERACTION.rimX,
+      rimY: INTERACTION.rimY,
+    };
+  };
+
   useFrame((_, delta) => {
     const drag = dragRef.current;
 
@@ -138,6 +151,11 @@ export function useInteraction() {
       INTERACTION.yaw = 0;
       INTERACTION.pitch = 0;
       INTERACTION.cameraKick = 0;
+      INTERACTION.dragging = false;
+      INTERACTION.rimX = 0;
+      INTERACTION.rimY = 0;
+      // still publish, otherwise the probe disappears under reduced motion
+      publish();
       return;
     }
 
@@ -162,17 +180,7 @@ export function useInteraction() {
     INTERACTION.rimX = rim.x;
     INTERACTION.rimY = rim.y;
 
-    if (debug) {
-      window.__interaction = {
-        yaw: INTERACTION.yaw,
-        pitch: INTERACTION.pitch,
-        dragging: INTERACTION.dragging,
-        cameraKick: INTERACTION.cameraKick,
-        shotId: INTERACTION.shotId,
-        rimX: INTERACTION.rimX,
-        rimY: INTERACTION.rimY,
-      };
-    }
+    publish();
   });
 
   return INTERACTION;

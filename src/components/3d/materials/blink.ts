@@ -7,12 +7,13 @@
  * it entirely.
  */
 
-export type BlinkMode = 'off' | 'subtle' | 'full';
+export type BlinkMode = 'off' | 'subtle' | 'full' | 'hold';
 
 function readMode(): BlinkMode {
   if (typeof window === 'undefined') return 'subtle';
   const value = new URLSearchParams(window.location.search).get('blink');
-  return value === 'off' || value === 'full' ? value : 'subtle';
+  if (value === 'off' || value === 'full' || value === 'hold') return value;
+  return 'subtle';
 }
 
 export const BLINK_MODE: BlinkMode = readMode();
@@ -22,6 +23,8 @@ export const BLINK_AMOUNT: Record<BlinkMode, number> = {
   off: 0,
   subtle: 0.7,
   full: 1,
+  /** Pinned closed — used for visual review and screenshots. */
+  hold: 1,
 };
 
 /** Cadence, in seconds between blinks (inclusive range). */

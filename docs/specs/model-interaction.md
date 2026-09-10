@@ -79,6 +79,20 @@ sem efeito, sem erro.
 - Vida: 0,7 s; extensão nos primeiros 35%, fade no resto. Uma instância só,
   geometria reescrita no lugar (1 draw call).
 
+### 7.5 Piscada estilizada (E+D)
+
+O asset não tem pálpebras. A piscada é um obturador de shader com duas partes:
+
+- **E (pálpebra):** superfícies superior e inferior na cor do traje fecham até
+  se encontrar no meio; o eixo vertical vem do **bounding box real do mesh**
+  (`measureLidBounds`), não do UV.
+- **D (compressão):** a lente encolhe 30% em direção ao próprio centro no ápice,
+  para ler como olho fechando e não como brilho sumindo.
+
+Cadência aleatória de 2,6–7,2 s, duração 180 ms, `?blink=off|subtle|full|hold`,
+desligada em `prefers-reduced-motion`. Medição de aceite: pixels com luminância
+>200 na região do rosto caem **98,1%** no ápice.
+
 ## 8. Performance Budget
 
 | Recurso | Custo |
