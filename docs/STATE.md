@@ -25,8 +25,17 @@
     mas o loader sanitiza para `mixamorigHead_06` — o Beat 1 "olhar que segue"
     nunca existiu; o modelo inteiro girava ~4°. Agora 16 joints são resolvidos.
   - Evidências: `docs/evidence/wave-a-rig/` (38 arquivos)
-- **Próxima:** Wave C — efeitos autorais (teia animada no shader, fresnel rim,
-  DOF com foco por beat)
+- **Wave C — Efeitos autorais (PR #23, merged):** camada autoral de material
+  (rim de fresnel, teia procedural animada, iridescência na lente) e
+  post-processing por beat (DOF com foco no alvo do beat + aberração cromática).
+  Modos `?fx=off|subtle|full`, padrão `subtle` (22%).
+- **P0 — Calibração (PR #24, merged):** âncoras derivadas do esqueleto
+  (`anchorStore`) corrigem a mira de Evolution (era a axila) e Arsenal (não
+  mostrava o lançador); pose do antebraço a ~63°; cabeça com bias e limites
+  assimétricos; easing linear nos beats intermediários.
+  - Evidências: `docs/evidence/wave-p0-calibration/`
+- **Próxima:** Wave E — atmosfera com profundidade (partículas em GPU com
+  turbulência/parallax + fog exponencial)
 
 ### Implementado
 - 4 seções: Hero, Evolution, Arsenal, FullBody
@@ -73,6 +82,9 @@
 - PR #19: Wave B — câmera cinematográfica (curva, órbita, velocidade)
 - PR #20: docs sync pós-Wave B (ADR-011)
 - PR #21: Wave A — rig procedural (sujeito vivo)
+- PR #22: docs sync pós-Wave A (ADR-012)
+- PR #23: Wave C — efeitos autorais (shaders + DOF por beat)
+- PR #24: P0 — calibração de âncoras, cabeça e suavidade
 
 ## Próximos Passos (fila priorizada)
 
@@ -117,6 +129,8 @@
 - ADR-010: Instrumentação de performance (`window.__perf`) e política de dpr
 - ADR-011: Câmera por curva única de Catmull-Rom com easing por beat
 - ADR-012: Movimento procedural do rig sobre a rest pose (sem clips no GLB)
+- ADR-013: Âncoras do mundo derivadas do esqueleto
+- ADR-014: Easing linear nos beats intermediários da câmera
 
 ## Métricas
 
@@ -125,7 +139,7 @@
 - **Visual tests:** 27 (+6 de reduced-motion) — ⚠️ `console.spec.ts` e
   `credits.spec.ts` (fila `test/visual-gaps`) foram perdidos: nunca foram
   commitados e não estão mais no working tree. Precisam ser recriados.
-- **Unit tests:** 42 (beat timeline · invariantes de iluminação · câmera · rig)
+- **Unit tests:** 60 (beat timeline · iluminação · câmera · rig · âncoras/cabeça · materiais)
 - **Movimento verificado:** 15 asserções em `motion.spec.ts` (respiração avança,
   ponteiro é clampado, follow-through ordenado, reduced-motion congela)
 - **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —

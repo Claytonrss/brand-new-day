@@ -445,3 +445,94 @@ erro".
   do asset ainda não foi inspecionada pose a pose
 - ⚠️ Em dispositivos muito lentos (~2 FPS) o clamp de `dt` faz o tempo simulado
   avançar devagar; aceito, porque o alvo é 45+ FPS
+
+---
+
+## ADR-013: Âncoras do mundo derivadas do esqueleto (fim das âncoras hardcoded)
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #24)
+
+### Contexto
+
+O review visual apontou que o Beat 2 enquadrava a axila (desktop) e o Beat 3
+não mostrava o lançador de teia. A medição no runtime mostrou a causa: cada
+consumidor tinha a própria âncora hardcoded e elas discordavam.
+
+| Consumidor | Âncora assumida | Realidade medida |
+|---|---|---|
+| `cameraKeyframes` (Evolution `lookAt`) | (0; −2,0) | peito em **(1,028; −2,254)** |
+| `cameraKeyframes` (Arsenal `lookAt`) | (−0,5; −3,3; 0) | antebraço em **(−1,23; −2,72; −0,38)** |
+| `CHEST_Y` / `WRIST_POSITION` | literais | idem |
+
+O modelo no desktop fica em `x ≈ 1,02` por **composição intencional** (texto à
+esquerda) — o erro não era o offset, era a câmera ignorá-lo.
+
+### Decisão
+
+`rig/anchorStore.ts` é a **fonte única de âncoras do mundo** (peito, cabeça,
+punho, quadril), atualizada do esqueleto a cada frame (4–6 `getWorldPosition`,
+sem alocação). Consumidores:
+
+- **Câmera:** para `evolution` e `arsenal`, o segmento inteiro é deslocado por
+  `(medido − autoral)`. Isso corrige a mira **preservando o offset de
+  composição** — `hero` e `fullBody` não são tocados (há teste provando).
+- **Iluminação:** o spotlight do Beat 2 mira `ANCHORS.chest.y`.
+- **Post-processing:** a âncora de foco do DOF segue peito/punho medidos.
+
+A pose do Arsenal também foi calibrada por medição: `foreArmR` −0,25 → **−1,1
+rad** (~63° de flexão), que sobe a mão ~0,55 unidades e deixa o antebraço
+horizontal — a câmera fica abaixo do punho porque o lançador está na parte de
+baixo do antebraço.
+
+### Alternativas Consideradas
+
+1. **Ajustar os literais dos keyframes** — rejeitado: conserta um breakpoint e
+   quebra no próximo asset/escala; o erro voltaria sem aviso
+2. **Reposicionar o modelo em x = 0** — rejeitado: destrói a composição
+   aprovada (texto à esquerda, sujeito à direita)
+3. **Contexto React com as âncoras** — rejeitado: re-render por frame; um
+   objeto mutável lido em `useFrame` é o padrão já usado pelos uniforms de FX
+
+### Consequências
+
+- ✅ Peito e punho enquadrados pelo joint real; verificado por teste unitário
+- ✅ Qualquer troca de asset/escala não quebra os enquadramentos
+- ⚠️ Primeiro frame antes do load usa fallback literal (desktop) — coberto pelo
+  loader cinemático
+- ⚠️ Cabeça agora com bias `−0,6·baseYaw` e limites assimétricos (0,42/0,30):
+  decisão estética registrada, revisável
+
+---
+
+## ADR-014: Easing linear nos beats intermediários da câmera
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #24)
+
+### Contexto
+
+O review reportou movimento "duro". A causa não era amplitude: os segmentos
+usavam `smoothstep`/`easeInOutCubic`, e **todo ease-in-out zera a derivada nas
+duas pontas** — a câmera *parava* em cada fronteira de beat, seis vezes por
+página.
+
+### Decisão
+
+Beats intermediários (`chapter1`, `evolution`, `chapter2`, `arsenal`) usam
+**`linear`**. O suavizador exponencial do `useFrame` (k=2) já arredonda as
+quinas, então o movimento fica contínuo sem parar. Apenas a aterrissagem final
+(`fullBody`) mantém `easeOutCubic`, para "assentar".
+
+Consequência metodológica: a métrica de suavidade do teste foi trocada de
+**ângulo p95 entre amostras** (dependente de velocidade, ficou sem sentido com
+o easing novo) para **curvatura** (graus por unidade percorrida). Medido:
+14–16°/unidade de mediana; limite do teste 30.
+
+### Alternativas Consideradas
+
+1. **Manter ease-in-out por beat** — rejeitado: para-e-anda por construção
+2. **Ease global único na página** — rejeitado: perde o assentamento final e
+   exige refatorar o mapeamento beat → curva
+3. **Aumentar o damping do lerp** — rejeitado: mascararia o problema e deixaria
+   a câmera "flutuante" em scroll rápido

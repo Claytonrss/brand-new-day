@@ -235,7 +235,7 @@ Cada wave exige: branch `feat/<slug>` → Scene Spec (se mudar composição) →
 **A criar nas próximas waves:**
 - **ADR-011:** Câmera por curva de Catmull-Rom com easing por beat (Wave B) — ✅ criado.
 - **ADR-012:** Movimento procedural do rig — additive sobre rest pose Mixamo (Wave A) — ✅ criado.
-- **ADR-013:** Shaders autorais via `onBeforeCompile` com fallback por tier (Wave C).
+- **ADR-013/014:** Âncoras do esqueleto + easing linear (P0) — ✅ criados.
 - **ADR-014:** (condicional) Re-export/repose do GLB — só se A4 falhar.
 
 ---
