@@ -7,6 +7,7 @@ import { CHEST_Y, WRIST_POSITION } from '../beat/beats';
 import { ANCHORS } from '../rig/anchorStore';
 import { FX } from './fxUniforms';
 import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
+import { BLINK_AMOUNT, BLINK_MODE, blinkClosure, nextBlinkAt, rand } from './blink';
 
 /** Per-beat targets for the material layer. See spec §7.2. */
 interface BeatTargets {
@@ -54,12 +55,23 @@ export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): 
  *
  * @see docs/specs/authorial-shaders-fx.md §7.2
  */
+export interface FxBlinkDebug {
+  /** Scheduled time of the next blink (seconds since load). */
+  at: number;
+  /** Start time of the blink currently playing, or -1. */
+  start: number;
+  /** How many blinks have played — robust signal for tests. */
+  count: number;
+}
+
 export interface FxDebugState {
   rim: number;
   web: number;
   lens: number;
   sweep: number;
   bokeh: number;
+  blink: number;
+  blinkState: FxBlinkDebug;
   beat: BeatId;
 }
 
@@ -73,10 +85,29 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
   const { beat, stateRef } = useBeat();
   const anchor = useMemo(() => new THREE.Vector3(), []);
   const bokehRef = useRef(TARGETS.hero.bokeh);
+  const blinkRef = useRef({ at: 0, start: -1, seed: 0, count: 0 });
   const debug = useMemo(
     () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
     [],
   );
+
+  const publish = (visible: boolean, web: number, sweep: number, rim: number, lens: number) => {
+    if (!debug || typeof window === 'undefined') return;
+    window.__fx = {
+      rim,
+      web,
+      sweep,
+      lens,
+      bokeh: bokehRef.current,
+      blink: visible ? FX.uBlink.value : 0,
+      blinkState: {
+        at: blinkRef.current.at,
+        start: blinkRef.current.start,
+        count: blinkRef.current.count,
+      },
+      beat,
+    };
+  };
 
   useFrame(({ clock }, delta) => {
     const targets = TARGETS[beat];
@@ -89,7 +120,40 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
       FX.uSweep.value = 0;
       FX.uLensPulse.value = 1;
       FX.uRimStrength.value = 0;
+      FX.uBlink.value = 0;
+      // still publish, otherwise the debug probe disappears under reduced motion
+      publish(true, 0, 0, 0, 1);
       return;
+    }
+
+    // --- stylised blink (mask lenses have no eyelids) ----------------------
+    if (BLINK_MODE === 'hold') {
+      // pinned closed for visual review
+      FX.uBlink.value = 1;
+    } else if (BLINK_MODE === 'off') {
+      FX.uBlink.value = 0;
+    } else {
+      const blink = blinkRef.current;
+      const now = clock.elapsedTime;
+
+      if (blink.at === 0) {
+        blink.seed = rand(now + 3.1);
+        blink.at = nextBlinkAt(now + 1.2, blink.seed);
+      }
+
+      // Start on the scheduled time, not on the frame time: at very low frame
+      // rates the frame can land anywhere inside the window.
+      if (blink.start < 0 && now >= blink.at) blink.start = blink.at;
+      if (blink.start >= 0) {
+        const closure = blinkClosure(now - blink.start, BLINK_AMOUNT[BLINK_MODE]);
+        FX.uBlink.value = closure;
+        if (now - blink.start > 0.2) {
+          blink.start = -1;
+          blink.count += 1;
+          blink.seed += 1;
+          blink.at = nextBlinkAt(now, blink.seed);
+        }
+      }
     }
 
     const strength = FX_STRENGTH[FX_MODE];
@@ -117,16 +181,13 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
     );
     dofAnchor(beat, isMobile, anchor);
 
-    if (debug) {
-      window.__fx = {
-        rim: FX.uRimStrength.value,
-        web: FX.uWebStrength.value,
-        lens: FX.uLensPulse.value,
-        sweep: FX.uSweep.value,
-        bokeh: bokehRef.current,
-        beat,
-      };
-    }
+    publish(
+      true,
+      FX.uWebStrength.value,
+      FX.uSweep.value,
+      FX.uRimStrength.value,
+      FX.uLensPulse.value,
+    );
   });
 
   return { anchor, bokehRef };

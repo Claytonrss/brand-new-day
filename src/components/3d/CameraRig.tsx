@@ -7,6 +7,7 @@ import { BREAKPOINTS } from '../../design/breakpoints';
 import { useQualityProfile } from './qualityContext';
 import { CameraTrack, createCameraSample, type Breakpoint } from './camera/cameraPath';
 import { fbm } from './camera/handheld';
+import { INTERACTION } from './interaction/interactionStore';
 
 const LERP_K = 2;
 
@@ -97,7 +98,7 @@ export function CameraRig() {
           -FOV_PUNCH_MAX,
           FOV_PUNCH_MAX,
         );
-        target.fov += punch;
+        target.fov += punch + INTERACTION.cameraKick * 1.5;
 
         dollyDirection.copy(target.lookAt).sub(target.position).normalize();
         const lag = THREE.MathUtils.clamp(

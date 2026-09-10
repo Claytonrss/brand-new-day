@@ -1,7 +1,10 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import * as THREE from 'three';
 import { patchSuitMaterial } from '../../src/components/3d/materials/suitShader';
-import { patchLensMaterial } from '../../src/components/3d/materials/lensShader';
+import {
+  measureLidBounds,
+  patchLensMaterial,
+} from '../../src/components/3d/materials/lensShader';
 import { curateMaterials } from '../../src/components/3d/materials/curateMaterials';
 import { FX_MODE, FX_STRENGTH, FX_POST_ENABLED } from '../../src/design/fxFlags';
 
@@ -9,7 +12,7 @@ import { FX_MODE, FX_STRENGTH, FX_POST_ENABLED } from '../../src/design/fxFlags'
 function fakeShader() {
   return {
     uniforms: {} as Record<string, unknown>,
-    vertexShader: 'void main() {\n  #include <project_vertex>\n}',
+    vertexShader: 'void main() {\n  #include <begin_vertex>\n  #include <project_vertex>\n}',
     fragmentShader: 'void main() {\n  #include <dithering_fragment>\n}',
   };
 }
@@ -69,11 +72,43 @@ describe('suit shader', () => {
 });
 
 describe('lens shader', () => {
-  it('injects iridescence and the pulse', () => {
+  it('injects iridescence, the pulse and the shutter lids', () => {
     const { material, shader } = compile(patchLensMaterial);
     expect(material.userData.fxPatched).toBe(true);
     expect(shader.fragmentShader).toContain('lensIridescence');
     expect(shader.fragmentShader).toContain('lensPulse');
+    expect(shader.fragmentShader).toContain('lidMask');
+    expect(shader.vertexShader).toContain('vLensLocalY');
+  });
+
+  it('compresses the lens toward its centre as it closes (option D)', () => {
+    const { shader } = compile(patchLensMaterial);
+    expect(shader.vertexShader).toContain('uSquash');
+    expect(shader.vertexShader).toContain('uLidCenterY');
+  });
+
+  it('declares the lid uniforms', () => {
+    const { shader } = compile(patchLensMaterial);
+    for (const uniform of ['uBlink', 'uLidMinY', 'uLidMaxY', 'uLidCenterY', 'uLidColor', 'uSquash']) {
+      expect(shader.uniforms[uniform]).toBeDefined();
+    }
+  });
+});
+
+describe('lid bounds', () => {
+  it('measures the vertical extent of the real geometry (not the UVs)', () => {
+    const geometry = new THREE.BoxGeometry(1, 2.4, 1);
+    const bounds = measureLidBounds(geometry);
+
+    expect(bounds.minY).toBeCloseTo(-1.2, 5);
+    expect(bounds.maxY).toBeCloseTo(1.2, 5);
+    expect(bounds.centerY).toBeCloseTo(0, 5);
+  });
+
+  it('computes the bounding box when the geometry has none', () => {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    geometry.boundingBox = null;
+    expect(() => measureLidBounds(geometry)).not.toThrow();
   });
 });
 

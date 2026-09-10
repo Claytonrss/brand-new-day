@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { COLORS } from '../../../design/tokens';
 import { patchSuitMaterial } from './suitShader';
-import { patchLensMaterial } from './lensShader';
+import { measureLidBounds, patchLensMaterial } from './lensShader';
 import { FX_MODE } from '../../../design/fxFlags';
 
 /**
@@ -9,8 +9,11 @@ import { FX_MODE } from '../../../design/fxFlags';
  * (`pnpm inspect:glb` → Frame, Lense, Shoe, Webs, Webshotter, material_4..8).
  */
 const MATERIAL_INTENT: Record<string, 'eye' | 'chest' | 'metal' | 'fabric' | 'web' | 'lens'> = {
-  // Order matters: 'webshotter' contains 'webs', so the most specific key wins
+  // Order matters: 'webshotter' contains 'webs' (and 'led' inside '...') so the
+  // most specific key wins. The LED meshes are the glowing mask eyes - they
+  // carry the blink lids, just like the lens glass over them.
   lense: 'lens',
+  led: 'lens',
   webshotter: 'metal',
   webs: 'web',
   frame: 'metal',
@@ -76,7 +79,8 @@ export function curateMaterials(root: THREE.Object3D): CuratedMaterials {
           material.emissive = new THREE.Color(COLORS.glow);
           material.emissiveIntensity = 1.2;
           material.roughness = 0.08;
-          if (patch) patchLensMaterial(material);
+          // E+D: the lid axis comes from the real bounding box of each lens
+          if (patch) patchLensMaterial(material, measureLidBounds(mesh.geometry));
           patched++;
           break;
         case 'eye':
