@@ -71,6 +71,9 @@ test.describe('Procedural rig', () => {
   });
 
   test('the head follows the pointer and the neck trails behind it', async ({ page }) => {
+    // Software rendering needs the 3x timeout: the spring converges in
+    // simulated time, which crawls at a few FPS.
+    test.slow();
     await page.goto(`/${RIG}`);
     await waitForScene(page);
 

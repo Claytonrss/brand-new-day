@@ -2,7 +2,6 @@ import { Canvas } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { ReactNode, Suspense } from 'react';
-import { EffectsStack } from './EffectsStack';
 import { Particles } from './Particles';
 import { PerformanceMonitor } from './PerformanceMonitor';
 
@@ -73,8 +72,7 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
             {children}
             {/* Atmospheric particles — cinematic depth */}
             <Particles />
-            {/* Post-processing — adapts to quality profile */}
-            <EffectsStack />
+            {/* Post-processing lives inside BeatProvider (App) — it consumes beat state */}
           </PerformanceMonitor>
           {/* Environment loads async — own Suspense prevents blocking canvas */}
           <Suspense fallback={null}>

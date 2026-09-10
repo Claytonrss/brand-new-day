@@ -7,6 +7,7 @@ import { Stage } from './components/3d/Stage';
 import { LightRig } from './components/3d/lighting/LightRig';
 import { BeatProvider } from './components/3d/beat/BeatProvider';
 import { PerfHud } from './components/ui/PerfHud';
+import { EffectsStack } from './components/3d/EffectsStack';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
@@ -91,6 +92,7 @@ export function App() {
               <CameraRig />
               <Stage />
               <LightRig />
+              <EffectsStack />
             </BeatProvider>
           </Suspense>
         </CanvasContainer>
