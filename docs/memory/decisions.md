@@ -387,3 +387,61 @@ tier `low` e em `prefers-reduced-motion`.
   punho), não de implementação
 - ⚠️ Evolution/Arsenal/FullBody mudaram muito visualmente (43–65 % dos pixels
   no mobile) — exigiu aprovação visual humana
+
+---
+
+## ADR-012: Movimento procedural do rig sobre a rest pose (sem clips no GLB)
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #21)
+
+### Contexto
+
+O GLB não tem clips de animação (`animations: 0`, 66 joints). Todo o movimento
+do personagem era **um osso** — e, na prática, nem isso: o código buscava
+`mixamorig:Head_06`, nome que o loader nunca expõe (ver abaixo), e caía no
+fallback que rotacionava o modelo inteiro.
+
+### Decisão
+
+Camada procedural **aditiva** sobre a rest pose capturada em runtime:
+
+- `rig/rigBones.ts` — mapa semântico de joints, captura da rest pose, `softClamp`
+- `rig/spring.ts` — mola criticamente amortecida (`dt` clampado em 1/10 s)
+- `rig/proceduralMotion` — respiração, sway, deslocamento de peso, micro-tremor
+- `rig/poses.ts` — offsets por beat com multiplicador único `POSE_AMPLITUDE`
+- head-tracking por **slerp de quaternion**, com rigidez por joint para que a
+  cabeça conduza e pescoço/coluna sigam (follow-through)
+
+Nada sobrescreve a pose autoral: todo joint é escrito como `rest * offset`.
+
+### Achado que mudou o diagnóstico do projeto
+
+`pnpm inspect:glb` imprime os nomes crus do glTF (`mixamorig:Head_06`), mas
+`THREE.PropertyBinding.sanitizeNodeName` remove caracteres reservados —
+inclusive `:` —, então o mapa de nós do `useGLTF` é chaveado por
+`mixamorigHead_06`. O lookup anterior falhava sempre (0 de 16 joints
+resolvidos) e o Beat 1 "olhar que segue" nunca existiu: o corpo girava ~4°.
+
+**Consequência para o projeto:** nomes de joint vindos da inspeção do GLB
+precisam ser sanitizados antes de virarem lookup, e qualquer feature de rig
+precisa de um teste que prove que o joint foi resolvido — não basta "não dar
+erro".
+
+### Alternativas Consideradas
+
+1. **Animar no Blender e reexportar** — rejeitado nesta wave: exige re-export do
+   asset e ADR próprio; continua como plano B (A5) se as poses falharem
+2. **Escrever rotações absolutas nos joints** — rejeitado: destrói a rest pose
+3. **Suavização exponencial em vez de mola** — rejeitado: sem velocidade, a
+   troca de pose desliza em linha reta em vez de assentar
+
+### Consequências
+
+- ✅ 16 joints resolvidos; follow-through medido (0,037 > 0,004 > 0,0006)
+- ✅ `prefers-reduced-motion` congela o rig de forma determinística
+- ✅ Nenhum draw call adicional (rig é CPU)
+- ⚠️ Amplitudes das poses são conservadoras até validação visual — a rest pose
+  do asset ainda não foi inspecionada pose a pose
+- ⚠️ Em dispositivos muito lentos (~2 FPS) o clamp de `dt` faz o tempo simulado
+  avançar devagar; aceito, porque o alvo é 45+ FPS
