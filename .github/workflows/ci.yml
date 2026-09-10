@@ -51,6 +51,9 @@ jobs:
   # block the signal from the static gates.
   visual:
     name: visual (playwright)
+    # Only on main pushes — Playwright on SwiftShader is slow and eats minutes.
+    # PRs get the fast static job; full visual runs after merge.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
