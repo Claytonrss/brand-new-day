@@ -30,6 +30,8 @@ export interface RigDebugState {
   head: [number, number, number, number];
   neck: [number, number, number, number];
   spine2: [number, number, number, number];
+  /** World positions (x, y, z) of the joints used to calibrate anchors. */
+  world: Partial<Record<BoneRole, [number, number, number]>>;
   breath: number;
   time: number;
   joints: number;
@@ -109,6 +111,7 @@ export function useProceduralRig({
 
   const timeRef = useRef(0);
   const idleRef = useRef(0);
+  const worldScratch = useMemo(() => new THREE.Vector3(), []);
 
   // Reset springs on mount so the rig starts from the authored pose
   useEffect(() => {
@@ -125,10 +128,19 @@ export function useProceduralRig({
         const bone = bones[role];
         return bone ? [bone.quaternion.x, bone.quaternion.y, bone.quaternion.z, bone.quaternion.w] : [0, 0, 0, 1];
       };
+      const world: Partial<Record<BoneRole, [number, number, number]>> = {};
+      for (const role of ['head', 'neck', 'spine2', 'spine1', 'hips', 'armR', 'foreArmR', 'handR', 'armL', 'foreArmL', 'handL'] as BoneRole[]) {
+        const bone = bones[role];
+        if (!bone) continue;
+        bone.getWorldPosition(worldScratch);
+        world[role] = [+worldScratch.x.toFixed(3), +worldScratch.y.toFixed(3), +worldScratch.z.toFixed(3)];
+      }
+
       window.__rig = {
         head: read('head'),
         neck: read('neck'),
         spine2: read('spine2'),
+        world,
         breath: Math.sin(timeRef.current * Math.PI * 2 * MOTION.breath.rate),
         time: timeRef.current,
         joints: rest.size,

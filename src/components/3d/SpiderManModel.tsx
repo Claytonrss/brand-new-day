@@ -7,6 +7,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useBeat } from './beat/beatContext';
 import { useQualityProfile } from './qualityContext';
 import { collectRigBones, captureRestPose, type RestPose, type BoneRole } from './rig/rigBones';
+import { curateMaterials } from './materials/curateMaterials';
 import { useProceduralRig } from './rig/useProceduralRig';
 import { useWindowPointer, windowPointer } from './rig/windowPointer';
 
@@ -57,53 +58,10 @@ export function SpiderManModel({
   const bones = useMemo(() => collectRigBones(nodes as Record<string, THREE.Object3D>), [nodes]);
   const restRef = useRef<Map<BoneRole, RestPose>>(new Map());
 
-  // Material curation — per-material intent (eyes, chest symbol, metal, fabric)
+  // Material curation — physical intent + authorial shader layer (Wave C)
   useEffect(() => {
-    scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-
-        if (mesh.material) {
-          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          for (const mat of materials) {
-            if (
-              mat instanceof THREE.MeshStandardMaterial ||
-              mat instanceof THREE.MeshPhysicalMaterial
-            ) {
-              const nameLower = (mat.name ?? '').toLowerCase();
-              const isEye = nameLower.includes('eye') || nameLower.includes('lens');
-              const isChestSymbol = nameLower.includes('chest') || nameLower.includes('symbol');
-              const isMetal = mat.metalness > 0.5;
-
-              if (isEye) {
-                // Eyes: emissive glow for bloom to pick up
-                mat.emissive = new THREE.Color('#eaf4ff'); // COLORS.glow
-                mat.emissiveIntensity = 1.2;
-                mat.roughness = 0.1;
-              } else if (isChestSymbol) {
-                // Chest symbol: subtle emissive glow
-                mat.emissive = new THREE.Color('#eaf4ff'); // COLORS.glow
-                mat.emissiveIntensity = 0.6;
-                mat.roughness = 0.3;
-              } else if (isMetal) {
-                // Metallic parts (web-shooter, hardware): shiny metal
-                mat.roughness = 0.25;
-                mat.metalness = 0.85;
-              } else {
-                // Suit fabric: matte, low metalness
-                mat.roughness = 0.55;
-                mat.metalness = 0.3;
-              }
-
-              mat.needsUpdate = true;
-            }
-          }
-        }
-      }
-    });
-  }, [scene, nodes]);
+    curateMaterials(scene);
+  }, [scene]);
 
   // Capture the authored pose before any layer touches it
   useEffect(() => {
