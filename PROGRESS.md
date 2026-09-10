@@ -383,22 +383,40 @@ draw calls e `programs` inalterados · reduced-motion com diff de 0%.
 **Correções na wave:** DOF sem `focusRange` desfocava tudo; `uTime` animava sob
 `reduced-motion`; brilho/metal reduzidos após review.
 
-**Pendente:** suíte visual completa (timeout por contenção de CPU) · aprovação
-visual do modo padrão · FPS real.
-
 ### P0 — Calibração (PR #24, merged)
 
 - [x] Âncoras do mundo derivadas do esqueleto (`anchorStore`)
 - [x] Correção da mira de Evolution (axila → peito) e Arsenal (lançador)
 - [x] Pose do Arsenal: antebraço a ~63°, câmera abaixo do punho
-- [x] Cabeça: bias da rest pose + limites assimétricos (0,42 dir / 0,30 esq)
+- [x] Cabeça: bias da rest pose + limites assimétricos (0,36 dir / 0,30 esq,
+      total ≤ 0,52 rad)
 - [x] Easing linear nos beats intermediários (fim do para-e-anda)
 
-**Pendente:** aprovação visual do enquadramento/pose · suíte visual completa ·
-FPS real.
+**Pendente:** aprovação visual do enquadramento/pose · FPS real.
 
-### Wave E — Atmosfera com profundidade (próxima)
+### Wave E — Atmosfera (PR #26, merged)
 
-- [ ] E1 — partículas em GPU (turbulência, 3 camadas de parallax, 1 draw call)
-- [ ] E2 — motas reagindo ao spotlight do Beat 2
-- [ ] E3 — `FogExp2` + dessaturação por profundidade
+- [x] E1 — partículas em GPU (turbulência, 3 camadas de parallax, 1 draw call)
+- [x] E2 — motas reagindo ao spotlight do Beat 2
+- [x] E3 — `FogExp2` + dessaturação por profundidade
+
+**Medições:** 1 draw call para toda a atmosfera · draw calls desktop 44 ·
+`reduced-motion` com 0% de diff de pixels.
+
+### Wave D — Interatividade (PR #26, merged)
+
+- [x] D1 — arrastar orbita o modelo (±12°) com mola de retorno
+- [x] D2 — giroscópio no mobile com calibração na primeira leitura
+- [x] D3 — teia no Beat 3 (curva pendurada, 1 draw call) + tranco de lente
+- [x] D4 — luz de recorte acompanha o cursor
+- [x] Piscada estilizada com pálpebras E+D (`?blink=off|subtle|full|hold`) —
+      aceite medido: 98,1% de queda dos pixels de lente no ápice
+
+### Wave G — Verificação (nesta branch)
+
+- [x] G1 — `budget.spec.ts`: draw calls ≤ 48, `programs` ≤ 24 e sem crescimento
+      de programas no scroll (FPS real fica atrás de `PERF_FPS_ASSERT`)
+- [x] G2 — `console.spec.ts` recriado (zero erro na carga e no scroll completo)
+- [x] G3 — `credits.spec.ts` recriado (visível sem hover, link seguro)
+- [x] G4 — evidência em vídeo por viewport (`pnpm evidence:motion`)
+- [ ] G5 — atualizar a rubrica com as evidências novas

@@ -34,8 +34,16 @@
   mostrava o lançador); pose do antebraço a ~63°; cabeça com bias e limites
   assimétricos; easing linear nos beats intermediários.
   - Evidências: `docs/evidence/wave-p0-calibration/`
-- **Próxima:** Wave E — atmosfera com profundidade (partículas em GPU com
-  turbulência/parallax + fog exponencial)
+- **Wave E — Atmosfera (PR #26, merged):** partículas em GPU (turbulência +
+  3 camadas de parallax, **1 draw call**), névoa exponencial e reação ao Beat 2.
+  - `reduced-motion`: 0% de diff de pixels
+- **Wave D — Interatividade (PR #26, merged):** arrastar para orbitar com mola
+  de retorno, giroscópio no mobile, teia no Beat 3, luz de recorte no cursor.
+- **Piscada estilizada:** pálpebras E+D por obturador de shader
+  (`?blink=off|subtle|full|hold`); aceite medido em 98,1% de queda dos pixels
+  de lente no ápice.
+- **Próxima:** Wave G — verificação (gates de orçamento/console/atribuição e
+  evidência em vídeo)
 
 ### Implementado
 - 4 seções: Hero, Evolution, Arsenal, FullBody
@@ -85,14 +93,14 @@
 - PR #22: docs sync pós-Wave A (ADR-012)
 - PR #23: Wave C — efeitos autorais (shaders + DOF por beat)
 - PR #24: P0 — calibração de âncoras, cabeça e suavidade
+- PR #25: docs sync pós-Wave C e P0 (ADR-013/014)
+- PR #26: Waves E e D — atmosfera em GPU, interatividade e piscada
 
 ## Próximos Passos (fila priorizada)
 
-0. **Wave C — efeitos autorais** (`feat/authorial-shaders-fx`)
-   - Teia procedural animada no material `Webs` + fresnel rim no traje
-   - Iridescência e pulso emissivo na `Lense`
-   - DOF com distância focal por beat + aberração cromática modulada
-0. **Recriar `console.spec.ts` e `credits.spec.ts`** (perdidos, nunca commitados)
+0. **Wave G — verificação** (`test/wave-g-verification`, em PR)
+   - Gates de orçamento (`budget.spec.ts`), console e atribuição
+   - Evidência em vídeo por viewport (`pnpm evidence:motion`)
 0. **F4b — comprimir geometria do GLB** (meshopt/quantização; exige re-export + ADR)
 0. **FPS em dispositivo real** (iPhone 12 / Android mid) — bloqueia critério de performance
 
@@ -131,6 +139,8 @@
 - ADR-012: Movimento procedural do rig sobre a rest pose (sem clips no GLB)
 - ADR-013: Âncoras do mundo derivadas do esqueleto
 - ADR-014: Easing linear nos beats intermediários da câmera
+- ADR-015: Atmosfera em GPU (movimento no vertex shader)
+- ADR-016: Estado de interação mutável + piscada por obturador
 
 ## Métricas
 
@@ -139,7 +149,7 @@
 - **Visual tests:** 27 (+6 de reduced-motion) — ⚠️ `console.spec.ts` e
   `credits.spec.ts` (fila `test/visual-gaps`) foram perdidos: nunca foram
   commitados e não estão mais no working tree. Precisam ser recriados.
-- **Unit tests:** 60 (beat timeline · iluminação · câmera · rig · âncoras/cabeça · materiais)
+- **Unit tests:** 94 (beat · iluminação · câmera · rig · âncoras · materiais · atmosfera · interação · piscada)
 - **Movimento verificado:** 15 asserções em `motion.spec.ts` (respiração avança,
   ponteiro é clampado, follow-through ordenado, reduced-motion congela)
 - **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —
