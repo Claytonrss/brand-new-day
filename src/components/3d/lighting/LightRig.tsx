@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useBeat } from '../beat/beatContext';
 import { CHEST_Y } from '../beat/beats';
+import { ANCHORS } from '../rig/anchorStore';
 import type { BeatState } from '../beat/beatState';
 import type { BeatId } from '../beat/beats';
 import { useQualityProfile } from '../qualityContext';
@@ -138,7 +139,7 @@ function SpotSlot(props: SlotProps) {
   const ref = useRef<THREE.SpotLight>(null);
   const { slot, beat, instant, isMobile, stateRef } = props;
   const aim = useMemo(() => new THREE.Object3D(), []);
-  const chestY = isMobile ? CHEST_Y.mobile : CHEST_Y.desktop;
+  const chestY = ANCHORS.ready ? ANCHORS.chest.y : isMobile ? CHEST_Y.mobile : CHEST_Y.desktop;
 
   useEffect(() => {
     if (ref.current) ref.current.target = aim;

@@ -22,14 +22,25 @@ describe('procedural rig', () => {
     }
   });
 
-  it('keeps pose amplitudes conservative (spec §7.3)', () => {
+  it('keeps torso amplitudes conservative (spec §7.3)', () => {
+    const spine = ['spine', 'spine1', 'spine2', 'neck', 'hips'] as const;
     for (const pose of Object.values(BEAT_POSES)) {
-      for (const offsets of Object.values(pose)) {
-        for (const value of offsets ?? []) {
-          expect(Math.abs(value)).toBeLessThanOrEqual(0.25);
+      for (const role of spine) {
+        for (const value of pose[role] ?? []) {
+          expect(Math.abs(value)).toBeLessThanOrEqual(0.1);
         }
       }
+      // the head turns to follow the wrist during the Arsenal beat
+      for (const value of pose.head ?? []) {
+        expect(Math.abs(value)).toBeLessThanOrEqual(0.15);
+      }
     }
+  });
+
+  it('allows the Arsenal arm pose to bend the elbow (presentation of the shooter)', () => {
+    // measured: the forearm needs ~63 deg of flexion to bring the web-shooter
+    // underside toward a camera placed below the wrist
+    expect(Math.abs(BEAT_POSES.arsenal.foreArmR?.[0] ?? 0)).toBeGreaterThan(0.5);
   });
 
   it('exposes a single amplitude multiplier that can disable the layer', () => {

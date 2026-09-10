@@ -11,8 +11,8 @@ import { fbm } from './camera/handheld';
 const LERP_K = 2;
 
 /** Handheld noise amplitude (world units) and rate (Hz). */
-const HANDHELD_POSITION = 0.02;
-const HANDHELD_LOOK = 0.015;
+const HANDHELD_POSITION = 0.028;
+const HANDHELD_LOOK = 0.02;
 const HANDHELD_RATE = 0.15;
 
 /** Velocity coupling — lens inertia. */
@@ -47,6 +47,9 @@ export function CameraRig() {
   const dollyDirection = useMemo(() => new THREE.Vector3(), []);
   const velocityRef = useRef(0);
   const initializedRef = useRef(false);
+  const debugRef = useRef(
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
+  );
 
   // Re-seed the current pose when the breakpoint changes (no teleport)
   useEffect(() => {
@@ -114,6 +117,13 @@ export function CameraRig() {
 
     camera.position.copy(current.position);
     camera.lookAt(current.lookAt);
+
+    if (debugRef.current && typeof window !== 'undefined') {
+      const world = ((window as unknown as Record<string, unknown>).__world ?? {}) as Record<string, unknown>;
+      world.camera = [+camera.position.x.toFixed(3), +camera.position.y.toFixed(3), +camera.position.z.toFixed(3)];
+      world.cameraLookAt = [+current.lookAt.x.toFixed(3), +current.lookAt.y.toFixed(3), +current.lookAt.z.toFixed(3)];
+      (window as unknown as Record<string, unknown>).__world = world;
+    }
 
     const perspective = camera as THREE.PerspectiveCamera;
     perspective.fov = current.fov;

@@ -31,14 +31,17 @@ export const BEAT_POSES: Record<BeatId, Partial<Record<BoneRole, readonly [numbe
       foreArmL: [0, 0.06, 0],
       foreArmR: [0, 0.06, 0],
     },
-    // punho elevado rumo à câmera
+    // punho elevado rumo à câmera.
+    // The camera sits below the wrist (the web-shooter is on the underside of
+    // the forearm), so the elbow flexes ~63° (measured: raises the hand ~0.6
+    // world units and leaves the forearm roughly horizontal).
     arsenal: {
       shoulderR: [-0.08, 0, -0.05],
-      armR: [0, 0, -0.06],
-      foreArmR: [-0.25, 0, 0],
-      handR: [-0.12, 0, 0],
+      armR: [0, 0, -0.2],
+      foreArmR: [-1.1, 0, 0],
+      handR: [-0.3, 0, 0],
       foreArmL: [0, 0.08, 0],
-      head: [0, 0.1, 0.03],
+      head: [0, 0.12, 0.03],
     },
     // poster: coluna ereta, braços soltos, cabeça nível
     fullBody: {

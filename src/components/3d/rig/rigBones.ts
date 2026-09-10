@@ -92,9 +92,9 @@ export function softClamp(value: number, limit: number): number {
 
 /** Procedural layer amplitudes (radians) and rates (Hz). See spec §7.1. */
 export const MOTION = {
-  breath: { rate: 0.25, spine1: 0.004, spine2: 0.006 },
-  sway: { rate: 0.05, yaw: 0.02, pitch: 0.008 },
-  weightShift: { rate: 0.09, roll: 0.015 },
+  breath: { rate: 0.25, spine1: 0.005, spine2: 0.008 },
+  sway: { rate: 0.05, yaw: 0.028, pitch: 0.011 },
+  weightShift: { rate: 0.09, roll: 0.02 },
   tremor: { rate: 2.5, amount: 0.01 },
   legs: { rate: 0.05, amount: 0.004 },
 } as const;
@@ -134,6 +134,27 @@ export function applyOffset(
   }
   SCRATCH.quaternion.copy(rest).multiply(offset);
   bone.quaternion.copy(rest).slerp(SCRATCH.quaternion, weight);
+}
+
+/**
+ * Beat 1 limits (memorable-moments.md): yaw 25-30°, pitch 12-15°.
+ *
+ * Asymmetric on purpose: measured in review, the head overshot to the left
+ * because the authored rest pose is turned (the desktop model carries a
+ * -0.25 rad yaw). `headYawTarget` recentres the neutral pose on the camera.
+ */
+export const HEAD_LIMIT = { yawRight: 0.42, yawLeft: 0.3, pitch: 0.24 } as const;
+
+/** Neutral yaw compensation applied per unit of model rotation. */
+export const HEAD_BIAS_FACTOR = -0.6;
+
+/** Pointer x (-1..1) + model yaw -> head target yaw, biased and asymmetric. */
+export function headYawTarget(pointerX: number, baseYaw = 0): number {
+  const yaw =
+    pointerX >= 0
+      ? softClamp(pointerX, HEAD_LIMIT.yawRight)
+      : -softClamp(-pointerX, HEAD_LIMIT.yawLeft);
+  return baseYaw * HEAD_BIAS_FACTOR + yaw;
 }
 
 /** Idle drift used when the device has no hover (touch). */
