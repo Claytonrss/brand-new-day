@@ -10,6 +10,8 @@ import { collectRigBones, captureRestPose, type RestPose, type BoneRole } from '
 import { curateMaterials } from './materials/curateMaterials';
 import { useProceduralRig } from './rig/useProceduralRig';
 import { useWindowPointer, windowPointer } from './rig/windowPointer';
+import { useInteraction } from './interaction/useInteraction';
+import { INTERACTION } from './interaction/interactionStore';
 
 const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
 
@@ -68,6 +70,8 @@ export function SpiderManModel({
     restRef.current = captureRestPose(bones);
   }, [bones]);
 
+  useInteraction();
+
   useProceduralRig({
     bones,
     rest: restRef.current,
@@ -81,9 +85,15 @@ export function SpiderManModel({
     debug,
   });
 
-  // Keep the pointer ref pointing at the live window state
+  // Keep the pointer ref pointing at the live window state and apply the
+  // drag / gyro offset to the whole character (never to individual bones).
   useFrame(() => {
     pointerRef.current = windowPointer;
+
+    const group = groupRef.current;
+    if (!group) return;
+    group.rotation.y = rotation[1] + INTERACTION.yaw;
+    group.rotation.x = INTERACTION.pitch;
   });
 
   return (

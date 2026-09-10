@@ -7,6 +7,7 @@ import { CHEST_Y, WRIST_POSITION } from '../beat/beats';
 import { ANCHORS } from '../rig/anchorStore';
 import { FX } from './fxUniforms';
 import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
+import { BLINK_AMOUNT, BLINK_MODE, blinkClosure, nextBlinkAt, rand } from './blink';
 
 /** Per-beat targets for the material layer. See spec §7.2. */
 interface BeatTargets {
@@ -54,12 +55,21 @@ export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): 
  *
  * @see docs/specs/authorial-shaders-fx.md §7.2
  */
+export interface FxBlinkDebug {
+  /** Scheduled time of the next blink (seconds since load). */
+  at: number;
+  /** Start time of the blink currently playing, or -1. */
+  start: number;
+}
+
 export interface FxDebugState {
   rim: number;
   web: number;
   lens: number;
   sweep: number;
   bokeh: number;
+  blink: number;
+  blinkState: FxBlinkDebug;
   beat: BeatId;
 }
 
@@ -73,6 +83,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
   const { beat, stateRef } = useBeat();
   const anchor = useMemo(() => new THREE.Vector3(), []);
   const bokehRef = useRef(TARGETS.hero.bokeh);
+  const blinkRef = useRef({ at: 0, start: -1, seed: 0 });
   const debug = useMemo(
     () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
     [],
@@ -89,7 +100,34 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
       FX.uSweep.value = 0;
       FX.uLensPulse.value = 1;
       FX.uRimStrength.value = 0;
+      FX.uBlink.value = 0;
       return;
+    }
+
+    // --- stylised blink (mask lenses have no eyelids) ----------------------
+    if (BLINK_MODE === 'off') {
+      FX.uBlink.value = 0;
+    } else {
+      const blink = blinkRef.current;
+      const now = clock.elapsedTime;
+
+      if (blink.at === 0) {
+        blink.seed = rand(now + 3.1);
+        blink.at = nextBlinkAt(now + 1.2, blink.seed);
+      }
+
+      // Start on the scheduled time, not on the frame time: at very low frame
+      // rates the frame can land anywhere inside the window.
+      if (blink.start < 0 && now >= blink.at) blink.start = blink.at;
+      if (blink.start >= 0) {
+        const closure = blinkClosure(now - blink.start, BLINK_AMOUNT[BLINK_MODE]);
+        FX.uBlink.value = closure;
+        if (now - blink.start > 0.2) {
+          blink.start = -1;
+          blink.seed += 1;
+          blink.at = nextBlinkAt(now, blink.seed);
+        }
+      }
     }
 
     const strength = FX_STRENGTH[FX_MODE];
@@ -124,6 +162,8 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
         lens: FX.uLensPulse.value,
         sweep: FX.uSweep.value,
         bokeh: bokehRef.current,
+        blink: FX.uBlink.value,
+        blinkState: { at: blinkRef.current.at, start: blinkRef.current.start },
         beat,
       };
     }

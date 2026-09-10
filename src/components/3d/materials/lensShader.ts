@@ -16,6 +16,7 @@ export function patchLensMaterial(
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = FX.uTime;
     shader.uniforms.uLensPulse = FX.uLensPulse;
+    shader.uniforms.uBlink = FX.uBlink;
 
     if (!shader.vertexShader.includes(VERTEX_ANCHOR)) {
       console.warn('[lensShader] vertex anchor not found — layer skipped');
@@ -29,11 +30,19 @@ export function patchLensMaterial(
     shader.vertexShader = shader.vertexShader
       .replace(
         'void main() {',
-        `varying vec3 vLensWorldPosition;\nvarying vec3 vLensWorldNormal;\nvoid main() {`,
+        `varying vec3 vLensWorldPosition;
+varying vec3 vLensWorldNormal;
+#ifdef USE_UV
+  varying vec2 vLensUv;
+#endif
+void main() {`,
       )
       .replace(
         VERTEX_ANCHOR,
         `${VERTEX_ANCHOR}
+  #ifdef USE_UV
+    vLensUv = vUv;
+  #endif
   vec4 lensWorld = modelMatrix * vec4(transformed, 1.0);
   vLensWorldPosition = lensWorld.xyz;
   vLensWorldNormal = normalize(mat3(modelMatrix) * objectNormal);`,
@@ -44,8 +53,12 @@ export function patchLensMaterial(
         'void main() {',
         `varying vec3 vLensWorldPosition;
 varying vec3 vLensWorldNormal;
+#ifdef USE_UV
+  varying vec2 vLensUv;
+#endif
 uniform float uTime;
 uniform float uLensPulse;
+uniform float uBlink;
 void main() {`,
       )
       .replace(
@@ -64,8 +77,24 @@ void main() {`,
         );
 
         float lensPulse = 0.65 + 0.35 * sin(uTime * 2.0);
-        gl_FragColor.rgb += lensIridescence * (1.0 - lensFacing) * 0.06 * uLensPulse;
-        gl_FragColor.rgb += vec3(0.92, 0.96, 1.0) * lensPulse * 0.05 * uLensPulse;
+
+        // Stylised blink: the lens light closes to a thin slit and reopens.
+        // The asset has no eyelids, so this is a shutter, not anatomy.
+        float lid = clamp(uBlink, 0.0, 1.0);
+        float openness = 1.0 - lid;
+
+        #ifdef USE_UV
+          float slit = abs(vLensUv.y - 0.5) * 2.0;
+        #else
+          float slit = abs(fract(vLensWorldPosition.y * 3.0) - 0.5) * 2.0;
+        #endif
+
+        float visible = 1.0 - smoothstep(openness * 0.5, openness * 0.5 + 0.15, slit);
+
+        gl_FragColor.rgb += lensIridescence * (1.0 - lensFacing) * 0.06 * uLensPulse * visible;
+        gl_FragColor.rgb += vec3(0.92, 0.96, 1.0) * lensPulse * 0.05 * uLensPulse * visible;
+        // close the aperture: the emissive core dims as the lids meet
+        gl_FragColor.rgb *= mix(1.0, 0.35, lid * 0.8);
       }`,
       );
 

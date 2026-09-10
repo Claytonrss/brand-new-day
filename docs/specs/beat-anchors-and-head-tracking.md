@@ -72,7 +72,7 @@ O spotlight do Beat 2 passa a mirar a altura do peito **medida**
   final (`fullBody`, `easeOutCubic`) mantém ease próprio.
 - **Cabeça:** `headYawTarget(x, baseYaw)` — bias `baseYaw · −0,6` (compensa a
   rotação de −0,25 rad do grupo no desktop) e limites assimétricos
-  (**direita 0,42 / esquerda 0,30**).
+  (**direita 0,36 / esquerda 0,30**, com limite total de 0,52 rad ≈ 29° incluindo o bias).
 - **Rig:** respiração 0,006→0,008, sway 0,02→0,028, peso 0,015→0,02, mola de
   pose 9→5,5 (assentamento mais macio).
 - **Handheld** da câmera: 0,02→0,028 (posição) e 0,015→0,02 (lookAt).

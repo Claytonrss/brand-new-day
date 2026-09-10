@@ -23,6 +23,8 @@ export const FX = {
   uSweepY: { value: -2 },
   /** Beat 2 band strength (0 outside the beat). */
   uSweep: { value: 0 },
+  /** 0 = lenses fully open, 1 = closed to a slit (stylised blink). */
+  uBlink: { value: 0 },
   uRimColor: { value: new THREE.Color('#c23b34') },
   uWebColor: { value: new THREE.Color('#eaf4ff') },
 };

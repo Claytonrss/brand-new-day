@@ -11,6 +11,7 @@ import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../../design/breakpoints';
 import { COLORS } from '../../../design/tokens';
 import { LIGHT_SLOTS, SWEEP, type LightSlot, type LightTarget } from './lightCues';
+import { INTERACTION } from '../interaction/interactionStore';
 
 /** Cross-fade rate between beats (exponential, frame-rate independent). */
 const FADE_K = 6;
@@ -87,7 +88,10 @@ function useFadedIntensity(
     light.color.lerp(targetColor, alpha);
 
     if (cue.position) {
-      targetPosition.set(cue.position[0], cue.position[1], cue.position[2]);
+      // the accent slot follows the cursor a little (Wave D)
+      const rimX = slot.id === 'accent' ? INTERACTION.rimX : 0;
+      const rimY = slot.id === 'accent' ? INTERACTION.rimY : 0;
+      targetPosition.set(cue.position[0] + rimX, cue.position[1] + rimY, cue.position[2]);
       light.position.lerp(targetPosition, alpha);
     }
   });
