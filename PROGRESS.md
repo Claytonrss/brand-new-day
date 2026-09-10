@@ -107,13 +107,15 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - [x] Criar protótipo visual mínimo para validar direção de arte
 - [x] Completar Look Dev v1 (câmera, enquadramento, escala, luz)
 - [x] Completar Look Dev v2 (tipografia, composição, integração texto/personagem)
-- [ ] Completar Look Dev v3 se rubrica visual tiver item crítico < 4
+- [x] Look Dev v3: não disparado por nota < 4; os itens em aberto da rubrica
+      dependem de revisão humana (ver `docs/memory/tech-debt.md` e Wave G)
 - [x] Aprovar visualmente a primeira dobra em mobile e desktop
 
 **Critério de saída da Fase 3.2:**
 - [x] Primeira dobra tem impacto visual aprovado
 - [x] Câmera, luz, contraste e texto funcionam no mobile principal
-- [ ] Decisão consciente sobre nível de post-processing por perfil
+- [x] Decisão consciente sobre nível de post-processing por perfil → ADR-007
+      (adaptativo por tier) e Wave C (`?fx=off|subtle|full`)
 - [x] Primeira dobra, composição mobile e integração texto/personagem receberam nota mínima 4
 
 ---
@@ -157,7 +159,7 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - [x] 6.6 — Seção: Hero (mouse tracking) → PR #5 (commit be218ef)
 - [x] 6.7 — Seção: Evolution (close-up do símbolo do peito) → spec PR #6 + implementação PR #7 (commits 924ba5e, d2be06f)
 - [x] 6.8 — Seção: Arsenal (lançadores de teia) → spec PR #8 + implementação PR #9 (commits 755663d, f4a3a26)
-- [ ] 6.9 — Seção: FullBody (paralaxe + CTA + atribuição) → **NÃO CRIADA** — implementada na wave-3 sem spec (spec retroativa é o próximo item da fila)
+- [x] 6.9 — Seção: FullBody → spec retroativa criada (PR #15)
 - [x] 6.10 — Verify: critérios de aceite → 27/27 visual tests passing (hero/evolution/arsenal/fullbody × 3 viewports)
 - [x] 6.11 — Security-audit: escopo deste projeto → licenciamento CC-BY 4.0 validado (asset Eskze)
 
@@ -178,9 +180,9 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - [x] Criar `tests/visual/evolution.spec.ts`
 - [x] Criar `tests/visual/arsenal.spec.ts`
 - [x] Criar `tests/visual/fullbody.spec.ts`
-- [ ] Criar `tests/visual/reduced-motion.spec.ts`
-- [ ] Criar `tests/visual/credits.spec.ts`
-- [ ] Criar `tests/visual/console.spec.ts` ou fixture compartilhada
+- [x] Criar `tests/visual/reduced-motion.spec.ts` (recriado na Wave G — PR #29)
+- [x] Criar `tests/visual/credits.spec.ts` (recriado na Wave G — PR #29)
+- [x] Criar `tests/visual/console.spec.ts` + `budget.spec.ts` (Wave G — PR #29)
 - [x] Configurar `playwright.config.ts` com viewports obrigatórios (390x844, 430x932, 1440x900)
 
 ### 7.3 — Validação visual humana
@@ -188,7 +190,9 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 - [ ] Definir perguntas de aprovação estética → pendente
 - [ ] Registrar aprovação humana no relatório de verify ou PR → pendente
 - [ ] Validar FPS em dispositivo real (iPhone 12, Android mid-tier) → pendente
-- [ ] Security audit (dependências, GLB source) → pendente
+      (roteiro: abrir `?debug=1`, ler o HUD, rodar `PERF_FPS_ASSERT=1` se houver GPU)
+- [x] Security audit (dependências, GLB source) → licenciamento CC-BY 4.0
+      validado (Fase 6.11); atribuição verificada por teste na Wave G
 
 ### 7.4 — Template de PR
 
@@ -208,9 +212,9 @@ Este documento rastreia o progresso de execução do plano definido em `harness-
 
 ### 7.7 — CI do GitHub
 
-- [ ] Criar `.github/workflows/ci.yml` com gates locais → pendente
-- [ ] CI falha se `scripts/verify-all.sh` falhar → pendente
-- [ ] Artifacts de screenshots/logs preservados em falha → pendente
+- [x] Criar `.github/workflows/ci.yml` com gates locais (PR #30)
+- [x] CI falha se `scripts/verify-all.sh` falhar (job `static` chama `pnpm verify`)
+- [x] Artifacts de screenshots/logs preservados em falha (jobs `static` e `visual`)
 
 ---
 
@@ -261,9 +265,9 @@ Quatro waves de premium upgrade entregues após o Look Dev v2, elevando o nível
 - [x] Rubrica visual preenchida (5.0/5.0 nas waves 1-4)
 - [ ] FPS médio foi registrado em dispositivo real → pendente (Fase 7.3)
 - [ ] Dispositivo real testado → pendente (Fase 7.3)
-- [ ] Atribuição Sketchfab está visível e com link correto → implementado
-- [ ] Não há erros de console nos testes visuais → validado
-- [ ] Não há segredo ou placeholder de produção → validado
+- [x] Atribuição Sketchfab está visível e com link correto → verificada por teste (`credits.spec.ts`, Wave G)
+- [x] Não há erros de console nos testes visuais → verificada por teste (`console.spec.ts`, Wave G)
+- [x] Não há segredo ou placeholder de produção → validado (assets e código revisados)
 
 ---
 
@@ -308,15 +312,6 @@ triângulos/frame ~506 k → ~458 k. FPS não mensurável em headless (SwiftShad
 **Pendente:** FPS em dispositivo real · aprovação visual humana de
 iluminação/impacto · F4b (GLB ≤ 15 MB).
 
-### Wave B — Câmera cinematográfica (próxima)
-
-- [ ] B1 — `cameraPath.v2.ts`: Catmull-Rom + reparam. por arco + easing por beat
-- [ ] B2 — Arsenal: interpolação esférica (órbita real cruzando o eixo)
-- [ ] B3 — `beatController` → FOV punch e dolly lag por velocidade do Lenis
-- [ ] B4 — handheld noise (fbm de baixa frequência)
-- [ ] B5 — corrigir `prefers-reduced-motion` (hoje fixa a câmera em `fullBody`
-      para a página inteira, `CameraRig.tsx:52-61`)
-
 ### Wave B — Câmera cinematográfica (PR #19, merged)
 
 - [x] B1 — `camera/cameraPath.ts`: curva única de Catmull-Rom (centripetal) +
@@ -336,15 +331,6 @@ iluminação/impacto · F4b (GLB ≤ 15 MB).
 43–65 % dos pixels) · FPS em dispositivo real · recriar `console.spec.ts` e
 `credits.spec.ts` (perdidos — nunca commitados).
 
-### Wave A — Sujeito vivo (próxima)
-
-- [ ] A1 — `rig/restPose.ts`: capturar quaternions/posições de repouso dos 66 bones
-- [ ] A2 — `rig/proceduralMotion.ts`: respiração, sway, micro-tremor, deslocamento
-      de peso, follow-through de `Neck_05`/`Spine2`
-- [ ] A3 — head-tracking v2: slerp de quaternion, clamp com joelho suave, eye-lead
-- [ ] A4 — `rig/poses.ts`: pose por beat (guarda / tensão / punho / poster)
-- [ ] A5 — (condicional) repose do GLB no Blender, só se A4 falhar visualmente
-
 ### Wave A — Sujeito vivo (PR #21, merged)
 
 - [x] A1 — `rig/rigBones.ts`: rest pose capturada em runtime + mapa semântico
@@ -362,14 +348,6 @@ draw calls e `programs` inalterados · reduced-motion com diff de 0%.
 
 **Pendente:** olho humano nas poses de Evolution/Arsenal (se cruzar geometria,
 `POSE_AMPLITUDE = 0`) · FPS em dispositivo real.
-
-### Wave C — Efeitos autorais (próxima)
-
-- [ ] C1 — `materials/suitShader.ts`: fresnel rim + teia procedural animada
-- [ ] C2 — `materials/lensShader.ts`: iridescência + pulso emissivo
-- [ ] C3 — `fx/EffectsStack.tsx`: DOF com foco por beat + aberração cromática
-- [ ] C4 — Beat 2 com varredura de luz no shader do peito
-- [ ] C5 — `materialRegistry.ts` por nome real de material do GLB
 
 ### Wave C — Efeitos autorais (PR #23, merged)
 
