@@ -21,7 +21,8 @@
     "test:visual": "playwright test",
     "evidence:visual": "bash scripts/collect-visual-evidence.sh",
     "verify": "bash scripts/verify-all.sh",
-    "inspect:glb": "node scripts/inspect-glb.mjs"
+    "inspect:glb": "node scripts/inspect-glb.mjs",
+    "evidence:motion": "node scripts/collect-motion-evidence.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
