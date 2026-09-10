@@ -12,9 +12,14 @@
   - Draw calls por frame: **118–120 → 44–46** (−62 %)
   - `programs` estável em 10 (antes crescia 10 → 27 no scroll)
   - Evidências: `docs/evidence/wave-f-headroom/` (36 screenshots before/after)
-- **Próxima:** Wave B — câmera cinematográfica (curva de Catmull-Rom, orbit
-  esférico no Arsenal, punch de FOV por velocidade, correção do
-  `prefers-reduced-motion`)
+- **Wave B — Câmera (PR #19, merged):** curva única de Catmull-Rom com easing
+  por beat; Beat 3 com 85° de órbita real em torno do punho (antes 0,2°);
+  handheld noise fbm; FOV punch + dolly lag por velocidade; correção do
+  `prefers-reduced-motion` (antes travava a câmera em `fullBody`)
+  - Pico de mudança de direção: **133,9° → 62,1°** (−54 %), p95 20,2°
+  - Evidências: `docs/evidence/wave-b-camera/` (38 arquivos)
+- **Próxima:** Wave A — sujeito vivo (rig procedural: respiração, sway, poses
+  por beat, head-tracking com slerp)
 
 ### Implementado
 - 4 seções: Hero, Evolution, Arsenal, FullBody
@@ -57,14 +62,17 @@
 - PR #15: FullBody spec retroativa (Fase 6.9)
 - PR #16: adaptive post-processing (Fase 3.2)
 - PR #17: Wave F — headroom (iluminação por beat com slots fixos)
+- PR #18: docs sync pós-Wave F (ADR-008/009/010)
+- PR #19: Wave B — câmera cinematográfica (curva, órbita, velocidade)
 
 ## Próximos Passos (fila priorizada)
 
-0. **Wave B — câmera cinematográfica** (`feat/cinematic-camera-path`)
-   - Curva de Catmull-Rom com reparam. por arco + easing por beat
-   - Orbit esférico no Arsenal (fim do dolly reto)
-   - FOV punch / dolly lag por velocidade do Lenis
-   - Correção do `prefers-reduced-motion` (hoje trava em `fullBody`)
+0. **Wave A — sujeito vivo** (`feat/procedural-rig-motion`)
+   - Captura da rest pose Mixamo + camada additive de rig
+   - Respiração, sway, deslocamento de peso, micro-tremor, follow-through
+   - Head-tracking com slerp de quaternion (fim do Euler direto)
+   - Poses por beat (guarda / tensão / punho / poster)
+0. **Recriar `console.spec.ts` e `credits.spec.ts`** (perdidos, nunca commitados)
 0. **F4b — comprimir geometria do GLB** (meshopt/quantização; exige re-export + ADR)
 0. **FPS em dispositivo real** (iPhone 12 / Android mid) — bloqueia critério de performance
 
@@ -99,13 +107,16 @@
 - ADR-008: BeatController como única fonte de verdade narrativa
 - ADR-009: Slots de luz permanentes (proibido montar/desmontar luz em runtime)
 - ADR-010: Instrumentação de performance (`window.__perf`) e política de dpr
+- ADR-011: Câmera por curva única de Catmull-Rom com easing por beat
 
 ## Métricas
 
 - **Commits:** 35+ (4 iniciais + 31 waves/specs/fixes/docs)
 - **PRs:** 16 (todos merged)
-- **Visual tests:** 48 (47 + 1 reexecutado isolado por timeout de ambiente)
-- **Unit tests:** 11 (beat timeline + invariantes de iluminação)
+- **Visual tests:** 27 (+6 de reduced-motion) — ⚠️ `console.spec.ts` e
+  `credits.spec.ts` (fila `test/visual-gaps`) foram perdidos: nunca foram
+  commitados e não estão mais no working tree. Precisam ser recriados.
+- **Unit tests:** 27 (beat timeline · invariantes de iluminação · câmera)
 - **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —
   critérios de iluminação/impacto da Wave F aguardam aprovação humana
 - **Draw calls/frame:** 44–46 (tier medium/high) · 11–13 (low) — antes 118–120

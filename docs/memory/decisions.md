@@ -324,3 +324,66 @@ perfil.
 - ✅ Orçamento passível de asserção automatizada (Wave G)
 - ✅ Evidência mensurável nos PRs em vez de impressão subjetiva
 - ⚠️ FPS medido em headless é inválido (SwiftShader) — exige dispositivo real
+
+---
+
+## ADR-011: Câmera por curva única de Catmull-Rom com easing por beat
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #19)
+
+### Contexto
+
+`CameraRig` interpolava posição, `lookAt` e `fov` linearmente sobre o progresso
+de cada segmento de `cameraPath.ts`. Isso produzia velocidade constante e uma
+descontinuidade de direção (C1) em cada uma das cinco fronteiras de beat —
+medido: pico de **133,9°** entre deslocamentos consecutivos amostrados a cada
+1% de scroll, contra 0° no interior dos segmentos (que eram retos). Além disso,
+os keyframes do Arsenal moviam **0,2°** de azimute em relação ao punho: o
+"orbit" do Beat 3 era um dolly reto.
+
+Aplicar apenas easing por segmento não resolve: com easing que zera a derivada
+nas duas pontas, a câmera para em cada fronteira e o pico de direção continua.
+
+### Decisão
+
+Uma **única** `CatmullRomCurve3` (`centripetal`, que lida bem com espaçamento
+irregular de pontos) por breakpoint, atravessando todos os pontos de controle
+na ordem do passeio. Cada beat mapeia para uma faixa de índices da curva e
+aplica seu próprio easing ao progresso local antes de amostrar:
+
+- `hero` estático · `chapter1` smoothstep · `evolution` easeInOutCubic ·
+  `chapter2` smoothstep · `arsenal` smoothstep · `fullBody` easeOutCubic
+
+Beat 3 passa a ser gerado em coordenadas esféricas em torno de
+`WRIST_POSITION`: **85° de varredura de azimute** (spec exige ≥ 60°).
+
+Pontos auxiliares distribuem as duas reversões de percurso: `OVERSHOOT` (a
+câmera continua o push-in após o close-up do peito), `APPROACH` (aproximação
+aberta antes do arco) e `RELEASE` (início do recuo antes do FullBody).
+
+Complementos: ruído fbm de 3 oitavas em posição/lookAt (handheld), `FOV punch`
+(±2°) e `dolly lag` (≤ 0.12) por velocidade do scroll — ambos desligados em
+tier `low` e em `prefers-reduced-motion`.
+
+### Alternativas Consideradas
+
+1. **Easing por segmento mantendo segmentos retos** — rejeitado: medido, o pico
+   de direção não cai (a câmera apenas passa a parar em cada fronteira)
+2. **Curva única sem easing por beat** — rejeitado: todos os beats teriam o
+   mesmo ritmo, perdendo o "assentar" do recuo final
+3. **Catmull-Rom `catmullrom` (uniforme)** — rejeitado: com espaçamento irregular
+   entre pontos de controle produzia kinks de até 97°
+4. **Keyframes do Arsenal mantidos** — rejeitado: 0,2° de azimute não é órbita
+
+### Consequências
+
+- ✅ Pico de mudança de direção 133,9° → **62,1°** (−54 %); p95 20,2°
+- ✅ Beat 3 com 85° de varredura — a travessia de eixo que o beat exigia
+- ✅ `prefers-reduced-motion` corrigido: enquadramento estático por seção em vez
+  de `fullBody` na página inteira (o Hero era exibido como corpo inteiro)
+- ✅ Draw calls e `programs` inalterados (44–46 e 10)
+- ⚠️ Pico residual de 62° é de *staging* (recuo obrigatório do close-up até o
+  punho), não de implementação
+- ⚠️ Evolution/Arsenal/FullBody mudaram muito visualmente (43–65 % dos pixels
+  no mobile) — exigiu aprovação visual humana

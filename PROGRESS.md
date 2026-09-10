@@ -316,3 +316,31 @@ iluminação/impacto · F4b (GLB ≤ 15 MB).
 - [ ] B4 — handheld noise (fbm de baixa frequência)
 - [ ] B5 — corrigir `prefers-reduced-motion` (hoje fixa a câmera em `fullBody`
       para a página inteira, `CameraRig.tsx:52-61`)
+
+### Wave B — Câmera cinematográfica (PR #19, merged)
+
+- [x] B1 — `camera/cameraPath.ts`: curva única de Catmull-Rom (centripetal) +
+      reparam. por beat + easing por beat
+- [x] B2 — Arsenal: arco gerado em coordenadas esféricas (85° de azimute,
+      baseline 0,2°)
+- [x] B3 — FOV punch (±2°) e dolly lag (≤0.12) por `BeatState.velocity`
+- [x] B4 — handheld noise fbm (3 oitavas) em posição e lookAt
+- [x] B5 — `prefers-reduced-motion` com enquadramento estático por seção
+      (fim do `fullBody` global)
+- [x] `CameraRig` passa a consumir o `BeatProvider` (fim do ScrollTrigger duplicado)
+
+**Medições:** pico de mudança de direção 133,9° → **62,1°** (−54 %) · p95 20,2° ·
+órbita do Beat 3 **85°** · draw calls e `programs` inalterados.
+
+**Pendente:** aprovação visual humana (evolution/arsenal no mobile mudaram
+43–65 % dos pixels) · FPS em dispositivo real · recriar `console.spec.ts` e
+`credits.spec.ts` (perdidos — nunca commitados).
+
+### Wave A — Sujeito vivo (próxima)
+
+- [ ] A1 — `rig/restPose.ts`: capturar quaternions/posições de repouso dos 66 bones
+- [ ] A2 — `rig/proceduralMotion.ts`: respiração, sway, micro-tremor, deslocamento
+      de peso, follow-through de `Neck_05`/`Spine2`
+- [ ] A3 — head-tracking v2: slerp de quaternion, clamp com joelho suave, eye-lead
+- [ ] A4 — `rig/poses.ts`: pose por beat (guarda / tensão / punho / poster)
+- [ ] A5 — (condicional) repose do GLB no Blender, só se A4 falhar visualmente
