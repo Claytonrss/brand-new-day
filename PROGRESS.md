@@ -344,3 +344,29 @@ iluminação/impacto · F4b (GLB ≤ 15 MB).
 - [ ] A3 — head-tracking v2: slerp de quaternion, clamp com joelho suave, eye-lead
 - [ ] A4 — `rig/poses.ts`: pose por beat (guarda / tensão / punho / poster)
 - [ ] A5 — (condicional) repose do GLB no Blender, só se A4 falhar visualmente
+
+### Wave A — Sujeito vivo (PR #21, merged)
+
+- [x] A1 — `rig/rigBones.ts`: rest pose capturada em runtime + mapa semântico
+- [x] A2 — camadas procedurais: respiração, sway, peso, tremor, pernas
+- [x] A3 — head-tracking v2: slerp de quaternion, soft clamp, follow-through
+- [x] A4 — `rig/poses.ts`: poses por beat com `POSE_AMPLITUDE`
+- [x] A5 — não necessário (repose no Blender fica como plano B)
+
+**Achado crítico:** o nome do joint no `useGLTF` é sanitizado
+(`mixamorigHead_06`, sem `:`), então o head-tracking do Beat 1 nunca resolveu e
+o modelo inteiro girava. Corrigido; 16 joints resolvidos.
+
+**Medições:** follow-through 0,037 > 0,004 > 0,0006 · clamp de yaw em 0,48 rad ·
+draw calls e `programs` inalterados · reduced-motion com diff de 0%.
+
+**Pendente:** olho humano nas poses de Evolution/Arsenal (se cruzar geometria,
+`POSE_AMPLITUDE = 0`) · FPS em dispositivo real.
+
+### Wave C — Efeitos autorais (próxima)
+
+- [ ] C1 — `materials/suitShader.ts`: fresnel rim + teia procedural animada
+- [ ] C2 — `materials/lensShader.ts`: iridescência + pulso emissivo
+- [ ] C3 — `fx/EffectsStack.tsx`: DOF com foco por beat + aberração cromática
+- [ ] C4 — Beat 2 com varredura de luz no shader do peito
+- [ ] C5 — `materialRegistry.ts` por nome real de material do GLB

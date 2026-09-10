@@ -18,8 +18,15 @@
   `prefers-reduced-motion` (antes travava a câmera em `fullBody`)
   - Pico de mudança de direção: **133,9° → 62,1°** (−54 %), p95 20,2°
   - Evidências: `docs/evidence/wave-b-camera/` (38 arquivos)
-- **Próxima:** Wave A — sujeito vivo (rig procedural: respiração, sway, poses
-  por beat, head-tracking com slerp)
+- **Wave A — Sujeito vivo (PR #21, merged):** camada procedural aditiva sobre a
+  rest pose — respiração, sway, deslocamento de peso, micro-tremor, poses por
+  beat e head-tracking com slerp + follow-through.
+  - **Achado:** o lookup de joints usava o nome cru do glTF (`mixamorig:Head_06`)
+    mas o loader sanitiza para `mixamorigHead_06` — o Beat 1 "olhar que segue"
+    nunca existiu; o modelo inteiro girava ~4°. Agora 16 joints são resolvidos.
+  - Evidências: `docs/evidence/wave-a-rig/` (38 arquivos)
+- **Próxima:** Wave C — efeitos autorais (teia animada no shader, fresnel rim,
+  DOF com foco por beat)
 
 ### Implementado
 - 4 seções: Hero, Evolution, Arsenal, FullBody
@@ -64,14 +71,15 @@
 - PR #17: Wave F — headroom (iluminação por beat com slots fixos)
 - PR #18: docs sync pós-Wave F (ADR-008/009/010)
 - PR #19: Wave B — câmera cinematográfica (curva, órbita, velocidade)
+- PR #20: docs sync pós-Wave B (ADR-011)
+- PR #21: Wave A — rig procedural (sujeito vivo)
 
 ## Próximos Passos (fila priorizada)
 
-0. **Wave A — sujeito vivo** (`feat/procedural-rig-motion`)
-   - Captura da rest pose Mixamo + camada additive de rig
-   - Respiração, sway, deslocamento de peso, micro-tremor, follow-through
-   - Head-tracking com slerp de quaternion (fim do Euler direto)
-   - Poses por beat (guarda / tensão / punho / poster)
+0. **Wave C — efeitos autorais** (`feat/authorial-shaders-fx`)
+   - Teia procedural animada no material `Webs` + fresnel rim no traje
+   - Iridescência e pulso emissivo na `Lense`
+   - DOF com distância focal por beat + aberração cromática modulada
 0. **Recriar `console.spec.ts` e `credits.spec.ts`** (perdidos, nunca commitados)
 0. **F4b — comprimir geometria do GLB** (meshopt/quantização; exige re-export + ADR)
 0. **FPS em dispositivo real** (iPhone 12 / Android mid) — bloqueia critério de performance
@@ -108,6 +116,7 @@
 - ADR-009: Slots de luz permanentes (proibido montar/desmontar luz em runtime)
 - ADR-010: Instrumentação de performance (`window.__perf`) e política de dpr
 - ADR-011: Câmera por curva única de Catmull-Rom com easing por beat
+- ADR-012: Movimento procedural do rig sobre a rest pose (sem clips no GLB)
 
 ## Métricas
 
@@ -116,7 +125,9 @@
 - **Visual tests:** 27 (+6 de reduced-motion) — ⚠️ `console.spec.ts` e
   `credits.spec.ts` (fila `test/visual-gaps`) foram perdidos: nunca foram
   commitados e não estão mais no working tree. Precisam ser recriados.
-- **Unit tests:** 27 (beat timeline · invariantes de iluminação · câmera)
+- **Unit tests:** 42 (beat timeline · invariantes de iluminação · câmera · rig)
+- **Movimento verificado:** 15 asserções em `motion.spec.ts` (respiração avança,
+  ponteiro é clampado, follow-through ordenado, reduced-motion congela)
 - **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —
   critérios de iluminação/impacto da Wave F aguardam aprovação humana
 - **Draw calls/frame:** 44–46 (tier medium/high) · 11–13 (low) — antes 118–120
