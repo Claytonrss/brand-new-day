@@ -445,3 +445,92 @@ erro".
   do asset ainda não foi inspecionada pose a pose
 - ⚠️ Em dispositivos muito lentos (~2 FPS) o clamp de `dt` faz o tempo simulado
   avançar devagar; aceito, porque o alvo é 45+ FPS
+
+---
+
+## ADR-015: Atmosfera em GPU (movimento no vertex shader)
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #26)
+
+### Contexto
+
+O `Particles.tsx` anterior movia um buffer fixo **na CPU**: 200 pontos subindo
+na vertical com velocidade, tamanho e opacidade uniformes, sem turbulência e
+sem qualquer relação com a câmera. Em close-up cada ponto era um quadrado do
+mesmo tamanho — uma cortina de poeira chapada, incapaz de criar profundidade.
+
+### Decisão
+
+Todo o movimento vai para o **vertex shader** (`atmosphere/particlesShader.ts`):
+drift com wrap no volume, turbulência por senos defasados por partícula,
+**parallax por camada** relativo a `camera.position`, fade por distância e
+sprite circular. A CPU só gera os atributos estáticos uma vez.
+
+Três camadas com drift/parallax/tamanho/opacidade independentes. Budget
+420 (high) / 180 (medium) / 0 (low). **Um draw call** para toda a atmosfera.
+
+Complemento: `<fogExp2>` na cor de fundo dá separação e dessaturação por
+profundidade **sem passe extra**.
+
+### Alternativas Consideradas
+
+1. **Mais partículas na CPU** — rejeitado: custo por frame e nenhum ganho de
+   profundidade (o problema era o modelo de movimento, não a contagem)
+2. **Textura de sprite** — rejeitado: forma circular no shader evita asset
+3. **God rays como passe de post-processing** — rejeitado nesta wave: custo de
+   passe e o orçamento mobile já está no limite
+
+### Consequências
+
+- ✅ 1 draw call; contagem por tier sem custo de CPU
+- ✅ Profundidade real (parallax), não decoração
+- ⚠️ Parallax não aparece em screenshot — verificação depende de movimento
+- ⚠️ Densidade da névoa (0,022) pode estar alta em close-up; validar a olho
+
+---
+
+## ADR-016: Estado de interação mutável + piscada por obturador
+
+**Data:** 2026-09-09
+**Status:** ✅ Aprovado (PR #26)
+
+### Contexto
+
+Não havia interação direta com o personagem: o canvas é `pointer-events: none`
+(as seções HTML rolam por cima), então nem arrastar, nem tocar, nem gesto. E o
+asset **não tem pálpebras**: os olhos são lentes rígidas.
+
+### Decisão
+
+**Interação** com estado mutável (`interaction/interactionStore.ts`), no mesmo
+padrão de `anchorStore` e dos uniforms de FX — escrever estado React a cada
+`pointermove` re-renderizaria a árvore. Listeners no `window`:
+
+- arrastar orbita o grupo do modelo (±12°) com clamp suave e mola de retorno
+- `deviceorientation` (calibrado na primeira leitura) para parallax no mobile
+- teia no Beat 3 (`THREE.Line` reutilizado, origem na âncora medida, queda
+  quadrática) + tranco de FOV
+- luz de recorte segue o cursor
+
+**Piscada** por obturador de shader, porque não há pálpebra: pálpebra superior
+e inferior na cor do traje (E) + compressão da lente (D), eixo medido do
+bounding box real do mesh — não do UV.
+
+### Alternativas Consideradas
+
+1. **Estado React por evento de ponteiro** — rejeitado: re-render a 60 Hz
+2. **`pointer-events: auto` no canvas** — rejeitado: quebra o scroll
+   storytelling (as seções precisam receber o gesto)
+3. **Piscada por UV** — rejeitado: se algum mesh tiver UV rotacionado, a fenda
+   sai horizontal; o bounding box é invariante
+4. **Pálpebras no Blender já** — adiado: exige re-export e ADR; registrado como
+   TD-001 com plano (B) definido
+
+### Consequências
+
+- ✅ Arrastar, giroscópio, teia e piscada verificados por testes de browser
+- ✅ Nada disso roda em `prefers-reduced-motion` (teste dedicado)
+- ✅ Piscada fecha 98,1% dos pixels de lente no ápice (critério era ≥80%)
+- ⚠️ Piscada é estilizada; o resultado definitivo é a opção B (TD-001)
+- ⚠️ Giroscópio não é verificável em headless — pendente de dispositivo real

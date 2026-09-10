@@ -76,11 +76,10 @@
 
 ## Próximos Passos (fila priorizada)
 
-0. **Wave C — efeitos autorais** (`feat/authorial-shaders-fx`)
-   - Teia procedural animada no material `Webs` + fresnel rim no traje
-   - Iridescência e pulso emissivo na `Lense`
-   - DOF com distância focal por beat + aberração cromática modulada
-0. **Recriar `console.spec.ts` e `credits.spec.ts`** (perdidos, nunca commitados)
+0. **Wave G — verificação** (`test/wave-g-verification`)
+   - `budget.spec.ts`: draw calls e `programs` por tier
+   - Recriar `console.spec.ts` e `credits.spec.ts` (perdidos, nunca commitados)
+   - Evidência em vídeo do movimento (parallax não aparece em screenshot)
 0. **F4b — comprimir geometria do GLB** (meshopt/quantização; exige re-export + ADR)
 0. **FPS em dispositivo real** (iPhone 12 / Android mid) — bloqueia critério de performance
 
