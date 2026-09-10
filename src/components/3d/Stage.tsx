@@ -15,6 +15,9 @@ import { BREAKPOINTS } from '../../design/breakpoints';
  */
 export function Stage() {
   const { size } = useThree();
+  const debug =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('debug') === '1';
 
   const isMobile = size.width < BREAKPOINTS.MOBILE;
   const modelScale = isMobile ? 0.9 : 1.1;
@@ -30,6 +33,7 @@ export function Stage() {
         position={modelPosition}
         rotation={[0, isMobile ? 0 : -0.25, 0]}
         pointerTracking
+        debug={debug}
       />
     </>
   );

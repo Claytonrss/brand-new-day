@@ -4,6 +4,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useBeat } from './beat/beatContext';
+import { useQualityProfile } from './qualityContext';
+import { collectRigBones, captureRestPose, type RestPose, type BoneRole } from './rig/rigBones';
+import { useProceduralRig } from './rig/useProceduralRig';
+import { useWindowPointer, windowPointer } from './rig/windowPointer';
 
 const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
 
@@ -12,52 +17,47 @@ interface SpiderManModelProps {
   scale?: number;
   position?: [number, number, number];
   rotation?: [number, number, number];
+  /** Publishes `window.__rig` with the head quaternion (used by motion tests). */
+  debug?: boolean;
 }
 
 /**
- * Window-level pointer tracking.
- * Normalized to [-1, 1] range. Works even when Canvas is pointer-events:none
- * (required for scroll storytelling where Canvas is behind scrollable content).
+ * SpiderManModel — the shared character.
+ *
+ * The GLB has no animation clips (`animations: 0`), so all movement is
+ * procedural and applied as additive offsets over the captured rest pose
+ * (`rig/`). Camera and lighting live elsewhere (`CameraRig`, `LightRig`).
+ *
+ * @see docs/specs/procedural-rig-motion.md
  */
-const windowPointer = { x: 0, y: 0 };
-
-function useWindowPointer() {
-  useEffect(() => {
-    const handler = (e: PointerEvent) => {
-      windowPointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-      windowPointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('pointermove', handler);
-    return () => window.removeEventListener('pointermove', handler);
-  }, []);
-}
-
 export function SpiderManModel({
   pointerTracking = true,
   scale = 1,
   position = [0, -3.8, 0],
   rotation = [0, 0, 0],
+  debug = false,
 }: SpiderManModelProps) {
   const gl = useThree((state) => state.gl);
   const extendLoader = useMemo(() => extendGltfLoaderWithKtx2(gl), [gl]);
   const { scene, nodes } = useGLTF(MODEL_PATH, false, true, extendLoader);
   const groupRef = useRef<THREE.Group>(null);
-  const headBoneRef = useRef<THREE.Object3D | null>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const hasHover = useMediaQuery('(hover: hover)');
+  const { beat } = useBeat();
+  const profile = useQualityProfile();
 
   // Track pointer at window level (works with pointer-events:none Canvas)
   useWindowPointer();
+  const pointerRef = useRef(windowPointer);
 
   useEffect(() => {
     useGLTF.preload(MODEL_PATH, false, true, extendLoader);
   }, [extendLoader]);
 
-  const targetRotation = useRef({ x: 0, y: 0 });
-  const idleTime = useRef(0);
-  const isIdle = useRef(false);
-  const lastPointerMove = useRef(Date.now());
+  const bones = useMemo(() => collectRigBones(nodes as Record<string, THREE.Object3D>), [nodes]);
+  const restRef = useRef<Map<BoneRole, RestPose>>(new Map());
 
+  // Material curation — per-material intent (eyes, chest symbol, metal, fabric)
   useEffect(() => {
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
@@ -103,56 +103,28 @@ export function SpiderManModel({
         }
       }
     });
-
-    if (nodes['mixamorig:Head_06']) {
-      headBoneRef.current = nodes['mixamorig:Head_06'];
-    }
   }, [scene, nodes]);
 
-  useFrame((_, delta) => {
-    if (!pointerTracking || prefersReducedMotion) return;
+  // Capture the authored pose before any layer touches it
+  useEffect(() => {
+    restRef.current = captureRestPose(bones);
+  }, [bones]);
 
-    const pointerX = windowPointer.x; // -1 to 1
-    const pointerY = windowPointer.y; // -1 to 1
+  useProceduralRig({
+    bones,
+    rest: restRef.current,
+    beat,
+    pointerRef,
+    headTracking: pointerTracking,
+    hasHover,
+    tier: profile.tier,
+    prefersReducedMotion,
+    debug,
+  });
 
-    // Detect idle: no pointer movement for 3 seconds
-    const pointerMagnitude = Math.abs(pointerX) + Math.abs(pointerY);
-    if (pointerMagnitude > 0.01) {
-      lastPointerMove.current = Date.now();
-      isIdle.current = false;
-    } else if (Date.now() - lastPointerMove.current > 3000) {
-      isIdle.current = true;
-    }
-
-    // Touch devices (no hover) always use idle drift
-    if (!hasHover) {
-      isIdle.current = true;
-    }
-
-    let targetX: number;
-    let targetY: number;
-
-    if (isIdle.current) {
-      // Autonomous idle drift — slow sine wave
-      idleTime.current += delta * 0.3;
-      targetX = Math.sin(idleTime.current * 0.7) * 0.08; // subtle pitch (±0.08 rad)
-      targetY = Math.sin(idleTime.current) * 0.12; // subtle yaw (±0.12 rad)
-    } else {
-      // Mouse tracking — Beat 1 spec: yaw ±0.48 rad, pitch ±0.24 rad
-      targetX = -pointerY * 0.24; // pitch
-      targetY = pointerX * 0.48; // yaw
-    }
-
-    const t = 1 - Math.exp(-4 * delta);
-    targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, targetX, t);
-    targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, targetY, t);
-
-    if (headBoneRef.current) {
-      headBoneRef.current.rotation.y = targetRotation.current.y;
-      headBoneRef.current.rotation.x = targetRotation.current.x;
-    } else if (groupRef.current) {
-      groupRef.current.rotation.y = rotation[1] + targetRotation.current.y * 0.15;
-    }
+  // Keep the pointer ref pointing at the live window state
+  useFrame(() => {
+    pointerRef.current = windowPointer;
   });
 
   return (
