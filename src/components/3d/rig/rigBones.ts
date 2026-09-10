@@ -143,7 +143,14 @@ export function applyOffset(
  * because the authored rest pose is turned (the desktop model carries a
  * -0.25 rad yaw). `headYawTarget` recentres the neutral pose on the camera.
  */
-export const HEAD_LIMIT = { yawRight: 0.42, yawLeft: 0.3, pitch: 0.24 } as const;
+export const HEAD_LIMIT = { yawRight: 0.36, yawLeft: 0.3, pitch: 0.24 } as const;
+
+/**
+ * Total yaw authority, including the recentring bias (Beat 1 spec: 25-30°).
+ * On desktop the bias is +0.15 rad, so the right pointer range is 0.36 to keep
+ * the total at ~0.51 rad (~29°).
+ */
+export const HEAD_TOTAL_LIMIT = 0.52;
 
 /** Neutral yaw compensation applied per unit of model rotation. */
 export const HEAD_BIAS_FACTOR = -0.6;

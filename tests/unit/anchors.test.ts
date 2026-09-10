@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import * as THREE from 'three';
 import { ANCHORS, updateAnchors } from '../../src/components/3d/rig/anchorStore';
 import { BONE_NAMES, type RigBones } from '../../src/components/3d/rig/rigBones';
-import { headYawTarget, HEAD_LIMIT } from '../../src/components/3d/rig/rigBones';
+import { headYawTarget, HEAD_LIMIT, HEAD_TOTAL_LIMIT } from '../../src/components/3d/rig/rigBones';
 import { CameraTrack, createCameraSample } from '../../src/components/3d/camera/cameraPath';
 
 /** Build a fake skeleton whose bones sit at given world positions. */
@@ -121,11 +121,18 @@ describe('head yaw targeting', () => {
     expect(headYawTarget(0, -0.25)).toBeCloseTo(0.15, 6);
   });
 
-  it('never exceeds the configured limits', () => {
+  it('never exceeds the configured per-side limits', () => {
     for (const x of [-5, -1, 0, 1, 5]) {
       const yaw = headYawTarget(x, 0);
       expect(yaw).toBeLessThanOrEqual(HEAD_LIMIT.yawRight + 1e-6);
       expect(yaw).toBeGreaterThanOrEqual(-HEAD_LIMIT.yawLeft - 1e-6);
+    }
+  });
+
+  it('keeps the total yaw (bias included) inside the Beat 1 spec', () => {
+    for (const x of [-5, -1, 0, 1, 5]) {
+      const yaw = headYawTarget(x, -0.25);
+      expect(Math.abs(yaw)).toBeLessThanOrEqual(HEAD_TOTAL_LIMIT + 1e-6);
     }
   });
 });

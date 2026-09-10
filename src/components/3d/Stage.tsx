@@ -27,6 +27,9 @@ export function Stage() {
   return (
     <>
       <color attach="background" args={[COLORS.ink]} />
+      {/* Exponential fog: separates subject from background and desaturates
+          whatever recedes, without a post-processing pass. */}
+      <fogExp2 attach="fog" args={[COLORS.ink, 0.022]} />
 
       <SpiderManModel
         scale={modelScale}

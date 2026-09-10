@@ -103,7 +103,8 @@ test.describe('Procedural rig', () => {
     expect(right?.pointer[0] ?? 0).toBeGreaterThan(0);
     expect(left?.target[0] ?? 0).toBeLessThan(0);
     expect(right?.target[0] ?? 0).toBeGreaterThan(0);
-    expect(Math.abs(right?.target[0] ?? 0)).toBeLessThanOrEqual(0.48);
+    // Beat 1 spec: 25-30 degrees of total yaw (bias included)
+    expect(Math.abs(right?.target[0] ?? 0)).toBeLessThanOrEqual(0.52);
 
     // yaw lives in the Y component of the head quaternion and must travel
     // toward the new target (this environment renders too slowly for the
