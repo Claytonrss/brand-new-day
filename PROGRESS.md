@@ -370,3 +370,35 @@ draw calls e `programs` inalterados · reduced-motion com diff de 0%.
 - [ ] C3 — `fx/EffectsStack.tsx`: DOF com foco por beat + aberração cromática
 - [ ] C4 — Beat 2 com varredura de luz no shader do peito
 - [ ] C5 — `materialRegistry.ts` por nome real de material do GLB
+
+### Wave C — Efeitos autorais (PR #23, merged)
+
+- [x] C1 — `materials/suitShader.ts`: fresnel rim + teia procedural animada
+- [x] C2 — `materials/lensShader.ts`: iridescência + pulso emissivo
+- [x] C3 — `EffectsStack`: DOF com foco por beat + aberração cromática
+- [x] C4 — Beat 2 com banda de luz no shader
+- [x] C5 — `curateMaterials` por nome real (bug do `webshotter` corrigido)
+- [x] Modos `?fx=off|subtle|full` (padrão `subtle`)
+
+**Correções na wave:** DOF sem `focusRange` desfocava tudo; `uTime` animava sob
+`reduced-motion`; brilho/metal reduzidos após review.
+
+**Pendente:** suíte visual completa (timeout por contenção de CPU) · aprovação
+visual do modo padrão · FPS real.
+
+### P0 — Calibração (PR #24, merged)
+
+- [x] Âncoras do mundo derivadas do esqueleto (`anchorStore`)
+- [x] Correção da mira de Evolution (axila → peito) e Arsenal (lançador)
+- [x] Pose do Arsenal: antebraço a ~63°, câmera abaixo do punho
+- [x] Cabeça: bias da rest pose + limites assimétricos (0,42 dir / 0,30 esq)
+- [x] Easing linear nos beats intermediários (fim do para-e-anda)
+
+**Pendente:** aprovação visual do enquadramento/pose · suíte visual completa ·
+FPS real.
+
+### Wave E — Atmosfera com profundidade (próxima)
+
+- [ ] E1 — partículas em GPU (turbulência, 3 camadas de parallax, 1 draw call)
+- [ ] E2 — motas reagindo ao spotlight do Beat 2
+- [ ] E3 — `FogExp2` + dessaturação por profundidade
