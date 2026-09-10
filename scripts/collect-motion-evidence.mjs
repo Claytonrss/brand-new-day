@@ -47,9 +47,12 @@ for (const viewport of VIEWPORTS) {
   await page.waitForTimeout(2500);
 
   for (let step = 0; step <= STEPS; step++) {
+    // globalThis instead of window/document: this callback runs in the browser,
+    // but eslint analyses the file as Node code (no-undef).
     await page.evaluate((fraction) => {
-      const max = document.body.scrollHeight - window.innerHeight;
-      window.scrollTo(0, max * fraction);
+      const view = globalThis;
+      const max = view.document.body.scrollHeight - view.innerHeight;
+      view.scrollTo(0, max * fraction);
     }, step / STEPS);
     await page.waitForTimeout(STEP_MS);
   }

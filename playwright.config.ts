@@ -6,7 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 2 : 3,
-  timeout: 120_000, // 120s for heavier pipeline (50MB GLB + Environment HDR + post-processing + desktop rendering)
+  // Software rendering (SwiftShader) is the norm both in CI and on machines
+  // without a spare GPU: the 22MB GLB + environment + post-processing can push
+  // a single test past 2 minutes.
+  timeout: 240_000,
   reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
   outputDir: 'test-results/playwright',
   use: {
@@ -18,7 +21,7 @@ export default defineConfig({
     command: 'pnpm run dev -- --host 127.0.0.1',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 240_000,
   },
   projects: [
     {
