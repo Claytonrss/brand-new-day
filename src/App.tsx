@@ -4,6 +4,7 @@ import { LenisProvider } from './components/LenisProvider';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { Stage } from './components/3d/Stage';
+import { Atmosphere } from './components/3d/Atmosphere';
 import { LightRig } from './components/3d/lighting/LightRig';
 import { BeatProvider } from './components/3d/beat/BeatProvider';
 import { PerfHud } from './components/ui/PerfHud';
@@ -95,6 +96,7 @@ export function App() {
             <BeatProvider>
               <CameraRig />
               <Stage />
+              <Atmosphere />
               <LightRig />
               <EffectsStack />
               <WebShoot />

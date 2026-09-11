@@ -11,6 +11,7 @@ import {
 import { BlendFunction, type ChromaticAberrationEffect, type DepthOfFieldEffect } from 'postprocessing';
 import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
+import type { BeatId } from './beat/beats';
 import { useQualityProfile } from './qualityContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../design/breakpoints';
@@ -20,6 +21,20 @@ import { FX_POST_ENABLED } from '../../design/fxFlags';
 /** Chromatic aberration limits (NDC offset). */
 const CA_MAX = 0.0015;
 const CA_K = 0.0006;
+
+/**
+ * Grain multiplier per beat (docs/specs/atmosphere-per-beat.md §3):
+ * Hero has the most texture, the reveal/colophon are nearly clean.
+ */
+const GRAIN: Record<BeatId, number> = {
+  hero: 1.3,
+  chapter1: 0.9,
+  evolution: 1.1,
+  chapter2: 0.9,
+  arsenal: 0.6,
+  fullBody: 0.35,
+  colophon: 0.2,
+};
 
 /**
  * EffectsStack — post-processing with beat-aware, authorial passes.
@@ -36,7 +51,7 @@ export function EffectsStack() {
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
-  const { stateRef } = useBeat();
+  const { beat, stateRef } = useBeat();
   const { anchor, bokehRef } = useMaterialFx(isMobile, prefersReducedMotion);
 
   const dofRef = useRef<DepthOfFieldEffect>(null);
@@ -107,7 +122,11 @@ export function EffectsStack() {
       )}
 
       {profile.noise.enabled && (
-        <Noise premultiply blendFunction={BlendFunction.ADD} opacity={profile.noise.opacity} />
+        <Noise
+          premultiply
+          blendFunction={BlendFunction.ADD}
+          opacity={profile.noise.opacity * GRAIN[beat]}
+        />
       )}
     </EffectComposer>
   );

@@ -438,8 +438,10 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P1c — Atmosfera por beat (ritmo)
 
-- [ ] P1c.1 — Assinatura de atmosfera por beat + crossfades
-      (`docs/specs/atmosphere-per-beat.md`)
+- [x] P1c.1 — Assinatura de atmosfera por beat + crossfades
+      (`docs/specs/atmosphere-per-beat.md`) — densidade/opacidade de partículas,
+      névoa e grão dirigidos pelo `BeatProvider`; evidência
+      `docs/evidence/atmosphere-per-beat/`
 
 ### Wave P2a — Arsenal macro + HUD
 
