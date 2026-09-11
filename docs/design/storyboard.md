@@ -43,6 +43,17 @@ e só no final recua para o corpo inteiro — a revelação é o pagamento do sc
 - Corpo: `SPIDER-MAN: BRAND NEW DAY chega aos cinemas em 31 de julho de 2026.`
 - Atribuição: `Modelo 3D "Spider-Man Brand New Day" por Eskze, licenciado sob CC-BY 4.0` com link para https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda
 
+> **Nota (ADR-017):** a implementação usava "UM HERÓI QUALQUER." divergente da
+> copy fechada abaixo. A decisão é **voltar ao storyboard** e incluir a data —
+> a única informação concreta do filme.
+
+### Colophon (novo — ADR-019, fechamento de portfólio)
+- Kicker: `Colofon`
+- Título: `Feito à mão.`
+- Corpo: `Uma cena interativa construída com React Three Fiber, GSAP e um modelo de 66 joints sem um único clipe de animação — todo o movimento é procedural.`
+- Stack: `React 19 · Three.js · GSAP ScrollTrigger · Lenis · WebGL`
+- Atribuição CC-BY permanente + CTA único (`ver o código →`).
+
 ## Regras
 
 - O texto é tratado como parte da composição — posição, escala e alinhamento
