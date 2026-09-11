@@ -4,7 +4,7 @@ export function HeroOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex min-h-dvh flex-col justify-between p-6 sm:p-12 md:p-16">
       {/* Top Header / Metadata */}
-      <header className="flex items-center justify-between">
+      <header className="parallax-mid flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full bg-signal shadow-[0_0_8px_#c23b34]" aria-hidden="true" />
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
@@ -17,7 +17,7 @@ export function HeroOverlay() {
       </header>
 
       {/* Hero Copy — Safe zone: Bottom on mobile, Left on desktop */}
-      <section aria-labelledby="hero-title" className="max-w-[82vw] md:max-w-[480px] lg:max-w-[560px]">
+      <section aria-labelledby="hero-title" className="parallax-near max-w-[82vw] md:max-w-[480px] lg:max-w-[560px]">
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
           Spider-Man: Brand New Day
         </p>

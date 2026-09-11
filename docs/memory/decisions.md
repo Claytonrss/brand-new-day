@@ -614,3 +614,154 @@ bounding box real do mesh — não do UV.
 - ✅ Piscada fecha 98,1% dos pixels de lente no ápice (critério ≥ 80%)
 - ⚠️ Giroscópio não é verificável em headless — pendente de dispositivo real
 - ⚠️ Resultado definitivo da piscada é a opção B (TD-001)
+
+---
+
+## ADR-017: Copy de FullBody volta ao storyboard (fim da divergência)
+
+**Data:** 2026-09-10
+**Status:** ✅ Aprovado (auditoria portfolio-impact)
+
+### Contexto
+
+O `storyboard.md` (que declara "copy fechada — não reescrever") define o
+FullBody como `Um homem sem nome. / Uma cidade sem escolha.` + data `31 de
+julho`. A implementação em `FullBodyOverlay.tsx` usa `UM HERÓI QUALQUER.` com
+outra copy, e a **data de estreia não aparece em lugar nenhum** — a única
+informação concreta do filme, perdida. O spec retroativo
+`fullbody-living-poster.md` codificou a divergência.
+
+### Decisão
+
+Voltar à copy do storyboard como fonte de verdade e **incluir a data**. O spec
+retroativo passa a ser corrigido, e o storyboard permanece a referência de copy.
+
+- Título: `Um homem sem nome. / Uma cidade sem escolha.`
+- Data: `31 de julho` (no kicker ou no corpo, conforme storyboard)
+
+### Alternativas Consideradas
+
+1. **Manter `UM HERÓI QUALQUER.`** — rejeitado: é genérica e perde a data, a
+   única informação concreta do filme.
+2. **Fundir as duas copys** — rejeitado: o storyboard manda não reescrever;
+   juntar viola a regra e dilui o tom.
+
+### Consequências
+
+- ✅ Data de estreia volta a existir na página.
+- ✅ Storyboard e implementação realinhados (divergência documental fechada).
+- ⚠️ O spec retroativo `fullbody-living-poster.md` precisa ser corrigido para
+  não reintroduzir a divergência.
+
+---
+
+## ADR-018: Fluxo de permissão iOS para DeviceOrientation (gesto-gated)
+
+**Data:** 2026-09-10
+**Status:** ✅ Aprovado (auditoria portfolio-impact)
+
+### Contexto
+
+O gyro mobile (`useInteraction.ts`) só faz `addEventListener('deviceorientation')`.
+No Safari iOS isso **nunca dispara**: o acesso ao sensor exige
+`DeviceOrientationEvent.requestPermission()` chamado por um **gesto do usuário**
+(toque). Resultado: no iPhone o "parallax por sensor" não existe, e não há
+fallback orientado quando o sensor está ausente/negado.
+
+### Decisão
+
+Encapsular o gate de permissão com estados explícitos
+(`unavailable | prompt | granted | denied`), mostrando um **prompt por gesto**
+apenas quando `requestPermission` existe (iOS 13+) e ainda não respondida.
+Escolha persistida em `localStorage`. `prefers-reduced-motion` **nunca** pede
+nem ativa. Sem sensor ou negado → fallback por scroll + drift idle (a
+experiência atual, sem regressão).
+
+### Alternativas Consideradas
+
+1. **Pedir permissão no load** — rejeitado: precisa de gesto; e um prompt na
+   chegada quebra a imersão.
+2. **Não suportar gyro no iOS** — rejeitado: é a principal diferenciação de
+   plataforma pedida; o custo é baixo.
+3. **Prompt modal bloqueante** — rejeitado: o gate é um chip discreto,
+   dismissável, nunca modal.
+
+### Consequências
+
+- ✅ Gyro passa a funcionar no iOS (após grant); Android sem prompt.
+- ✅ Fallback garante que negar/ausência de sensor não regride a experiência.
+- ⚠️ Não verificável em headless — aceite exige dispositivo real (TD-002).
+
+---
+
+## ADR-019: Colofon/outro como fechamento de portfólio (nova seção)
+
+**Data:** 2026-09-10
+**Status:** ✅ Aprovado (auditoria portfolio-impact)
+
+### Contexto
+
+A experiência termina de forma abrupta: o FullBody mostra o modelo + CC-BY e
+acaba. Não há nada sobre **quem fez**, com o quê, ou para onde ir — para uma
+peça de **portfólio**, isso é o problema central. A atribuição do modelo é o
+único texto além de 4 títulos; nada diz autoria.
+
+### Decisão
+
+Adicionar uma seção final de ~100vh (**Colofon**) em que o modelo **sai de
+cena** (recede/apaga na névoa) e entra um fechamento editorial: autoria
+("Feito à mão."), stack, atribuição CC-BY permanente e **um** CTA. É a
+assinatura da obra. Spec: `docs/specs/colophon-outro.md`.
+
+### Alternativas Consideradas
+
+1. **Footer simples no FullBody** — rejeitado: não tem peso editorial; o fim
+   continuaria abrupto.
+2. **Página "sobre" separada** — rejeitado: fragmenta a peça; o portfólio é
+   uma cena só.
+3. **CTA múltiplos (código, projetos, contato)** — rejeitado: um portfólio
+   forte manda para um lugar; secundários ficam mono e discretos.
+
+### Consequências
+
+- ✅ A peça ganha dono: "feito à mão" + stack + próximo passo.
+- ✅ Contraste de ritmo: depois de 700vh denso, o colofon é o descanso que faz
+  a assinatura ler como intencional.
+- ⚠️ Risco de "quebrar o clima" com UI — mitigado por copy curta e tipografia
+  mono/display, revisado pela rubrica.
+
+---
+
+## ADR-020: Assets 2D via Higgsfield (poster, grão, marca) — sem vídeo
+
+**Data:** 2026-09-10
+**Status:** ✅ Aprovado (auditoria portfolio-impact)
+
+### Contexto
+
+O fallback WebGL (`webgl-static-fallback.md`) precisa de um **poster 2D**; o
+grão/vinheta hoje usa o genérico do `postprocessing`; e não há marca
+tipográfica. Geração de mídia via Higgsfield pode cobrir parte disso.
+
+### Decisão
+
+Usar Higgsfield para: (a) **poster** do fallback (silhueta/poster estilizado,
+se a Opção A "render off-screen do modelo real" não for preferida); (b)
+**grão de filme proprietário** (textura, se valer a pena substituir o
+`Noise`); (c) **marca/logotipo tipográfico** para preloader e colofon.
+**Vídeo: não.** Toda saída passa por curadoria contra `design-bible.md`
+(proibições de cor/textura) — e o poster do fallback usa, por preferência, o
+render off-screen do próprio modelo (Opção A).
+
+### Alternativas Consideradas
+
+1. **Vídeo gerado (Higgsfield)** — rejeitado: conflita com o 3D e com o budget
+   de atenção no scroll; decisão consciente.
+2. **Asset de terceiros/stock** — rejeitado por design-bible (sem stock).
+3. **Sem assets 2D** — rejeitado para o fallback, que precisa de um poster.
+
+### Consequências
+
+- ✅ Fallback deixa de ser "mensagem de erro" (tem poster).
+- ✅ Possível grão/marca proprietários elevando acabamento.
+- ⚠️ Qualquer saída fora da paleta é descartada na curadoria (design-bible).

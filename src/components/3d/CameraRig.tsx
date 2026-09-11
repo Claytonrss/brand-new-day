@@ -8,6 +8,7 @@ import { useQualityProfile } from './qualityContext';
 import { CameraTrack, createCameraSample, type Breakpoint } from './camera/cameraPath';
 import { fbm } from './camera/handheld';
 import { INTERACTION } from './interaction/interactionStore';
+import { windowPointer } from './rig/windowPointer';
 
 const LERP_K = 2;
 
@@ -15,6 +16,9 @@ const LERP_K = 2;
 const HANDHELD_POSITION = 0.028;
 const HANDHELD_LOOK = 0.02;
 const HANDHELD_RATE = 0.15;
+
+/** Desktop pointer parallax — additive, subtle (< 1% of the framing). */
+const POINTER_PARALLAX = { positionX: 0.08, positionY: 0.05, lookX: 0.04 } as const;
 
 /** Velocity coupling — lens inertia. */
 const FOV_PUNCH_MAX = 2;
@@ -38,6 +42,7 @@ export function CameraRig() {
   const profile = useQualityProfile();
   const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const hasHover = useMediaQuery('(hover: hover)');
 
   const breakpoint: Breakpoint = isMobile ? 'mobile' : 'desktop';
   const track = useMemo(() => new CameraTrack(breakpoint), [breakpoint]);
@@ -107,6 +112,14 @@ export function CameraRig() {
           DOLLY_LAG_MAX,
         );
         target.position.addScaledVector(dollyDirection, lag);
+
+        // Desktop pointer parallax: a second, smaller layer of life on top of
+        // the scroll path and the handheld noise (never replaces them).
+        if (hasHover) {
+          target.position.x += windowPointer.x * POINTER_PARALLAX.positionX;
+          target.position.y += windowPointer.y * POINTER_PARALLAX.positionY;
+          targetLookAt.x += windowPointer.x * POINTER_PARALLAX.lookX;
+        }
       } else {
         targetLookAt.copy(target.lookAt);
       }

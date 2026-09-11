@@ -80,7 +80,8 @@ export function SpiderManModel({
     rest: restRef.current,
     beat,
     pointerRef,
-    headTracking: pointerTracking,
+    // The colophon hands the frame to the text: the model stops tracking.
+    headTracking: pointerTracking && beat !== 'colophon',
     hasHover,
     baseYaw: rotation[1],
     tier: profile.tier,

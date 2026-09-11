@@ -2,7 +2,6 @@ import { Canvas } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { ReactNode, Suspense } from 'react';
-import { Atmosphere } from './Atmosphere';
 import { PerformanceMonitor } from './PerformanceMonitor';
 
 interface CanvasContainerProps {
@@ -70,8 +69,6 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
           {/* PerformanceMonitor wraps children to provide QualityContext */}
           <PerformanceMonitor>
             {children}
-            {/* Atmospheric depth — GPU motes with parallax (single draw call) */}
-            <Atmosphere />
             {/* Post-processing lives inside BeatProvider (App) — it consumes beat state */}
           </PerformanceMonitor>
           {/* Environment loads async — own Suspense prevents blocking canvas */}

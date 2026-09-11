@@ -30,12 +30,12 @@ test.describe('CC-BY Attribution', () => {
     await expect(page.getByText(ATTRIBUTION).first()).toBeVisible();
   });
 
-  test('is visible in the FullBody section', async ({ page }) => {
+  test('is visible in the final section (FullBody → Colophon)', async ({ page }) => {
     await page.goto('/');
     await waitForScene(page);
 
     await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.95),
+      window.scrollTo(0, document.body.scrollHeight - window.innerHeight),
     );
     await page.waitForTimeout(2500);
 

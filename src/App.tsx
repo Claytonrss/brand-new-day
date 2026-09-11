@@ -1,25 +1,34 @@
 import { Component, Suspense, useState, type ReactNode } from 'react';
 
 import { LenisProvider } from './components/LenisProvider';
+import { PointerParallax } from './components/PointerParallax';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { Stage } from './components/3d/Stage';
+import { Atmosphere } from './components/3d/Atmosphere';
 import { LightRig } from './components/3d/lighting/LightRig';
 import { BeatProvider } from './components/3d/beat/BeatProvider';
 import { PerfHud } from './components/ui/PerfHud';
 import { EffectsStack } from './components/3d/EffectsStack';
 import { WebShoot } from './components/3d/interaction/WebShoot';
+import { WebShootHint } from './components/3d/interaction/WebShootHint';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
 import { FullBodyOverlay } from './components/ui/FullBodyOverlay';
 import { CinematicLoader } from './components/ui/CinematicLoader';
 import { ChapterCard } from './components/ui/ChapterCard';
+import { OpeningTitleCard } from './components/ui/OpeningTitleCard';
+import { ColophonSection } from './components/ui/ColophonSection';
+import { GyroPrompt } from './components/ui/GyroPrompt';
+import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
+import { hasWebGL } from './design/webgl';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
   fallback: ReactNode;
+  onError?: () => void;
 }
 
 interface ErrorBoundaryState {
@@ -38,6 +47,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.props.onError?.();
   }
 
   render() {
@@ -58,17 +68,28 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - Chapter cards (100vh each) act as cinematic transitions between sections
  * - ProgressBar shows scroll progress on right edge
  *
- * Layout: Hero (100vh) → Chapter1 (100vh) → Evolution (150vh) →
- *         Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) = 700vh
+ * Layout: Opening (100vh) → Hero (100vh) → Chapter1 (100vh) → Evolution
+ *         (150vh) → Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) →
+ *         Colophon (100vh) = 900vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
  */
 export function App() {
   const [loaded, setLoaded] = useState(false);
+  // Proactive fallback: no WebGL means the poster version, not a broken page.
+  const [webglUnavailable, setWebglUnavailable] = useState(() => !hasWebGL());
+
+  if (webglUnavailable) return <StaticFallback />;
 
   return (
     <LenisProvider>
+      {/* Desktop pointer parallax — publishes CSS vars for the .parallax-* layers */}
+      <PointerParallax />
+
+      {/* Mobile gyro permission chip (iOS) — renders only when needed */}
+      <GyroPrompt />
+
       {/* Scroll progress indicator */}
       <ProgressBar />
 
@@ -81,20 +102,19 @@ export function App() {
     <main className="relative w-full overflow-x-hidden bg-ink text-paper">
       {/* 3D R3F Canvas Layer — fixed, never unmounts */}
       <ErrorBoundary
-        fallback={
-          <div className="fixed inset-0 z-0 flex items-center justify-center bg-ink">
-            <p className="font-mono text-sm text-dim">3D unavailable</p>
-          </div>
-        }
+        fallback={null}
+        onError={() => setWebglUnavailable(true)}
       >
         <CanvasContainer>
           <Suspense fallback={null}>
             <BeatProvider>
               <CameraRig />
               <Stage />
+              <Atmosphere />
               <LightRig />
               <EffectsStack />
               <WebShoot />
+              <WebShootHint />
             </BeatProvider>
           </Suspense>
         </CanvasContainer>
@@ -102,6 +122,9 @@ export function App() {
 
       {/* Scrollable content overlay */}
       <div className="relative z-10">
+        {/* Opening title card — Beat 0, 100vh, before the model appears */}
+        <OpeningTitleCard />
+
         {/* Hero — 100vh */}
         <section className="relative h-dvh" aria-label="Hero">
           <HeroOverlay />
@@ -147,6 +170,9 @@ export function App() {
         >
           <FullBodyOverlay />
         </section>
+
+        {/* Colophon — 100vh, editorial outro with authorship + CTA */}
+        <ColophonSection />
       </div>
     </main>
     </LenisProvider>

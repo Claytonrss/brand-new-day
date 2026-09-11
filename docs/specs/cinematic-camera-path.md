@@ -14,8 +14,8 @@ ele é o oposto de cinema: `CameraRig.tsx:98-112` interpola posição, `lookAt` 
 
 1. **Velocidade constante** — nenhum segmento acelera ou desacelera; nada
    "chega" ou "assenta".
-2. **Descontinuidade de direção (C1)** exata nas fronteiras 0.14 / 0.28 / 0.50
-   / 0.64 / 0.86: a câmera muda de rumo instantaneamente, seis vezes por
+2. **Descontinuidade de direção (C1)** exata nas fronteiras 0.25 / 0.375 / 0.5625
+   / 0.6875 / 0.875: a câmera muda de rumo instantaneamente, seis vezes por
    página.
 3. **O "orbit" do Arsenal não orbita.** Medido sobre
    `cameraKeyframes.ts:44-54`: o azimute da câmera em relação ao punho

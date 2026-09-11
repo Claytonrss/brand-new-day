@@ -16,7 +16,7 @@ test.describe('Arsenal section', () => {
     await page.waitForTimeout(3000);
 
     // Scroll past hero (100vh) + chapter1 (100vh) + evolution (150vh) + chapter2 (100vh) = 450vh to arsenal
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(2000);
 
     // Check arsenal title is visible
@@ -51,7 +51,7 @@ test.describe('Arsenal section', () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 
     // Check ARIA label on section
@@ -79,7 +79,7 @@ test.describe('Arsenal section', () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 5));
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 
     // Check that the section container is left-aligned (justify-start)

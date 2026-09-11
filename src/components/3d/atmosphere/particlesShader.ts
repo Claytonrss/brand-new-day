@@ -64,6 +64,7 @@ export const PARTICLE_FRAGMENT = /* glsl */ `
 uniform vec3 uColor;
 uniform vec3 uGlowColor;
 uniform float uBaseOpacity;
+uniform float uDensity;
 
 varying float vOpacity;
 varying float vGlow;
@@ -74,7 +75,7 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
 
-  float alpha = smoothstep(0.5, 0.1, d) * vOpacity * uBaseOpacity;
+  float alpha = smoothstep(0.5, 0.1, d) * vOpacity * uBaseOpacity * uDensity;
   vec3 color = uColor + uGlowColor * vGlow;
 
   gl_FragColor = vec4(color, alpha);

@@ -398,3 +398,82 @@ draw calls e `programs` inalterados · reduced-motion com diff de 0%.
 - [x] G3 — `credits.spec.ts` recriado (visível sem hover, link seguro)
 - [x] G4 — evidência em vídeo por viewport (`pnpm evidence:motion`)
 - [ ] G5 — atualizar a rubrica com as evidências novas
+
+---
+
+## Portfolio Impact Plan (2026-09-10)
+
+Plano mestre: `docs/plans/portfolio-impact-plan.md`. Origem: auditoria pós-Wave
+G com 24 screenshots reais em 3 viewports (`docs/evidence/portfolio-audit/`).
+Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
+
+### Wave P0 — Correções de composição, tipografia e copy (bloqueante)
+
+- [x] P0.1 — Arsenal mobile: copy fora do pulso/lançador (`ArsenalOverlay`)
+- [x] P0.2 — FullBody mobile: título fora do peito/símbolo, sem cortar palavra
+- [x] P0.3 — Tipografia desktop: quebra manual de linha (`SplitTextHeadline` com `\n`)
+- [x] P0.4 — Copy FullBody volta ao storyboard + data de estreia (ADR-017)
+- [x] P0.5 — Rubrica re-preenchida contra `docs/evidence/portfolio-audit-p0/` (bloqueantes ≥ 4)
+
+**Evidência:** `docs/evidence/portfolio-audit-p0/` (24 screenshots, 3 viewports ×
+8 pontos) gerada por `scripts/collect-portfolio-audit.mjs`.
+**Rubrica:** média ponderada 4,2; bloqueantes 5/4/4 (`visual-rubric.md`).
+**Pendente:** FPS em dispositivo real (Fase 7.3).
+
+### Wave P1a — Primeira impressão
+
+- [x] P1a.1 — Loader como teaser (`docs/specs/loader-teaser.md`)
+      — direção A (lentes da máscara acendem com o progresso; 2D/SVG, sem draw
+      call novo); evidência `docs/evidence/loader-teaser/`
+- [x] P1a.2 — Opening title card / Beat 0 (`docs/specs/opening-title-card.md`)
+      — card tipográfico 100vh reaproveitando a câmera Hero; página 700vh → 800vh;
+      evidência `docs/evidence/opening-title-card/`
+
+### Wave P1b — Fechamento / colofon (ADR-019)
+
+- [x] P1b.1 — Seção final Colophon (`docs/specs/colophon-outro.md`)
+      — autoria + stack + CTA único + CC-BY; modelo dissolve na névoa
+      (gradiente da seção + cue de luz `colophon`); página 800vh → 900vh;
+      evidência `docs/evidence/colophon-outro/`
+
+### Wave P1c — Atmosfera por beat (ritmo)
+
+- [x] P1c.1 — Assinatura de atmosfera por beat + crossfades
+      (`docs/specs/atmosphere-per-beat.md`) — densidade/opacidade de partículas,
+      névoa e grão dirigidos pelo `BeatProvider`; evidência
+      `docs/evidence/atmosphere-per-beat/`
+
+### Wave P2a — Arsenal macro + HUD
+
+- [x] P2a.1 — Câmera macro no lançador + HUD de anotação
+      (`docs/specs/arsenal-macro-hud.md`) — raio da órbita 5.4/3.9 → 2.9/1.7;
+      HUD com linhas de chamada (desktop) e legenda inferior (mobile);
+      evidência `docs/evidence/arsenal-macro-hud/`
+- [x] Correção de calibração: `BEAT_TIMELINE` recalibrado como fração do
+      scroll máximo (a versão anterior estava ~2,8% adiantada, fazendo o macro
+      coincidir com o FullBody)
+
+### Wave P2b — Diferenciação de plataforma
+
+- [x] P2b.1 — Desktop: pointer parallax real
+      (`docs/specs/desktop-pointer-parallax.md`) — câmera aditiva sutil +
+      camadas `.parallax-near/mid/far` via CSS vars; evidência
+      `docs/evidence/desktop-pointer-parallax/`
+- [x] P2b.2 — Mobile: gyro com permissão iOS + fallback (ADR-018)
+      (`docs/specs/mobile-gyro-permission.md`) — gate de estados
+      (`unavailable|prompt|granted|denied`), chip por gesto, persistência em
+      `localStorage`, fallback por scroll; 10 unit tests em `tests/unit/gyro.test.ts`;
+      evidência `docs/evidence/mobile-gyro-permission/`
+      (aceite em dispositivo real segue pendente — TD-002)
+
+### Wave P3 — Micro-interação + robustez
+
+- [x] P3.1 — WebShoot descobrível (`docs/specs/web-shoot-discovery.md`)
+      — anel de luz pulsando 1× por sessão no Beat 3 (direção A), nunca em
+      reduced-motion/low tier; evidência `docs/evidence/web-shoot-discovery/`
+- [x] P3.2 — Fallback WebGL como poster editorial
+      (`docs/specs/webgl-static-fallback.md`) — detecção proativa de WebGL,
+      poster off-screen do modelo real (desktop/mobile) + copy editorial +
+      aviso no tom; `tests/visual/fallback.spec.ts`; evidência
+      `docs/evidence/webgl-fallback/`
+- [ ] P3.3 — Assets 2D via Higgsfield, sem vídeo (ADR-020) — pendente

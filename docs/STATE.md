@@ -1,8 +1,8 @@
 # STATE.md — spiderman-landing
 
-## Estado Atual (2026-09-09)
+## Estado Atual (2026-09-10)
 
-**Fase:** Upgrade de movimento/efeitos 3D — Wave F (headroom) entregue, Wave B (câmera) em seguida
+**Fase:** Portfolio Impact — P0..P3.2 entregues (P3.3 assets 2D pendente)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -64,9 +64,10 @@
 - 27/27 visual tests passing (3 viewports × 4 seções + chapter cards)
 
 ### Rubrica Visual
-- **Nota:** 5.0/5.0 (máxima)
-- **Critérios:** 14/14 com nota 5
-- **Evidências:** `docs/evidence/wave-4-depth-chrome/`
+- **Nota:** 4,2/5,0 (média ponderada) — re-preenchida na Wave P0
+- **Bloqueantes:** primeira dobra 5, composição mobile 4, integração texto/personagem 4
+- **Evidências:** `docs/evidence/portfolio-audit-p0/` (24 screenshots novos)
+- **Pendente:** FPS em dispositivo real (Fase 7.3)
 
 ### PRs Merged
 - PR #1: Look Dev v1 hero section (feat/look-dev-hero)
@@ -98,6 +99,48 @@
 
 ## Próximos Passos (fila priorizada)
 
+0. **Portfolio Impact Plan** (`docs/plans/portfolio-impact-plan.md`)
+   - **Ponto de entrada para implementação:** `docs/plans/implementation-kickoff.md`
+     (ordem, gates e contrato por feature)
+   - ✅ **P0 (composição/tipografia/copy) entregue:** `fix/portfolio-p0-composition`
+     — copy do Arsenal/FullBody fora do foco, quebras manuais, copy FullBody
+     alinhada ao storyboard (ADR-017), rubrica re-preenchida (4,2; bloqueantes ≥4)
+   - ✅ **P1a.1 (loader teaser) entregue:** lentes da máscara acendem com o
+     progresso (SVG 2D, sem WebGL novo); evidência `docs/evidence/loader-teaser/`
+   - ✅ **P1a.2 (opening title card) entregue:** card tipográfico 100vh antes do
+     Hero (Beat 0 compartilha a câmera Hero); página 700vh → 800vh; evidência
+     `docs/evidence/opening-title-card/`
+   - ✅ **P1b.1 (colofon) entregue:** seção final editorial com autoria, stack,
+     CTA único e CC-BY; modelo dissolve via gradiente da seção + cue `colophon`;
+     página 800vh → 900vh; evidência `docs/evidence/colophon-outro/`
+   - ✅ **P1c.1 (atmosfera por beat) entregue:** partículas (`uDensity`),
+     `FogExp2` e grão dirigidos por beat com crossfade; `Atmosphere` passou
+     para dentro do `BeatProvider`; evidência `docs/evidence/atmosphere-per-beat/`
+   - ✅ **P2a.1 (Arsenal macro + HUD) entregue:** órbita com raio 2.9 → 1.7,
+     HUD de anotação (call-outs no desktop, legenda no mobile); evidência
+     `docs/evidence/arsenal-macro-hud/`
+   - ✅ **P2b.1 (pointer parallax desktop) entregue:** câmera com offset aditivo
+     sutil + camadas `.parallax-near/mid/far` (CSS vars), somente hover e sem
+     `prefers-reduced-motion`; evidência `docs/evidence/desktop-pointer-parallax/`
+   - ✅ **P2b.2 (gyro iOS) entregue:** máquina de estados de permissão,
+     chip por gesto, persistência e fallback por scroll; 10 unit tests;
+     evidência `docs/evidence/mobile-gyro-permission/`. Aceite em dispositivo
+     real pendente (TD-002).
+   - ✅ **P3.1 (WebShoot descobrível) entregue:** anel de luz pulsando 1× por
+     sessão ao entrar no Beat 3 (sem reduced-motion/low tier); evidência
+     `docs/evidence/web-shoot-discovery/`. Também: gyro gate agora exige
+     `maxTouchPoints > 0` (não aparecia mais no desktop).
+   - ✅ **P3.2 (fallback WebGL) entregue:** detecção proativa + poster
+     editorial (imagens off-screen do modelo real) + copy das seções + aviso no
+     tom; `fallback.spec.ts`; evidência `docs/evidence/webgl-fallback/`
+   - ⏳ **P3.3 (assets 2D via Higgsfield)** — pendente (ADR-020)
+   - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
+     colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
+     mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`
+   - ADRs: ADR-017 (copy FullBody), ADR-018 (gyro iOS), ADR-019 (colofon),
+     ADR-020 (assets Higgsfield)
+   - Evidências da auditoria: `docs/evidence/portfolio-audit/` (baseline) e
+     `docs/evidence/portfolio-audit-p0/` (pós-P0)
 0. **Wave G — verificação** (`test/wave-g-verification`, em PR)
    - Gates de orçamento (`budget.spec.ts`), console e atribuição
    - Evidência em vídeo por viewport (`pnpm evidence:motion`)
@@ -152,9 +195,10 @@
 - **Unit tests:** 94 (beat · iluminação · câmera · rig · âncoras · materiais · atmosfera · interação · piscada)
 - **Movimento verificado:** 15 asserções em `motion.spec.ts` (respiração avança,
   ponteiro é clampado, follow-through ordenado, reduced-motion congela)
-- **Rubrica visual:** 5.0/5.0 (autoatribuída nas waves 1–4, sem medição) —
-  critérios de iluminação/impacto da Wave F aguardam aprovação humana
+- **Rubrica visual:** 4,2/5,0 (média ponderada) — re-preenchida na Wave P0
+  contra `docs/evidence/portfolio-audit-p0/`; bloqueantes 5/4/4. FPS em
+  dispositivo real ainda não medido.
 - **Draw calls/frame:** 44–46 (tier medium/high) · 11–13 (low) — antes 118–120
 - **GLB size:** 22.4 MB (22.4 MB dos quais ~19 MB são geometria **não
   comprimida** — item F4b em aberto; budget é ≤ 15 MB)
-- **Total page height:** 700vh (4 seções + 2 chapter cards)
+- **Total page height:** 900vh (opening + 4 seções + colofon + 2 chapter cards)

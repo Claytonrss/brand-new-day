@@ -24,6 +24,7 @@ const TARGETS: Record<BeatId, BeatTargets> = {
   evolution: { rim: 0.32, web: 0.16, lens: 1.25, bokeh: 4.0 },
   arsenal: { rim: 0.28, web: 0.09, lens: 1.1, bokeh: 3.5 },
   fullBody: { rim: 0.4, web: 0.11, lens: 1.15, bokeh: 2.5 },
+  colophon: { rim: 0.12, web: 0.02, lens: 0.85, bokeh: 1.5 },
 };
 
 /** Exponential smoothing rate for beat transitions. */

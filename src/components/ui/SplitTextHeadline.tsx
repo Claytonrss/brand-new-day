@@ -7,6 +7,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 gsap.registerPlugin(ScrollTrigger);
 
 interface SplitTextHeadlineProps {
+  /** Newlines (`\n`) are intentional line breaks — words never break mid-line. */
   text: string;
   className?: string;
   as?: 'h1' | 'h2' | 'h3';
@@ -21,7 +22,12 @@ interface SplitTextHeadlineProps {
  * triggered by ScrollTrigger when the element enters the viewport.
  * Respects `prefers-reduced-motion` — characters are visible immediately.
  *
+ * Manual line breaks (`\n`) are rendered as `whitespace-nowrap` blocks, so a
+ * title can never break a word in the middle regardless of viewport width.
+ * Each break comes from `docs/design/storyboard.md` / `typography.md`.
+ *
  * @see docs/design/design-bible.md
+ * @see docs/design/typography.md
  * @see src/design/motion.ts
  */
 export function SplitTextHeadline({
@@ -57,14 +63,18 @@ export function SplitTextHeadline({
     return () => ctx.revert();
   }, [stagger, prefersReducedMotion]);
 
-  // Split text into individual characters
-  const chars = text.split('').map((char, i) => (
-    <span
-      key={i}
-      className="char inline-block"
-      style={{ willChange: 'transform' }}
-    >
-      {char === ' ' ? '\u00A0' : char}
+  // Split text into intentional lines, then into individual characters.
+  const lines = text.split('\n').map((line, lineIndex) => (
+    <span key={lineIndex} className="block whitespace-nowrap">
+      {line.split('').map((char, i) => (
+        <span
+          key={i}
+          className="char inline-block"
+          style={{ willChange: 'transform' }}
+        >
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))}
     </span>
   ));
 
@@ -73,9 +83,9 @@ export function SplitTextHeadline({
       ref={containerRef}
       id={id}
       className={`${className} overflow-hidden`}
-      aria-label={text}
+      aria-label={text.replace(/\n/g, ' ')}
     >
-      <span aria-hidden="true">{chars}</span>
+      <span aria-hidden="true">{lines}</span>
     </Tag>
   );
 }

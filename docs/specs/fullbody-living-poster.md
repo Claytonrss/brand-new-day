@@ -22,12 +22,18 @@ A composição assume função de "living poster": silhueta forte, título em
 blocos curtos, atribuição CC-BY em posição definitiva (footer).
 
 **Copy:**
-- Kicker: "A Revelação"
-- Título: "UM HERÓI QUALQUER."
-- Corpo: "Sem máscara, sem manchetes. Só um homem tentando fazer o certo em um mundo que esqueceu seu nome."
+- Kicker: "31 de julho"
+- Título: "Um homem sem nome. / Uma cidade sem escolha."
+- Corpo: "SPIDER-MAN: BRAND NEW DAY chega aos cinemas em 31 de julho de 2026."
 
 **Narrativa:** conclusão do arco (Hero → Evolution → Arsenal → FullBody).
 O herói sem máscara, sem manchetes — apenas o homem por trás do mito.
+
+> **Correção (ADR-017, 2026-09-10):** este spec retroativo codificava a copy
+> divergente `UM HERÓI QUALQUER.`. A fonte de verdade é
+> `docs/design/storyboard.md`: título em quatro blocos curtos, data de estreia
+> como kicker e corpo. A implementação atual (`FullBodyOverlay.tsx`) segue essa
+> copy.
 
 Reference: `docs/design/design-bible.md`, `docs/design/storyboard.md`
 
@@ -37,12 +43,17 @@ Reference: `docs/design/design-bible.md`, `docs/design/storyboard.md`
 - Safe zone: bottom (overlay alinhado na base)
 - Model position: centro do frame (regra dos terços não se aplica — centralizado)
 - Copy position: bottom center, max 82vw
+- Título em quatro blocos curtos, ancorado na base — nunca cruza o símbolo do
+  peito (composition-rules.md §FullBody)
+- Quebras de linha manuais (`UM HOMEM\nSEM NOME.\nUMA CIDADE\nSEM ESCOLHA.`),
+  sem quebra de palavra acidental
 - Texto centralizado (per `docs/design/composition-rules.md` §FullBody)
 
 **Desktop (1440×900):**
 - Safe zone: bottom (overlay alinhado na base)
 - Model position: centro do frame
 - Copy position: bottom center, max 560px (md: 480px / lg: 560px)
+- Mesmas quebras manuais; título sempre dentro do bloco
 - Texto centralizado
 
 Reference: `docs/design/composition-rules.md`
@@ -160,7 +171,7 @@ Reference: `docs/design/performance-design.md`
 
 **ARIA labels:**
 - `<section aria-labelledby="fullbody-title">`: landmark da seção FullBody
-- `<h2 id="fullbody-title">`: `"UM HERÓI QUALQUER."` (título acessível)
+- `<h2 id="fullbody-title">`: `"Um homem sem nome. / Uma cidade sem escolha."` (título acessível)
 - `<footer>`: contém a atribuição CC-BY com link externo (`rel="noopener noreferrer"`)
 
 **Keyboard navigation:**
@@ -184,7 +195,7 @@ This Scene Spec is "done" when:
 
 | Condition | Measurement | Status |
 |---|---|---|
-| Visual quality | Rubric score ≥ 4 on all blockers | [x] (5.0/5.0 achieved) |
+| Visual quality | Rubric score ≥ 4 on all blockers | [x] (re-filled against `docs/evidence/portfolio-audit/` in Wave P0) |
 | Performance | FPS ≥ 55 on iPhone 12 | [x] (verified in wave-3) |
 | Accessibility | Lighthouse a11y ≥ 90 | [x] (ARIA landmarks present) |
 | Code quality | Zero lint/typecheck errors | [x] (verified in wave-3) |
@@ -205,8 +216,10 @@ This Scene Spec is "done" when:
 | Lighting colors | `paper` / `steel` / `oxide` / `concrete` | ✅ Tokens `COLORS.*` em `FullBodyScene.tsx` | ✅ |
 | Shadows | Disabled (delegado à base rig de HeroScene) | ✅ Sem `castShadow` nas luzes FullBody | ✅ |
 | ARIA landmarks | `aria-labelledby="fullbody-title"` | ✅ `FullBodyOverlay.tsx:17` | ✅ |
-| `<h2 id="fullbody-title">` | Título acessível | ✅ `FullBodyOverlay.tsx:26` | ✅ |
-| CC-BY attribution | Footer com link Eskze | ✅ `FullBodyOverlay.tsx:36-49` | ✅ |
+| `<h2 id="fullbody-title">` | Título acessível (copy do storyboard, ADR-017) | ✅ `FullBodyOverlay.tsx` | ✅ |
+| CC-BY attribution | Footer com link Eskze | ✅ `FullBodyOverlay.tsx` (footer) | ✅ |
+| Copy FullBody | Título 4 linhas + data `31 de julho` no kicker/corpo | ✅ `FullBodyOverlay.tsx` (P0, ADR-017) | ✅ |
+| Quebras de linha manuais | Sem quebra de palavra acidental | ✅ `SplitTextHeadline.tsx` (`\n` → `whitespace-nowrap`) | ✅ |
 | Camera keyframes `fullBody` | mobile + desktop definidos | ✅ `cameraKeyframes.ts:55-60` | ✅ |
 | Camera position mobile | `[0, -1.0, 11]` | ✅ `cameraKeyframes.ts:58` | ✅ |
 | Camera position desktop | `[0, -1.0, 16]` | ✅ `cameraKeyframes.ts:59` | ✅ |
