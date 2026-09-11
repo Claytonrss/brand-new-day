@@ -2,8 +2,8 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — Wave P0 (composição/tipografia/copy) entregue;
-próximo item P1a (`feat/loader-teaser`)
+**Fase:** Portfolio Impact — P0 (composição) e P1a.1 (loader teaser)
+entregues; próximo P1a.2 (opening title card)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -106,8 +106,10 @@ próximo item P1a (`feat/loader-teaser`)
    - ✅ **P0 (composição/tipografia/copy) entregue:** `fix/portfolio-p0-composition`
      — copy do Arsenal/FullBody fora do foco, quebras manuais, copy FullBody
      alinhada ao storyboard (ADR-017), rubrica re-preenchida (4,2; bloqueantes ≥4)
-   - **Próximo:** P1a (`feat/loader-teaser`, `feat/opening-title-card`) → P1b
-     (colofon) → P1c (atmosfera) → P2 (plataforma) → P3 (robustez)
+   - ✅ **P1a.1 (loader teaser) entregue:** lentes da máscara acendem com o
+     progresso (SVG 2D, sem WebGL novo); evidência `docs/evidence/loader-teaser/`
+   - **Próximo:** P1a.2 (opening title card) → P1b (colofon) → P1c (atmosfera)
+     → P2 (plataforma) → P3 (robustez)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`

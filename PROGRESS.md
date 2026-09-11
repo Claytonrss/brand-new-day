@@ -422,7 +422,9 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P1a — Primeira impressão
 
-- [ ] P1a.1 — Loader como teaser (`docs/specs/loader-teaser.md`)
+- [x] P1a.1 — Loader como teaser (`docs/specs/loader-teaser.md`)
+      — direção A (lentes da máscara acendem com o progresso; 2D/SVG, sem draw
+      call novo); evidência `docs/evidence/loader-teaser/`
 - [ ] P1a.2 — Opening title card / Beat 0 (`docs/specs/opening-title-card.md`)
 
 ### Wave P1b — Fechamento / colofon (ADR-019)
