@@ -71,7 +71,7 @@ test.describe('Model interaction', () => {
     await waitForScene(page);
 
     await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.75),
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.85),
     );
     await page.waitForTimeout(3000);
 

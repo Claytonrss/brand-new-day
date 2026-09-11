@@ -15,6 +15,7 @@ import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
 import { FullBodyOverlay } from './components/ui/FullBodyOverlay';
 import { CinematicLoader } from './components/ui/CinematicLoader';
 import { ChapterCard } from './components/ui/ChapterCard';
+import { OpeningTitleCard } from './components/ui/OpeningTitleCard';
 import { ProgressBar } from './components/ui/ProgressBar';
 
 interface ErrorBoundaryProps {
@@ -58,8 +59,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - Chapter cards (100vh each) act as cinematic transitions between sections
  * - ProgressBar shows scroll progress on right edge
  *
- * Layout: Hero (100vh) → Chapter1 (100vh) → Evolution (150vh) →
- *         Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) = 700vh
+ * Layout: Opening (100vh) → Hero (100vh) → Chapter1 (100vh) → Evolution
+ *         (150vh) → Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh)
+ *         = 800vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -102,6 +104,9 @@ export function App() {
 
       {/* Scrollable content overlay */}
       <div className="relative z-10">
+        {/* Opening title card — Beat 0, 100vh, before the model appears */}
+        <OpeningTitleCard />
+
         {/* Hero — 100vh */}
         <section className="relative h-dvh" aria-label="Hero">
           <HeroOverlay />

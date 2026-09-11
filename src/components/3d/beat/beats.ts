@@ -1,13 +1,16 @@
 /**
  * Beat timeline — single source of truth for narrative state.
  *
- * Ranges mirror the page layout (700vh total, see `src/App.tsx`):
- * - Hero      100vh  → 0.00–0.14
- * - Chapter1  100vh  → 0.14–0.28
- * - Evolution 150vh  → 0.28–0.50
- * - Chapter2  100vh  → 0.50–0.64
- * - Arsenal   150vh  → 0.64–0.86
- * - FullBody  100vh  → 0.86–1.00
+ * Ranges mirror the page layout (800vh total, see `src/App.tsx`):
+ * - Opening+ Hero 200vh  → 0.0000–0.2500 (title card shares the Hero camera)
+ * - Chapter1       100vh → 0.2500–0.3750
+ * - Evolution      150vh → 0.3750–0.5625
+ * - Chapter2       100vh → 0.5625–0.6875
+ * - Arsenal        150vh → 0.6875–0.8750
+ * - FullBody       100vh → 0.8750–1.0000
+ *
+ * The Opening title card (P1a.2) is a typographic beat with no 3D of its own;
+ * it reuses the static `hero` camera keyframe, so the beat id stays `hero`.
  *
  * These are the same boundaries used by `cameraPath.ts`, so lighting and
  * camera stay in sync by construction.
@@ -23,12 +26,12 @@ export interface Beat {
 }
 
 export const BEAT_TIMELINE: readonly Beat[] = [
-  { id: 'hero', scrollStart: 0, scrollEnd: 0.14 },
-  { id: 'chapter1', scrollStart: 0.14, scrollEnd: 0.28 },
-  { id: 'evolution', scrollStart: 0.28, scrollEnd: 0.5 },
-  { id: 'chapter2', scrollStart: 0.5, scrollEnd: 0.64 },
-  { id: 'arsenal', scrollStart: 0.64, scrollEnd: 0.86 },
-  { id: 'fullBody', scrollStart: 0.86, scrollEnd: 1.0 },
+  { id: 'hero', scrollStart: 0, scrollEnd: 0.25 },
+  { id: 'chapter1', scrollStart: 0.25, scrollEnd: 0.375 },
+  { id: 'evolution', scrollStart: 0.375, scrollEnd: 0.5625 },
+  { id: 'chapter2', scrollStart: 0.5625, scrollEnd: 0.6875 },
+  { id: 'arsenal', scrollStart: 0.6875, scrollEnd: 0.875 },
+  { id: 'fullBody', scrollStart: 0.875, scrollEnd: 1.0 },
 ] as const;
 
 /** Resolve the beat that contains a given global scroll progress. */

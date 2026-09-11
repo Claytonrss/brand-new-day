@@ -16,7 +16,7 @@ test.describe('Evolution section', () => {
     await page.waitForTimeout(3000);
 
     // Scroll to evolution section (past hero 100vh + chapter1 card 100vh = 200vh)
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2.5));
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3.5));
     await page.waitForTimeout(2000);
 
     // Check evolution title is visible
@@ -47,7 +47,7 @@ test.describe('Evolution section', () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Scroll to evolution (past hero 100vh + chapter1 card 100vh)
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 2.5));
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3.5));
     await page.waitForTimeout(1000);
 
     // Check ARIA

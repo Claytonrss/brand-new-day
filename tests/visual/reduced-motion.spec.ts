@@ -24,7 +24,7 @@ test.describe('Reduced Motion camera framing', () => {
     const shots: Buffer[] = [];
     for (const [name, fraction] of [
       ['hero', 0],
-      ['fullbody', 0.93],
+      ['fullbody', 1.0],
     ] as const) {
       await page.evaluate((y) => window.scrollTo(0, y), maxScroll * fraction);
       await page.waitForTimeout(2000);

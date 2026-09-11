@@ -17,13 +17,15 @@ describe('beat timeline', () => {
     }
   });
 
-  it('matches the 700vh page layout', () => {
+  it('matches the 800vh page layout', () => {
+    // Opening title card (100vh) + Hero (100vh) share the hero beat.
     expect(beatAt(0).id).toBe('hero');
     expect(beatAt(0.1).id).toBe('hero');
-    expect(beatAt(0.2).id).toBe('chapter1');
-    expect(beatAt(0.35).id).toBe('evolution');
-    expect(beatAt(0.57).id).toBe('chapter2');
-    expect(beatAt(0.75).id).toBe('arsenal');
+    expect(beatAt(0.2).id).toBe('hero');
+    expect(beatAt(0.3).id).toBe('chapter1');
+    expect(beatAt(0.45).id).toBe('evolution');
+    expect(beatAt(0.6).id).toBe('chapter2');
+    expect(beatAt(0.8).id).toBe('arsenal');
     expect(beatAt(0.95).id).toBe('fullBody');
   });
 
@@ -33,10 +35,10 @@ describe('beat timeline', () => {
   });
 
   it('computes local progress inside the beat', () => {
-    const evolution = beatAt(0.35);
+    const evolution = beatAt(0.45);
     expect(evolution.id).toBe('evolution');
-    expect(beatLocalProgress(evolution, 0.28)).toBe(0);
-    expect(beatLocalProgress(evolution, 0.5)).toBe(1);
-    expect(beatLocalProgress(evolution, 0.39)).toBeCloseTo(0.5, 5);
+    expect(beatLocalProgress(evolution, 0.375)).toBe(0);
+    expect(beatLocalProgress(evolution, 0.5625)).toBe(1);
+    expect(beatLocalProgress(evolution, 0.46875)).toBeCloseTo(0.5, 5);
   });
 });

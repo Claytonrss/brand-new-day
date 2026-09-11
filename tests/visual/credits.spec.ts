@@ -35,7 +35,7 @@ test.describe('CC-BY Attribution', () => {
     await waitForScene(page);
 
     await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.95),
+      window.scrollTo(0, document.body.scrollHeight - window.innerHeight),
     );
     await page.waitForTimeout(2500);
 

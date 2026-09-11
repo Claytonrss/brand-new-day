@@ -47,7 +47,7 @@ test.describe('Performance budget', () => {
 
     // and it must hold at the heaviest framing (close-up with all lights on)
     await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.75),
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.85),
     );
     await page.waitForTimeout(3500);
 
