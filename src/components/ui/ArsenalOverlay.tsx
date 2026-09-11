@@ -5,6 +5,8 @@ import { SplitTextHeadline } from './SplitTextHeadline';
  *
  * Text aligned left, never covers the launcher/wrist.
  * Safe zones: mobile max 82vw min margin 24px, desktop max 560px.
+ * On mobile the wrist/launcher is centered by the orbit camera, so the copy is
+ * anchored to the bottom negative zone; on desktop it stays vertically centered.
  * Sticky within the 150vh scroll section for sustained visibility.
  *
  * @see docs/specs/arsenal-web-shooters.md §3
@@ -12,7 +14,7 @@ import { SplitTextHeadline } from './SplitTextHeadline';
  */
 export function ArsenalOverlay() {
   return (
-    <div className="sticky top-0 z-10 flex h-dvh items-center justify-start p-6 sm:p-12 md:p-16">
+    <div className="sticky top-0 z-10 flex h-dvh items-end justify-start p-6 pb-16 sm:p-12 sm:pb-16 md:items-center md:p-16">
       <section
         aria-labelledby="arsenal-title"
         className="flex max-w-[82vw] flex-col items-start text-left md:max-w-[420px] lg:max-w-[560px]"
@@ -21,7 +23,7 @@ export function ArsenalOverlay() {
           O que sobrou
         </p>
         <SplitTextHeadline
-          text="SEM APOIO. SÓ O ESSENCIAL."
+          text={'SEM APOIO.\nSÓ O ESSENCIAL.'}
           as="h2"
           id="arsenal-title"
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"

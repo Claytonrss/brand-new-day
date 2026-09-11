@@ -21,7 +21,7 @@ export function EvolutionOverlay() {
           A mudança
         </p>
         <SplitTextHeadline
-          text="ALGO NELE ESTÁ MUDANDO."
+          text={'ALGO NELE\nESTÁ MUDANDO.'}
           as="h2"
           id="evolution-title"
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"

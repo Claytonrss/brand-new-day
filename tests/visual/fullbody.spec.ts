@@ -22,13 +22,14 @@ test.describe('FullBody section', () => {
     // Check FullBody title is visible
     const fullbodyTitle = page.locator('#fullbody-title');
     await expect(fullbodyTitle).toBeVisible();
-    await expect(fullbodyTitle).toContainText('UM HERÓI QUALQUER.');
+    await expect(fullbodyTitle).toContainText('UM HOMEM');
+    await expect(fullbodyTitle).toContainText('SEM ESCOLHA.');
 
-    // Check kicker
-    await expect(page.getByText('A Revelação')).toBeVisible();
+    // Check kicker — premiere date
+    await expect(page.getByText('31 de julho', { exact: true })).toBeVisible();
 
     // Check body copy
-    await expect(page.getByText('Sem máscara, sem manchetes')).toBeVisible();
+    await expect(page.getByText('BRAND NEW DAY chega aos cinemas')).toBeVisible();
 
     // Save visual evidence screenshot
     const projectName = testInfo.project.name;

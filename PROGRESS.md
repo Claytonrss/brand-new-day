@@ -398,3 +398,57 @@ draw calls e `programs` inalterados · reduced-motion com diff de 0%.
 - [x] G3 — `credits.spec.ts` recriado (visível sem hover, link seguro)
 - [x] G4 — evidência em vídeo por viewport (`pnpm evidence:motion`)
 - [ ] G5 — atualizar a rubrica com as evidências novas
+
+---
+
+## Portfolio Impact Plan (2026-09-10)
+
+Plano mestre: `docs/plans/portfolio-impact-plan.md`. Origem: auditoria pós-Wave
+G com 24 screenshots reais em 3 viewports (`docs/evidence/portfolio-audit/`).
+Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
+
+### Wave P0 — Correções de composição, tipografia e copy (bloqueante)
+
+- [x] P0.1 — Arsenal mobile: copy fora do pulso/lançador (`ArsenalOverlay`)
+- [x] P0.2 — FullBody mobile: título fora do peito/símbolo, sem cortar palavra
+- [x] P0.3 — Tipografia desktop: quebra manual de linha (`SplitTextHeadline` com `\n`)
+- [x] P0.4 — Copy FullBody volta ao storyboard + data de estreia (ADR-017)
+- [x] P0.5 — Rubrica re-preenchida contra `docs/evidence/portfolio-audit-p0/` (bloqueantes ≥ 4)
+
+**Evidência:** `docs/evidence/portfolio-audit-p0/` (24 screenshots, 3 viewports ×
+8 pontos) gerada por `scripts/collect-portfolio-audit.mjs`.
+**Rubrica:** média ponderada 4,2; bloqueantes 5/4/4 (`visual-rubric.md`).
+**Pendente:** FPS em dispositivo real (Fase 7.3).
+
+### Wave P1a — Primeira impressão
+
+- [ ] P1a.1 — Loader como teaser (`docs/specs/loader-teaser.md`)
+- [ ] P1a.2 — Opening title card / Beat 0 (`docs/specs/opening-title-card.md`)
+
+### Wave P1b — Fechamento / colofon (ADR-019)
+
+- [ ] P1b.1 — Seção final Colophon (`docs/specs/colophon-outro.md`)
+
+### Wave P1c — Atmosfera por beat (ritmo)
+
+- [ ] P1c.1 — Assinatura de atmosfera por beat + crossfades
+      (`docs/specs/atmosphere-per-beat.md`)
+
+### Wave P2a — Arsenal macro + HUD
+
+- [ ] P2a.1 — Câmera macro no lançador + HUD de anotação
+      (`docs/specs/arsenal-macro-hud.md`)
+
+### Wave P2b — Diferenciação de plataforma
+
+- [ ] P2b.1 — Desktop: pointer parallax real
+      (`docs/specs/desktop-pointer-parallax.md`)
+- [ ] P2b.2 — Mobile: gyro com permissão iOS + fallback (ADR-018)
+      (`docs/specs/mobile-gyro-permission.md`)
+
+### Wave P3 — Micro-interação + robustez
+
+- [ ] P3.1 — WebShoot descobrível (`docs/specs/web-shoot-discovery.md`)
+- [ ] P3.2 — Fallback WebGL como poster editorial
+      (`docs/specs/webgl-static-fallback.md`)
+- [ ] P3.3 — Assets 2D via Higgsfield, sem vídeo (ADR-020)
