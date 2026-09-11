@@ -150,8 +150,13 @@ export function getGyroController(): GyroController {
     }
   ).DeviceOrientationEvent;
 
+  // Gyro is a mobile-only affordance: a desktop with a mouse uses pointer
+  // parallax. `maxTouchPoints` (not `hover`) is the reliable signal — headless
+  // Chromium reports `hover: none` even for desktop viewports.
+  const isTouch = (window.navigator.maxTouchPoints ?? 0) > 0;
+
   singleton = createGyroController({
-    hasSupport: Boolean(DeviceOrientation),
+    hasSupport: Boolean(DeviceOrientation) && isTouch,
     requestPermission: DeviceOrientation?.requestPermission
       ? () => DeviceOrientation.requestPermission!()
       : undefined,

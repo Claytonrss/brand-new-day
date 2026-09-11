@@ -11,6 +11,7 @@ import { BeatProvider } from './components/3d/beat/BeatProvider';
 import { PerfHud } from './components/ui/PerfHud';
 import { EffectsStack } from './components/3d/EffectsStack';
 import { WebShoot } from './components/3d/interaction/WebShoot';
+import { WebShootHint } from './components/3d/interaction/WebShootHint';
 import { HeroOverlay } from './components/ui/HeroOverlay';
 import { EvolutionOverlay } from './components/ui/EvolutionOverlay';
 import { ArsenalOverlay } from './components/ui/ArsenalOverlay';
@@ -108,6 +109,7 @@ export function App() {
               <LightRig />
               <EffectsStack />
               <WebShoot />
+              <WebShootHint />
             </BeatProvider>
           </Suspense>
         </CanvasContainer>

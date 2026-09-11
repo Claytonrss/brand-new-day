@@ -127,7 +127,11 @@ WebShoot descobrível + fallback WebGL)
      chip por gesto, persistência e fallback por scroll; 10 unit tests;
      evidência `docs/evidence/mobile-gyro-permission/`. Aceite em dispositivo
      real pendente (TD-002).
-   - **Próximo:** P3 (WebShoot descobrível + fallback WebGL + assets 2D)
+   - ✅ **P3.1 (WebShoot descobrível) entregue:** anel de luz pulsando 1× por
+     sessão ao entrar no Beat 3 (sem reduced-motion/low tier); evidência
+     `docs/evidence/web-shoot-discovery/`. Também: gyro gate agora exige
+     `maxTouchPoints > 0` (não aparecia mais no desktop).
+   - **Próximo:** P3.2 (fallback WebGL) → P3.3 (assets 2D)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`

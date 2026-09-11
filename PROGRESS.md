@@ -468,7 +468,9 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P3 — Micro-interação + robustez
 
-- [ ] P3.1 — WebShoot descobrível (`docs/specs/web-shoot-discovery.md`)
+- [x] P3.1 — WebShoot descobrível (`docs/specs/web-shoot-discovery.md`)
+      — anel de luz pulsando 1× por sessão no Beat 3 (direção A), nunca em
+      reduced-motion/low tier; evidência `docs/evidence/web-shoot-discovery/`
 - [ ] P3.2 — Fallback WebGL como poster editorial
       (`docs/specs/webgl-static-fallback.md`)
 - [ ] P3.3 — Assets 2D via Higgsfield, sem vídeo (ADR-020)
