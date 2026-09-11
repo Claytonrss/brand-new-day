@@ -65,12 +65,13 @@ function median(values: number[]) {
 function legacyPath(bp: 'mobile' | 'desktop') {
   const kf = CAMERA_KEYFRAMES;
   const segments: Array<[number, number, typeof kf.hero.mobile, typeof kf.hero.mobile]> = [
-    [0, 0.25, kf.hero[bp], kf.hero[bp]],
-    [0.25, 0.375, kf.hero[bp], kf.evolutionStart[bp]],
-    [0.375, 0.5625, kf.evolutionStart[bp], kf.evolutionEnd[bp]],
-    [0.5625, 0.6875, kf.evolutionEnd[bp], kf.arsenalStart[bp]],
-    [0.6875, 0.875, kf.arsenalStart[bp], kf.arsenalEnd[bp]],
-    [0.875, 1, kf.arsenalEnd[bp], kf.fullBody[bp]],
+    [0, 0.2222, kf.hero[bp], kf.hero[bp]],
+    [0.2222, 0.3333, kf.hero[bp], kf.evolutionStart[bp]],
+    [0.3333, 0.5, kf.evolutionStart[bp], kf.evolutionEnd[bp]],
+    [0.5, 0.6111, kf.evolutionEnd[bp], kf.arsenalStart[bp]],
+    [0.6111, 0.7778, kf.arsenalStart[bp], kf.arsenalEnd[bp]],
+    [0.7778, 0.8889, kf.arsenalEnd[bp], kf.fullBody[bp]],
+    [0.8889, 1, kf.fullBody[bp], kf.fullBody[bp]],
   ];
 
   const points: THREE.Vector3[] = [];

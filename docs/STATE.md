@@ -2,8 +2,8 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — P0 (composição) e P1a (primeira impressão)
-entregues; próximo P1b (colofon/outro)
+**Fase:** Portfolio Impact — P0 (composição) e P1a/P1b (primeira impressão +
+colofon autoral) entregues; próximo P1c (atmosfera por beat)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -111,8 +111,10 @@ entregues; próximo P1b (colofon/outro)
    - ✅ **P1a.2 (opening title card) entregue:** card tipográfico 100vh antes do
      Hero (Beat 0 compartilha a câmera Hero); página 700vh → 800vh; evidência
      `docs/evidence/opening-title-card/`
-   - **Próximo:** P1b (colofon/outro) → P1c (atmosfera) → P2 (plataforma)
-     → P3 (robustez)
+   - ✅ **P1b.1 (colofon) entregue:** seção final editorial com autoria, stack,
+     CTA único e CC-BY; modelo dissolve via gradiente da seção + cue `colophon`;
+     página 800vh → 900vh; evidência `docs/evidence/colophon-outro/`
+   - **Próximo:** P1c (atmosfera por beat) → P2 (plataforma) → P3 (robustez)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`

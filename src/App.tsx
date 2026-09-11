@@ -16,6 +16,7 @@ import { FullBodyOverlay } from './components/ui/FullBodyOverlay';
 import { CinematicLoader } from './components/ui/CinematicLoader';
 import { ChapterCard } from './components/ui/ChapterCard';
 import { OpeningTitleCard } from './components/ui/OpeningTitleCard';
+import { ColophonSection } from './components/ui/ColophonSection';
 import { ProgressBar } from './components/ui/ProgressBar';
 
 interface ErrorBoundaryProps {
@@ -60,8 +61,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  * - ProgressBar shows scroll progress on right edge
  *
  * Layout: Opening (100vh) → Hero (100vh) → Chapter1 (100vh) → Evolution
- *         (150vh) → Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh)
- *         = 800vh
+ *         (150vh) → Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) →
+ *         Colophon (100vh) = 900vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -152,6 +153,9 @@ export function App() {
         >
           <FullBodyOverlay />
         </section>
+
+        {/* Colophon — 100vh, editorial outro with authorship + CTA */}
+        <ColophonSection />
       </div>
     </main>
     </LenisProvider>

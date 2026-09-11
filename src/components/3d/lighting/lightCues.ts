@@ -54,7 +54,10 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
     id: 'ambient',
     kind: 'ambient',
     base: { intensity: { mobile: 0.35, desktop: 0.35 }, color: 'steel' },
-    beats: {},
+    beats: {
+      // Colophon: quiet, enough for a residual silhouette.
+      colophon: { intensity: { mobile: 0.1, desktop: 0.1 } },
+    },
   },
   {
     id: 'key',
@@ -64,6 +67,7 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
     base: { intensity: { mobile: 3.0, desktop: 3.0 }, color: 'paper', position: [5, 8, 3] },
     beats: {
       fullBody: { position: [3, 6, 4] },
+      colophon: { intensity: { mobile: 0.8, desktop: 0.8 } },
     },
   },
   {
@@ -78,6 +82,7 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
     },
     beats: {
       fullBody: { intensity: { mobile: 15, desktop: 15 }, position: [3, -1, -4], distance: 18 },
+      colophon: { intensity: { mobile: 4, desktop: 4 } },
     },
   },
   {
@@ -90,7 +95,9 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
       distance: 8,
       decay: 2,
     },
-    beats: {},
+    beats: {
+      colophon: { intensity: { mobile: 0, desktop: 0 } },
+    },
   },
   {
     id: 'fill',
@@ -117,6 +124,7 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
         distance: 20,
         decay: 2,
       },
+      colophon: { intensity: { mobile: 2, desktop: 2 } },
     },
   },
   {

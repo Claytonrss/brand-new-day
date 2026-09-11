@@ -15,6 +15,11 @@
 > Limitação honesta: **FPS em dispositivo real continua não medido** (Fase 7.3);
 > a nota de "performance percebida mobile" é inferida do `budget.spec.ts`
 > (draw calls ≤ 48, sem recompilação de shader), não de medição em hardware.
+>
+> **Atualizada em P1a/P1b (2026-09-10):** "sensação cinematográfica/editorial" e
+> "originalidade de portfólio" sobem para 5 com loader teaser, opening title card
+> e colofon autoral (evidências `docs/evidence/{loader-teaser,opening-title-card,colophon-outro}/`).
+> Média ponderada **4,4**.
 
 ## Escala
 
@@ -60,16 +65,15 @@ Evidência: `docs/evidence/portfolio-audit-p0/` (3 viewports × 8 pontos).
 | Integração texto + personagem | 3 | 4 | 4 | ✅ | Nenhuma palavra cortada (`1440-scroll-45/75`, `390-scroll-100`); texto fora do foco em todos os beats |
 | Iluminação e silhueta | 2 | 5 | 4 | ✅ | Rim oxide/signal, materialidade do traje legível nos close-ups (`1440-scroll-30/45`) |
 | Tipografia e hierarquia | 2 | 4 | 4 | ✅ | Quebras manuais do storyboard (`SplitTextHeadline` com `\n`); fim do `ESTÁ M/UDANDO.` |
-| Ritmo de scroll e câmera | 2 | 4 | 4 | ✅ | Chapter cards + órbita do Arsenal; ritmo ainda por variação (escopo da P1c) |
-| Sensação cinematográfica/editorial | 2 | 4 | 4 | ✅ | Close-ups de peito/pulso com intenção; FullBody como pôster vivo |
-| Originalidade de portfólio | 2 | 4 | 4 | ✅ | Rig 100% procedural e shaders autorais — não é template |
+| Ritmo de scroll e câmera | 2 | 4 | 4 | ✅ | Chapter cards + órbita do Arsenal + assinatura final; ritmo ainda por variação (escopo da P1c) |
+| Sensação cinematográfica/editorial | 2 | 5 | 4 | ✅ | Loader teaser + opening title card + colofon editorial (`loader-teaser/`, `opening-title-card/`, `colophon-outro/`) |
+| Originalidade de portfólio | 2 | 5 | 4 | ✅ | Rig procedural + shaders autorais + assinatura de autor com stack e CTA |
 | Performance percebida mobile | 3 | 4 | 4 | ✅ | `budget.spec.ts`: draw calls ≤ 48, `programs` estável no scroll; FPS real pendente (Fase 7.3) |
 | Motion reduzida ainda bonita | 1 | 4 | 3 | ✅ | `reduced-motion.spec.ts` com enquadramento por seção e composição preservada |
-| **Média ponderada** | | **4,2** | **≥ 4** | ✅ | 97/23 |
+| **Média ponderada** | | **4,4** | **≥ 4** | ✅ | 101/23 |
 
 **Bloqueantes:** primeira dobra (5), composição mobile (4) e integração
 texto/personagem (4) — todos ≥ 4.
 
 **Pendência que impede nota máxima:** FPS em dispositivo real não medido
-(TD-002 / Fase 7.3) e atribuição de autoria ausente até a Wave P1b
-(Colophon).
+(TD-002 / Fase 7.3). Autoria (P1b) já endereçada pelo colofon.

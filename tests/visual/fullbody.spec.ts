@@ -15,8 +15,10 @@ test.describe('FullBody section', () => {
     // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll to FullBody section (past hero 100vh + evolution 150vh + arsenal 150vh)
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // Scroll into the FullBody section (900vh page; last 100vh is the colophon)
+    await page.evaluate(() =>
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.94),
+    );
     await page.waitForTimeout(2000);
 
     // Check FullBody title is visible
@@ -51,7 +53,9 @@ test.describe('FullBody section', () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Scroll to FullBody
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() =>
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.94),
+    );
     await page.waitForTimeout(1000);
 
     // Check ARIA label on section
@@ -79,7 +83,9 @@ test.describe('FullBody section', () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Scroll to FullBody
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() =>
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.94),
+    );
     await page.waitForTimeout(1000);
 
     // Check that the section container is centered

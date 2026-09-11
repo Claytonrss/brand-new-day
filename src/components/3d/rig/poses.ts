@@ -52,6 +52,15 @@ export const BEAT_POSES: Record<BeatId, Partial<Record<BoneRole, readonly [numbe
       foreArmR: [0, 0.05, 0],
       head: [0, 0, 0],
     },
+    // colofon: memória residual — pose relaxada, sem gesto
+    colophon: {
+      spine2: [-0.01, 0, 0],
+      shoulderL: [0, 0, 0.04],
+      shoulderR: [0, 0, -0.04],
+      foreArmL: [0, 0.06, 0],
+      foreArmR: [0, 0.06, 0],
+      head: [0, 0, 0],
+    },
     // chapter cards mantêm a pose do beat anterior (transição tipográfica)
     chapter1: {
       shoulderL: [0, 0, 0.03],

@@ -431,7 +431,10 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P1b — Fechamento / colofon (ADR-019)
 
-- [ ] P1b.1 — Seção final Colophon (`docs/specs/colophon-outro.md`)
+- [x] P1b.1 — Seção final Colophon (`docs/specs/colophon-outro.md`)
+      — autoria + stack + CTA único + CC-BY; modelo dissolve na névoa
+      (gradiente da seção + cue de luz `colophon`); página 800vh → 900vh;
+      evidência `docs/evidence/colophon-outro/`
 
 ### Wave P1c — Atmosfera por beat (ritmo)
 

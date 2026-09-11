@@ -92,6 +92,9 @@ export const CAMERA_SPANS: readonly CameraSpan[] = [
   { beat: 'chapter2', fromIndex: 3, toIndex: 4, ease: 'linear' },
   { beat: 'arsenal', fromIndex: 4, toIndex: 8, ease: 'linear' },
   { beat: 'fullBody', fromIndex: 8, toIndex: 10, ease: 'easeOutCubic' },
+  // Colophon holds the full-body framing: the model leaves via the section
+  // dissolve + quiet light cue, not a camera move (colophon-outro.md §4).
+  { beat: 'colophon', fromIndex: 10, toIndex: 10, ease: 'linear' },
 ] as const;
 
 const SPAN_BY_BEAT = new Map(CAMERA_SPANS.map((span) => [span.beat, span]));

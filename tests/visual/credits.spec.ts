@@ -30,7 +30,7 @@ test.describe('CC-BY Attribution', () => {
     await expect(page.getByText(ATTRIBUTION).first()).toBeVisible();
   });
 
-  test('is visible in the FullBody section', async ({ page }) => {
+  test('is visible in the final section (FullBody → Colophon)', async ({ page }) => {
     await page.goto('/');
     await waitForScene(page);
 
