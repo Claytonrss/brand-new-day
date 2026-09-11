@@ -2,8 +2,8 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — P0/P1a/P1b/P1c entregues; próximo P2a (Arsenal
-macro + HUD)
+**Fase:** Portfolio Impact — P0/P1/P2a entregues; próximo P2b (parallax
+desktop + gyro iOS)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -117,7 +117,10 @@ macro + HUD)
    - ✅ **P1c.1 (atmosfera por beat) entregue:** partículas (`uDensity`),
      `FogExp2` e grão dirigidos por beat com crossfade; `Atmosphere` passou
      para dentro do `BeatProvider`; evidência `docs/evidence/atmosphere-per-beat/`
-   - **Próximo:** P2a (Arsenal macro + HUD) → P2b (plataforma) → P3 (robustez)
+   - ✅ **P2a.1 (Arsenal macro + HUD) entregue:** órbita com raio 2.9 → 1.7,
+     HUD de anotação (call-outs no desktop, legenda no mobile); evidência
+     `docs/evidence/arsenal-macro-hud/`
+   - **Próximo:** P2b (parallax desktop + gyro iOS) → P3 (robustez)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`

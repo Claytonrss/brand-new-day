@@ -19,8 +19,9 @@ const ARC = {
   samples: 4,
   startAzimuth: -32 * DEG,
   endAzimuth: 43 * DEG,
-  startRadius: 5.4,
-  endRadius: 3.9,
+  // Macro push-in (P2a): the launcher fills the frame by the end of the arc.
+  startRadius: 2.9,
+  endRadius: 1.7,
   // Below the wrist: the web-shooter sits on the underside of the forearm,
   // so the camera has to look up at it.
   startHeight: -0.8,
@@ -38,7 +39,7 @@ const ARC = {
  */
 const RELEASE = {
   azimuthOffset: -8 * DEG,
-  radiusGain: 3.2,
+  radiusGain: 2.2,
   height: 0.8,
 } as const;
 
@@ -60,7 +61,7 @@ const OVERSHOOT = {
  */
 const APPROACH = {
   azimuthOffset: -10 * DEG,
-  radiusGain: 1.6,
+  radiusGain: 1.1,
   height: 1.4,
 } as const;
 

@@ -445,8 +445,13 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P2a — Arsenal macro + HUD
 
-- [ ] P2a.1 — Câmera macro no lançador + HUD de anotação
-      (`docs/specs/arsenal-macro-hud.md`)
+- [x] P2a.1 — Câmera macro no lançador + HUD de anotação
+      (`docs/specs/arsenal-macro-hud.md`) — raio da órbita 5.4/3.9 → 2.9/1.7;
+      HUD com linhas de chamada (desktop) e legenda inferior (mobile);
+      evidência `docs/evidence/arsenal-macro-hud/`
+- [x] Correção de calibração: `BEAT_TIMELINE` recalibrado como fração do
+      scroll máximo (a versão anterior estava ~2,8% adiantada, fazendo o macro
+      coincidir com o FullBody)
 
 ### Wave P2b — Diferenciação de plataforma
 
