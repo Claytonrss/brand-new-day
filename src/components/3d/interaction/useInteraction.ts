@@ -7,6 +7,7 @@ import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { useQualityProfile } from '../qualityContext';
 import { INTERACTION } from './interactionStore';
 import { dragTarget, gyroTarget, rimOffset } from './pointerMath';
+import { getGyroController, gyroReading } from './gyroController';
 import { windowPointer } from '../rig/windowPointer';
 
 export interface InteractionDebugState {
@@ -43,7 +44,6 @@ export function useInteraction() {
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   const dragRef = useRef({ active: false, x: 0, y: 0, yaw: 0, pitch: 0 });
-  const gyroRef = useRef({ gamma: 0, beta: 0, origin: null as null | { gamma: number; beta: number } });
   const target = useMemo(() => ({ yaw: 0, pitch: 0 }), []);
   const debug = useMemo(
     () =>
@@ -92,20 +92,12 @@ export function useInteraction() {
   }, [prefersReducedMotion]);
 
   // --- device orientation (mobile parallax) --------------------------------
+  // The permission gate lives in `gyroController` (ADR-018): on iOS the
+  // listener is only attached after a gesture grants access. Nothing here
+  // touches the sensor before that.
   useEffect(() => {
-    if (prefersReducedMotion || typeof window === 'undefined') return;
-    if (!('DeviceOrientationEvent' in window)) return;
-
-    const onOrientation = (event: DeviceOrientationEvent) => {
-      if (event.gamma == null || event.beta == null) return;
-      const gyro = gyroRef.current;
-      gyro.gamma = event.gamma;
-      gyro.beta = event.beta;
-      if (!gyro.origin) gyro.origin = { gamma: event.gamma, beta: event.beta };
-    };
-
-    window.addEventListener('deviceorientation', onOrientation);
-    return () => window.removeEventListener('deviceorientation', onOrientation);
+    if (prefersReducedMotion) return;
+    getGyroController().init();
   }, [prefersReducedMotion]);
 
   // --- web-shot trigger (Beat 3, high tier) --------------------------------
@@ -160,9 +152,8 @@ export function useInteraction() {
     }
 
     // drag and gyro add up, then release returns to rest with a spring
-    const gyroState = gyroRef.current;
-    const gyro = gyroState.origin
-      ? gyroTarget(gyroState.gamma, gyroState.beta, gyroState.origin)
+    const gyro = gyroReading.origin
+      ? gyroTarget(gyroReading.gamma, gyroReading.beta, gyroReading.origin)
       : { yaw: 0, pitch: 0 };
 
     target.yaw = (drag.active ? drag.yaw : 0) + gyro.yaw;

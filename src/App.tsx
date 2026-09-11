@@ -19,6 +19,7 @@ import { CinematicLoader } from './components/ui/CinematicLoader';
 import { ChapterCard } from './components/ui/ChapterCard';
 import { OpeningTitleCard } from './components/ui/OpeningTitleCard';
 import { ColophonSection } from './components/ui/ColophonSection';
+import { GyroPrompt } from './components/ui/GyroPrompt';
 import { ProgressBar } from './components/ui/ProgressBar';
 
 interface ErrorBoundaryProps {
@@ -76,6 +77,9 @@ export function App() {
     <LenisProvider>
       {/* Desktop pointer parallax — publishes CSS vars for the .parallax-* layers */}
       <PointerParallax />
+
+      {/* Mobile gyro permission chip (iOS) — renders only when needed */}
+      <GyroPrompt />
 
       {/* Scroll progress indicator */}
       <ProgressBar />

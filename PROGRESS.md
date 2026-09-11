@@ -459,8 +459,12 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
       (`docs/specs/desktop-pointer-parallax.md`) — câmera aditiva sutil +
       camadas `.parallax-near/mid/far` via CSS vars; evidência
       `docs/evidence/desktop-pointer-parallax/`
-- [ ] P2b.2 — Mobile: gyro com permissão iOS + fallback (ADR-018)
-      (`docs/specs/mobile-gyro-permission.md`)
+- [x] P2b.2 — Mobile: gyro com permissão iOS + fallback (ADR-018)
+      (`docs/specs/mobile-gyro-permission.md`) — gate de estados
+      (`unavailable|prompt|granted|denied`), chip por gesto, persistência em
+      `localStorage`, fallback por scroll; 10 unit tests em `tests/unit/gyro.test.ts`;
+      evidência `docs/evidence/mobile-gyro-permission/`
+      (aceite em dispositivo real segue pendente — TD-002)
 
 ### Wave P3 — Micro-interação + robustez
 

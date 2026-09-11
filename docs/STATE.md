@@ -2,7 +2,8 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — P0..P2b.1 entregues; próximo P2b.2 (gyro iOS)
+**Fase:** Portfolio Impact — P0..P2b entregues; próximo P3 (robustez:
+WebShoot descobrível + fallback WebGL)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -122,7 +123,11 @@
    - ✅ **P2b.1 (pointer parallax desktop) entregue:** câmera com offset aditivo
      sutil + camadas `.parallax-near/mid/far` (CSS vars), somente hover e sem
      `prefers-reduced-motion`; evidência `docs/evidence/desktop-pointer-parallax/`
-   - **Próximo:** P2b.2 (gyro iOS) → P3 (robustez)
+   - ✅ **P2b.2 (gyro iOS) entregue:** máquina de estados de permissão,
+     chip por gesto, persistência e fallback por scroll; 10 unit tests;
+     evidência `docs/evidence/mobile-gyro-permission/`. Aceite em dispositivo
+     real pendente (TD-002).
+   - **Próximo:** P3 (WebShoot descobrível + fallback WebGL + assets 2D)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`
