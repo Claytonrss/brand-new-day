@@ -21,11 +21,14 @@ import { ChapterCard } from './components/ui/ChapterCard';
 import { OpeningTitleCard } from './components/ui/OpeningTitleCard';
 import { ColophonSection } from './components/ui/ColophonSection';
 import { GyroPrompt } from './components/ui/GyroPrompt';
+import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
+import { hasWebGL } from './design/webgl';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
   fallback: ReactNode;
+  onError?: () => void;
 }
 
 interface ErrorBoundaryState {
@@ -44,6 +47,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.props.onError?.();
   }
 
   render() {
@@ -73,6 +77,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
  */
 export function App() {
   const [loaded, setLoaded] = useState(false);
+  // Proactive fallback: no WebGL means the poster version, not a broken page.
+  const [webglUnavailable, setWebglUnavailable] = useState(() => !hasWebGL());
+
+  if (webglUnavailable) return <StaticFallback />;
 
   return (
     <LenisProvider>
@@ -94,11 +102,8 @@ export function App() {
     <main className="relative w-full overflow-x-hidden bg-ink text-paper">
       {/* 3D R3F Canvas Layer — fixed, never unmounts */}
       <ErrorBoundary
-        fallback={
-          <div className="fixed inset-0 z-0 flex items-center justify-center bg-ink">
-            <p className="font-mono text-sm text-dim">3D unavailable</p>
-          </div>
-        }
+        fallback={null}
+        onError={() => setWebglUnavailable(true)}
       >
         <CanvasContainer>
           <Suspense fallback={null}>

@@ -2,8 +2,7 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — P0..P2b entregues; próximo P3 (robustez:
-WebShoot descobrível + fallback WebGL)
+**Fase:** Portfolio Impact — P0..P3.2 entregues (P3.3 assets 2D pendente)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -131,7 +130,10 @@ WebShoot descobrível + fallback WebGL)
      sessão ao entrar no Beat 3 (sem reduced-motion/low tier); evidência
      `docs/evidence/web-shoot-discovery/`. Também: gyro gate agora exige
      `maxTouchPoints > 0` (não aparecia mais no desktop).
-   - **Próximo:** P3.2 (fallback WebGL) → P3.3 (assets 2D)
+   - ✅ **P3.2 (fallback WebGL) entregue:** detecção proativa + poster
+     editorial (imagens off-screen do modelo real) + copy das seções + aviso no
+     tom; `fallback.spec.ts`; evidência `docs/evidence/webgl-fallback/`
+   - ⏳ **P3.3 (assets 2D via Higgsfield)** — pendente (ADR-020)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`
@@ -199,4 +201,4 @@ WebShoot descobrível + fallback WebGL)
 - **Draw calls/frame:** 44–46 (tier medium/high) · 11–13 (low) — antes 118–120
 - **GLB size:** 22.4 MB (22.4 MB dos quais ~19 MB são geometria **não
   comprimida** — item F4b em aberto; budget é ≤ 15 MB)
-- **Total page height:** 700vh (4 seções + 2 chapter cards)
+- **Total page height:** 900vh (opening + 4 seções + colofon + 2 chapter cards)
