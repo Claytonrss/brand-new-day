@@ -1,6 +1,7 @@
 import { Component, Suspense, useState, type ReactNode } from 'react';
 
 import { LenisProvider } from './components/LenisProvider';
+import { PointerParallax } from './components/PointerParallax';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { Stage } from './components/3d/Stage';
@@ -73,6 +74,9 @@ export function App() {
 
   return (
     <LenisProvider>
+      {/* Desktop pointer parallax — publishes CSS vars for the .parallax-* layers */}
+      <PointerParallax />
+
       {/* Scroll progress indicator */}
       <ProgressBar />
 

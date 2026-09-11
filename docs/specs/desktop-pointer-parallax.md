@@ -66,4 +66,11 @@ mas dá "vida" e separa a peça de um model viewer.
 ## 7. Evidências
 
 - Vídeo 1440 mostrando movimento de mouse e resposta das camadas.
-- Par de screenshots com o cursor em posições extremas (diff sutil).
+- Par de screenshots com o cursor em posições extremas (diff sutil):
+  `docs/evidence/desktop-pointer-parallax/1440-hero-{left,right}.png`
+  (`scripts/collect-parallax-evidence.mjs`).
+
+> Nota de verificação: o Chromium headless reporta `hover: none`, então o gate
+> de pointer é emulado no coletor via CDP (`Emulation.setEmulatedMedia`) para
+> gerar a evidência. Em dispositivo real com mouse, o gate `(hover: hover)` já
+> é verdadeiro.

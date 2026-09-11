@@ -29,7 +29,7 @@ export function ColophonSection() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-[82vw] text-center md:max-w-[520px] md:text-left">
+      <div className="parallax-mid relative z-10 w-full max-w-[82vw] text-center md:max-w-[520px] md:text-left">
         <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-dim">
           Colofon
         </p>

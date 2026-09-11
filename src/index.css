@@ -50,6 +50,37 @@ html.lenis body {
   height: auto;
 }
 
+/* Pointer parallax layers (desktop) — docs/specs/desktop-pointer-parallax.md */
+.parallax-near {
+  transform: translate3d(
+    calc(var(--pointer-x, 0) * 10px),
+    calc(var(--pointer-y, 0) * 8px),
+    0
+  );
+}
+.parallax-mid {
+  transform: translate3d(
+    calc(var(--pointer-x, 0) * 6px),
+    calc(var(--pointer-y, 0) * 5px),
+    0
+  );
+}
+.parallax-far {
+  transform: translate3d(
+    calc(var(--pointer-x, 0) * 3px),
+    calc(var(--pointer-y, 0) * 2px),
+    0
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-near,
+  .parallax-mid,
+  .parallax-far {
+    transform: none;
+  }
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }

@@ -455,8 +455,10 @@ Objetivo: elevar de "demo de engine 3D" para "portfólio de alto impacto".
 
 ### Wave P2b — Diferenciação de plataforma
 
-- [ ] P2b.1 — Desktop: pointer parallax real
-      (`docs/specs/desktop-pointer-parallax.md`)
+- [x] P2b.1 — Desktop: pointer parallax real
+      (`docs/specs/desktop-pointer-parallax.md`) — câmera aditiva sutil +
+      camadas `.parallax-near/mid/far` via CSS vars; evidência
+      `docs/evidence/desktop-pointer-parallax/`
 - [ ] P2b.2 — Mobile: gyro com permissão iOS + fallback (ADR-018)
       (`docs/specs/mobile-gyro-permission.md`)
 

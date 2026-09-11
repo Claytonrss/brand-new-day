@@ -2,8 +2,7 @@
 
 ## Estado Atual (2026-09-10)
 
-**Fase:** Portfolio Impact — P0/P1/P2a entregues; próximo P2b (parallax
-desktop + gyro iOS)
+**Fase:** Portfolio Impact — P0..P2b.1 entregues; próximo P2b.2 (gyro iOS)
 
 ### Upgrade de Movimento (plano: `docs/plans/3d-motion-upgrade-plan.md`)
 
@@ -120,7 +119,10 @@ desktop + gyro iOS)
    - ✅ **P2a.1 (Arsenal macro + HUD) entregue:** órbita com raio 2.9 → 1.7,
      HUD de anotação (call-outs no desktop, legenda no mobile); evidência
      `docs/evidence/arsenal-macro-hud/`
-   - **Próximo:** P2b (parallax desktop + gyro iOS) → P3 (robustez)
+   - ✅ **P2b.1 (pointer parallax desktop) entregue:** câmera com offset aditivo
+     sutil + camadas `.parallax-near/mid/far` (CSS vars), somente hover e sem
+     `prefers-reduced-motion`; evidência `docs/evidence/desktop-pointer-parallax/`
+   - **Próximo:** P2b.2 (gyro iOS) → P3 (robustez)
    - Specs: `docs/specs/{loader-teaser, opening-title-card, arsenal-macro-hud,
      colophon-outro, atmosphere-per-beat, desktop-pointer-parallax,
      mobile-gyro-permission, web-shoot-discovery, webgl-static-fallback}.md`

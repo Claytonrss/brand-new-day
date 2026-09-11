@@ -106,7 +106,7 @@ export function ArsenalOverlay() {
         className="pointer-events-none fixed inset-0 z-20 opacity-0"
       >
         {/* Desktop: hairline call-outs in the margins */}
-        <div className="relative hidden h-full w-full md:block">
+        <div className="parallax-mid relative hidden h-full w-full md:block">
           <svg
             className="absolute inset-0 h-full w-full"
             preserveAspectRatio="none"
@@ -141,7 +141,7 @@ export function ArsenalOverlay() {
         </div>
 
         {/* Mobile: compact bottom legend + markers */}
-        <div className="absolute inset-x-0 bottom-0 md:hidden">
+        <div className="parallax-far absolute inset-x-0 bottom-0 md:hidden">
           <div className="mx-auto flex max-w-[82vw] flex-col gap-1.5 border-t border-signal/40 pt-4 pb-4">
             {HUD_LABELS.map((label, index) => (
               <div key={label.id} className="flex items-center gap-2">
