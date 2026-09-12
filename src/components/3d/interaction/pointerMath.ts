@@ -13,6 +13,31 @@ export const DRAG_LIMITS = { yaw: 0.21, pitch: 0.12 } as const;
 /** Drag authority per pixel of pointer travel, before clamping. */
 export const DRAG_SENSITIVITY = { yaw: 0.0045, pitch: 0.003 } as const;
 
+/** A pointer gesture counts as a tap only below these envelopes (FALHA-13). */
+export const TAP_MAX_DISTANCE_PX = 8;
+export const TAP_MAX_DURATION_MS = 300;
+
+export interface PointerSample {
+  x: number;
+  y: number;
+  /** `performance.now()` captured at the event. */
+  time: number;
+}
+
+/**
+ * Tap × drag classifier (FALHA-13): the web shot fires on `pointerup` only
+ * when the gesture stayed inside the tap envelope — short travel AND short.
+ * A drag (long travel or long press) orbits the model and never shoots.
+ */
+export function isTap(down: PointerSample, up: PointerSample): boolean {
+  const dx = up.x - down.x;
+  const dy = up.y - down.y;
+  return (
+    Math.hypot(dx, dy) < TAP_MAX_DISTANCE_PX &&
+    up.time - down.time < TAP_MAX_DURATION_MS
+  );
+}
+
 /** Device orientation authority (radians). */
 export const GYRO_LIMITS = { yaw: 0.12, pitch: 0.06 } as const;
 

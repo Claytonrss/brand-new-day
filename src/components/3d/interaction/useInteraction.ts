@@ -6,7 +6,7 @@ import { ANCHORS } from '../rig/anchorStore';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { useQualityProfile } from '../qualityContext';
 import { INTERACTION } from './interactionStore';
-import { dragTarget, gyroTarget, rimOffset } from './pointerMath';
+import { dragTarget, gyroTarget, isTap, rimOffset, type PointerSample } from './pointerMath';
 import { getGyroController, gyroReading } from './gyroController';
 import { windowPointer } from '../rig/windowPointer';
 
@@ -104,12 +104,26 @@ export function useInteraction() {
   // Gate mirrors the hint (WebShootHint): the shot is one draw call and never
   // justified tier `high`. Was `high`-only (FALHA-12); aligned in Wave 1
   // because the correct mobile tier (`medium`) would otherwise leave the
-  // advertised shot permanently dead on every phone. Tap×drag classification
-  // remains Wave 3 (T3.3).
+  // advertised shot permanently dead on every phone.
+  //
+  // FALHA-13: the shot fires on `pointerup` through the isTap classifier —
+  // a gesture that travels or lingers is a drag (orbit) and never shoots.
   useEffect(() => {
     if (prefersReducedMotion || profile.tier === 'low') return;
 
-    const onDown = () => {
+    let down: PointerSample | null = null;
+
+    const onDown = (event: PointerEvent) => {
+      down = { x: event.clientX, y: event.clientY, time: performance.now() };
+    };
+
+    const onUp = (event: PointerEvent) => {
+      const start = down;
+      down = null;
+      if (!start) return;
+      if (!isTap(start, { x: event.clientX, y: event.clientY, time: performance.now() })) {
+        return;
+      }
       if (stateRef.current?.beat !== 'arsenal') return;
 
       INTERACTION.shotId += 1;
@@ -118,13 +132,23 @@ export function useInteraction() {
       INTERACTION.cameraKick = 1;
     };
 
+    const onCancel = () => {
+      down = null;
+    };
+
     const cameraForward = () => {
       camera.getWorldDirection(direction);
       return direction;
     };
 
     window.addEventListener('pointerdown', onDown);
-    return () => window.removeEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onCancel);
+    return () => {
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onCancel);
+    };
   }, [camera, direction, prefersReducedMotion, profile.tier, stateRef]);
 
   // --- per-frame integration ----------------------------------------------
