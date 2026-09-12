@@ -2,6 +2,7 @@ import { Component, Suspense, useState, type ReactNode } from 'react';
 
 import { LenisProvider } from './components/LenisProvider';
 import { PointerParallax } from './components/PointerParallax';
+import { LandingTrigger } from './components/3d/LandingTrigger';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
 import { Stage } from './components/3d/Stage';
@@ -86,6 +87,9 @@ export function App() {
     <LenisProvider>
       {/* Desktop pointer parallax — publishes CSS vars for the .parallax-* layers */}
       <PointerParallax />
+
+      {/* Arrival landing — fires once the Hero enters the viewport (Wave 4a) */}
+      <LandingTrigger />
 
       {/* Mobile gyro permission chip (iOS) — renders only when needed */}
       <GyroPrompt />

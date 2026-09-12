@@ -143,26 +143,33 @@ meshes → passe existe e é visível (self-shadow).
 **Branches:** `feat/arrival-landing` + `feat/velocity-lean` · ~1 dia
 **Depende de:** Wave 1 · specs primeiro
 
-- [ ] T4.1 — Spec `docs/specs/arrival-landing.md`: **trigger = entrada do
-      Hero no viewport** (ScrollTrigger `once`; o reveal do modelo É o pouso —
-      NÃO o fade do loader, que revela o opening card opaco); edge: hero já
-      visível no primeiro frame pós-`loaded` → disparar imediatamente;
-      coreografia ~0,45 s (queda `y +0,6` com Spring k≈9, overshoot 4–6%,
-      flexão hips/joelhos 6–8°, camera kick 0,08 + FOV −2); **sem braços**;
-      skip total em reduced-motion; amplitudes como constantes nomeadas
-- [ ] T4.2 — Implementar o landing (reusar `Spring`, pose-springs,
-      acoplamento de velocidade do `CameraRig`)
-- [ ] T4.3 — `motion.spec.ts`: landing decai para rest; não dispara com o
-      opening card cobrindo o viewport; dispara uma vez por sessão
+- [x] T4.1 — Spec `docs/specs/arrival-landing.md`: **trigger = entrada do
+      Hero no viewport** (ScrollTrigger `once` em `top bottom`; o reveal do
+      modelo É o pouso); edges cobertos: hero já visível pós-loader → fogo
+      imediato; hero acima da viewport (restoration profundo) →
+      `landingSnap()` sem animar; nunca dispara atrás de cover
+      (`loaderCover`); coreografia ~0,45 s com constantes nomeadas no spec
+      (`DROP 0.6`, `ω 9`, `ζ 0.7` → overshoot ~4,6%, flexão hips 6° /
+      joelhos 8°, kick 0,08, FOV −2); **sem braços**; skip em reduced-motion
+- [x] T4.2 — Implementar o landing: store `landing.ts` (Spring + envelopes
+      de kick/flex), `LandingTrigger.tsx` no App, offset no grupo
+      (`SpiderManModel`), `LANDING_POSE × flex` nos pose-springs do rig
+      (POSE_ROLES estendido com hips/upLegL/upLegR), kick+FOV no
+      `CameraRig`; 6 unit tests (`tests/unit/arrivalLanding.test.ts`)
+- [x] T4.3 — `motion.spec.ts`: landing decai para rest (waitForFunction
+      offset < 0,05); não dispara com o opening card cobrindo; dispara uma
+      vez por sessão (resubida não incrementa); reduced-motion nunca arma
+      — 16 passed / 2 skipped (hover) nos 2 viewports
 - [ ] T4.4 — Spec `docs/specs/velocity-lean.md`: springs alvo
       `clamp(velocity × K)` em pitch de `spine1/spine2` + elevação leve de
       ombros; máx 2–3°; 0 em reduced-motion; rig passa a consumir `stateRef`
 - [ ] T4.5 — Implementar o lean
 - [ ] T4.6 — Calibração conjunta em device: lean × FOV punch × dolly lag
       (os três acoplados à velocidade); se compitar, reduzir o lean primeiro
-- [ ] T4.7 — Evidência + PRs: vídeo por viewport (`pnpm evidence:motion`),
-      rubrica com primeira dobra ≥ 5, fps no S23 re-medido, screenshots,
-      ADR-022 (tier) se ainda não escrita
+- [~] T4.7 — Evidência + PRs (4a): `pnpm verify` verde, smoke 7/7,
+      screenshots 3 viewports, rubrica re-preenchida, ADR-022 já escrita na
+      Wave 1; **falta:** vídeo por viewport (`pnpm evidence:motion`), sinal
+      de flexão/kick calibrado em device e fps no S23 re-medido (Wave 0)
 
 ### Wave 5 — POL: coesão de beat + transições impressas
 **Branches:** `feat/beat-chrome` + `feat/chapter-print` (podem ser 1 PR) ·

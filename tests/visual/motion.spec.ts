@@ -31,6 +31,10 @@ function readRig(page: import('@playwright/test').Page) {
   });
 }
 
+function readLanding(page: import('@playwright/test').Page) {
+  return page.evaluate(() => window.__landing ?? null);
+}
+
 test.describe('Procedural rig', () => {
   test('resolves every Mixamo joint used by the rig', async ({ page }) => {
     await page.goto(`/${RIG}`);
@@ -120,6 +124,52 @@ test.describe('Procedural rig', () => {
   });
 });
 
+test.describe('Arrival landing', () => {
+  test('does not fire behind the opening card', async ({ page }) => {
+    await page.goto(`/${RIG}`);
+    await waitForScene(page);
+
+    // No scroll: the Hero never entered the viewport, so the model must be
+    // held above rest and the landing unfired.
+    const landing = await readLanding(page);
+    expect(landing?.fired ?? false).toBe(false);
+    expect(landing?.offset ?? 0).toBeGreaterThan(0);
+  });
+
+  test('fires once when the hero enters and decays to rest', async ({ page }) => {
+    test.slow();
+    await page.goto(`/${RIG}`);
+    await waitForScene(page);
+
+    // Hero section = 100vh–200vh: the trigger fires as its top touches the
+    // viewport bottom (first pixel of scroll past the opening card).
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.2));
+    await page.waitForTimeout(1500);
+
+    let landing = await readLanding(page);
+    expect(landing?.fired ?? false).toBe(true);
+    expect(landing?.fireCount ?? 0).toBe(1);
+
+    // The drop settles to rest well within a few seconds of simulated time
+    // (SwiftShader clamps spring dt, so wall-clock is a few times longer).
+    await page.waitForFunction(
+      () => Math.abs(window.__landing?.offset ?? 1) < 0.05,
+      { timeout: 30_000 },
+    );
+    landing = await readLanding(page);
+    expect(landing?.fireCount ?? 0).toBe(1);
+
+    // Once per session: leaving and re-entering the hero must not re-fire.
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 6));
+    await page.waitForTimeout(1000);
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.5));
+    await page.waitForTimeout(1000);
+
+    landing = await readLanding(page);
+    expect(landing?.fireCount ?? 0).toBe(1);
+  });
+});
+
 test.describe('Reduced motion', () => {
   test('freezes the rig completely @smoke', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -132,6 +182,19 @@ test.describe('Reduced motion', () => {
 
     expect(first?.head).toEqual(second?.head);
     expect(first?.breath).toBe(second?.breath);
+  });
+
+  test('never arms the landing', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`/${RIG}`);
+    await waitForScene(page);
+
+    // Scrolling across the hero must not fire anything — statue by design.
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 4));
+    await page.waitForTimeout(1500);
+
+    const landing = await readLanding(page);
+    expect(landing?.fired ?? false).toBe(false);
   });
 
   test('holds a pixel-identical composition', async ({ page }) => {

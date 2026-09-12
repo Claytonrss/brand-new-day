@@ -9,6 +9,7 @@ import { CameraTrack, createCameraSample, type Breakpoint } from './camera/camer
 import { fbm } from './camera/handheld';
 import { INTERACTION } from './interaction/interactionStore';
 import { windowPointer } from './rig/windowPointer';
+import { landing, LANDING_FOV_PUNCH, LANDING_KICK } from './landing';
 
 const LERP_K = 2;
 
@@ -104,6 +105,11 @@ export function CameraRig() {
           FOV_PUNCH_MAX,
         );
         target.fov += punch + INTERACTION.cameraKick * 1.5;
+
+        // Arrival landing impact — vertical dip + FOV punch riding the same
+        // fall speed envelope (docs/specs/arrival-landing.md §5)
+        target.position.y -= LANDING_KICK * landing.kick;
+        target.fov += LANDING_FOV_PUNCH * landing.kick;
 
         dollyDirection.copy(target.lookAt).sub(target.position).normalize();
         const lag = THREE.MathUtils.clamp(

@@ -1,5 +1,6 @@
 import type { BeatId } from '../beat/beats';
 import type { BoneRole } from './rigBones';
+import { LANDING_POSE } from '../landing';
 
 /**
  * Additive pose offsets per beat, in radians (x, y, z).
@@ -75,9 +76,11 @@ export const BEAT_POSES: Record<BeatId, Partial<Record<BoneRole, readonly [numbe
     },
   };
 
-/** Union of every role used by any pose — used to size the spring set. */
+/** Union of every role used by any pose — used to size the spring set.
+ *  Includes the arrival-landing roles (docs/specs/arrival-landing.md §5). */
 export const POSE_ROLES: readonly BoneRole[] = Array.from(
-  new Set(
-    Object.values(BEAT_POSES).flatMap((pose) => Object.keys(pose) as BoneRole[]),
-  ),
+  new Set([
+    ...Object.values(BEAT_POSES).flatMap((pose) => Object.keys(pose) as BoneRole[]),
+    ...(Object.keys(LANDING_POSE) as BoneRole[]),
+  ]),
 );

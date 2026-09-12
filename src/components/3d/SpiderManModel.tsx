@@ -12,6 +12,7 @@ import { useProceduralRig } from './rig/useProceduralRig';
 import { useWindowPointer, windowPointer } from './rig/windowPointer';
 import { useInteraction } from './interaction/useInteraction';
 import { INTERACTION } from './interaction/interactionStore';
+import { landingOffset } from './landing';
 
 const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
 
@@ -94,6 +95,8 @@ export function SpiderManModel({
 
   // Keep the pointer ref pointing at the live window state and apply the
   // drag / gyro offset to the whole character (never to individual bones).
+  // The arrival landing offsets the group vertically (docs/specs/arrival-landing.md):
+  // held above rest until fired, then springs down — reduced motion rests.
   useFrame(() => {
     pointerRef.current = windowPointer;
 
@@ -101,6 +104,7 @@ export function SpiderManModel({
     if (!group) return;
     group.rotation.y = rotation[1] + INTERACTION.yaw;
     group.rotation.x = INTERACTION.pitch;
+    group.position.y = position[1] + (prefersReducedMotion ? 0 : landingOffset());
   });
 
   return (

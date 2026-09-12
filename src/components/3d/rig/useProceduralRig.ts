@@ -19,6 +19,7 @@ import {
 import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from './poses';
 import { Spring } from './spring';
 import { updateAnchors } from './anchorStore';
+import { landing, landingDebug, landingStep, LANDING_POSE } from '../landing';
 
 /** Head chain — the head leads, neck and upper spine follow. See spec §7.2. */
 const HEAD_CHAIN = [
@@ -157,6 +158,7 @@ export function useProceduralRig({
         target: [headSprings[0].yaw.target, headSprings[0].pitch.target],
         hover: hasHover,
       };
+      window.__landing = landingDebug();
     }
 
     if (rest.size === 0) return;
@@ -202,14 +204,19 @@ export function useProceduralRig({
       entry.pitch.step(delta);
     }
 
+    // --- arrival landing (docs/specs/arrival-landing.md) ------------------
+    landingStep(delta);
+
     // --- pose layer -------------------------------------------------------
     const pose = BEAT_POSES[beat] ?? {};
     for (const role of POSE_ROLES) {
       const target = pose[role];
+      const landingOffset = LANDING_POSE[role];
       for (let axis = 0; axis < 3; axis++) {
         const spring = poseSprings.get(`${role}:${axis}`);
         if (!spring) continue;
-        spring.target = POSE_AMPLITUDE * (target?.[axis] ?? 0);
+        spring.target =
+          POSE_AMPLITUDE * ((target?.[axis] ?? 0) + (landingOffset?.[axis] ?? 0) * landing.flex);
         spring.step(delta);
       }
     }
