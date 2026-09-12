@@ -34,7 +34,7 @@ async function waitForScene(page: import('@playwright/test').Page) {
 }
 
 test.describe('Performance budget', () => {
-  test('stays inside the draw call and program budget', async ({ page }) => {
+  test('stays inside the draw call and program budget @smoke', async ({ page }) => {
     test.slow();
     await page.goto('/?debug=1&fx=subtle');
     await waitForScene(page);

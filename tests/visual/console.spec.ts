@@ -22,7 +22,7 @@ function isNoise(message: string) {
 }
 
 test.describe('Console errors', () => {
-  test('no critical console errors on load', async ({ page }) => {
+  test('no critical console errors on load @smoke', async ({ page }) => {
     const errors: string[] = [];
 
     page.on('console', (message) => {

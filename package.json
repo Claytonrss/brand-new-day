@@ -19,6 +19,7 @@
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:visual": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
     "evidence:visual": "bash scripts/collect-visual-evidence.sh",
     "verify": "bash scripts/verify-all.sh",
     "inspect:glb": "node scripts/inspect-glb.mjs",
