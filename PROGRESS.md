@@ -121,17 +121,23 @@ meshes → passe existe e é visível (self-shadow).
 ### Wave 3 — FIX: loader determinístico + web-shot honesto
 **Branch:** `fix/loader-determinism` · ~0,5 dia · independente
 
-- [ ] T3.1 — FALHA-08: baixar `potsdamer_platz_1k.hdr` (confirmar licença
-      CC0 no download) para `public/env/city_1k.hdr`; `Environment` troca
-      `preset="city"` por `files`; ADR-021 (origem/licença)
+- [x] T3.1 — FALHA-08: `potsdamer_platz_1k.hdr` (Poly Haven, **CC0
+      verificado na página do asset**) self-hosted em
+      `public/env/city_1k.hdr`; `Environment` troca `preset="city"` por
+      `files`; ADR-021 (origem/licença). **Bônus da auditoria:** Google
+      Fonts era o único request externo restante → Space Grotesk +
+      JetBrains Mono self-hosted em `public/fonts/` (SIL OFL 1.1)
 - [x] T3.2 — FALHA-12: gates alinhados — **absorvido pela Wave 1 (T1.8):
       tiro em `tier !== 'low'` (`useInteraction.ts`), mesmo gate do hint**
-- [ ] T3.3 — FALHA-13: classificador puro `isTap(down, up)` (deslocamento
-      < 8 px, duração < 300 ms) + disparo no `pointerup` + unit tests
-      (trade-off: tiro levemente menos "instantâneo" — validar em vídeo)
-- [ ] T3.4 — Evidência + PR: smoke em modo avião (fresh load completa, 0
-      erros de console), vídeo do toque no mobile medium disparando a teia,
-      `pnpm verify`
+- [x] T3.3 — FALHA-13: classificador puro `isTap(down, up)` em
+      `pointerMath.ts` (< 8 px, < 300 ms, envelopes estritos) + disparo no
+      `pointerup` (+ `pointercancel` limpa) + 4 unit tests. Trade-off
+      aceito: tiro levemente menos "instantâneo" — validar em vídeo
+- [x] T3.4 — Evidência local: auditoria de requests
+      (`scripts/collect-request-audit.mjs`) → **0 requests externos**
+      (`docs/evidence/wave3-loader-determinism/requests-audit.txt`);
+      `pnpm verify` verde; screenshots 3 viewports. **Falta:** vídeo do
+      toque no mobile medium disparando a teia (device, estilo Wave 0)
 
 ### Wave 4 — SIG: momentos assinatura
 **Branches:** `feat/arrival-landing` + `feat/velocity-lean` · ~1 dia

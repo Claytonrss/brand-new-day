@@ -71,9 +71,11 @@ export function CanvasContainer({ children }: CanvasContainerProps) {
             {children}
             {/* Post-processing lives inside BeatProvider (App) — it consumes beat state */}
           </PerformanceMonitor>
-          {/* Environment loads async — own Suspense prevents blocking canvas */}
+          {/* Environment loads async — own Suspense prevents blocking canvas.
+              Self-hosted (FALHA-08): the loader must never depend on a CDN.
+              Potsdamer Platz, Poly Haven, CC0 — see ADR-021. */}
           <Suspense fallback={null}>
-            <Environment preset="city" background={false} />
+            <Environment files="/env/city_1k.hdr" background={false} />
           </Suspense>
         </Canvas>
       </Suspense>
