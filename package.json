@@ -23,7 +23,8 @@
     "evidence:visual": "bash scripts/collect-visual-evidence.sh",
     "verify": "bash scripts/verify-all.sh",
     "inspect:glb": "node scripts/inspect-glb.mjs",
-    "evidence:motion": "node scripts/collect-motion-evidence.mjs"
+    "evidence:motion": "node scripts/collect-motion-evidence.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -38,6 +39,8 @@
     "three-stdlib": "^2.36.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@eslint/js": "^9.17.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
@@ -49,6 +52,8 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
     "prettier": "^3.4.2",
     "tailwindcss": "^4.3.3",
     "typescript": "~5.9.3",
@@ -56,5 +61,14 @@
     "vite": "^8.2.2",
     "vitest": "^5.0.0"
   },
-  "packageManager": "pnpm@9.15.9"
+  "packageManager": "pnpm@9.15.9",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,json,mjs}": [
+      "prettier --write"
+    ]
+  }
 }
