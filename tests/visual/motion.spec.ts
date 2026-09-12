@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Motion tests for the procedural rig (Wave A).
  *
@@ -11,12 +13,6 @@ import { expect, test } from '@playwright/test';
  * @see docs/specs/procedural-rig-motion.md §10
  */
 const RIG = '?debug=1';
-
-async function waitForScene(page: import('@playwright/test').Page) {
-  const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-  await expect(loader).toBeHidden({ timeout: 60_000 });
-  await page.waitForTimeout(4000);
-}
 
 function readRig(page: import('@playwright/test').Page) {
   return page.evaluate(() => {
@@ -125,7 +121,7 @@ test.describe('Procedural rig', () => {
 });
 
 test.describe('Reduced motion', () => {
-  test('freezes the rig completely', async ({ page }) => {
+  test('freezes the rig completely @smoke', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/${RIG}`);
     await waitForScene(page);

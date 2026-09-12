@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Stylised blink on the mask lenses (Wave D+).
  *
@@ -16,9 +18,7 @@ test.describe('Mask blink', () => {
     test.slow();
     await page.goto('/?debug=1&blink=full');
 
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(4000);
+    await waitForScene(page);
 
     // the driver exposes a counter, which is robust even when a 180ms blink
     // falls between two frames of this very slow renderer
@@ -47,9 +47,7 @@ test.describe('Mask blink', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/?debug=1&blink=full');
 
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(4000);
+    await waitForScene(page);
 
     for (let i = 0; i < 10; i++) {
       const blink = await page.evaluate(() => window.__fx?.blink ?? 0);

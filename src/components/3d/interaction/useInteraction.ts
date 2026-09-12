@@ -100,9 +100,14 @@ export function useInteraction() {
     getGyroController().init();
   }, [prefersReducedMotion]);
 
-  // --- web-shot trigger (Beat 3, high tier) --------------------------------
+  // --- web-shot trigger (Beat 3) -------------------------------------------
+  // Gate mirrors the hint (WebShootHint): the shot is one draw call and never
+  // justified tier `high`. Was `high`-only (FALHA-12); aligned in Wave 1
+  // because the correct mobile tier (`medium`) would otherwise leave the
+  // advertised shot permanently dead on every phone. Tap×drag classification
+  // remains Wave 3 (T3.3).
   useEffect(() => {
-    if (prefersReducedMotion || profile.tier !== 'high') return;
+    if (prefersReducedMotion || profile.tier === 'low') return;
 
     const onDown = () => {
       if (stateRef.current?.beat !== 'arsenal') return;

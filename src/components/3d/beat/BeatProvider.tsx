@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { beatAt, beatLocalProgress } from './beats';
 import { BeatContext } from './beatContext';
-import { INITIAL_BEAT_STATE, type BeatState } from './beatState';
+import { beatRuntime, type BeatState } from './beatState';
 
 /**
  * BeatProvider — single master ScrollTrigger publishing narrative state.
@@ -17,7 +17,9 @@ import { INITIAL_BEAT_STATE, type BeatState } from './beatState';
  * @see docs/specs/headroom-lighting.md §7
  */
 export function BeatProvider({ children }: { children: ReactNode }) {
-  const stateRef = useRef<BeatState>({ ...INITIAL_BEAT_STATE });
+  // The context ref IS the module-level runtime, so readers outside the
+  // React tree (PerformanceMonitor idle-gate) see the same values.
+  const stateRef = useRef<BeatState>(beatRuntime);
   const [beat, setBeat] = useState<BeatState['beat']>('hero');
 
   useEffect(() => {
@@ -51,6 +53,8 @@ export function BeatProvider({ children }: { children: ReactNode }) {
 
     return () => {
       trigger.kill();
+      // A stale velocity would keep the tier idle-gate closed after a remount.
+      beatRuntime.velocity = 0;
       window.clearTimeout(resizeTimer);
       window.removeEventListener('resize', onResize);
     };

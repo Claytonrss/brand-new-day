@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * CC-BY 4.0 attribution — required to be visible without hover, in every
  * section that shows the model, with a reachable link to the author.
@@ -9,14 +11,8 @@ import { expect, test } from '@playwright/test';
 const ATTRIBUTION = /CC-BY 4\.0/i;
 const AUTHOR = 'Eskze';
 
-async function waitForScene(page: import('@playwright/test').Page) {
-  const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-  await expect(loader).toBeHidden({ timeout: 60_000 });
-  await page.waitForTimeout(3000);
-}
-
 test.describe('CC-BY Attribution', () => {
-  test('is visible in the Hero without hovering', async ({ page }) => {
+  test('is visible in the Hero without hovering @smoke', async ({ page }) => {
     await page.goto('/');
     await waitForScene(page);
 

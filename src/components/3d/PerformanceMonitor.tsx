@@ -2,6 +2,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../design/breakpoints';
+import { loaderCover } from '../ui/loaderCover';
+import { beatRuntime } from './beat/beatState';
+import { detectInitialTier } from './initialTier';
 import {
   QualityContext,
   QUALITY_PROFILES,
@@ -16,6 +19,13 @@ const FPS_THRESHOLD_LOW = 30;
 /** Minimum frames before degradation kicks in (avoid false positives) */
 const WARMUP_FRAMES = 120;
 
+/**
+ * Scroll velocity (progress-units/s) below which a tier change is allowed to
+ * apply — FALHA-09: a tier pop mid-motion reads as a visible glitch, so the
+ * change waits for scroll idle (or the loader, which covers the viewport).
+ */
+const IDLE_VELOCITY = 0.02;
+
 /** Per-frame metrics exposed for the debug HUD and automated budget tests. */
 export interface PerfSnapshot {
   fps: number;
@@ -25,6 +35,8 @@ export interface PerfSnapshot {
   programs: number;
   geometries: number;
   textures: number;
+  /** Active quality tier — Wave 0/1 device verification reads this. */
+  tier: QualityTier;
 }
 
 declare global {
@@ -44,7 +56,7 @@ const FPS_SMOOTHING = 0.1;
  *
  * @see docs/specs/headroom-lighting.md §8
  */
-function PerfProbe() {
+function PerfProbe({ tier }: { tier: QualityTier }) {
   const gl = useThree((state) => state.gl);
   const snapshot = useRef<PerfSnapshot>({
     fps: 0,
@@ -54,7 +66,10 @@ function PerfProbe() {
     programs: 0,
     geometries: 0,
     textures: 0,
+    tier: 'high',
   });
+  const tierRef = useRef(tier);
+  tierRef.current = tier;
 
   useEffect(() => {
     gl.info.autoReset = false;
@@ -76,6 +91,7 @@ function PerfProbe() {
     stats.programs = gl.info.programs?.length ?? 0;
     stats.geometries = gl.info.memory.geometries;
     stats.textures = gl.info.memory.textures;
+    stats.tier = tierRef.current;
 
     gl.info.reset();
   });
@@ -119,12 +135,20 @@ function QualityAdapter({ profile }: { profile: QualityProfile }) {
 /**
  * PerformanceMonitor — adaptive quality controller.
  *
+ * The initial tier is detected synchronously (`detectInitialTier`, FALHA-01):
+ * the first painted frame already carries the device's real cost, so mobile
+ * starts on `medium` — never on `high` (dpr 1.75 + MSAA 4×). The
+ * `useMediaQuery` hooks stay for reactive changes (resize, reduced-motion).
+ *
  * Measures FPS over a 1-second sliding window and degrades the quality
  * profile when performance drops. Aligns with docs/design/quality-matrix.md:
  *
  * - Desktop High: viewport ≥ 768px + FPS ≥ 45
  * - Mobile Good: viewport < 768px + FPS ≥ 45
  * - Mobile Low: FPS < 30 OR prefers-reduced-motion
+ *
+ * Tier changes only apply while the scroll is idle or the loader still covers
+ * the viewport (FALHA-09) — a tier pop mid-motion reads as a glitch.
  *
  * Degradation order follows docs/design/performance-design.md:
  * 1. Post-processing (bloom/grain first)
@@ -136,6 +160,7 @@ function QualityAdapter({ profile }: { profile: QualityProfile }) {
  *
  * @see docs/design/quality-matrix.md
  * @see docs/design/performance-design.md
+ * @see docs/memory/decisions.md — ADR-022
  */
 export function PerformanceMonitor({ children }: { children: ReactNode }) {
   const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
@@ -145,28 +170,35 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
   const totalFramesRef = useRef(0);
-  const currentTierRef = useRef<QualityTier>('high');
 
-  // Initial tier detection: reduced-motion → low, mobile → medium, desktop → high
-  const getInitialTier = (): QualityTier => {
-    if (prefersReducedMotion) return 'low';
-    if (isMobile) return 'medium';
-    return 'high';
-  };
-
-  // React state for context value (only updates on tier change)
-  const [profile, setProfile] = useState<QualityProfile>(
-    QUALITY_PROFILES[getInitialTier()]
+  // Initial tier: synchronous matchMedia read (FALHA-01) — no first-frame
+  // window where the hooks' default would put a phone on `high`.
+  const [profile, setProfile] = useState<QualityProfile>(() =>
+    QUALITY_PROFILES[detectInitialTier()],
   );
+  const currentTierRef = useRef<QualityTier>(profile.tier);
+
+  const applyTier = (tier: QualityTier, fps: number, kind: 'degrade' | 'force' | 'upgrade') => {
+    currentTierRef.current = tier;
+    setProfile(QUALITY_PROFILES[tier]);
+    const log = kind === 'upgrade' ? console.info : console.warn;
+    const label = kind === 'force' ? 'Forced' : kind === 'upgrade' ? 'Upgraded' : 'Degraded';
+    log(`[PerformanceMonitor] ${label} ${tier} tier (FPS: ${fps.toFixed(1)})`);
+  };
 
   // Force low tier if prefers-reduced-motion
   useEffect(() => {
     if (prefersReducedMotion && currentTierRef.current !== 'low') {
-      currentTierRef.current = 'low';
-      setProfile(QUALITY_PROFILES.low);
-      console.info('[PerformanceMonitor] prefers-reduced-motion → low tier');
+      applyTier('low', fpsRef.current, 'force');
     }
   }, [prefersReducedMotion]);
+
+  // Keep the spec invariant across resizes: a mobile viewport is never `high`.
+  useEffect(() => {
+    if (isMobile && currentTierRef.current === 'high') {
+      applyTier('medium', fpsRef.current, 'force');
+    }
+  }, [isMobile]);
 
   // FPS measurement in useFrame (runs every frame)
   useFrame(() => {
@@ -188,34 +220,31 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
       // Skip if prefers-reduced-motion (already locked to low)
       if (prefersReducedMotion) return;
 
+      // FALHA-09: defer tier changes while the page is in motion — the pop
+      // is invisible once the scroll settles (or while the loader covers).
+      const scrollIdle = Math.abs(beatRuntime.velocity) < IDLE_VELOCITY;
+      if (!loaderCover.covering && !scrollIdle) return;
+
       const currentTier = currentTierRef.current;
 
       // Degrade: high → medium (FPS < 45)
       if (fps < FPS_THRESHOLD_MEDIUM && currentTier === 'high') {
-        currentTierRef.current = 'medium';
-        setProfile(QUALITY_PROFILES.medium);
-        console.warn(`[PerformanceMonitor] Degraded to medium (FPS: ${fps.toFixed(1)})`);
+        applyTier('medium', fps, 'degrade');
       }
 
       // Degrade: medium → low (FPS < 30)
       if (fps < FPS_THRESHOLD_LOW && currentTier === 'medium') {
-        currentTierRef.current = 'low';
-        setProfile(QUALITY_PROFILES.low);
-        console.warn(`[PerformanceMonitor] Degraded to low (FPS: ${fps.toFixed(1)})`);
+        applyTier('low', fps, 'degrade');
       }
 
       // Upgrade: low → medium (FPS recovered > 45)
       if (fps > FPS_THRESHOLD_MEDIUM && currentTier === 'low') {
-        currentTierRef.current = 'medium';
-        setProfile(QUALITY_PROFILES.medium);
-        console.info(`[PerformanceMonitor] Upgraded to medium (FPS: ${fps.toFixed(1)})`);
+        applyTier('medium', fps, 'upgrade');
       }
 
       // Upgrade: medium → high (FPS recovered > 55, hysteresis)
       if (fps > 55 && currentTier === 'medium' && !isMobile) {
-        currentTierRef.current = 'high';
-        setProfile(QUALITY_PROFILES.high);
-        console.info(`[PerformanceMonitor] Upgraded to high (FPS: ${fps.toFixed(1)})`);
+        applyTier('high', fps, 'upgrade');
       }
     }
   });
@@ -223,7 +252,7 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
   return (
     <QualityContext.Provider value={profile}>
       <QualityAdapter profile={profile} />
-      <PerfProbe />
+      <PerfProbe tier={profile.tier} />
       {children}
     </QualityContext.Provider>
   );

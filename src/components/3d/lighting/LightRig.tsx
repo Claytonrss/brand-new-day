@@ -20,10 +20,24 @@ function smooth(delta: number): number {
   return 1 - Math.exp(-FADE_K * delta);
 }
 
-/** Merge the slot base with the current beat's override. */
+/**
+ * Merge the slot base with the current beat's override.
+ *
+ * Pure over static slot/beat data, but called per slot per frame — the spread
+ * used to allocate ~360 objects/s across the rig (FALHA-07a). One cache entry
+ * per (slot, beat) pair, computed once.
+ */
+const targetCache = new Map<string, LightTarget>();
+
 function targetFor(slot: LightSlot, beat: BeatId): LightTarget {
+  const key = `${slot.id}:${beat}`;
+  const cached = targetCache.get(key);
+  if (cached) return cached;
+
   const override = slot.beats[beat];
-  return override ? { ...slot.base, ...override } : slot.base;
+  const target = override ? { ...slot.base, ...override } : slot.base;
+  targetCache.set(key, target);
+  return target;
 }
 
 /**

@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -58,7 +58,10 @@ export function SpiderManModel({
   }, [extendLoader]);
 
   const bones = useMemo(() => collectRigBones(nodes as Record<string, THREE.Object3D>), [nodes]);
-  const restRef = useRef<Map<BoneRole, RestPose>>(new Map());
+  // State, not a ref: the first render would otherwise hand `useProceduralRig`
+  // an empty Map inside its useFrame closure, and the rig would stay frozen
+  // (rest.size === 0) until some unrelated re-render happened to occur.
+  const [rest, setRest] = useState<Map<BoneRole, RestPose>>(() => new Map());
 
   // Material curation — physical intent + authorial shader layer (Wave C)
   useEffect(() => {
@@ -70,14 +73,14 @@ export function SpiderManModel({
 
   // Capture the authored pose before any layer touches it
   useEffect(() => {
-    restRef.current = captureRestPose(bones);
+    setRest(captureRestPose(bones));
   }, [bones]);
 
   useInteraction();
 
   useProceduralRig({
     bones,
-    rest: restRef.current,
+    rest,
     beat,
     pointerRef,
     // The colophon hands the frame to the text: the model stops tracking.

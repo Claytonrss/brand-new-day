@@ -38,7 +38,9 @@ export function PerfHud() {
       <div className="text-paper">
         {stats.fps.toFixed(0)} fps · {stats.ms.toFixed(1)} ms
       </div>
-      <div>draw calls {stats.calls}</div>
+      <div>
+        tier {stats.tier} · draw calls {stats.calls}
+      </div>
       <div>tris {(stats.triangles / 1000).toFixed(0)}k</div>
       <div>
         programs {stats.programs} · geo {stats.geometries} · tex {stats.textures}

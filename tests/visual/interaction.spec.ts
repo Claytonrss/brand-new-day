@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Interaction tests (Wave D) — drag orbit, rim reaction and the web shot.
  *
@@ -8,12 +10,6 @@ import { expect, test } from '@playwright/test';
  *
  * @see docs/specs/model-interaction.md
  */
-async function waitForScene(page: import('@playwright/test').Page) {
-  const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-  await expect(loader).toBeHidden({ timeout: 60_000 });
-  await page.waitForTimeout(4000);
-}
-
 function readInteraction(page: import('@playwright/test').Page) {
   return page.evaluate(() => window.__interaction ?? null);
 }
@@ -47,7 +43,7 @@ test.describe('Model interaction', () => {
     expect(Math.abs(settled?.yaw ?? 0)).toBeLessThan(Math.abs(dragged?.yaw ?? 0));
   });
 
-  test('the rim light follows the cursor', async ({ page }) => {
+  test('the rim light follows the cursor @smoke', async ({ page }) => {
     await page.goto('/?debug=1');
     await waitForScene(page);
 

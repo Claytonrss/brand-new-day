@@ -765,3 +765,67 @@ render off-screen do próprio modelo (Opção A).
 - ✅ Fallback deixa de ser "mensagem de erro" (tem poster).
 - ✅ Possível grão/marca proprietários elevando acabamento.
 - ⚠️ Qualquer saída fora da paleta é descartada na curadoria (design-bible).
+
+---
+
+## ADR-022: Política de tier inicial síncrona (mobile nunca inicia em `high`)
+
+**Data:** 2026-09-12
+**Status:** ✅ Aprovado (Wave 1 do Pareto Impact Plan — FALHA-01; FALHA-09 incluída)
+
+### Contexto
+
+O tier inicial era derivado de `useMediaQuery`, cujo estado default é `false`
+e só sincroniza no efeito de mount. Resultado: o `useState` inicial resolvia
+sempre para `high` (dpr 1.75 + MSAA 4× + sombras) — no S23, que nunca dispara
+resize, o aparelho passava a sessão inteira no perfil errado (FALHA-01,
+provável causa nº 1 da falta de fluidez no mobile). A quality-matrix já
+especificava "mobile = medium"; o código é que não cumpria a própria spec.
+
+Além disso, a degradação por FPS media a cada 1 s e aplicava o tier pop a
+qualquer momento — inclusive no meio de um fling, onde a troca de dpr/sombras
+lê como glitch (FALHA-09).
+
+### Decisão
+
+1. **Tier inicial síncrono:** `detectInitialTier()` (`initialTier.ts`) lê
+   `window.matchMedia` diretamente no lazy initializer do `useState` em
+   `PerformanceMonitor` (reduced-motion → `low`, viewport < 768px →
+   `medium`, resto → `high`; guarda `typeof window`). Os hooks
+   `useMediaQuery` continuam montados para mudanças reativas — incluindo um
+   novo efeito que rebaixa `high` → `medium` se a viewport se tornar mobile
+   (a invariante "mobile nunca em high" agora vale para a sessão toda).
+2. **Idle-gate para troca de tier (FALHA-09):** no tick de 1 s, qualquer
+   mudança de tier só aplica se `|beatRuntime.velocity| < 0.02` ou se o
+   loader ainda cobre a viewport (`loaderCover`). O pop fica para o instante
+   em que o scroll assenta.
+3. **FALHA-02 (threshold mobile-only medium→low < ~40 fps) permanece
+   congelada, data-gated:** só entra se a Wave 0 (S23) mostrar o tier
+   `medium` pós-fix operando na faixa 35–44 fps. Sem novo perfil
+   intermediário (`balanced` foi rejeitado na 2ª revisão do plano).
+4. **Observabilidade:** `PerfSnapshot` ganha `tier` (`window.__perf.tier`,
+   exibido no PerfHud com `?debug=1`) para a verificação em device
+   ("inicia em `medium`, nunca `high`") sem depender de console.
+
+### Alternativas Consideradas
+
+1. **Tier `balanced` intermediário** — rejeitado na 2ª revisão do plano:
+   complexidade especulativa antes de medição; um threshold mobile-only
+   cobre o mesmo gap com 1 linha, se a evidência pedir.
+2. **Mover `BeatProvider` para fora do canvas** para expor velocity via
+   contexto — rejeitado nesta wave: depende de context bridging do R3F para
+   todo o tree interno; o espelho de módulo `beatRuntime` (padrão já usado
+   por `INTERACTION`/`ANCHORS`) dá o mesmo acesso sem tocar estrutura.
+3. **Manter detecção assíncrona + downgrade rápido** — rejeitado: o custo
+   errado já foi pago no primeiro frame (o que é exatamente o bug).
+
+### Consequências
+
+- ✅ S23 inicia em `medium`: dpr 1.25, sem MSAA, sem custo residual de `high`.
+- ✅ Nenhum tier pop visível durante scroll (aplica só em idle/loader).
+- ✅ Tier legível em device via `window.__perf.tier` (evidência Wave 0/1).
+- ⚠️ Degradação pode adiar alguns segundos durante scroll contínuo — aceito:
+    o estado estacionário é o mesmo e o usuário não está olhando movimento
+    quando aplica.
+- ⚠️ Se a Wave 0 medir ≥ 55 fps com queixa de "feel" persistente, o problema
+    é input-feel (FALHA-10 volta à mesa), não tier.

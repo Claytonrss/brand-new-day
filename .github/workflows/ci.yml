@@ -47,10 +47,48 @@ jobs:
           path: test-results/logs
           retention-days: 7
 
-  # Visual + interaction suite. Runs separately so a slow browser job cannot
-  # block the signal from the static gates.
+  # Browser smoke tier (@smoke tests, mobile-390): catches "the page is
+  # broken" — console errors on load, missing hero/fallback, perf budget,
+  # attribution, reduced-motion freeze — in a few minutes on every PR.
+  # Desktop stays in the deep tier: SwiftShader at 1440x900 triples the wall
+  # clock and made the loader wait flake under worker contention.
+  smoke:
+    name: smoke (playwright @smoke)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run smoke suite
+        run: pnpm run test:smoke -- --timeout=300000
+
+      - name: Upload smoke artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
+  # Deep tier: the full Playwright suite. Runs separately so a slow browser
+  # job cannot block the signal from the static gates.
   visual:
-    name: visual (playwright)
+    name: visual (playwright, full suite)
     # Only on main pushes — Playwright on SwiftShader is slow and eats minutes.
     # PRs get the fast static job; full visual runs after merge.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

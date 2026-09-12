@@ -23,14 +23,15 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
   },
+  // Two tiers: `@smoke` tests (see pnpm test:smoke / CI smoke job) are the
+  // PR gate; everything else is the deep suite that runs on main.
+  // mobile-430 is intentionally absent — it differs from mobile-390 by 40px,
+  // which these DOM/state assertions can't distinguish. The 430 viewport is
+  // still covered by `pnpm evidence:visual` screenshots for PR bodies.
   projects: [
     {
       name: 'mobile-390',
       use: { viewport: { width: 390, height: 844 }, isMobile: true },
-    },
-    {
-      name: 'mobile-430',
-      use: { viewport: { width: 430, height: 932 }, isMobile: true },
     },
     {
       name: 'desktop-1440',

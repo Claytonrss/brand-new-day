@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
  * @see docs/specs/webgl-static-fallback.md
  */
 test.describe('WebGL fallback', () => {
-  test('renders an editorial poster, not an error', async ({ page }) => {
+  test('renders an editorial poster, not an error @smoke', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
