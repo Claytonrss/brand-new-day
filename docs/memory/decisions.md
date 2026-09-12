@@ -829,3 +829,55 @@ lê como glitch (FALHA-09).
     quando aplica.
 - ⚠️ Se a Wave 0 medir ≥ 55 fps com queixa de "feel" persistente, o problema
     é input-feel (FALHA-10 volta à mesa), não tier.
+
+---
+
+## ADR-021: HDR de ambiente self-hosted (FALHA-08 — loader determinístico)
+
+**Data:** 2026-09-12
+**Status:** ✅ Aprovado (Wave 3 do Pareto Impact Plan)
+
+### Contexto
+
+O `Environment` do drei usava `preset="city"`, que baixa o HDR
+`potsdamer_platz_1k.hdr` de um CDN externo (assets do pmndrs) em tempo de
+runtime. O portfólio vive de link compartilhado: CDN fora do ar, bloqueado
+ou lento deixava o loader travado (ou a experiência sem reflexos) — um modo
+de falha catastrófico fora do nosso controle.
+
+### Decisão
+
+1. **HDRI:** self-host do mesmo asset — `public/env/city_1k.hdr`
+   (`potsdamer_platz_1k.hdr`, Poly Haven, **CC0 / domínio público**,
+   verificado na página do asset em 2026-09-12); `Environment` passa de
+   `preset="city"` para `files="/env/city_1k.hdr"`.
+2. **Fontes (descoberto pela auditoria de requests):** o Google Fonts
+   (`fonts.googleapis.com`/`fonts.gstatic.com`) era o único request externo
+   restante. Space Grotesk (variável 400–700) e JetBrains Mono (400/500,
+   subset latin, ~53 KB) migraram para `public/fonts/` com `@font-face`
+   local (`public/fonts/fonts.css`); licença **SIL OFL 1.1** permite
+   self-host. A entrega tipográfica muda; as fontes são as mesmas tokens.
+
+O loader passa a depender **só de assets da própria origem** — auditoria:
+`docs/evidence/wave3-loader-determinism/requests-audit.txt`
+(0 requests externos).
+
+### Alternativas Consideradas
+
+1. **Manter preset (CDN pmndrs)** — rejeitado: dependência externa em hora
+   crítica (primeiro load).
+2. **Trocar de HDRI** — rejeitado: o look calibrado (P0/Look Dev) usa o
+   Potsdamer Platz; trocar reabriria calibração de materiais sem ganho.
+3. **Gerar HDRI autoral** — rejeitado para agora: asset novo com custo de
+   direção; CC0 permite uso comercial sem atribuição obrigatória (crédito
+   mantido por cortesia neste ADR).
+
+### Consequências
+
+- ✅ Loader determinístico: **zero requests externos** no primeiro load
+  (auditoria: `docs/evidence/wave3-loader-determinism/requests-audit.txt`).
+- ✅ Smoke "modo avião" passa a depender só da origem; fontes renderizam
+  offline (font-display: swap vira irrelevante sem rede).
+- ⚠️ +1,5 MB (HDR) + ~53 KB (fontes) em `public/` (fora do bundle JS).
+- ℹ️ Créditos: "Potsdamer Platz" por Greg Zaal / Poly Haven (CC0);
+  Space Grotesk (Florian Karsten) e JetBrains Mono (JetBrains), SIL OFL 1.1.
