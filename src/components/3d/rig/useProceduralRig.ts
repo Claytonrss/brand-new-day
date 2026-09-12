@@ -20,6 +20,8 @@ import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from './poses';
 import { Spring } from './spring';
 import { updateAnchors } from './anchorStore';
 import { landing, landingDebug, landingStep, LANDING_POSE } from '../landing';
+import { lean, leanShoulderLift, leanStep, LEAN_SPINE2_WEIGHT } from './lean';
+import { beatRuntime } from '../beat/beatState';
 
 /** Head chain — the head leads, neck and upper spine follow. See spec §7.2. */
 const HEAD_CHAIN = [
@@ -42,6 +44,7 @@ export interface RigDebugState {
   pointer: [number, number];
   target: [number, number];
   hover: boolean;
+  lean: number;
 }
 
 declare global {
@@ -157,6 +160,7 @@ export function useProceduralRig({
         pointer: [pointerRef.current?.x ?? 0, pointerRef.current?.y ?? 0],
         target: [headSprings[0].yaw.target, headSprings[0].pitch.target],
         hover: hasHover,
+        lean: lean.value,
       };
       window.__landing = landingDebug();
     }
@@ -207,6 +211,9 @@ export function useProceduralRig({
     // --- arrival landing (docs/specs/arrival-landing.md) ------------------
     landingStep(delta);
 
+    // --- velocity lean (docs/specs/velocity-lean.md) -----------------------
+    leanStep(delta, beatRuntime.velocity);
+
     // --- pose layer -------------------------------------------------------
     const pose = BEAT_POSES[beat] ?? {};
     for (const role of POSE_ROLES) {
@@ -238,9 +245,13 @@ export function useProceduralRig({
       let pz = 0;
 
       if (role === 'spine1') {
-        px = Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine1;
+        px = Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine1 + lean.value;
       } else if (role === 'spine2') {
-        px = Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine2;
+        px =
+          Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine2 +
+          lean.value * LEAN_SPINE2_WEIGHT;
+      } else if (role === 'shoulderL' || role === 'shoulderR') {
+        pz = leanShoulderLift(role);
       } else if (role === 'hips') {
         py = fbm(time * MOTION.sway.rate) * MOTION.sway.yaw;
         px = fbm(time * MOTION.sway.rate + 5.3) * MOTION.sway.pitch;

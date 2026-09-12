@@ -26,9 +26,23 @@ function readRig(page: import('@playwright/test').Page) {
           joints: rig.joints,
           pointer: rig.pointer,
           target: rig.target,
+          lean: rig.lean,
         }
       : null;
   });
+}
+
+/** Polls the rig until the lean leaves the dead zone (slow renderers). */
+async function waitForLeanBeyond(
+  page: import('@playwright/test').Page,
+  magnitude: number,
+) {
+  await page.waitForFunction(
+    (threshold) => window.__rig !== undefined && Math.abs(window.__rig.lean) > threshold,
+    magnitude,
+    { timeout: 30_000 },
+  );
+  return page.evaluate(() => window.__rig?.lean ?? 0);
 }
 
 function readLanding(page: import('@playwright/test').Page) {
@@ -170,6 +184,26 @@ test.describe('Arrival landing', () => {
   });
 });
 
+test.describe('Velocity lean', () => {
+  test('leans into the scroll, with the sign of the velocity and clamped', async ({ page }) => {
+    test.slow();
+    await page.goto(`/${RIG}`);
+    await waitForScene(page);
+
+    // Vigorous downward fling: lean goes positive and never exceeds 2.5°.
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 2));
+    const down = await waitForLeanBeyond(page, 0.01);
+    expect(down).toBeGreaterThan(0);
+    expect(down).toBeLessThanOrEqual(0.0436 + 0.005);
+
+    // Upward fling mirrors the sign.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const up = await waitForLeanBeyond(page, -0.01);
+    expect(up).toBeLessThan(0);
+    expect(up).toBeGreaterThanOrEqual(-0.0436 - 0.005);
+  });
+});
+
 test.describe('Reduced motion', () => {
   test('freezes the rig completely @smoke', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -195,6 +229,18 @@ test.describe('Reduced motion', () => {
 
     const landing = await readLanding(page);
     expect(landing?.fired ?? false).toBe(false);
+  });
+
+  test('keeps the lean at zero', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`/${RIG}`);
+    await waitForScene(page);
+
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 4));
+    await page.waitForTimeout(1500);
+
+    const rig = await readRig(page);
+    expect(rig?.lean ?? 0).toBe(0);
   });
 
   test('holds a pixel-identical composition', async ({ page }) => {

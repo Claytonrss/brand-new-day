@@ -160,16 +160,24 @@ meshes → passe existe e é visível (self-shadow).
       offset < 0,05); não dispara com o opening card cobrindo; dispara uma
       vez por sessão (resubida não incrementa); reduced-motion nunca arma
       — 16 passed / 2 skipped (hover) nos 2 viewports
-- [ ] T4.4 — Spec `docs/specs/velocity-lean.md`: springs alvo
-      `clamp(velocity × K)` em pitch de `spine1/spine2` + elevação leve de
-      ombros; máx 2–3°; 0 em reduced-motion; rig passa a consumir `stateRef`
-- [ ] T4.5 — Implementar o lean
+- [x] T4.4 — Spec `docs/specs/velocity-lean.md`: spring **criticamente
+      amortecido** (sem wobble) com alvo `clamp(velocity × GAIN 0.02)` em
+      pitch de `spine1 (×1)`/`spine2 (×0.6)` + elevação espelhada de
+      ombros; **teto 2,5°** (`LEAN_MAX 0.0436 rad`); 0 em reduced-motion;
+      rig consome `beatRuntime.velocity` por frame (mesmo fonte do FOV
+      punch/dolly lag)
+- [x] T4.5 — Implementar o lean: módulo puro `rig/lean.ts` (spring +
+      `leanShoulderLift` espelhado), integração no compose loop do rig
+      (aditivo à pose de beat), `lean` exposto em `window.__rig`; 6 unit
+      tests + motion.spec (lean > 0 descendo, < 0 subindo, clampado; 0 em
+      reduced) — 20 passed / 2 skipped local
 - [ ] T4.6 — Calibração conjunta em device: lean × FOV punch × dolly lag
       (os três acoplados à velocidade); se compitar, reduzir o lean primeiro
-- [~] T4.7 — Evidência + PRs (4a): `pnpm verify` verde, smoke 7/7,
-      screenshots 3 viewports, rubrica re-preenchida, ADR-022 já escrita na
-      Wave 1; **falta:** vídeo por viewport (`pnpm evidence:motion`), sinal
-      de flexão/kick calibrado em device e fps no S23 re-medido (Wave 0)
+- [~] T4.7 — Evidência + PRs (4a ✓ #35, 4b ✓ este): `pnpm verify` verde,
+      smoke 7/7, screenshots 3 viewports, rubrica re-preenchida, ADR-022 já
+      escrita na Wave 1; **falta:** vídeo por viewport
+      (`pnpm evidence:motion`), calibração conjunta lean × FOV punch ×
+      dolly lag em device (T4.6) e fps no S23 re-medido (Wave 0)
 
 ### Wave 5 — POL: coesão de beat + transições impressas
 **Branches:** `feat/beat-chrome` + `feat/chapter-print` (podem ser 1 PR) ·
