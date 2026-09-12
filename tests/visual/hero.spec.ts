@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Hero section', () => {
-  test('loads hero copy and renders webgl canvas', async ({ page }, testInfo) => {
+  test('loads hero copy and renders webgl canvas @smoke', async ({ page }, testInfo) => {
     await page.goto('/');
 
     // Wait for cinematic loader to disappear (GLB asset loading)

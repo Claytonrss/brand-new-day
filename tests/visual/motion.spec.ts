@@ -125,7 +125,7 @@ test.describe('Procedural rig', () => {
 });
 
 test.describe('Reduced motion', () => {
-  test('freezes the rig completely', async ({ page }) => {
+  test('freezes the rig completely @smoke', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/${RIG}`);
     await waitForScene(page);

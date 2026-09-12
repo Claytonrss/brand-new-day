@@ -47,7 +47,7 @@ test.describe('Model interaction', () => {
     expect(Math.abs(settled?.yaw ?? 0)).toBeLessThan(Math.abs(dragged?.yaw ?? 0));
   });
 
-  test('the rim light follows the cursor', async ({ page }) => {
+  test('the rim light follows the cursor @smoke', async ({ page }) => {
     await page.goto('/?debug=1');
     await waitForScene(page);
 

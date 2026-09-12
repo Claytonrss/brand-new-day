@@ -16,7 +16,7 @@ async function waitForScene(page: import('@playwright/test').Page) {
 }
 
 test.describe('CC-BY Attribution', () => {
-  test('is visible in the Hero without hovering', async ({ page }) => {
+  test('is visible in the Hero without hovering @smoke', async ({ page }) => {
     await page.goto('/');
     await waitForScene(page);
 
