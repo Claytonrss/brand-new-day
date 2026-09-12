@@ -67,7 +67,7 @@ export function GyroPrompt() {
   return (
     <div
       role="status"
-      className="fixed bottom-20 left-1/2 z-30 flex w-[82vw] max-w-[320px] -translate-x-1/2 items-center justify-between gap-4 rounded-full border border-paper/15 bg-concrete/90 px-4 py-2 backdrop-blur-sm"
+      className="beat-accent-border-soft fixed bottom-20 left-1/2 z-30 flex w-[82vw] max-w-[320px] -translate-x-1/2 items-center justify-between gap-4 rounded-full border bg-concrete/90 px-4 py-2 backdrop-blur-sm"
     >
       <p className="font-mono text-[10px] uppercase leading-tight tracking-[0.16em] text-paper/80">
         Esta cena reage ao movimento.

@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { beatAt, beatLocalProgress } from './beats';
 import { BeatContext } from './beatContext';
 import { beatRuntime, type BeatState } from './beatState';
+import { BEAT_ACCENTS } from '../../../design/beatAccents';
 
 /**
  * BeatProvider — single master ScrollTrigger publishing narrative state.
@@ -21,6 +22,16 @@ export function BeatProvider({ children }: { children: ReactNode }) {
   // React tree (PerformanceMonitor idle-gate) see the same values.
   const stateRef = useRef<BeatState>(beatRuntime);
   const [beat, setBeat] = useState<BeatState['beat']>('hero');
+
+  // Publish the current beat to the DOM chrome (docs/specs/beat-chrome.md):
+  // `data-beat` as a hook + `--beat-accent` for the allowed consumers. Runs
+  // only on beat change (~6x per full scroll); CSS transitions do the rest.
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (!main) return;
+    main.setAttribute('data-beat', beat);
+    main.style.setProperty('--beat-accent', BEAT_ACCENTS[beat]);
+  }, [beat]);
 
   useEffect(() => {
     const trigger = ScrollTrigger.create({

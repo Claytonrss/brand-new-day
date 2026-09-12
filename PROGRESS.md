@@ -183,18 +183,25 @@ meshes → passe existe e é visível (self-shadow).
 **Branches:** `feat/beat-chrome` + `feat/chapter-print` (podem ser 1 PR) ·
 ~0,5–1 dia · independente após Wave 1
 
-- [ ] T5.1 — `BeatProvider` publica `data-beat` no `<main>` + CSS var
-      `--beat-accent` (hero `steel`, evolution `oxide`, arsenal `signal`,
-      fullBody `paper/60`, colophon `dim`) com transition 300 ms
-- [ ] T5.2 — Aplicar accent apenas em: hairlines do HUD do Arsenal, kicker
-      rules, borda do chip de gyro, `::selection` (bible: sem fundos/textos
-      coloridos)
-- [ ] T5.3 — Chapter cards impressos: halftone (radial-gradient pattern,
-      opacity ≤ 0,06), misregistration estático no título (text-shadow 1 px
-      `oxide`/`steel` ~25%), fio de teia SVG diagonal draw-on na entrada
-      (estado final estático em reduced-motion); `bg-ink` sólido permanece
-- [ ] T5.4 — Evidência + PR: screenshots 390/430/1440 dos 2 cards, rubrica
-      ≥ 4 nos bloqueantes, `reduced-motion.spec` verde, `pnpm verify`
+- [x] T5.1 — Spec `docs/specs/beat-chrome.md` + `BeatProvider` publica
+      `data-beat` no `<main>` + CSS var `--beat-accent` (mapa em
+      `design/beatAccents.ts`: hero `steel`, evolution `oxide`, arsenal
+      `signal`, fullBody `paper/60`, colophon `dim`; chapter1/chapter2
+      antecipam o beat seguinte) com transition 300 ms nos consumidores
+- [x] T5.2 — Accent aplicado apenas em: hairlines do HUD do Arsenal
+      (`.hud-hairline` + legenda mobile), kicker rules (novo fio 28×1 px
+      nos 5 overlays), borda do chip de gyro (45%), `::selection` — bible
+      respeitada (sem fundos/textos coloridos)
+- [x] T5.3 — Spec `docs/specs/chapter-print.md` + chapter cards impressos:
+      halftone (opacity 0,06), misregistration estático no título
+      (text-shadow 1 px `oxide`/`steel` 25%), fio de teia SVG diagonal
+      draw-on `once` na entrada (reduced-motion: nasce desenhado e
+      estático); `bg-ink` sólido permanece
+- [x] T5.4 — Evidência: screenshots 390/430/1440 dos 2 cards +
+      auditoria `data-beat`/accent ao longo do scroll
+      (`docs/evidence/beat-chrome/`, `scripts/collect-beat-chrome.mjs`);
+      rubrica ≥ 4 nos bloqueantes; `reduced-motion.spec` 4/4 verde;
+      `pnpm verify` verde
 
 ### Fechamento do plano
 

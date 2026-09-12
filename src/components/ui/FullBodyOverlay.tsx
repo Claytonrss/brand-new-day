@@ -21,7 +21,8 @@ export function FullBodyOverlay() {
         aria-labelledby="fullbody-title"
         className="flex max-w-[82vw] flex-col items-center text-center md:max-w-[480px] lg:max-w-[560px]"
       >
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+          <span aria-hidden="true" className="beat-accent-rule" />
           31 de julho
         </p>
         <SplitTextHeadline

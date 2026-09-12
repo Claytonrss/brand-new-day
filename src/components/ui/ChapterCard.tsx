@@ -79,6 +79,24 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
           },
         });
       }
+
+      // Web strand draw-on — once on entrance (docs/specs/chapter-print.md).
+      // pathLength=1 normalizes the dash math across viewports; reduced
+      // motion never applies a dash, so the strand is born fully drawn.
+      const strand = cardRef.current!.querySelector<SVGPathElement>('.web-strand');
+      if (strand) {
+        gsap.set(strand, { strokeDasharray: 1, strokeDashoffset: 1 });
+        gsap.to(strand, {
+          strokeDashoffset: 0,
+          duration: MOTION.duration.slow / 1000,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: 'top 70%',
+            once: true,
+          },
+        });
+      }
     }, cardRef.current);
 
     return () => ctx.revert();
@@ -98,10 +116,29 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
       className="relative flex h-dvh items-center justify-center bg-ink"
       data-chapter={position}
     >
+      {/* Print layers (docs/specs/chapter-print.md) — static trama + strand */}
+      <div aria-hidden="true" className="halftone pointer-events-none absolute inset-0" />
+      <svg
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <path
+          className="web-strand"
+          d="M -2 26 Q 50 44 102 18"
+          pathLength={1}
+          fill="none"
+          stroke="rgba(233, 229, 218, 0.35)"
+          strokeWidth={1}
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+
       <div className="text-center">
         <h2
           ref={titleRef}
-          className="overflow-hidden font-display text-[64px] font-bold leading-[0.9] tracking-tight text-paper sm:text-[96px] lg:text-[128px]"
+          className="misregistration overflow-hidden font-display text-[64px] font-bold leading-[0.9] tracking-tight text-paper sm:text-[96px] lg:text-[128px]"
           aria-label={title}
         >
           <span aria-hidden="true">{titleChars}</span>

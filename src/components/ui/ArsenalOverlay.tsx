@@ -84,7 +84,8 @@ export function ArsenalOverlay() {
         aria-labelledby="arsenal-title"
         className="flex max-w-[82vw] flex-col items-start text-left md:max-w-[420px] lg:max-w-[560px]"
       >
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+          <span aria-hidden="true" className="beat-accent-rule" />
           O que sobrou
         </p>
         <SplitTextHeadline
@@ -112,7 +113,7 @@ export function ArsenalOverlay() {
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <g stroke="#c23b34" strokeWidth="1" opacity="0.55" fill="none">
+            <g className="hud-hairline" strokeWidth="1" opacity="0.55" fill="none">
               <line x1="74%" y1="16%" x2="54%" y2="48%" />
               <line x1="78%" y1="44%" x2="58%" y2="52%" />
               <line x1="72%" y1="60%" x2="55%" y2="58%" />
@@ -142,7 +143,7 @@ export function ArsenalOverlay() {
 
         {/* Mobile: compact bottom legend + markers */}
         <div className="parallax-far absolute inset-x-0 bottom-0 md:hidden">
-          <div className="mx-auto flex max-w-[82vw] flex-col gap-1.5 border-t border-signal/40 pt-4 pb-4">
+          <div className="beat-accent-border-soft mx-auto flex max-w-[82vw] flex-col gap-1.5 border-t pt-4 pb-4">
             {HUD_LABELS.map((label, index) => (
               <div key={label.id} className="flex items-center gap-2">
                 <span
