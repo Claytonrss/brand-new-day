@@ -5,6 +5,7 @@ import {
   GYRO_LIMITS,
   dragTarget,
   gyroTarget,
+  isTap,
   rimOffset,
   webStrandPoints,
 } from '../../src/components/3d/interaction/pointerMath';
@@ -88,5 +89,32 @@ describe('web strand', () => {
 
   it('returns segments + 1 points', () => {
     expect(webStrandPoints(from, to, 8)).toHaveLength(9);
+  });
+});
+
+describe('isTap (FALHA-13)', () => {
+  const down = { x: 100, y: 200, time: 1000 };
+
+  it('accepts a quick, stationary gesture', () => {
+    expect(isTap(down, { x: 103, y: 198, time: 1120 })).toBe(true);
+  });
+
+  it('rejects travel beyond 8px (a drag never shoots)', () => {
+    expect(isTap(down, { x: 100 + 8, y: 200, time: 1050 })).toBe(false);
+    expect(isTap(down, { x: 100, y: 200 + 12, time: 1050 })).toBe(false);
+    // diagonal travel accumulates too (hypot(6, 8) = 10px)
+    expect(isTap(down, { x: 106, y: 208, time: 1050 })).toBe(false);
+  });
+
+  it('rejects a long press even without travel', () => {
+    expect(isTap(down, { x: 100, y: 200, time: 1000 + 300 })).toBe(false);
+    expect(isTap(down, { x: 100, y: 200, time: 1000 + 299 })).toBe(true);
+  });
+
+  it('envelopes are strict (boundary values are not taps)', () => {
+    // exactly 8px away: hypot = 8, not < 8
+    expect(isTap(down, { x: 108, y: 200, time: 1010 })).toBe(false);
+    // exactly 300ms: not < 300
+    expect(isTap(down, { x: 100, y: 200, time: 1300 })).toBe(false);
   });
 });
