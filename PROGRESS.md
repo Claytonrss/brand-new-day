@@ -103,12 +103,17 @@ data-gated).
 ### Wave 2 — PERF-B: shadow throttle
 **Branch:** `feat/shadow-throttle` · ~0,2–0,3 dia · independente (paralelizável)
 
-- [ ] T2.1 — `QualityAdapter`: high → `autoUpdate: true`; medium →
+- [x] T2.1 — `QualityAdapter`: high → `autoUpdate: true`; medium →
       `autoUpdate: false` + `needsUpdate` a 10 Hz e imediato em mudança de
-      beat, `INTERACTION.dragging`, delta de gyro, release do drag e fim de
-      fling (velocity cruza zero)
-- [ ] T2.2 — Evidência + PR: vale de `calls` no `window.__perf` entre
-      updates, vídeo do drag sem sombra defasada, `pnpm verify`
+      beat, drag/gyro movendo (mesmo par `INTERACTION.yaw/pitch`, epsilon
+      0,001 rad), release do drag e fim de fling (velocity cruza 0,02);
+      decisão extraída para módulo puro `shadowThrottle.ts` com 7 unit
+      tests; low segue com sombras desligadas
+- [x] T2.2 — Evidência local: vale de **16 calls** no medium (46 com passe ↔
+      30 sem) via novo `scripts/collect-shadow-evidence.mjs`
+      (`docs/evidence/wave2-shadow-throttle/calls-valley.txt`);
+      `pnpm verify` verde; screenshots 3 viewports. **Falta:** vídeo do drag
+      sem sombra defasada + vale de calls no S23 (re-medição Wave 0)
 
 **Base verificada:** `curateMaterials.ts:57-58` seta cast+receive em todos os
 meshes → passe existe e é visível (self-shadow).
