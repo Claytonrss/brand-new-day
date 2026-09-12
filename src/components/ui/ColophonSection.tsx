@@ -30,7 +30,8 @@ export function ColophonSection() {
       />
 
       <div className="parallax-mid relative z-10 w-full max-w-[82vw] text-center md:max-w-[520px] md:text-left">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-dim">
+        <p className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-dim md:justify-start">
+          <span aria-hidden="true" className="beat-accent-rule" />
           Colofon
         </p>
         <SplitTextHeadline

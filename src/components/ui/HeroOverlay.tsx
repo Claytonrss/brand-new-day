@@ -18,7 +18,8 @@ export function HeroOverlay() {
 
       {/* Hero Copy — Safe zone: Bottom on mobile, Left on desktop */}
       <section aria-labelledby="hero-title" className="parallax-near max-w-[82vw] md:max-w-[480px] lg:max-w-[560px]">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
+          <span aria-hidden="true" className="beat-accent-rule" />
           Spider-Man: Brand New Day
         </p>
         <SplitTextHeadline

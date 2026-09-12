@@ -29,13 +29,57 @@ body {
 }
 
 ::selection {
-  background: var(--color-signal);
+  /* Beat chrome (docs/specs/beat-chrome.md) — falls back pre-hydration. */
+  background: var(--beat-accent, var(--color-signal));
   color: var(--color-paper);
 }
 
 :focus-visible {
   outline: 2px solid var(--color-signal);
   outline-offset: 2px;
+}
+
+/* --- Beat chrome (docs/specs/beat-chrome.md) — exhaustive accent consumers --- */
+
+/* Kicker rule: 28x1px line before section kickers. */
+.beat-accent-rule {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--beat-accent, var(--color-signal));
+  transition: background-color 300ms ease-out;
+}
+
+/* Soft border (gyro chip, mobile HUD legend) — accent at 45%. */
+.beat-accent-border-soft {
+  border-color: color-mix(in srgb, var(--beat-accent, var(--color-signal)) 45%, transparent);
+  transition: border-color 300ms ease-out;
+}
+
+/* Arsenal HUD hairlines (SVG call-outs) — accent at 55%. */
+.hud-hairline {
+  stroke: color-mix(in srgb, var(--beat-accent, var(--color-signal)) 55%, transparent);
+  transition: stroke 300ms ease-out;
+}
+
+/* --- Chapter print (docs/specs/chapter-print.md) — static print layers --- */
+
+/* Halftone dot trama — capped at 6% by the spec. */
+.halftone {
+  background-image: radial-gradient(
+    circle,
+    rgba(233, 229, 218, 0.55) 1px,
+    transparent 1.4px
+  );
+  background-size: 7px 7px;
+  opacity: 0.06;
+}
+
+/* Print misregistration — static 1px oxide/steel ghosts at 25%. */
+.misregistration {
+  text-shadow:
+    1px 0 0 rgba(122, 31, 36, 0.25),
+    -1px 0 0 rgba(44, 59, 76, 0.25);
 }
 
 @media (prefers-reduced-motion: reduce) {
