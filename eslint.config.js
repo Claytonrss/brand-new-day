@@ -37,6 +37,10 @@ export default [
       globals: {
         process: 'readonly',
         console: 'readonly',
+        // collect-*.mjs drive the page inside `page.evaluate`
+        window: 'readonly',
+        document: 'readonly',
+        requestAnimationFrame: 'readonly',
       },
     },
   },
