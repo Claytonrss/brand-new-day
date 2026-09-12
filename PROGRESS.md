@@ -41,6 +41,11 @@ data-gated).
 
 ### Wave 0 — Baseline de medição no S23 (sem PR)
 
+> Runbook pronto: `docs/plans/wave0-s23-runbook.md` (setup, procedimentos,
+> template de registro e regras de decisão). Instrumentação verificada:
+> `?debug=1` → PerfHud + `window.__perf` (agora inclui `tier`); `?fx=off`
+> via `fxFlags.ts`. **Execução requer o dispositivo físico.**
+
 - [ ] T0.1 — Parado no hero com `?debug=1`: registrar `fps/ms/calls/
       triangles/programs` de `window.__perf` (foto/filmagem da tela)
 - [ ] T0.2 — Roldagem contínua hero → fim: mesmas métricas + capturar o
@@ -55,27 +60,42 @@ data-gated).
 ### Wave 1 — PERF-A: tier correto + main thread limpa
 **Branch:** `fix/mobile-tier-policy` · ~0,5 dia
 
-- [ ] T1.1 — Tier inicial síncrono: ler `window.matchMedia` direto no lazy
-      initializer do `useState` em `PerformanceMonitor.tsx` (client-only;
-      guards `typeof window`); hooks continuam para mudanças reativas
-      + unit test com mock de `matchMedia` (mobile → `medium`, nunca `high`)
-- [ ] T1.2 — *(condicional a T0.5)* FALHA-02: threshold mobile-only
-      medium→low < ~40 fps (`maxTouchPoints > 0`); atualizar `budget.spec.ts`
-      se comportamento testável mudar
-- [ ] T1.3 — FALHA-09: degradação só aplica com `|state.velocity| < 0,02`
-      ou loader cobrindo (evita pop no meio do movimento)
-- [ ] T1.4 — FALHA-05: `ProgressBar.tsx` — rAF-throttle, `transform:
-      scaleY(p)` (origin top) em vez de `height`, altura do doc cacheada no
-      resize, `aria-valuenow` a ≤ 5 Hz; paridade visual (mesma barra 1 px)
-- [ ] T1.5 — FALHA-06: remover `will-change` dos chars
-      (`SplitTextHeadline.tsx`, `ChapterCard.tsx`); reintroduzir escopado só
-      se evidência mostrar raster jank
-- [ ] T1.6 — Drive-bys: memo `targetFor(slot, beat)` no `LightRig`
-      (~360 obj/s a menos); `LenisProvider` guarda ref do ticker p/ cleanup;
-      `SpiderManModel` troca `restRef.current` por `useState` (fim da
-      fragilidade do closure vazio)
-- [ ] T1.7 — Evidência + PR: `pnpm verify`, screenshots 390/430/1440,
-      rubrica (bloqueantes ≥ 4), números Wave 0 antes/depois no corpo
+- [x] T1.1 — Tier inicial síncrono: `detectInitialTier()` em
+      `initialTier.ts` lê `window.matchMedia` no lazy initializer do
+      `useState` em `PerformanceMonitor.tsx` (guarda `typeof window`);
+      hooks continuam para mudanças reativas + novo efeito rebaixa
+      `high→medium` se a viewport virar mobile; unit test com mock de
+      `matchMedia` (`tests/unit/initialTier.test.ts`: mobile → `medium`,
+      nunca `high`; reduced-motion → `low`)
+- [ ] T1.2 — *(condicional a T0.5 — segue pendente, data-gated)* FALHA-02:
+      threshold mobile-only medium→low < ~40 fps (`maxTouchPoints > 0`);
+      atualizar `budget.spec.ts` se comportamento testável mudar
+- [x] T1.3 — FALHA-09: degradação só aplica com `|velocity| < 0,02`
+      (`beatRuntime` em `beatState.ts`, mesmo objeto do `stateRef`) ou
+      loader cobrindo (`loaderCover.ts`, limpo no unmount do
+      `CinematicLoader`); gate cobre degradação **e** upgrade
+- [x] T1.4 — FALHA-05: `ProgressBar.tsx` — rAF-throttle (scroll só marca
+      dirty), `transform: scaleY(p)` (origin top), altura do doc cacheada
+      no resize, `aria-valuenow`/`aria-label` a ≤ 5 Hz; paridade visual
+      mantida; bônus: removido `aria-hidden` do track que escondia o
+      `role="progressbar"` da árvore de acessibilidade
+- [x] T1.5 — FALHA-06: `will-change` removido dos chars
+      (`SplitTextHeadline.tsx`, `ChapterCard.tsx`)
+- [x] T1.6 — Drive-bys: cache `Map` em `targetFor(slot, beat)` no
+      `LightRig` (~360 obj/s a menos); `LenisProvider` guarda ref do
+      ticker p/ cleanup (removia uma closure nova — nunca a registrada);
+      `SpiderManModel` troca `restRef.current` por `useState` (rig não
+      fica mais congelado com `rest` vazio até re-render alheio)
+- [x] T1.8 — *(pull-forward do T3.2, FALHA-12)* gate do web-shot alinhado
+      com o hint (`tier !== 'low'` em `useInteraction.ts`): com o tier
+      síncrono correto, o mobile inicia em `medium` — manter o gate
+      `high`-only deixaria o tiro anunciado permanentemente morto em todo
+      phone; T3.3 (tap×drag) segue na Wave 3
+- [~] T1.7 — Evidência + PR: `pnpm verify` verde, `pnpm test:smoke` verde
+      (gate de PR), screenshots 390/430/1440, rubrica re-preenchida; ADR-022
+      escrita; **falta:** números Wave 0 antes/depois no corpo (aguardam
+      T0.1–T0.5 no S23) e aceite em device (tier `medium`, fps ≥ 50, 0
+      commits React em scroll estabilizado)
 
 **Critério de saída:** S23 inicia em `medium` (nunca `high`); fps no scroll
 ≥ 50; zero commit React em scroll estabilizado (React Profiler).
@@ -99,8 +119,8 @@ meshes → passe existe e é visível (self-shadow).
 - [ ] T3.1 — FALHA-08: baixar `potsdamer_platz_1k.hdr` (confirmar licença
       CC0 no download) para `public/env/city_1k.hdr`; `Environment` troca
       `preset="city"` por `files`; ADR-021 (origem/licença)
-- [ ] T3.2 — FALHA-12: gates alinhados — tiro em `tier !== 'low'`
-      (`useInteraction.ts`), mesmo gate do hint (`WebShootHint.tsx`)
+- [x] T3.2 — FALHA-12: gates alinhados — **absorvido pela Wave 1 (T1.8):
+      tiro em `tier !== 'low'` (`useInteraction.ts`), mesmo gate do hint**
 - [ ] T3.3 — FALHA-13: classificador puro `isTap(down, up)` (deslocamento
       < 8 px, duração < 300 ms) + disparo no `pointerup` + unit tests
       (trade-off: tiro levemente menos "instantâneo" — validar em vídeo)
