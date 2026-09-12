@@ -23,3 +23,14 @@ export const INITIAL_BEAT_STATE: BeatState = {
   velocity: 0,
   beat: 'hero',
 };
+
+/**
+ * Module-level runtime state — the same object `BeatProvider` publishes via
+ * `stateRef`, readable from outside the React tree.
+ *
+ * Exists because `PerformanceMonitor` sits outside `BeatProvider` (canvas
+ * boilerplate) and needs `velocity` for the idle-gate on tier changes
+ * (FALHA-09). Mutable per-frame state: read it in ticks and `useFrame`;
+ * never drive renders from it.
+ */
+export const beatRuntime: BeatState = { ...INITIAL_BEAT_STATE };

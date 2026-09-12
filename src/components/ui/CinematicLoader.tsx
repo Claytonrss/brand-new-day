@@ -2,6 +2,7 @@ import { useProgress } from '@react-three/drei';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MOTION } from '../../design/motion';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { loaderCover } from './loaderCover';
 
 interface CinematicLoaderProps {
   onLoaded: () => void;
@@ -33,6 +34,15 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
   onLoadedRef.current = onLoaded;
 
   const hasStartedLoading = useRef(false);
+
+  // Publish "loader covers the viewport" for the tier idle-gate (FALHA-09).
+  // Unmount (load complete) is the single source of truth for clearing it.
+  useEffect(() => {
+    loaderCover.covering = true;
+    return () => {
+      loaderCover.covering = false;
+    };
+  }, []);
 
   // Track whether loading has actually started (to avoid false-positive
   // on the initial state where active=false and progress=0).

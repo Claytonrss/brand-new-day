@@ -85,8 +85,9 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
   }, [prefersReducedMotion]);
 
   // Split title into individual characters for stagger animation
+  // (no permanent `will-change` — see SplitTextHeadline, FALHA-06)
   const titleChars = title.split('').map((char, i) => (
-    <span key={i} className="char inline-block" style={{ willChange: 'transform' }}>
+    <span key={i} className="char inline-block">
       {char === ' ' ? '\u00A0' : char}
     </span>
   ));
