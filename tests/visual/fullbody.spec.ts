@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 test.describe('FullBody section', () => {
   test('shows full body copy after scrolling past arsenal', async ({ page }, testInfo) => {
     await page.goto('/');
 
-    // Wait for cinematic loader to disappear
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
+    await waitForScene(page, 0);
 
     // Wait for WebGL canvas to load
     const canvas = page.locator('canvas');
@@ -44,9 +44,7 @@ test.describe('FullBody section', () => {
   test('has correct ARIA landmarks', async ({ page }) => {
     await page.goto('/');
 
-    // Wait for cinematic loader to disappear
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
+    await waitForScene(page, 0);
 
     // Wait for canvas
     const canvas = page.locator('canvas');
@@ -74,9 +72,7 @@ test.describe('FullBody section', () => {
   test('full body copy is centered and does not overflow', async ({ page }) => {
     await page.goto('/');
 
-    // Wait for cinematic loader to disappear
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
+    await waitForScene(page, 0);
 
     // Wait for canvas
     const canvas = page.locator('canvas');

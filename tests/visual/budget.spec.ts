@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Performance budget gate.
  *
@@ -25,12 +27,6 @@ interface PerfSnapshot {
 
 async function readPerf(page: import('@playwright/test').Page): Promise<PerfSnapshot> {
   return (await page.evaluate(() => window.__perf ?? null)) as PerfSnapshot;
-}
-
-async function waitForScene(page: import('@playwright/test').Page) {
-  const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-  await expect(loader).toBeHidden({ timeout: 60_000 });
-  await page.waitForTimeout(4000);
 }
 
 test.describe('Performance budget', () => {

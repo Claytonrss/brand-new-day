@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 test.describe('Hero section', () => {
   test('loads hero copy and renders webgl canvas @smoke', async ({ page }, testInfo) => {
     await page.goto('/');
 
-    // Wait for cinematic loader to disappear (GLB asset loading)
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
+    await waitForScene(page, 0);
 
     // Check title text
     const title = page.locator('h1');

@@ -47,9 +47,11 @@ jobs:
           path: test-results/logs
           retention-days: 7
 
-  # Browser smoke tier (@smoke tests, 390 + 1440): catches "the page is
+  # Browser smoke tier (@smoke tests, mobile-390): catches "the page is
   # broken" — console errors on load, missing hero/fallback, perf budget,
   # attribution, reduced-motion freeze — in a few minutes on every PR.
+  # Desktop stays in the deep tier: SwiftShader at 1440x900 triples the wall
+  # clock and made the loader wait flake under worker contention.
   smoke:
     name: smoke (playwright @smoke)
     if: github.event_name == 'pull_request'

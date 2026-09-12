@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Console hygiene — the project must never log an error or throw an uncaught
  * exception, on load or during the full scroll.
@@ -35,9 +37,7 @@ test.describe('Console errors', () => {
     });
 
     await page.goto('/');
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(4000);
+    await waitForScene(page);
 
     expect(errors).toEqual([]);
   });
@@ -56,9 +56,7 @@ test.describe('Console errors', () => {
     });
 
     await page.goto('/');
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(3000);
+    await waitForScene(page, 3000);
 
     for (let step = 0; step <= 10; step++) {
       await page.evaluate((fraction) => {

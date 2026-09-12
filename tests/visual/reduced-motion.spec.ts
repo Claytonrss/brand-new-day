@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { waitForScene } from './support';
+
 /**
  * Regression guard for the bug fixed in Wave B: with `prefers-reduced-motion`
  * the camera used to be pinned to the `fullBody` keyframe for the whole page,
@@ -13,9 +15,7 @@ test.describe('Reduced Motion camera framing', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
 
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(3000);
+    await waitForScene(page, 3000);
 
     const maxScroll = await page.evaluate(
       () => document.body.scrollHeight - window.innerHeight,
@@ -45,9 +45,7 @@ test.describe('Reduced Motion camera framing', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
 
-    const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D' });
-    await expect(loader).toBeHidden({ timeout: 60_000 });
-    await page.waitForTimeout(3000);
+    await waitForScene(page, 3000);
 
     await page.screenshot({
       path: `test-results/visual/${testInfo.project.name}-reduced-hero.png`,

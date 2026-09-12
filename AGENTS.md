@@ -61,7 +61,7 @@ Carregar apenas quando a tarefa exigir:
 4. Implementar seguindo Design Bible e composition rules.
 5. Rodar `bash scripts/verify-all.sh` antes de push.
 6. Commit com Conventional Commits.
-7. **PR Obrigatório com Evidências:** Todo PR DEVE obrigatoriamente incluir no seu corpo/descrição o log de saída real do `pnpm verify` (lint, typecheck, unit test, build) **e** do `pnpm test:smoke` (tier Playwright rápido, viewports 390/1440), a tabela de rubrica visual preenchida com nota >= 4 e a relação de evidências (screenshots dos viewports 390px, 430px e 1440px via `pnpm evidence:visual`). O suite visual completo (`pnpm test:visual`) roda no CI em push para `main`.
+7. **PR Obrigatório com Evidências:** Todo PR DEVE obrigatoriamente incluir no seu corpo/descrição o log de saída real do `pnpm verify` (lint, typecheck, unit test, build) **e** do `pnpm test:smoke` (tier Playwright rápido, mobile-390), a tabela de rubrica visual preenchida com nota >= 4 e a relação de evidências (screenshots dos viewports 390px, 430px e 1440px via `pnpm evidence:visual`). O suite visual completo (`pnpm test:visual`) roda no CI em push para `main`.
 
 ## 6. Comandos
 
@@ -71,7 +71,7 @@ pnpm build            # TypeScript + Vite build
 pnpm typecheck        # Type check only
 pnpm lint             # ESLint
 pnpm test             # Vitest unit tests
-pnpm test:smoke       # Playwright tier rápido (@smoke, ~7 testes, 390/1440) — gate de PR
+pnpm test:smoke       # Playwright tier rápido (@smoke, mobile-390) — gate de PR
 pnpm test:visual      # Playwright suite completo (deep tier) — CI na main / sob demanda
 pnpm verify           # All gates (lint + typecheck + test + build)
 pnpm inspect:glb      # Inspect GLB asset metadata
