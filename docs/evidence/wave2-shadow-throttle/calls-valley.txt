@@ -1,0 +1,5 @@
+tier: medium, low
+rendered frames: 90
+calls [medium]: fps ~10.7 · min 30 · max 46 · levels [30, 46]
+shadow-pass valley on medium: 16 calls between refreshes — throttle observable
+calls [low]: fps ~13.6 · min 13 · max 46 · levels [13, 46]

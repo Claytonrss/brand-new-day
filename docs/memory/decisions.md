@@ -881,3 +881,56 @@ O loader passa a depender **só de assets da própria origem** — auditoria:
 - ⚠️ +1,5 MB (HDR) + ~53 KB (fontes) em `public/` (fora do bundle JS).
 - ℹ️ Créditos: "Potsdamer Platz" por Greg Zaal / Poly Haven (CC0);
   Space Grotesk (Florian Karsten) e JetBrains Mono (JetBrains), SIL OFL 1.1.
+
+## ADR-023: Shadow throttle — passe de sombra sob demanda no tier `medium`
+
+**Data:** 2026-09-12
+**Status:** ✅ Aprovado (Wave 2 do Pareto Impact Plan — FALHA-04)
+
+### Contexto
+
+`curateMaterials` seta cast+receive em todos os meshes do personagem, então o
+passe de sombra (self-shadow do traje) renderiza **todo frame** mesmo com o
+sujeito quase estático: ~16 draw calls extras por frame no tier `medium`
+(medido: 46 calls com passe ↔ 30 sem, SwiftShader local, 390×844). É um passe
+completo de skinning (~500k tris) pago 60×/s para uma pose que muda pouco.
+
+### Decisão
+
+No `QualityAdapter`: `high` mantém `shadowMap.autoUpdate = true`; `medium`
+passa a `autoUpdate = false` com refresh sob demanda (`shadowThrottle.ts`):
+
+- **heartbeat de 10 Hz** — captura respiração/sway, visualmente idêntica em
+  sujeito quase estático;
+- **refresh imediato** em: mudança de beat, drag/gyro movendo (ambos escrevem
+  o mesmo par `INTERACTION.yaw/pitch`; epsilon 0,001 rad filtra jitter),
+  release do drag (borda de descida) e fim de fling (velocidade de scroll
+  cruzando para idle, mesmo threshold 0,02 do idle-gate de tier);
+- `low` continua com sombras desligadas (`enabled = false`).
+
+A lógica de decisão é um módulo puro (`shouldRefreshShadow`) com unit tests;
+o `QualityAdapter` só injeta `beatRuntime`/`INTERACTION` e escreve
+`needsUpdate = true`.
+
+### Alternativas Consideradas
+
+1. **Status quo (passe por frame)** — rejeitado: custo fixo alto para sujeito
+   estático; é exatamente a FALHA-04.
+2. **Refresh só por heartbeat (sem gatilhos imediatos)** — rejeitado: sombra
+   visivelmente defasada durante drag/gyro (o plano exige paridade em vídeo).
+3. **Congelar sombra em repouso total (sem heartbeat)** — rejeitado: a rig
+   procedural (respiração/sway) nunca para de mover os ossos; sem heartbeat a
+   sombra defasaria em repouso, que é a maior parte do tempo.
+
+### Consequências
+
+- ✅ Vale de ~16 calls no `medium` entre refreshes (evidência:
+  `docs/evidence/wave2-shadow-throttle/calls-valley.txt`; em device, ler o
+  vale no `window.__perf` do S23).
+- ✅ Drag/gyro continuam com sombra sincronizada (refresh por frame durante o
+  gesto — o custo volta só enquanto interage).
+- ⚠️ Trigger não coberto deixaria sombra defasada — mitigação: release de drag
+  e fim de fling também disparam; novos canais de pose devem ser adicionados
+  aos inputs do throttle.
+- ⚠️ Aceite em device (vídeo do drag no S23, vale de calls) pendente da
+  re-medição da Wave 0.
