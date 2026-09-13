@@ -1,3 +1,4 @@
+import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { MOTION } from '../../design/motion';
 
@@ -39,18 +40,7 @@ export function FullBodyOverlay() {
 
       {/* CC-BY Attribution */}
       <footer className="mt-6 font-mono text-center text-[10px] uppercase tracking-[0.15em] text-dim/60 sm:mt-12">
-        <p>
-          Modelo 3D &quot;Spider-Man Brand New Day&quot; por{' '}
-          <a
-            href="https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80"
-          >
-            Eskze
-          </a>
-          , licenciado sob CC-BY 4.0
-        </p>
+        <ModelAttribution />
       </footer>
     </div>
   );

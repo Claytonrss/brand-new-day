@@ -8,8 +8,9 @@ import { waitForScene } from './support';
  *
  * @see docs/specs/wave-g-verification.md
  */
-const ATTRIBUTION = /CC-BY 4\.0/i;
+const ATTRIBUTION = /CC BY 4\.0/i;
 const AUTHOR = 'Eskze';
+const LICENSE = 'CC BY 4.0';
 
 test.describe('CC-BY Attribution', () => {
   test('is visible in the Hero without hovering @smoke', async ({ page }) => {
@@ -30,9 +31,7 @@ test.describe('CC-BY Attribution', () => {
     await page.goto('/');
     await waitForScene(page);
 
-    await page.evaluate(() =>
-      window.scrollTo(0, document.body.scrollHeight - window.innerHeight),
-    );
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - window.innerHeight));
     await page.waitForTimeout(2500);
 
     const author = page.getByRole('link', { name: AUTHOR }).last();
@@ -49,5 +48,18 @@ test.describe('CC-BY Attribution', () => {
     await expect(author).toHaveAttribute('target', '_blank');
     await expect(author).toHaveAttribute('rel', /noopener/);
     await expect(author).toHaveAttribute('rel', /noreferrer/);
+  });
+
+  test('links to the CC BY 4.0 license text with safe rel attributes', async ({ page }) => {
+    await page.goto('/');
+    await waitForScene(page);
+
+    const license = page.getByRole('link', { name: LICENSE }).first();
+    await expect(license).toBeVisible();
+
+    await expect(license).toHaveAttribute('href', /creativecommons\.org\/licenses\/by\/4\.0/);
+    await expect(license).toHaveAttribute('target', '_blank');
+    await expect(license).toHaveAttribute('rel', /noopener/);
+    await expect(license).toHaveAttribute('rel', /noreferrer/);
   });
 });

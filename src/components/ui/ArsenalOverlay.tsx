@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
@@ -85,8 +86,7 @@ export function ArsenalOverlay() {
         className="flex max-w-[82vw] flex-col items-start text-left md:max-w-[420px] lg:max-w-[560px]"
       >
         <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
-          <span aria-hidden="true" className="beat-accent-rule" />
-          O que sobrou
+          <span aria-hidden="true" className="beat-accent-rule" />O que sobrou
         </p>
         <SplitTextHeadline
           text={'SEM APOIO.\nSÓ O ESSENCIAL.'}
@@ -95,8 +95,8 @@ export function ArsenalOverlay() {
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"
         />
         <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
-          Sem Stark, sem SHIELD, sem ninguém para ligar. Só o que ele mesmo
-          construiu nos pulsos — e a cidade que continua escolhendo proteger.
+          Sem Stark, sem SHIELD, sem ninguém para ligar. Só o que ele mesmo construiu nos pulsos — e
+          a cidade que continua escolhendo proteger.
         </p>
       </section>
 
@@ -166,18 +166,7 @@ export function ArsenalOverlay() {
 
       {/* CC-BY attribution — never fades, never hidden by the macro transition */}
       <footer className="absolute bottom-6 left-6 right-6 z-10 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60 sm:bottom-10 sm:left-12 md:left-16">
-        <p>
-          Modelo 3D &quot;Spider-Man Brand New Day&quot; por{' '}
-          <a
-            href="https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80"
-          >
-            Eskze
-          </a>
-          , licenciado sob CC-BY 4.0
-        </p>
+        <ModelAttribution />
       </footer>
     </div>
   );

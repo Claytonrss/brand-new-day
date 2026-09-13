@@ -1,3 +1,4 @@
+import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
@@ -41,9 +42,8 @@ export function ColophonSection() {
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"
         />
         <p className="mx-auto mt-4 max-w-[46ch] font-display text-sm leading-[1.6] text-paper/80 sm:text-base md:mx-0">
-          Uma cena interativa construída com React Three Fiber, GSAP e um modelo
-          de 66 joints sem um único clipe de animação — todo o movimento é
-          procedural.
+          Uma cena interativa construída com React Three Fiber, GSAP e um modelo de 66 joints sem um
+          único clipe de animação — todo o movimento é procedural.
         </p>
 
         <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-dim">
@@ -62,18 +62,7 @@ export function ColophonSection() {
 
       {/* CC-BY Attribution — required, visible without hover */}
       <footer className="absolute bottom-6 left-1/2 z-10 w-full max-w-[92vw] -translate-x-1/2 px-6 text-center font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
-        <p>
-          Modelo 3D &quot;Spider-Man Brand New Day&quot; por{' '}
-          <a
-            href="https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80"
-          >
-            Eskze
-          </a>
-          , licenciado sob CC-BY 4.0
-        </p>
+        <ModelAttribution />
       </footer>
     </section>
   );

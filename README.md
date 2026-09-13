@@ -9,15 +9,15 @@ Uma experiência web 3D cinematográfica construída para demonstrar direção d
 
 ## 🛠️ Tech Stack
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | Vite 8 + React 19 + TypeScript 5.9 |
-| Estilo | Tailwind CSS v4 |
-| 3D Engine | Three.js + `@react-three/fiber` v9 + `@react-three/drei` v10 |
-| Efeitos Visuais | `@react-three/postprocessing` v3 |
-| Animações & Scroll | GSAP ScrollTrigger |
-| Testes | Vitest (Unit) + Playwright (Visual Regression) |
-| Package Manager | `pnpm` (v9+) |
+| Camada             | Tecnologia                                                   |
+| ------------------ | ------------------------------------------------------------ |
+| Framework          | Vite 8 + React 19 + TypeScript 5.9                           |
+| Estilo             | Tailwind CSS v4                                              |
+| 3D Engine          | Three.js + `@react-three/fiber` v9 + `@react-three/drei` v10 |
+| Efeitos Visuais    | `@react-three/postprocessing` v3                             |
+| Animações & Scroll | GSAP ScrollTrigger                                           |
+| Testes             | Vitest (Unit) + Playwright (Visual Regression)               |
+| Package Manager    | `pnpm` (v9+)                                                 |
 
 ---
 
@@ -51,5 +51,5 @@ pnpm inspect:glb      # Inspeção de metadados do modelo GLB
 ## 📜 Créditos e Licença dos Assets 3D
 
 - Modelo 3D: **Spider-Man: Brand New Day (v2)**
-- Autor: Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-v2-50.4mb))
-- Licença: CC-BY 4.0 (Atribuição obrigatória mantida na aplicação)
+- Autor: Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda))
+- Licença: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (atribuição curta `Modelo 3D por Eskze · CC BY 4.0` mantida visível na aplicação)

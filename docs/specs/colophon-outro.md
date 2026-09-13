@@ -36,7 +36,8 @@ intencional: a revelação já aconteceu; agora é a assinatura.
 - Linha de stack (mono, pequena):
   `React 19 · Three.js · GSAP ScrollTrigger · Lenis · WebGL`
 - Atribuição (obrigatória, visível sem hover):
-  > Modelo 3D "Spider-Man Brand New Day" por Eskze, licenciado sob CC-BY 4.0
+  > Modelo 3D por Eskze · CC BY 4.0
+  > ("Eskze" linkado à página do modelo no Sketchfab; "CC BY 4.0" linkado ao legal code da licença)
 - CTA (um, não três):
   > `ver o código →` (link para o repositório)
 
