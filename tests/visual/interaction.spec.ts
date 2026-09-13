@@ -81,6 +81,37 @@ test.describe('Model interaction', () => {
   });
 });
 
+test.describe('Model interaction — touch input class', () => {
+  // A real phone matches `(hover: none)` / `(pointer: coarse)`. In Playwright
+  // that media flip only happens when the context itself is mobile + touch
+  // (emulateMedia cannot express hover/pointer features).
+  test.use({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+
+  test('touch devices (hover: none) never enter drag orbit', async ({ page }) => {
+    await page.goto('/?debug=1');
+    await waitForScene(page);
+
+    const size = page.viewportSize() ?? { width: 390, height: 844 };
+    const cx = size.width * 0.5;
+    const cy = size.height * 0.6;
+
+    await page.mouse.move(cx, cy);
+    await page.mouse.down();
+    await page.mouse.move(cx + size.width * 0.25, cy, { steps: 8 });
+    await page.waitForTimeout(600);
+
+    const state = await readInteraction(page);
+    expect(state?.dragging).toBe(false);
+    expect(state?.yaw ?? 0).toBe(0);
+
+    await page.mouse.up();
+  });
+});
+
 test.describe('Reduced motion', () => {
   test('disables drag orbit entirely', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
