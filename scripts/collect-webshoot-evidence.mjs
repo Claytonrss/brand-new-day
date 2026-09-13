@@ -7,7 +7,7 @@ import { mkdirSync } from 'node:fs';
  *
  * Usage: node scripts/collect-webshoot-evidence.mjs [baseUrl] [outDir]
  */
-const BASE_URL = process.argv[2] ?? 'http://127.0.0.1:5173';
+const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
 const OUT_DIR = process.argv[3] ?? 'docs/evidence/web-shoot-discovery';
 
 const VIEWPORTS = [

@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: '127.0.0.1',
-    port: 5173,
+    // Per-worktree port (docs/agents/test-isolation.md §10): PORT=5200 pnpm dev
+    port: Number(process.env.PORT ?? 5173),
   },
 });

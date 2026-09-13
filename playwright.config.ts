@@ -1,5 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
+// Port follows the env so parallel worktrees never share a dev server
+// (docs/agents/test-isolation.md §10). The webServer inherits this env, so
+// `PORT=5200 pnpm test:smoke` boots vite on 5200 and points every test at it.
+const PORT = Number(process.env.PORT ?? 5173);
+const BASE_URL = `http://localhost:${PORT}`;
+
 export default defineConfig({
   testDir: './tests/visual',
   fullyParallel: true,
@@ -13,13 +19,13 @@ export default defineConfig({
   reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
   outputDir: 'test-results/playwright',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: BASE_URL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
   webServer: {
     command: 'pnpm run dev -- --host 127.0.0.1',
-    url: 'http://localhost:5173',
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
   },

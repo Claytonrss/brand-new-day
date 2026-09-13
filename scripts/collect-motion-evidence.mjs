@@ -10,7 +10,7 @@ import { join } from 'node:path';
  *
  * Usage: node scripts/collect-motion-evidence.mjs [baseUrl]
  */
-const BASE_URL = process.argv[2] ?? 'http://127.0.0.1:5173';
+const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
 const OUT_DIR = 'docs/evidence/wave-g-verification';
 const TEMP_DIR = 'test-results/motion-video';
 
