@@ -55,9 +55,18 @@ que decai exponencialmente — some em ~0,5 s. Nada de shake de posição.
 | Limites            | yaw ±0,21 rad (±12°) · pitch ±0,12 rad |
 | Sensibilidade      | 0,0045 rad/px (yaw) · 0,003 (pitch)    |
 | Retorno ao repouso | `1 − exp(−4·delta)`                    |
+| Dispositivos       | **somente `(hover: hover)`**           |
 
 O clamp é joelho suave (`tanh`), nunca corte duro. Listener no `window`
 (o canvas é `pointer-events: none`).
+
+**Hover-only (emenda 2026-09-13):** em touch, todo swipe de scroll começa com
+um `pointerdown` no `window` — o drag brigava com o gesto primário da página e
+transmitia o tremor do dedo ao modelo sem suavização (`alpha = 1` durante o
+arrasto), além de somar com o gyro. A condição de escala "arrasto compete com o
+scroll em touch" prevista nas Stop Conditions disparou em uso real. No touch o
+drag-orbit fica desligado; o mobile mantém giroscópio (§7.2), tap-to-shoot
+(§7.4) e drift idle. Desktop (mouse) intocado — drag não conflita com wheel.
 
 ### 7.2 Giroscópio (D2)
 
@@ -124,5 +133,6 @@ Draw calls base mantidos (44 no desktop `fx=subtle`).
 - [ ] **Aprovação visual humana** do gesto e do desenho da teia.
 - [ ] Giroscópio em dispositivo real (não há sensor no Chromium headless).
 
-**Escalar para humano se:** o arrasto competir com o scroll em touch ou se a
-teia não for legível em 0,7 s.
+**Escalar para humano se:** a teia não for legível em 0,7 s. (A competição
+arrasto × scroll em touch foi escalada, confirmada e resolvida pela emenda
+hover-only de 2026-09-13 em §7.1.)
