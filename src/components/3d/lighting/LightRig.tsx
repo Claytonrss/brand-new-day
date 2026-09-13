@@ -7,6 +7,7 @@ import { ANCHORS } from '../rig/anchorStore';
 import type { BeatState } from '../beat/beatState';
 import type { BeatId } from '../beat/beats';
 import { useQualityProfile } from '../qualityContext';
+import { spiderSenseRim } from '../rig/spiderSense';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../../design/breakpoints';
 import { COLORS } from '../../../design/tokens';
@@ -59,7 +60,8 @@ function evolutionSweep(t: number) {
     intensity = SWEEP.residualIntensity;
   }
 
-  const sweepT = t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
+  const sweepT =
+    t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
 
   return {
     intensity,
@@ -93,7 +95,10 @@ function useFadedIntensity(
     if (!light) return;
 
     const cue = targetFor(slot, beat);
-    const goal = override ?? (isMobile ? cue.intensity.mobile : cue.intensity.desktop);
+    const base = override ?? (isMobile ? cue.intensity.mobile : cue.intensity.desktop);
+    // Spider-sense (IDEIA-3D-10): the rim slot flashes ×3 for ~200ms whenever
+    // the narrative beat changes. `instant` (reduced motion) skips the boost.
+    const goal = base * (slot.id === 'rim' && !instant ? spiderSenseRim() : 1);
     const alpha = instant ? 1 : smooth(delta);
 
     light.intensity = THREE.MathUtils.lerp(light.intensity, goal, alpha);
