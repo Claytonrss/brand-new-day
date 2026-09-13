@@ -61,23 +61,49 @@ test.describe('Model interaction', () => {
     expect(right?.rimX ?? 0).toBeGreaterThan(0);
   });
 
-  test('clicking during the Arsenal beat fires a web strand', async ({ page }) => {
+  test('clicking during the Arsenal beat fires a web strand and reveals the HUD', async ({
+    page,
+  }) => {
     test.slow();
     await page.goto('/?debug=1');
     await waitForScene(page);
 
+    // 0.75 of the scroll ≈ local progress 0.36 inside Arsenal — past the old
+    // scroll envelope (0.42 starts later, so scroll alone must NOT show it).
     await page.evaluate(() =>
       window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.75),
     );
     await page.waitForTimeout(3000);
 
+    const hud = page.getByTestId('arsenal-hud');
+    await expect(hud).toHaveCSS('opacity', '0');
+
     const before = await readInteraction(page);
     const size = page.viewportSize() ?? { width: 1440, height: 900 };
     await page.mouse.click(size.width * 0.5, size.height * 0.5);
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(1200); // shot registers + HUD reveal tween (700ms)
     const after = await readInteraction(page);
 
     expect(after?.shotId ?? 0).toBeGreaterThan(before?.shotId ?? 0);
+    expect(after?.arsenalHudRevealed).toBe(true);
+    await expect(hud).toHaveCSS('opacity', '1');
+    // The label exists twice (desktop hairline + mobile legend, one hidden
+    // per viewport); whichever is on screen must be visible.
+    await expect(page.locator('span:visible', { hasText: 'web-shooter · mk.ii' })).toBeVisible();
+  });
+
+  test('scrolling to the end of the Arsenal section auto-reveals the HUD', async ({ page }) => {
+    test.slow();
+    await page.goto('/?debug=1');
+    await waitForScene(page);
+
+    // ≈ local progress 0.88 — past AUTO_REVEAL_PROGRESS (0.8), no tap at all.
+    await page.evaluate(() =>
+      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.84),
+    );
+    await page.waitForTimeout(1200);
+
+    await expect(page.getByTestId('arsenal-hud')).toHaveCSS('opacity', '1');
   });
 });
 

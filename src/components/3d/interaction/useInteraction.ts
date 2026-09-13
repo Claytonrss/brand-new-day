@@ -6,6 +6,7 @@ import { ANCHORS } from '../rig/anchorStore';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { useQualityProfile } from '../qualityContext';
 import { INTERACTION } from './interactionStore';
+import { arsenalReveal } from './arsenalReveal';
 import { dragTarget, gyroTarget, isTap, rimOffset, type PointerSample } from './pointerMath';
 import { getGyroController, gyroReading } from './gyroController';
 import { windowPointer } from '../rig/windowPointer';
@@ -18,6 +19,7 @@ export interface InteractionDebugState {
   shotId: number;
   rimX: number;
   rimY: number;
+  arsenalHudRevealed: boolean;
 }
 
 declare global {
@@ -133,6 +135,9 @@ export function useInteraction() {
       INTERACTION.shotFrom.copy(ANCHORS.ready ? ANCHORS.wrist : new THREE.Vector3(-1.6, -2.3, 1.2));
       INTERACTION.shotTo.copy(INTERACTION.shotFrom).addScaledVector(cameraForward(), 6);
       INTERACTION.cameraKick = 1;
+      // Same gesture, one more effect: the shot IS the discovery beat — the
+      // annotation HUD reveals with the strand (web-shoot-discovery.md §5).
+      arsenalReveal.reveal();
     };
 
     const onCancel = () => {
@@ -165,6 +170,7 @@ export function useInteraction() {
       shotId: INTERACTION.shotId,
       rimX: INTERACTION.rimX,
       rimY: INTERACTION.rimY,
+      arsenalHudRevealed: arsenalReveal.revealed,
     };
   };
 
