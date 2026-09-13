@@ -13,7 +13,7 @@ const VIEWPORTS = [
 
 const browser = await chromium.launch();
 
-// --- Debug probe: envelope spike + breath rate across beats ----------------
+// --- Trigger discipline probe (desktop): latch + envelope ------------------
 const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
 });
@@ -23,39 +23,61 @@ const loader = page.getByRole('progressbar', { name: 'Carregando experiência 3D
 await loader.waitFor({ state: 'hidden', timeout: 120_000 });
 await page.waitForTimeout(3000);
 
-console.log('--- spider-sense + breath probe (desktop, ?debug=1) ---');
-const stops = [
-  ['hero (rest)', 0.5],
-  ['→ chapter1 (boundary!)', 2.2],
-  ['→ evolution (boundary!)', 3.2],
-  ['→ arsenal (boundary!)', 5.8],
-  ['→ fullBody (boundary!)', 6.9],
-];
-let previousBreath = null;
-for (const [label, mult] of stops) {
-  await page.evaluate((m) => window.scrollTo(0, window.innerHeight * m), mult);
-  // sample immediately — the envelope spikes on the beat change
-  const probe = await page.evaluate(() => ({
-    sense: window.__rig?.sense,
-    breath: window.__rig?.breath,
+const read = () =>
+  page.evaluate(() => ({
+    sense: +(window.__rig?.sense ?? -1).toFixed(3),
+    count: window.__rig?.senseCount ?? -1,
+    breath: +(window.__rig?.breath ?? 0).toFixed(3),
     beat: document.querySelector('main')?.getAttribute('data-beat'),
   }));
-  const breathDir =
-    previousBreath === null ? '' : probe.breath >= previousBreath ? 'rising' : 'falling';
-  previousBreath = probe.breath;
-  console.log(
-    `scroll ${label.padEnd(24)} beat=${String(probe.beat).padEnd(9)} sense=${probe.sense?.toFixed(3)}  breath=${probe.breath?.toFixed(3)} ${breathDir}`,
-  );
-  // the envelope decays in ~200ms; a later read should be far below the spike
-  await page.waitForTimeout(300);
-  const after = await page.evaluate(() => window.__rig?.sense);
-  console.log(`  300ms later: sense=${after?.toFixed(3)}`);
-  await page.waitForTimeout(400);
-}
 
+console.log('--- spider-sense trigger discipline (desktop, ?debug=1) ---');
+// [label, scroll progress, fires?, halo shot name during the ring (or null)]
+const stops = [
+  ['hero rest (must NOT fire)', 0.1, false, null],
+  ['→ chapter1 card (must NOT fire)', 0.3, false, null],
+  ['→ evolution entry (FIRES; head off-frame → edge poke)', 0.45, true, 'sense-halo.png'],
+  ['→ arsenal entry (FIRES)', 0.75, true, null],
+  ['→ fullBody entry (FIRES; head in frame)', 0.9, true, 'sense-halo-fullbody.png'],
+  ['→ back to chapter1 (no re-fire)', 0.3, false, null],
+];
+let previousCount = 0;
+for (const [label, progress, fires, haloShot] of stops) {
+  await page.evaluate(
+    (p) => window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * p),
+    progress,
+  );
+  let after = await read();
+  if (fires) {
+    // the beat commit reaches the rig a frame late — poll for the latch
+    for (let i = 0; i < 12 && after.count <= previousCount; i++) {
+      await page.waitForTimeout(150);
+      after = await read();
+    }
+  } else {
+    await page.waitForTimeout(1200); // let any (wrong) fire happen
+    after = await read();
+  }
+  const verdict = fires ? after.count > previousCount : after.count === previousCount;
+  console.log(
+    `${label.padEnd(52)} beat=${String(after.beat).padEnd(9)} sense=${after.sense} count=${after.count} breath=${after.breath} → ${verdict ? 'OK' : 'UNEXPECTED'}`,
+  );
+  previousCount = after.count;
+  // capture the halo while it rings, if asked for this stop
+  if (fires && haloShot) {
+    const anchored = await page.evaluate(
+      () => document.documentElement.style.getPropertyValue('--sense-x') !== '',
+    );
+    if (anchored) {
+      await page.screenshot({ path: `${OUT}/${haloShot}`, timeout: 60_000 });
+      console.log(`  halo captured → ${OUT}/${haloShot}`);
+    }
+  }
+  await page.waitForTimeout(1500);
+}
 await context.close();
 
-// --- Screenshots per viewport (arsenal boundary + fullBody deep breath) ----
+// --- Screenshots per viewport (danger beats) -------------------------------
 for (const v of VIEWPORTS) {
   const ctx = await browser.newContext({
     viewport: { width: v.width, height: v.height },
@@ -67,11 +89,15 @@ for (const v of VIEWPORTS) {
   await bar.waitFor({ state: 'hidden', timeout: 120_000 });
   await p.waitForTimeout(3000);
 
-  await p.evaluate(() => window.scrollTo(0, window.innerHeight * 5.8));
+  await p.evaluate(() =>
+    window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.78),
+  );
   await p.waitForTimeout(1500);
   await p.screenshot({ path: `${OUT}/${v.name}-arsenal.png`, timeout: 60_000 });
 
-  await p.evaluate(() => window.scrollTo(0, window.innerHeight * 6.9));
+  await p.evaluate(() =>
+    window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.9),
+  );
   await p.waitForTimeout(2500);
   await p.screenshot({
     path: `${OUT}/${v.name}-fullbody-breath.png`,

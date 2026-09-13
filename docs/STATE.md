@@ -53,12 +53,17 @@ chapter-print}.md`.
   commitado: drag-orbit hover-only (touch mantém gyro + tap) com teste
   touch corrigido (contexto mobile+touch) e glow do loader na raiz do SVG.
   Spec: `docs/specs/dom-micro-craft.md`.
-- **PR #41 — Spider-sense + respiração (`feat/spider-sense`):** nos
-  boundaries de beat o rim faz flash 3× (~200ms, envelope com snap a zero)
-  e a cabeça dá um tick lateral alternante (head 1.0 / neck 0.4, aplicado
-  depois do head-chain); respiração dirigida por beat com fase integrada
-  (hero 0.18 Hz ×0.7 → fullBody 0.14 Hz ×1.3) — sem salto de peito na
-  troca de ritmo. Zero draw calls/lights novos. Specs:
+- **PR #41 — Spider-sense + respiração (`feat/spider-sense`):** v2
+  (redesenhada após observação em device — a v1, flash de rim ×3 em toda
+  fronteira, lia como brilho ambiente). Agora com iconografia própria:
+  **halo de 6 traços ondulados** hairline desenhando-se ao redor da cabeça
+  projetada (clamped ao viewport — quando a cabeça sai do quadro, espiar
+  pela borda), **expressão de alerta** (snap da cabeça para a lente + flare
+  nas lentes via `uLensPulse` + respiração travando) e **disciplina de
+  gatilho** — só na entrada dos 3 beats de perigo (Evolution/Arsenal/
+  FullBody), nunca no Hero/cards, latch `senseCount` para evidência.
+  Respiração dirigida por beat com fase integrada (hero 0.18 Hz ×0.7 →
+  fullBody 0.14 Hz ×1.3). Zero draw calls/lights novos. Specs:
   `docs/specs/spider-sense.md`.
 
 ### Pendências consolidadas (detalhe em `PROGRESS.md`)
