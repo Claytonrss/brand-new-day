@@ -1,3 +1,5 @@
+import { ModelAttribution } from './ModelAttribution';
+
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
 
 const SECTIONS = [
@@ -43,10 +45,7 @@ export function StaticFallback() {
     <main className="relative w-full bg-ink text-paper">
       <section className="relative flex min-h-dvh items-end overflow-hidden">
         <picture>
-          <source
-            media="(max-width: 767px)"
-            srcSet="/fallback-poster-mobile.png"
-          />
+          <source media="(max-width: 767px)" srcSet="/fallback-poster-mobile.png" />
           <img
             src="/fallback-poster-desktop.png"
             alt="Spider-Man, corpo inteiro, iluminado contra o fundo escuro"
@@ -96,18 +95,7 @@ export function StaticFallback() {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
           a versão interativa requer WebGL
         </p>
-        <p className="mt-4 font-mono text-[10px] uppercase leading-relaxed tracking-[0.15em] text-dim/60">
-          Modelo 3D &quot;Spider-Man Brand New Day&quot; por{' '}
-          <a
-            href="https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80"
-          >
-            Eskze
-          </a>
-          , licenciado sob CC-BY 4.0
-        </p>
+        <ModelAttribution className="mt-4 font-mono text-[10px] uppercase leading-relaxed tracking-[0.15em] text-dim/60" />
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
           <a
             href={REPO_URL}
