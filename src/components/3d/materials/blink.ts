@@ -6,17 +6,15 @@
  * blink. `?blink=off|subtle|full` picks the intensity; reduced motion disables
  * it entirely.
  */
+import { readQueryMode } from '../../../lib/queryMode';
 
 export type BlinkMode = 'off' | 'subtle' | 'full' | 'hold';
 
-function readMode(): BlinkMode {
-  if (typeof window === 'undefined') return 'subtle';
-  const value = new URLSearchParams(window.location.search).get('blink');
-  if (value === 'off' || value === 'full' || value === 'hold') return value;
-  return 'subtle';
-}
-
-export const BLINK_MODE: BlinkMode = readMode();
+export const BLINK_MODE: BlinkMode = readQueryMode<BlinkMode>(
+  'blink',
+  ['off', 'full', 'hold'],
+  'subtle',
+);
 
 /** Peak closure per mode (0 = never closes). */
 export const BLINK_AMOUNT: Record<BlinkMode, number> = {

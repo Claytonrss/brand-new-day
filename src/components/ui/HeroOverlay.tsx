@@ -1,5 +1,6 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
+import { OverlayBody, OverlayKicker } from './overlay';
 
 export function HeroOverlay() {
   return (
@@ -23,20 +24,17 @@ export function HeroOverlay() {
         aria-labelledby="hero-title"
         className="parallax-near max-w-[82vw] md:max-w-[480px] lg:max-w-[560px]"
       >
-        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
-          <span aria-hidden="true" className="beat-accent-rule" />
-          Spider-Man: Brand New Day
-        </p>
+        <OverlayKicker>Spider-Man: Brand New Day</OverlayKicker>
         <SplitTextHeadline
           text="NINGUÉM SABE."
           as="h1"
           id="hero-title"
           className="mt-2 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[64px] lg:text-[80px]"
         />
-        <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
+        <OverlayBody>
           Quatro anos depois de desaparecer da memória de todos que ama, Peter Parker ainda está lá
           em cima, sozinho, sob a máscara.
-        </p>
+        </OverlayBody>
       </section>
 
       {/* CC-BY Attribution Footer */}

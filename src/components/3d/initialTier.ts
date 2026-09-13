@@ -1,5 +1,6 @@
 import { BREAKPOINTS } from '../../design/breakpoints';
 import type { QualityTier } from './qualityContext';
+import { REDUCED_MOTION_QUERY } from '../../hooks/usePrefersReducedMotion';
 
 /**
  * Synchronous initial quality tier (FALHA-01).
@@ -18,7 +19,7 @@ import type { QualityTier } from './qualityContext';
  */
 export function detectInitialTier(): QualityTier {
   if (typeof window === 'undefined') return 'high';
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 'low';
+  if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return 'low';
   if (window.matchMedia(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`).matches) {
     return 'medium';
   }

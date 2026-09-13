@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { softClamp } from '../../../lib/math';
 
 /**
  * Pure interaction math — kept free of React and the DOM so it can be unit
@@ -37,12 +38,6 @@ export function isTap(down: PointerSample, up: PointerSample): boolean {
 
 /** Device orientation authority (radians). */
 export const GYRO_LIMITS = { yaw: 0.12, pitch: 0.06 } as const;
-
-/** Soft clamp with a knee — never a hard cut. */
-export function softClamp(value: number, limit: number): number {
-  if (limit <= 0) return 0;
-  return limit * Math.tanh(value / limit);
-}
 
 /**
  * Convert pointer travel (pixels, from the gesture origin) into a clamped

@@ -1,4 +1,5 @@
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { usePointerParallax } from '../hooks/usePointerParallax';
 
 /**
@@ -11,7 +12,7 @@ import { usePointerParallax } from '../hooks/usePointerParallax';
  */
 export function PointerParallax() {
   const hasHover = useMediaQuery('(hover: hover)');
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
 
   usePointerParallax(hasHover && !reduceMotion);
 

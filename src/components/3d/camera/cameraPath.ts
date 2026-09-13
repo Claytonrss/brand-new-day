@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import { CAMERA_KEYFRAMES } from '../cameraKeyframes';
 import { CHEST_Y, WRIST_POSITION, type BeatId } from '../beat/beats';
 import { ANCHORS } from '../rig/anchorStore';
+import { smoothstep } from '../../../lib/math';
+import type { Breakpoint } from '../../../design/breakpoints';
 
-export type Breakpoint = 'mobile' | 'desktop';
+export type { Breakpoint };
 
 const DEG = Math.PI / 180;
 
@@ -67,7 +69,7 @@ const APPROACH = {
 
 export const EASING = {
   linear: (t: number) => t,
-  smoothstep: (t: number) => t * t * (3 - 2 * t),
+  smoothstep: (t: number) => smoothstep(t, 0, 1),
   easeInOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
   easeOutCubic: (t: number) => 1 - Math.pow(1 - t, 3),
 } as const;

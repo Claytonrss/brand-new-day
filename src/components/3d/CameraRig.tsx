@@ -3,6 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { smooth } from '../../lib/math';
 import { BREAKPOINTS } from '../../design/breakpoints';
 import { useQualityProfile } from './qualityContext';
 import { CameraTrack, createCameraSample, type Breakpoint } from './camera/cameraPath';
@@ -42,7 +44,7 @@ export function CameraRig() {
   const { beat, stateRef } = useBeat();
   const profile = useQualityProfile();
   const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const hasHover = useMediaQuery('(hover: hover)');
 
   const breakpoint: Breakpoint = isMobile ? 'mobile' : 'desktop';
@@ -66,7 +68,7 @@ export function CameraRig() {
   }, [track, target, current]);
 
   useFrame(({ clock }, delta) => {
-    const alpha = 1 - Math.exp(-LERP_K * delta);
+    const alpha = smooth(delta, LERP_K);
 
     if (prefersReducedMotion) {
       // Static framing per section — fixes the old "fullBody everywhere" bug
@@ -84,7 +86,7 @@ export function CameraRig() {
         velocityRef.current = THREE.MathUtils.lerp(
           velocityRef.current,
           state.velocity,
-          1 - Math.exp(-VELOCITY_SMOOTH_K * delta),
+          smooth(delta, VELOCITY_SMOOTH_K),
         );
 
         const time = clock.elapsedTime * HANDHELD_RATE;

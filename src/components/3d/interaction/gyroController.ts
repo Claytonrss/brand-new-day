@@ -1,3 +1,4 @@
+import { REDUCED_MOTION_QUERY } from '../../../hooks/usePrefersReducedMotion';
 export type GyroState = 'unavailable' | 'prompt' | 'granted' | 'denied';
 
 export const GYRO_STORAGE_KEY = 'spiderman-landing:gyro';
@@ -161,7 +162,7 @@ export function getGyroController(): GyroController {
       ? () => DeviceOrientation.requestPermission!()
       : undefined,
     storage: window.localStorage,
-    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    reducedMotion: window.matchMedia(REDUCED_MOTION_QUERY).matches,
     onAttach: () => window.addEventListener('deviceorientation', handleOrientation),
   });
 

@@ -9,7 +9,7 @@ import {
   HEAD_BIAS_FACTOR,
   idleDrift,
   HEAD_LIMIT,
-  MOTION,
+  RIG_AMPLITUDE,
   offsetQuaternion,
   softClamp,
   type BoneRole,
@@ -299,23 +299,27 @@ export function useProceduralRig({
       let pz = 0;
 
       if (role === 'spine1') {
-        px = breathSample * MOTION.breath.spine1 + lean.value;
+        px = breathSample * RIG_AMPLITUDE.breath.spine1 + lean.value;
       } else if (role === 'spine2') {
-        px = breathSample * MOTION.breath.spine2 + lean.value * LEAN_SPINE2_WEIGHT;
+        px = breathSample * RIG_AMPLITUDE.breath.spine2 + lean.value * LEAN_SPINE2_WEIGHT;
       } else if (role === 'shoulderL' || role === 'shoulderR') {
         pz = leanShoulderLift(role);
       } else if (role === 'hips') {
-        py = fbm(time * MOTION.sway.rate) * MOTION.sway.yaw;
-        px = fbm(time * MOTION.sway.rate + 5.3) * MOTION.sway.pitch;
-        pz = fbm(time * MOTION.weightShift.rate + 21.1) * MOTION.weightShift.roll;
+        py = fbm(time * RIG_AMPLITUDE.sway.rate) * RIG_AMPLITUDE.sway.yaw;
+        px = fbm(time * RIG_AMPLITUDE.sway.rate + 5.3) * RIG_AMPLITUDE.sway.pitch;
+        pz = fbm(time * RIG_AMPLITUDE.weightShift.rate + 21.1) * RIG_AMPLITUDE.weightShift.roll;
       } else if (role === 'handL' || role === 'handR') {
         if (detailed) {
-          const phase = time * Math.PI * 2 * MOTION.tremor.rate;
-          px = Math.sin(phase) * MOTION.tremor.amount + fbm(time * 0.8) * MOTION.tremor.amount;
-          pz = Math.cos(phase * 0.7) * MOTION.tremor.amount * 0.6;
+          const phase = time * Math.PI * 2 * RIG_AMPLITUDE.tremor.rate;
+          px =
+            Math.sin(phase) * RIG_AMPLITUDE.tremor.amount +
+            fbm(time * 0.8) * RIG_AMPLITUDE.tremor.amount;
+          pz = Math.cos(phase * 0.7) * RIG_AMPLITUDE.tremor.amount * 0.6;
         }
       } else if (role === 'upLegL' || role === 'upLegR') {
-        px = fbm(time * MOTION.legs.rate + (role === 'upLegL' ? 0 : 9.4)) * MOTION.legs.amount;
+        px =
+          fbm(time * RIG_AMPLITUDE.legs.rate + (role === 'upLegL' ? 0 : 9.4)) *
+          RIG_AMPLITUDE.legs.amount;
       }
 
       offsetQuaternion(scratch.procedural, px, py, pz);

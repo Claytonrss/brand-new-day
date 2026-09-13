@@ -3,7 +3,10 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useBeat } from '../beat/beatContext';
 import { ANCHORS } from '../rig/anchorStore';
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import { isDebugMode } from '../../../lib/debugFlag';
+import { smooth } from '../../../lib/math';
 import { useQualityProfile } from '../qualityContext';
 import { INTERACTION } from './interactionStore';
 import { arsenalReveal } from './arsenalReveal';
@@ -43,7 +46,7 @@ export function useInteraction() {
   const camera = useThree((state) => state.camera);
   const profile = useQualityProfile();
   const { stateRef } = useBeat();
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   // Drag-orbit is hover-only (same input-class gate as head tracking and the
   // camera/CSS parallax): on touch, every scroll swipe starts with a
   // `pointerdown`, so an ungated drag fights the page's primary gesture and
@@ -52,10 +55,7 @@ export function useInteraction() {
 
   const dragRef = useRef({ active: false, x: 0, y: 0, yaw: 0, pitch: 0 });
   const target = useMemo(() => ({ yaw: 0, pitch: 0 }), []);
-  const debug = useMemo(
-    () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
-    [],
-  );
+  const debug = useMemo(isDebugMode, []);
   const direction = useMemo(() => new THREE.Vector3(), []);
 
   // --- pointer drag --------------------------------------------------------
@@ -197,16 +197,12 @@ export function useInteraction() {
     target.yaw = (drag.active ? drag.yaw : 0) + gyro.yaw;
     target.pitch = (drag.active ? drag.pitch : 0) + gyro.pitch;
 
-    const alpha = drag.active ? 1 : 1 - Math.exp(-RETURN_K * delta);
+    const alpha = drag.active ? 1 : smooth(delta, RETURN_K);
     INTERACTION.yaw = THREE.MathUtils.lerp(INTERACTION.yaw, target.yaw, alpha);
     INTERACTION.pitch = THREE.MathUtils.lerp(INTERACTION.pitch, target.pitch, alpha);
 
     // camera kick decays after a shot
-    INTERACTION.cameraKick = THREE.MathUtils.lerp(
-      INTERACTION.cameraKick,
-      0,
-      1 - Math.exp(-6 * delta),
-    );
+    INTERACTION.cameraKick = THREE.MathUtils.lerp(INTERACTION.cameraKick, 0, smooth(delta, 6));
 
     // rim light reacts to the cursor
     const rim = rimOffset(windowPointer.x, windowPointer.y);
