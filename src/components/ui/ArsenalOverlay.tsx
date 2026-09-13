@@ -4,6 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { MOTION } from '../../design/motion';
+import { arsenalReveal } from '../3d/interaction/arsenalReveal';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +16,12 @@ const HUD_LABELS = [
   { id: 'trigger', text: 'gatilho · duplo toque' },
   { id: 'handmade', text: 'construído à mão' },
 ] as const;
+
+/**
+ * Without a tap by this local progress, the HUD reveals itself anyway — the
+ * beat must read for visitors who never discover the gesture.
+ */
+const AUTO_REVEAL_PROGRESS = 0.8;
 
 function smoothstep(x: number, a: number, b: number): number {
   const t = Math.min(Math.max((x - a) / (b - a), 0), 1);
@@ -32,8 +40,16 @@ function smoothstep(x: number, a: number, b: number): number {
  * the Arsenal section drives both opacities from its progress, so it never
  * depends on sticky/overflow behaviour.
  *
+ * Reveal (arsenal-macro-hud.md §5): on gesture-capable profiles the HUD is
+ * click-gated — the same tap that fires the web shot reveals it, and the
+ * breathing `WebShootHint` ring is the affordance. Without a tap it
+ * self-reveals at `AUTO_REVEAL_PROGRESS`. Profiles without the gesture
+ * (`prefers-reduced-motion`, tier `low`) keep the scroll-driven reveal, and
+ * every profile hides the HUD when the section leaves.
+ *
  * @see docs/specs/arsenal-web-shooters.md §3
  * @see docs/specs/arsenal-macro-hud.md
+ * @see docs/specs/web-shoot-discovery.md §5
  * @see docs/design/composition-rules.md
  */
 export function ArsenalOverlay() {
@@ -47,6 +63,20 @@ export function ArsenalOverlay() {
     const hud = hudRef.current;
     if (!section || !hud) return;
 
+    const showHud = (animate: boolean) => {
+      gsap.killTweensOf(hud);
+      if (animate) {
+        gsap.to(hud, { opacity: 1, duration: MOTION.duration.base / 1000, ease: 'power2.out' });
+      } else {
+        hud.style.opacity = '1';
+      }
+    };
+
+    const hideHud = () => {
+      gsap.killTweensOf(hud);
+      hud.style.opacity = '0';
+    };
+
     const apply = (progress: number) => {
       if (reduceMotion) {
         // Snap to the macro: signature reads without motion.
@@ -55,10 +85,28 @@ export function ArsenalOverlay() {
         hud.style.opacity = String(macro);
         return;
       }
-      const copyOpacity = 1 - smoothstep(progress, 0.28, 0.44);
-      const hudOpacity = smoothstep(progress, 0.42, 0.6);
-      if (copy) copy.style.opacity = String(copyOpacity);
-      hud.style.opacity = String(hudOpacity);
+
+      // Narrative copy always recedes with scroll, reveal or not.
+      if (copy) copy.style.opacity = String(1 - smoothstep(progress, 0.28, 0.44));
+
+      if (!arsenalReveal.gestureCapable) {
+        // No hint/shot for this profile (reduced motion handled above, tier
+        // `low` here): the scroll envelope remains the reveal path.
+        gsap.killTweensOf(hud);
+        hud.style.opacity = String(smoothstep(progress, 0.42, 0.6));
+        return;
+      }
+
+      if (!arsenalReveal.revealed) {
+        // Gesture-gated: scroll alone never reveals before the auto point.
+        hud.style.opacity = '0';
+        if (progress >= AUTO_REVEAL_PROGRESS) {
+          arsenalReveal.reveal(); // the subscription below fades the HUD in
+        }
+        return;
+      }
+      // Revealed: the HUD stays up while the section is active. Scrub must
+      // not own the opacity here or it would fight the reveal tween.
     };
 
     const trigger = ScrollTrigger.create({
@@ -66,16 +114,27 @@ export function ArsenalOverlay() {
       start: 'top top',
       end: 'bottom top',
       onUpdate: (self) => apply(self.progress),
-      onLeave: () => {
-        hud.style.opacity = '0';
+      onEnter: () => {
+        if (!reduceMotion && arsenalReveal.revealed) showHud(false);
       },
-      onLeaveBack: () => {
-        hud.style.opacity = '0';
+      onEnterBack: () => {
+        if (!reduceMotion && arsenalReveal.revealed) showHud(false);
       },
+      onLeave: hideHud,
+      onLeaveBack: hideHud,
+    });
+
+    // The tap that fires the shot reveals the HUD through the store; fade it
+    // in here so the scrub-driven writes above never race the tween.
+    const unsubscribe = arsenalReveal.subscribe(() => {
+      if (arsenalReveal.revealed && trigger.isActive) showHud(true);
     });
 
     apply(0);
-    return () => trigger.kill();
+    return () => {
+      unsubscribe();
+      trigger.kill();
+    };
   }, [reduceMotion]);
 
   return (
@@ -103,6 +162,7 @@ export function ArsenalOverlay() {
       {/* Technical HUD — fixed layer, driven by Arsenal scroll progress */}
       <div
         ref={hudRef}
+        data-testid="arsenal-hud"
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-20 opacity-0"
       >

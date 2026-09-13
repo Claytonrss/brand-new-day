@@ -23,16 +23,23 @@ reage a um toque/clique. A descoberta é um pequeno "aha", não um tutorial.
 
 ## 3. Hint de descoberta
 
-Escolher **uma** direção no Look Dev (A preferida por ser diegética):
+> **Revisão (feat/arsenal-click-reveal):** o pulso único de 1,6 s tocava na
+> entrada do beat, muito antes do HUD de anotação aparecer (progresso 0.42+),
+> e os dois ficavam dessincronizados. A direção A passa a ser um anel que
+> respira **enquanto** o Beat 3 estiver ativo e o HUD não revelado — o gesto
+> de descoberta e o detalhamento passam a ser o mesmo momento.
 
-- **A — pulso no pulso.** Um anel de luz sutil pulsa 1–2 vezes sobre o
-  lançador quando o Beat 3 entra (uma única vez, não em loop), como um
-  "respirar" do ponto interativo. Some depois.
+- **A — anel no pulso (implementada).** Um anel de luz sutil respira em loop
+  sobre o lançador enquanto o Beat 3 estiver ativo e o HUD do Arsenal não
+  tiver sido revelado. O **primeiro tap válido** (o mesmo que dispara a teia)
+  revela o HUD e o anel faz fade-out. Uma vez por sessão: revelado, o anel
+  não volta.
 - **B — label mono.** Um hint de texto pequeno junto ao HUD do Arsenal:
-  `toque no pulso`. Mais explícito, menos elegante.
+  `toque no pulso`. Mais explícito, menos elegante. (Descartada.)
 
-Não usar os dois. O hint aparece **uma vez por sessão** (não a cada scroll) e
-**nunca** em `prefers-reduced-motion`.
+Não usar os dois. O hint existe **até a primeira revelação da sessão** (não a
+cada scroll) e **nunca** em `prefers-reduced-motion` nem no tier `low` — nesses
+perfis o HUD mantém o reveal por scroll (`arsenal-macro-hud.md §5`).
 
 ## 4. Gestos por plataforma
 
@@ -48,8 +55,11 @@ Não usar os dois. O hint aparece **uma vez por sessão** (não a cada scroll) e
 
 - Teia (curva pendurada, 1 draw call) + tranco de lente (FOV kick) — já
   existem; manter.
-- Opcional: o label `gatilho · duplo toque` do HUD (`arsenal-macro-hud.md`)
-  pode piscar sutilmente no disparo, reforçando causa→efeito.
+- **No mesmo gesto do disparo, o HUD de anotação se revela** (fade de 700ms;
+  `arsenal-macro-hud.md §5`): causa→efeito reforçado — "construído à mão" é
+  literalmente anotado sobre o lançador que acabou de disparar.
+- Opcional: o label `gatilho · duplo toque` do HUD pode piscar sutilmente no
+  disparo, reforçando ainda mais a relação de causa e efeito.
 
 ## 6. Degradação
 
