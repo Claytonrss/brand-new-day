@@ -78,6 +78,66 @@ body {
     -1px 0 0 rgba(44, 59, 76, 0.25);
 }
 
+/* --- Micro craft (docs/specs/dom-micro-craft.md) --- */
+
+/* IDEIA-PAG-01 — headlines shed weight with scroll velocity. VelocityType
+   publishes --type-wght quantized; 700 is the poster rest weight. */
+.velocity-type {
+  font-variation-settings: 'wght' var(--type-wght, 700);
+}
+
+/* IDEIA-AMB-07 — suit weave at ~3.5%: three line families (0°/±60°) read as
+   the suit's mesh behind the opening card and the colophon. */
+.suit-weave {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(233, 229, 218, 0.7) 0,
+      rgba(233, 229, 218, 0.7) 1px,
+      transparent 1px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      60deg,
+      rgba(233, 229, 218, 0.7) 0,
+      rgba(233, 229, 218, 0.7) 1px,
+      transparent 1px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      rgba(233, 229, 218, 0.7) 0,
+      rgba(233, 229, 218, 0.7) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  opacity: 0.05;
+}
+
+/* IDEIA-AMB-08 — the left-spine field log (BeatStamp). */
+.beat-stamp {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transition: opacity 160ms ease-out;
+}
+
+/* IDEIA-PAG-06 — magnetic CTA easing; the hook writes transform directly.
+   Color transitions are restated here because this unlayered rule overrides
+   the Tailwind `transition-colors` utility. */
+.magnetic-cta {
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 150ms ease,
+    text-decoration-color 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beat-stamp,
+  .magnetic-cta {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

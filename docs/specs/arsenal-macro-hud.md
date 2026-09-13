@@ -67,8 +67,21 @@ Reference: `docs/design/composition-rules.md` (Arsenal: pulso é o foco).
 
 ## 5. Interactions
 
-- `WebShoot` (teia + camera kick) continua no Beat 3. O HUD pode reforçar a
-  descoberta (ver `web-shoot-discovery.md`).
+> **Revisão (feat/arsenal-click-reveal):** o reveal do HUD passa a ser
+> gesto-gated nos perfis capazes, em sincronia com a descoberta do disparo
+> (`web-shoot-discovery.md §3/§5`) — antes ele surgia por scroll (0.42–0.6),
+> fora de fase com o anel do pulso.
+
+- **Perfis capazes** (`!prefers-reduced-motion && tier ≠ low`): o HUD só se
+  revela no **primeiro tap do Beat 3** — o mesmo gesto que dispara a teia —
+  com fade de 700ms; o anel respirando no pulso (`WebShootHint`) é a
+  affordance. Sem tap, **auto-reveal** em progresso local ≥ 0.8 da seção.
+  Revelado, permanece visível enquanto a seção estiver ativa e some quando
+  ela sai (`onLeave`/`onLeaveBack`), como antes.
+- **`prefers-reduced-motion` / tier `low`:** reveal por scroll como antes
+  (snap no macro em progresso > 0.5 / envelope 0.42–0.6).
+- A copy narrativa continua recedendo por scroll (0.28–0.44), independente do
+  reveal.
 - HUD de anotação não é interativo (é gráfico), exceto se o pointer-parallax
   (P2b.1) estiver ativo — aí os labels têm parallax sutil.
 
@@ -82,13 +95,14 @@ Reference: `docs/design/composition-rules.md` (Arsenal: pulso é o foco).
 
 ## 7. Critérios de aceite (mensuráveis)
 
-| #   | Critério                                                    | Medição            |
-| --- | ----------------------------------------------------------- | ------------------ |
-| 1   | Desktop: lançador ≥40% da largura do frame com HUD legível  | screenshot 1440    |
-| 2   | Mobile: mesma informação como legenda, pulso desobstruído   | screenshot 390/430 |
-| 3   | Nenhum artefato de geometria/textura visível no macro       | revisão Look Dev   |
-| 4   | Draw calls/luzes dentro do budget                           | `budget.spec.ts`   |
-| 5   | Rubrica "integração texto/personagem" e "originalidade" ≥ 4 | rubrica            |
+| #   | Critério                                                    | Medição               |
+| --- | ----------------------------------------------------------- | --------------------- |
+| 1   | Desktop: lançador ≥40% da largura do frame com HUD legível  | screenshot 1440       |
+| 2   | Mobile: mesma informação como legenda, pulso desobstruído   | screenshot 390/430    |
+| 3   | Nenhum artefato de geometria/textura visível no macro       | revisão Look Dev      |
+| 4   | Draw calls/luzes dentro do budget                           | `budget.spec.ts`      |
+| 5   | Rubrica "integração texto/personagem" e "originalidade" ≥ 4 | rubrica               |
+| 6   | HUD oculto no scroll, revela no tap; auto-reveal no fim     | `interaction.spec.ts` |
 
 ## 8. Stop Conditions
 

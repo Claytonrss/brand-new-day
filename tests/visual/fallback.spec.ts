@@ -31,14 +31,12 @@ test.describe('WebGL fallback', () => {
     await page.goto('/');
 
     // Brand + editorial copy, no "3D unavailable" error message.
-    await expect(
-      page.getByRole('heading', { name: /SPIDER-MAN/ }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /SPIDER-MAN/ })).toBeVisible();
     await expect(page.getByText('Ninguém sabe.')).toBeVisible();
     await expect(page.getByText(/chega aos cinemas/)).toBeVisible();
 
     // Attribution and the in-tone WebGL note are present.
-    await expect(page.getByText(/CC-BY 4\.0/)).toBeVisible();
+    await expect(page.getByText(/CC BY 4\.0/)).toBeVisible();
     await expect(page.getByText(/requer WebGL/)).toBeVisible();
     await expect(page.getByText('3D unavailable')).toHaveCount(0);
 

@@ -8,21 +8,34 @@ import { useQualityProfile } from '../qualityContext';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import { BREAKPOINTS } from '../../../design/breakpoints';
 import { COLORS } from '../../../design/tokens';
+import { MOTION } from '../../../design/motion';
+import { arsenalReveal } from './arsenalReveal';
 
-/** Total hint duration (seconds) — two soft pulses. */
-const HINT_DURATION = 1.6;
+/** Breathing cycle (seconds) — one full inhale/exhale of the ring. */
+const BREATH_CYCLE = 2.4;
 
-/** Once per page session, not per scroll pass. */
-let hintPlayed = false;
+/** Ring opacity range while breathing (subtle — diegetic, not game UI). */
+const BREATH_OPACITY = { min: 0.2, max: 0.55 } as const;
+
+/** Ring scale range while breathing. */
+const BREATH_SCALE = { min: 1, max: 1.35 } as const;
+
+/** Fade-out time (seconds) once the HUD is revealed or the beat ends. */
+const FADE_OUT = MOTION.duration.fast / 1000;
 
 /**
- * WebShootHint — a single, diegetic pulse over the web-shooter when Beat 3
- * enters, so the hidden click interaction becomes discoverable without adding
- * game UI.
+ * WebShootHint — a breathing ring of light over the web-shooter for as long
+ * as Beat 3 is active and the annotation HUD is still hidden.
  *
- * Direction A from `docs/specs/web-shoot-discovery.md §3`: a ring of light
- * breathes twice over the wrist and disappears. Never in reduced motion, never
- * on the `low` tier, once per session.
+ * Direction A from `docs/specs/web-shoot-discovery.md §3`, revised: instead of
+ * a one-shot pulse that plays before the HUD ever appears (out of sync with
+ * it), the ring keeps breathing until the visitor taps — the same gesture
+ * fires the web shot and reveals the HUD — then fades out. Session-scoped:
+ * once revealed, the ring never comes back. Never in reduced motion, never on
+ * the `low` tier; those profiles keep the scroll-driven HUD reveal.
+ *
+ * @see docs/specs/web-shoot-discovery.md §3
+ * @see docs/specs/arsenal-macro-hud.md §5
  */
 export function WebShootHint() {
   const { beat } = useBeat();
@@ -31,7 +44,8 @@ export function WebShootHint() {
   const isMobile = size.width < BREAKPOINTS.MOBILE;
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
-  const progress = useRef(1);
+  const breathPhase = useRef(0);
+  const fadeRef = useRef(0);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshBasicMaterial>(null);
 
@@ -39,40 +53,50 @@ export function WebShootHint() {
 
   const enabled = !prefersReducedMotion && profile.tier !== 'low';
 
+  // Publish the hint's own gate so the DOM overlay knows whether the HUD is
+  // gesture-gated (QualityContext does not exist outside the canvas).
   useEffect(() => {
-    if (!enabled) return;
-    if (beat === 'arsenal' && !hintPlayed) {
-      hintPlayed = true;
-      progress.current = 0;
-    }
-  }, [beat, enabled]);
+    arsenalReveal.setGestureCapable(enabled);
+    return () => arsenalReveal.setGestureCapable(false);
+  }, [enabled]);
 
   useFrame(({ camera }, delta) => {
     const mesh = meshRef.current;
     const material = materialRef.current;
     if (!mesh || !material) return;
 
-    if (progress.current >= 1) {
-      mesh.visible = false;
+    const wantsRing = enabled && beat === 'arsenal' && !arsenalReveal.revealed;
+
+    if (wantsRing) {
+      fadeRef.current = 0;
+      breathPhase.current = (breathPhase.current + delta) % BREATH_CYCLE;
+      const breath = (1 - Math.cos((breathPhase.current / BREATH_CYCLE) * Math.PI * 2)) / 2;
+
+      const wrist = isMobile ? WRIST_POSITION.mobile : WRIST_POSITION.desktop;
+      if (ANCHORS.ready) {
+        mesh.position.copy(ANCHORS.wrist);
+      } else {
+        fallback.set(wrist[0], wrist[1], wrist[2]);
+        mesh.position.copy(fallback);
+      }
+      // Face the camera and breathe.
+      mesh.quaternion.copy(camera.quaternion);
+      mesh.scale.setScalar(BREATH_SCALE.min + breath * (BREATH_SCALE.max - BREATH_SCALE.min));
+      material.opacity = BREATH_OPACITY.min + breath * (BREATH_OPACITY.max - BREATH_OPACITY.min);
+      mesh.visible = true;
       return;
     }
 
-    progress.current = Math.min(progress.current + delta / HINT_DURATION, 1);
-    const t = progress.current;
+    if (!mesh.visible) return;
 
-    const wrist = isMobile ? WRIST_POSITION.mobile : WRIST_POSITION.desktop;
-    if (ANCHORS.ready) {
-      mesh.position.copy(ANCHORS.wrist);
-    } else {
-      fallback.set(wrist[0], wrist[1], wrist[2]);
-      mesh.position.copy(fallback);
+    // Release: fade the current opacity out quickly, then hide for good.
+    fadeRef.current += delta / FADE_OUT;
+    if (fadeRef.current >= 1) {
+      mesh.visible = false;
+      material.opacity = 0;
+      return;
     }
-    // Face the camera and grow softly; two pulses over the lifetime.
-    mesh.quaternion.copy(camera.quaternion);
-    const scale = 1 + t * 1.6;
-    mesh.scale.setScalar(scale);
-    material.opacity = Math.abs(Math.sin(t * Math.PI * 2)) * (1 - 0.6 * t);
-    mesh.visible = true;
+    material.opacity *= 1 - delta / FADE_OUT;
   });
 
   return (

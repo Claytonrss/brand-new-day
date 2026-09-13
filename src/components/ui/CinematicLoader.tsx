@@ -100,7 +100,15 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
       <svg
         viewBox="0 0 220 110"
         aria-hidden="true"
-        className="mb-10 w-40 select-none sm:w-56"
+        className="mb-10 w-40 select-none overflow-visible sm:w-56"
+        style={{
+          // Glow no root do SVG: em elementos internos a região de filtro é a
+          // bbox do grupo +10% e corta o blur em linha reta.
+          filter: `drop-shadow(0 0 ${8 + glow * 14}px rgba(194, 59, 52, ${glow}))`,
+          transitionProperty: 'filter',
+          transitionDuration: `${revealMs}ms`,
+          transitionTimingFunction: MOTION.ease.decelerate,
+        }}
       >
         {/* Lit interior of each lens, scaled by load progress. */}
         <defs>
@@ -110,14 +118,7 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
             <stop offset="100%" stopColor="#0a0a0c" />
           </radialGradient>
         </defs>
-        <g
-          style={{
-            filter: `drop-shadow(0 0 ${8 + glow * 14}px rgba(194, 59, 52, ${glow}))`,
-            transitionProperty: 'filter',
-            transitionDuration: `${revealMs}ms`,
-            transitionTimingFunction: MOTION.ease.decelerate,
-          }}
-        >
+        <g>
           <path
             d="M100 38C78 20 50 14 32 18C16 22 10 40 16 56C22 72 48 80 70 78C86 76 96 66 100 56C102 50 102 44 100 38Z"
             fill="url(#lens-core)"
@@ -159,9 +160,7 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
 
       {/* Brand mark */}
       <div className="select-none text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-dim">
-          Carregando
-        </p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-dim">Carregando</p>
         <p
           aria-hidden="true"
           className="mt-2 font-display text-4xl font-bold tracking-tight text-signal sm:text-6xl"
@@ -174,9 +173,7 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
       </div>
 
       {/* Minimal readout — the reveal is the progress bar. */}
-      <p className="mt-6 font-mono text-xs tabular-nums text-dim">
-        {Math.round(progress)}%
-      </p>
+      <p className="mt-6 font-mono text-xs tabular-nums text-dim">{Math.round(progress)}%</p>
     </div>
   );
 }

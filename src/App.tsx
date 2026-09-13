@@ -26,6 +26,8 @@ import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
 import { SpiderSense } from './components/ui/SpiderSense';
 import { SenseAnchor } from './components/3d/SenseAnchor';
+import { VelocityType } from './components/ui/VelocityType';
+import { BeatStamp } from './components/ui/BeatStamp';
 import { hasWebGL } from './design/webgl';
 
 interface ErrorBoundaryProps {
@@ -101,6 +103,12 @@ export function App() {
 
       {/* Spider-sense halo — comic emanata around the head (IDEIA-3D-10) */}
       <SpiderSense />
+
+      {/* Headline weight follows scroll velocity (IDEIA-PAG-01) */}
+      <VelocityType />
+
+      {/* Editorial field log on the left spine (IDEIA-AMB-08) */}
+      <BeatStamp />
 
       {/* Cinematic loader — shows during GLB asset loading */}
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
