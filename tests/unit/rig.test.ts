@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { fbm } from '../../src/design/noise';
-import { Spring } from '../../src/components/3d/rig/spring';
-import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from '../../src/components/3d/rig/poses';
-import { BONE_NAMES, softClamp, RIG_AMPLITUDE } from '../../src/components/3d/rig/rigBones';
-import { BEAT_TIMELINE } from '../../src/components/3d/beat/beats';
+import { fbm } from '@/design/noise';
+import { Spring } from '@/components/3d/rig/spring';
+import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from '@/components/3d/rig/poses';
+import { BONE_NAMES, softClamp, RIG_AMPLITUDE } from '@/components/3d/rig/rigBones';
+import { BEAT_TIMELINE } from '@/components/3d/beat/beats';
 
 describe('procedural rig', () => {
   it('uses the loader-sanitized Mixamo joint names', () => {

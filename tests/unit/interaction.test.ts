@@ -8,7 +8,7 @@ import {
   isTap,
   rimOffset,
   webStrandPoints,
-} from '../../src/components/3d/interaction/pointerMath';
+} from '@/components/3d/interaction/pointerMath';
 
 describe('drag orbit', () => {
   it('is linear near the origin (no dead zone)', () => {

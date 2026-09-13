@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { arsenalReveal } from '../../src/components/3d/interaction/arsenalReveal';
+import { arsenalReveal } from '@/components/3d/interaction/arsenalReveal';
 
 // Module singleton, so the assertions run in one deterministic sequence:
 // each expectation depends on the state left by the previous one.

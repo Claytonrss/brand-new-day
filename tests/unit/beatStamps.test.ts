@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { BEAT_TIMELINE } from '../../src/components/3d/beat/beats';
-import { BEAT_STAMPS } from '../../src/design/beatStamps';
+import { BEAT_TIMELINE } from '@/components/3d/beat/beats';
+import { BEAT_STAMPS } from '@/design/beatStamps';
 
 /**
  * Beat stamp guardrails — docs/specs/dom-micro-craft.md §2: every beat has a

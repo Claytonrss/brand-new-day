@@ -1,7 +1,7 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
-import { MOTION } from '../../design/motion';
+import { MOTION } from '@/design/motion';
 
 /**
  * FullBody section overlay — final narrative beat.

@@ -8,7 +8,7 @@ import {
   landingStep,
   LANDING_DROP,
   LANDING_SETTLE_EPS,
-} from '../../src/components/3d/landing';
+} from '@/components/3d/landing';
 
 const DT = 1 / 60;
 
@@ -19,7 +19,12 @@ function simulate(steps = 200) {
   const trace: { t: number; offset: number; kick: number; flex: number }[] = [];
   for (let i = 0; i < steps; i++) {
     landingStep(DT);
-    trace.push({ t: (i + 1) * DT, offset: landingOffset(), kick: landing.kick, flex: landing.flex });
+    trace.push({
+      t: (i + 1) * DT,
+      offset: landingOffset(),
+      kick: landing.kick,
+      flex: landing.flex,
+    });
   }
   return trace;
 }

@@ -1,9 +1,9 @@
 import { useThree } from '@react-three/fiber';
-import { heroModelPosition, TARGET_HEAD_Y } from './heroModelLayout';
+import { heroModelPosition, TARGET_HEAD_Y } from '@/components/3d/camera/heroModelLayout';
 import { SpiderManModel } from './SpiderManModel';
-import { COLORS } from '../../design/tokens';
-import { BREAKPOINTS } from '../../design/breakpoints';
-import { isDebugMode } from '../../lib/debugFlag';
+import { COLORS } from '@/design/tokens';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { isDebugMode } from '@/lib/debugFlag';
 
 /**
  * Stage — background + the shared model (no lights).

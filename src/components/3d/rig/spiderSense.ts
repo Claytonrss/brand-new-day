@@ -1,4 +1,4 @@
-import type { BeatId } from '../beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 
 /**
  * Spider-sense — IDEIA-3D-10, redesigned 2026-09-13

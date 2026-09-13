@@ -1,4 +1,4 @@
-import { REDUCED_MOTION_QUERY } from '../../../hooks/usePrefersReducedMotion';
+import { REDUCED_MOTION_QUERY } from '@/hooks/usePrefersReducedMotion';
 export type GyroState = 'unavailable' | 'prompt' | 'granted' | 'denied';
 
 export const GYRO_STORAGE_KEY = 'spiderman-landing:gyro';

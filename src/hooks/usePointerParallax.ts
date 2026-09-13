@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useWindowPointer, windowPointer } from '../components/3d/rig/windowPointer';
+import { useWindowPointer, windowPointer } from '@/components/3d/rig/windowPointer';
 
 /**
  * Publishes a smoothed pointer offset as CSS custom properties on the root

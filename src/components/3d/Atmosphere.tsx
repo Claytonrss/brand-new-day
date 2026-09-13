@@ -1,11 +1,11 @@
 import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { smooth } from '../../lib/math';
-import { BREAKPOINTS } from '../../design/breakpoints';
-import { COLORS } from '../../design/tokens';
-import { useQualityProfile } from './qualityContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { smooth } from '@/lib/math';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { COLORS } from '@/design/tokens';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
 import { FX } from './materials/fxUniforms';

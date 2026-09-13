@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { MAGNET, magneticOffset } from '../design/magnetic';
+import { MAGNET, magneticOffset } from '@/design/magnetic';
 import { useMediaQuery } from './useMediaQuery';
 import { usePrefersReducedMotion } from './usePrefersReducedMotion';
 

@@ -1,7 +1,7 @@
-import type { BeatId } from '../beat/beats';
-import type { COLORS } from '../../../design/tokens';
+import type { BeatId } from '@/components/3d/beat/beats';
+import type { COLORS } from '@/design/tokens';
 
-export type LightKind = 'ambient' | 'directional' | 'point' | 'spot';
+type LightKind = 'ambient' | 'directional' | 'point' | 'spot';
 
 export interface LightTarget {
   /** Intensity per breakpoint. Point/spot use candela-like units. */
@@ -14,7 +14,7 @@ export interface LightTarget {
 }
 
 /** Per-beat override — every field is optional, merged over `base`. */
-export type LightOverride = Partial<LightTarget>;
+type LightOverride = Partial<LightTarget>;
 
 /**
  * A light slot exists for the entire session.

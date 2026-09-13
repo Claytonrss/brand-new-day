@@ -4,7 +4,7 @@ import {
   breathResetForTest,
   breathRuntime,
   breathStep,
-} from '../../src/components/3d/rig/breath';
+} from '@/components/3d/rig/breath';
 
 /**
  * Beat-directed breathing guardrails — docs/specs/spider-sense.md §2: the

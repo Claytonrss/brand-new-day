@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useBeat } from '../beat/beatContext';
-import { ANCHORS } from '../rig/anchorStore';
-import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
-import { isDebugMode } from '../../../lib/debugFlag';
-import { smooth } from '../../../lib/math';
-import { useQualityProfile } from '../qualityContext';
+import { useBeat } from '@/components/3d/beat/beatContext';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { isDebugMode } from '@/lib/debugFlag';
+import { smooth } from '@/lib/math';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { INTERACTION } from './interactionStore';
 import { arsenalReveal } from './arsenalReveal';
 import { dragTarget, gyroTarget, isTap, rimOffset, type PointerSample } from './pointerMath';
 import { getGyroController, gyroReading } from './gyroController';
-import { windowPointer } from '../rig/windowPointer';
+import { windowPointer } from '@/components/3d/rig/windowPointer';
 
 export interface InteractionDebugState {
   yaw: number;

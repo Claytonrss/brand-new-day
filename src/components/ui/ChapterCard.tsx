@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from '../../lib/gsap';
-import { MOTION } from '../../design/motion';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { gsap } from '@/lib/gsap';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { SplitChars } from './SplitChars';
 
 interface ChapterCardProps {

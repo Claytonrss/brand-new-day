@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { Suspense, type ReactNode } from 'react';
-import { PerformanceMonitor } from './PerformanceMonitor';
+import { PerformanceMonitor } from '@/components/3d/perf/PerformanceMonitor';
 
 interface CanvasContainerProps {
   children: ReactNode;

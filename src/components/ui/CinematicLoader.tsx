@@ -1,7 +1,7 @@
 import { useProgress } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
-import { MOTION } from '../../design/motion';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { loaderCover } from './loaderCover';
 
 interface CinematicLoaderProps {

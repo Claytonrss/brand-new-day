@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { COLORS } from '../../../design/tokens';
+import { COLORS } from '@/design/tokens';
 import { patchSuitMaterial } from './suitShader';
 import { measureLidBounds, patchLensMaterial } from './lensShader';
-import { FX_MODE } from '../../../design/fxFlags';
+import { FX_MODE } from '@/design/fxFlags';
 
 /**
  * Material intents keyed by the real material names in the GLB

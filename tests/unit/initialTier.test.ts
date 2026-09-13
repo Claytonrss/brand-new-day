@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { detectInitialTier } from '../../src/components/3d/initialTier';
+import { detectInitialTier } from '@/components/3d/perf/initialTier';
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 const MOBILE = '(max-width: 767px)';

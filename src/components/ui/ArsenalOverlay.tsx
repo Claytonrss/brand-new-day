@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from '../../lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { MOTION } from '../../design/motion';
-import { smoothstep } from '../../lib/math';
-import { arsenalReveal } from '../3d/interaction/arsenalReveal';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { MOTION } from '@/design/motion';
+import { smoothstep } from '@/lib/math';
+import { arsenalReveal } from '@/components/3d/interaction/arsenalReveal';
 
 /** Technical annotation copy (docs/specs/arsenal-macro-hud.md §2). */
 const HUD_LABELS = [

@@ -7,7 +7,7 @@ import {
   blinkClosure,
   nextBlinkAt,
   rand,
-} from '../../src/components/3d/materials/blink';
+} from '@/components/3d/materials/blink';
 
 describe('blink scheduler', () => {
   it('defaults to subtle and can be turned off', () => {

@@ -1,16 +1,16 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useBeat } from '../beat/beatContext';
-import type { BeatId } from '../beat/beats';
-import { CHEST_Y, WRIST_POSITION } from '../beat/beats';
-import { ANCHORS } from '../rig/anchorStore';
+import { useBeat } from '@/components/3d/beat/beatContext';
+import type { BeatId } from '@/components/3d/beat/beats';
+import { CHEST_Y, WRIST_POSITION } from '@/components/3d/beat/beats';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
 import { FX } from './fxUniforms';
-import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
+import { FX_MODE, FX_STRENGTH } from '@/design/fxFlags';
 import { BLINK_AMOUNT, BLINK_MODE, blinkClosure, nextBlinkAt, rand } from './blink';
-import { SPIDER_SENSE, spiderSense } from '../rig/spiderSense';
-import { isDebugMode } from '../../../lib/debugFlag';
-import { smooth } from '../../../lib/math';
+import { SPIDER_SENSE, spiderSense } from '@/components/3d/rig/spiderSense';
+import { isDebugMode } from '@/lib/debugFlag';
+import { smooth } from '@/lib/math';
 
 /** Per-beat targets for the material layer. See spec §7.2. */
 interface BeatTargets {
@@ -61,7 +61,7 @@ export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): 
  *
  * @see docs/specs/authorial-shaders-fx.md §7.2
  */
-export interface FxBlinkDebug {
+interface FxBlinkDebug {
   /** Scheduled time of the next blink (seconds since load). */
   at: number;
   /** Start time of the blink currently playing, or -1. */

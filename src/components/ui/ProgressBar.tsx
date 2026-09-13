@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { MOTION } from '../../design/motion';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /** Max ARIA update rate — screen readers don't need 60 Hz (FALHA-05). */
 const ARIA_INTERVAL_MS = 200;

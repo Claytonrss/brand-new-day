@@ -6,7 +6,7 @@ import {
   spiderSenseResetForTest,
   spiderSenseStep,
   spiderSenseTilt,
-} from '../../src/components/3d/rig/spiderSense';
+} from '@/components/3d/rig/spiderSense';
 
 /**
  * Spider-sense guardrails — docs/specs/spider-sense.md: the sense fires ONLY

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { spiderSense } from '../3d/rig/spiderSense';
-import { SENSE_ARCS, senseSquigglePath } from '../../design/senseArcs';
+import { spiderSense } from '@/components/3d/rig/spiderSense';
+import { SENSE_ARCS, senseSquigglePath } from '@/design/senseArcs';
 
 /** Halo box (viewBox units; CSS scales it per breakpoint). */
 const HALO = 320;

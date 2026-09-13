@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { COLORS } from '../../../design/tokens';
+import { COLORS } from '@/design/tokens';
 import { INTERACTION } from './interactionStore';
 import { webStrandPoints } from './pointerMath';
 

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { BEAT_TIMELINE, beatAt, beatLocalProgress } from '../../src/components/3d/beat/beats';
-import { CAMERA_SPANS, CameraTrack, createCameraSample } from '../../src/components/3d/camera/cameraPath';
-import { CAMERA_KEYFRAMES } from '../../src/components/3d/cameraKeyframes';
-import { fbm } from '../../src/components/3d/camera/handheld';
+import { BEAT_TIMELINE, beatAt, beatLocalProgress } from '@/components/3d/beat/beats';
+import { CAMERA_SPANS, CameraTrack, createCameraSample } from '@/components/3d/camera/cameraPath';
+import { CAMERA_KEYFRAMES } from '@/components/3d/camera/cameraKeyframes';
+import { fbm } from '@/components/3d/camera/handheld';
 
 const BREAKPOINTS = ['mobile', 'desktop'] as const;
 
@@ -130,9 +130,8 @@ describe('camera track', () => {
     it(`${bp}: Beat 3 orbits at least 60 degrees around the wrist`, () => {
       const track = new CameraTrack(bp);
       const sample = createCameraSample();
-      const wrist = bp === 'mobile'
-        ? new THREE.Vector3(-0.9, -2.6, 0.1)
-        : new THREE.Vector3(-0.5, -3.3, 0);
+      const wrist =
+        bp === 'mobile' ? new THREE.Vector3(-0.9, -2.6, 0.1) : new THREE.Vector3(-0.5, -3.3, 0);
 
       const azimuths: number[] = [];
       for (let t = 0; t <= 1.0001; t += 0.05) {

@@ -8,7 +8,7 @@
  * Exists because the material/DOF layer changes the read of the silhouette and
  * needs a human A/B before it becomes the default.
  */
-import { readQueryMode } from '../lib/queryMode';
+import { readQueryMode } from '@/lib/queryMode';
 
 export type FxMode = 'off' | 'subtle' | 'full';
 

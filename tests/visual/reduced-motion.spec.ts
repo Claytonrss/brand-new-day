@@ -17,9 +17,7 @@ test.describe('Reduced Motion camera framing', () => {
 
     await waitForScene(page, 3000);
 
-    const maxScroll = await page.evaluate(
-      () => document.body.scrollHeight - window.innerHeight,
-    );
+    const maxScroll = await page.evaluate(() => document.body.scrollHeight - window.innerHeight);
 
     const shots: Buffer[] = [];
     for (const [name, fraction] of [

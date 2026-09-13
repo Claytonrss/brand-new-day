@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { ScrollTrigger } from '../../lib/gsap';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { loaderCover } from '../ui/loaderCover';
+import { ScrollTrigger } from '@/lib/gsap';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { loaderCover } from '@/components/ui/loaderCover';
 import { landingFire, landingSnap } from './landing';
 
 /**

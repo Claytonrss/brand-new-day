@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { fbm } from '../../../design/noise';
-import type { BeatId } from '../beat/beats';
-import type { QualityTier } from '../qualityContext';
+import { fbm } from '@/design/noise';
+import type { BeatId } from '@/components/3d/beat/beats';
+import type { QualityTier } from '../perf/qualityContext';
 import {
   headYawTarget,
   HEAD_BIAS_FACTOR,
@@ -24,6 +24,7 @@ import { lean, leanShoulderLift, leanStep, LEAN_SPINE2_WEIGHT } from './lean';
 import { spiderSense, spiderSenseStep, spiderSenseTilt } from './spiderSense';
 import { breathStep } from './breath';
 import { beatRuntime } from '../beat/beatState';
+import { publishRigDebug } from './rigDebug';
 
 /** Head chain — the head leads, neck and upper spine follow. See spec §7.2. */
 const HEAD_CHAIN = [
@@ -32,30 +33,67 @@ const HEAD_CHAIN = [
   { role: 'spine2' as BoneRole, k: 1.8, weight: 0.15 },
 ];
 
-export interface RigDebugState {
-  head: [number, number, number, number];
-  neck: [number, number, number, number];
-  spine2: [number, number, number, number];
-  /** World positions (x, y, z) of the joints used to calibrate anchors. */
-  world: Partial<Record<BoneRole, [number, number, number]>>;
-  breath: number;
+/**
+ * Procedural offset layers, one entry per bone role that carries extra motion
+ * beyond the beat pose. Each writes its rotation offset (radians) into `out`
+ * — no allocation per bone per frame.
+ */
+interface LayerContext {
   time: number;
-  joints: number;
-  pointer: [number, number];
-  target: [number, number];
-  hover: boolean;
-  lean: number;
-  /** Spider-sense envelope (0..1) — spikes when the narrative beat changes. */
-  sense: number;
-  /** Latched fire count — survives the envelope decay (evidence/tests). */
-  senseCount: number;
+  breath: number;
+  leanValue: number;
+  detailed: boolean;
 }
 
-declare global {
-  interface Window {
-    __rig?: RigDebugState;
+type LayerFn = (role: BoneRole, ctx: LayerContext, out: THREE.Vector3) => void;
+
+const tremorLayer: LayerFn = (_role, { time, detailed }, out) => {
+  if (!detailed) {
+    out.set(0, 0, 0);
+    return;
   }
-}
+  const phase = time * Math.PI * 2 * RIG_AMPLITUDE.tremor.rate;
+  out.set(
+    Math.sin(phase) * RIG_AMPLITUDE.tremor.amount + fbm(time * 0.8) * RIG_AMPLITUDE.tremor.amount,
+    0,
+    Math.cos(phase * 0.7) * RIG_AMPLITUDE.tremor.amount * 0.6,
+  );
+};
+
+const shoulderLayer: LayerFn = (role, _ctx, out) => {
+  // Only registered for the two shoulder roles (see PROCEDURAL_LAYERS).
+  out.set(0, 0, leanShoulderLift(role as 'shoulderL' | 'shoulderR'));
+};
+
+const hipsLayer: LayerFn = (_role, { time }, out) => {
+  out.set(
+    fbm(time * RIG_AMPLITUDE.sway.rate + 5.3) * RIG_AMPLITUDE.sway.pitch,
+    fbm(time * RIG_AMPLITUDE.sway.rate) * RIG_AMPLITUDE.sway.yaw,
+    fbm(time * RIG_AMPLITUDE.weightShift.rate + 21.1) * RIG_AMPLITUDE.weightShift.roll,
+  );
+};
+
+const legLayer: LayerFn = (role, { time }, out) => {
+  out.set(
+    fbm(time * RIG_AMPLITUDE.legs.rate + (role === 'upLegL' ? 0 : 9.4)) * RIG_AMPLITUDE.legs.amount,
+    0,
+    0,
+  );
+};
+
+const PROCEDURAL_LAYERS: Partial<Record<BoneRole, LayerFn>> = {
+  spine1: (_role, { breath, leanValue }, out) =>
+    out.set(breath * RIG_AMPLITUDE.breath.spine1 + leanValue, 0, 0),
+  spine2: (_role, { breath, leanValue }, out) =>
+    out.set(breath * RIG_AMPLITUDE.breath.spine2 + leanValue * LEAN_SPINE2_WEIGHT, 0, 0),
+  shoulderL: shoulderLayer,
+  shoulderR: shoulderLayer,
+  hips: hipsLayer,
+  handL: tremorLayer,
+  handR: tremorLayer,
+  upLegL: legLayer,
+  upLegR: legLayer,
+};
 
 export interface ProceduralRigOptions {
   bones: RigBones;
@@ -93,12 +131,11 @@ export function useProceduralRig({
   prefersReducedMotion,
   debug = false,
 }: ProceduralRigOptions) {
+  // Three springs per pose role (x, y, z) — array indexing, no string keys.
   const poseSprings = useMemo(() => {
-    const map = new Map<string, Spring>();
+    const map = new Map<BoneRole, Spring[]>();
     for (const role of POSE_ROLES) {
-      for (let axis = 0; axis < 3; axis++) {
-        map.set(`${role}:${axis}`, new Spring(0, 5.5, 1));
-      }
+      map.set(role, [new Spring(0, 5.5, 1), new Spring(0, 5.5, 1), new Spring(0, 5.5, 1)]);
     }
     return map;
   }, []);
@@ -112,6 +149,10 @@ export function useProceduralRig({
       })),
     [],
   );
+  const headChainByRole = useMemo(
+    () => new Map(headSprings.map((entry) => [entry.role, entry])),
+    [headSprings],
+  );
 
   const scratch = useMemo(
     () => ({
@@ -120,7 +161,12 @@ export function useProceduralRig({
       head: new THREE.Quaternion(),
       composed: new THREE.Quaternion(),
       sense: new THREE.Quaternion(),
+      layer: new THREE.Vector3(),
     }),
+    [],
+  );
+  const layerCtx = useMemo<LayerContext>(
+    () => ({ time: 0, breath: 0, leanValue: 0, detailed: false }),
     [],
   );
 
@@ -130,7 +176,9 @@ export function useProceduralRig({
 
   // Reset springs on mount so the rig starts from the authored pose
   useEffect(() => {
-    for (const spring of poseSprings.values()) spring.set(0);
+    for (const springs of poseSprings.values()) {
+      for (const spring of springs) spring.set(0);
+    }
     for (const entry of headSprings) {
       entry.yaw.set(0);
       entry.pitch.set(0);
@@ -151,52 +199,18 @@ export function useProceduralRig({
     // freeze probe report motion on a visually frozen pose.
     const breathSample = prefersReducedMotion ? 0 : breathStep(delta, beat, spiderSense.envelope);
 
-    if (debug && typeof window !== 'undefined') {
-      const read = (role: BoneRole): [number, number, number, number] => {
-        const bone = bones[role];
-        return bone
-          ? [bone.quaternion.x, bone.quaternion.y, bone.quaternion.z, bone.quaternion.w]
-          : [0, 0, 0, 1];
-      };
-      const world: Partial<Record<BoneRole, [number, number, number]>> = {};
-      for (const role of [
-        'head',
-        'neck',
-        'spine2',
-        'spine1',
-        'hips',
-        'armR',
-        'foreArmR',
-        'handR',
-        'armL',
-        'foreArmL',
-        'handL',
-      ] as BoneRole[]) {
-        const bone = bones[role];
-        if (!bone) continue;
-        bone.getWorldPosition(worldScratch);
-        world[role] = [
-          +worldScratch.x.toFixed(3),
-          +worldScratch.y.toFixed(3),
-          +worldScratch.z.toFixed(3),
-        ];
-      }
-
-      window.__rig = {
-        head: read('head'),
-        neck: read('neck'),
-        spine2: read('spine2'),
-        world,
-        breath: breathSample,
+    if (debug) {
+      publishRigDebug({
+        bones,
+        restSize: rest.size,
         time: timeRef.current,
-        joints: rest.size,
-        pointer: [pointerRef.current?.x ?? 0, pointerRef.current?.y ?? 0],
-        target: [headSprings[0].yaw.target, headSprings[0].pitch.target],
-        hover: hasHover,
-        lean: lean.value,
-        sense: spiderSense.envelope,
-        senseCount: spiderSense.count,
-      };
+        breathSample,
+        pointer: pointerRef.current,
+        headTarget: [headSprings[0].yaw.target, headSprings[0].pitch.target],
+        hasHover,
+        leanValue: lean.value,
+        worldScratch,
+      });
       window.__landing = landingDebug();
     }
 
@@ -271,11 +285,12 @@ export function useProceduralRig({
     // --- pose layer -------------------------------------------------------
     const pose = BEAT_POSES[beat] ?? {};
     for (const role of POSE_ROLES) {
+      const springs = poseSprings.get(role);
+      if (!springs) continue;
       const target = pose[role];
       const landingOffset = LANDING_POSE[role];
       for (let axis = 0; axis < 3; axis++) {
-        const spring = poseSprings.get(`${role}:${axis}`);
-        if (!spring) continue;
+        const spring = springs[axis];
         spring.target =
           POSE_AMPLITUDE * ((target?.[axis] ?? 0) + (landingOffset?.[axis] ?? 0) * landing.flex);
         spring.step(delta);
@@ -283,51 +298,35 @@ export function useProceduralRig({
     }
 
     // --- compose per bone -------------------------------------------------
+    layerCtx.time = time;
+    layerCtx.breath = breathSample;
+    layerCtx.leanValue = lean.value;
+    layerCtx.detailed = detailed;
+
     for (const [role, bone] of Object.entries(bones) as [BoneRole, THREE.Object3D][]) {
       const base = rest.get(role);
       if (!base) continue;
 
       // pose offsets
-      const sx = poseSprings.get(`${role}:0`)?.value ?? 0;
-      const sy = poseSprings.get(`${role}:1`)?.value ?? 0;
-      const sz = poseSprings.get(`${role}:2`)?.value ?? 0;
+      const poseSpring = poseSprings.get(role);
+      const sx = poseSpring?.[0].value ?? 0;
+      const sy = poseSpring?.[1].value ?? 0;
+      const sz = poseSpring?.[2].value ?? 0;
       offsetQuaternion(scratch.pose, sx, sy, sz);
 
       // procedural layers
-      let px = 0;
-      let py = 0;
-      let pz = 0;
-
-      if (role === 'spine1') {
-        px = breathSample * RIG_AMPLITUDE.breath.spine1 + lean.value;
-      } else if (role === 'spine2') {
-        px = breathSample * RIG_AMPLITUDE.breath.spine2 + lean.value * LEAN_SPINE2_WEIGHT;
-      } else if (role === 'shoulderL' || role === 'shoulderR') {
-        pz = leanShoulderLift(role);
-      } else if (role === 'hips') {
-        py = fbm(time * RIG_AMPLITUDE.sway.rate) * RIG_AMPLITUDE.sway.yaw;
-        px = fbm(time * RIG_AMPLITUDE.sway.rate + 5.3) * RIG_AMPLITUDE.sway.pitch;
-        pz = fbm(time * RIG_AMPLITUDE.weightShift.rate + 21.1) * RIG_AMPLITUDE.weightShift.roll;
-      } else if (role === 'handL' || role === 'handR') {
-        if (detailed) {
-          const phase = time * Math.PI * 2 * RIG_AMPLITUDE.tremor.rate;
-          px =
-            Math.sin(phase) * RIG_AMPLITUDE.tremor.amount +
-            fbm(time * 0.8) * RIG_AMPLITUDE.tremor.amount;
-          pz = Math.cos(phase * 0.7) * RIG_AMPLITUDE.tremor.amount * 0.6;
-        }
-      } else if (role === 'upLegL' || role === 'upLegR') {
-        px =
-          fbm(time * RIG_AMPLITUDE.legs.rate + (role === 'upLegL' ? 0 : 9.4)) *
-          RIG_AMPLITUDE.legs.amount;
+      const layer = PROCEDURAL_LAYERS[role];
+      if (layer) {
+        layer(role, layerCtx, scratch.layer);
+        offsetQuaternion(scratch.procedural, scratch.layer.x, scratch.layer.y, scratch.layer.z);
+      } else {
+        offsetQuaternion(scratch.procedural, 0, 0, 0);
       }
-
-      offsetQuaternion(scratch.procedural, px, py, pz);
 
       scratch.composed.copy(base.quaternion).multiply(scratch.pose).multiply(scratch.procedural);
 
       // head chain: slerp toward the tracked orientation with per-bone weight
-      const chain = headSprings.find((entry) => entry.role === role);
+      const chain = headChainByRole.get(role);
       if (chain) {
         // final = rest * headOffset (offset applied in local space)
         offsetQuaternion(scratch.head, chain.pitch.value, chain.yaw.value, 0);

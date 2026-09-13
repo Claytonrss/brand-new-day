@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { CAMERA_KEYFRAMES } from '../cameraKeyframes';
-import { CHEST_Y, WRIST_POSITION, type BeatId } from '../beat/beats';
-import { ANCHORS } from '../rig/anchorStore';
-import { smoothstep } from '../../../lib/math';
-import type { Breakpoint } from '../../../design/breakpoints';
+import { CAMERA_KEYFRAMES } from '@/components/3d/camera/cameraKeyframes';
+import { CHEST_Y, WRIST_POSITION, type BeatId } from '@/components/3d/beat/beats';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
+import { smoothstep } from '@/lib/math';
+import type { Breakpoint } from '@/design/breakpoints';
 
 export type { Breakpoint };
 
@@ -74,9 +74,9 @@ export const EASING = {
   easeOutCubic: (t: number) => 1 - Math.pow(1 - t, 3),
 } as const;
 
-export type EasingName = keyof typeof EASING;
+type EasingName = keyof typeof EASING;
 
-export interface CameraSpan {
+interface CameraSpan {
   beat: BeatId;
   fromIndex: number;
   toIndex: number;

@@ -1,7 +1,8 @@
-import { Component, Suspense, useState, type ReactNode } from 'react';
+import { Suspense, useState } from 'react';
 
 import { LenisProvider } from './components/LenisProvider';
 import { PointerParallax } from './components/PointerParallax';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { LandingTrigger } from './components/3d/LandingTrigger';
 import { CanvasContainer } from './components/3d/CanvasContainer';
 import { CameraRig } from './components/3d/CameraRig';
@@ -29,39 +30,6 @@ import { SenseAnchor } from './components/3d/SenseAnchor';
 import { VelocityType } from './components/ui/VelocityType';
 import { BeatStamp } from './components/ui/BeatStamp';
 import { hasWebGL } from './design/webgl';
-
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback: ReactNode;
-  onError?: () => void;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-}
-
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    this.props.onError?.();
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
 
 /**
  * App — scroll storytelling with a single fixed Canvas.

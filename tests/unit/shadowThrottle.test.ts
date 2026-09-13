@@ -6,7 +6,7 @@ import {
   SHADOW_INTERVAL_S,
   SHADOW_MOVE_EPSILON,
   type ShadowInputs,
-} from '../../src/components/3d/shadowThrottle';
+} from '@/components/3d/perf/shadowThrottle';
 
 const REST: ShadowInputs = {
   beat: 'hero',
@@ -53,10 +53,12 @@ describe('shouldRefreshShadow', () => {
   it('refreshes when drag/gyro rotation exceeds the epsilon', () => {
     const state = throttle();
     expect(shouldRefreshShadow(state, { ...REST, yaw: SHADOW_MOVE_EPSILON * 2 }, 0.001)).toBe(true);
-    expect(shouldRefreshShadow(state, { ...REST, yaw: SHADOW_MOVE_EPSILON * 3 }, 0.001)).toBe(false);
-    expect(
-      shouldRefreshShadow(state, { ...REST, pitch: SHADOW_MOVE_EPSILON * 2 }, 0.001),
-    ).toBe(true);
+    expect(shouldRefreshShadow(state, { ...REST, yaw: SHADOW_MOVE_EPSILON * 3 }, 0.001)).toBe(
+      false,
+    );
+    expect(shouldRefreshShadow(state, { ...REST, pitch: SHADOW_MOVE_EPSILON * 2 }, 0.001)).toBe(
+      true,
+    );
   });
 
   it('ignores sub-epsilon jitter (gyro noise keeps the valley)', () => {

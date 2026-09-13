@@ -1,9 +1,9 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import * as THREE from 'three';
-import { ANCHORS, updateAnchors } from '../../src/components/3d/rig/anchorStore';
-import { BONE_NAMES, type RigBones } from '../../src/components/3d/rig/rigBones';
-import { headYawTarget, HEAD_LIMIT, HEAD_TOTAL_LIMIT } from '../../src/components/3d/rig/rigBones';
-import { CameraTrack, createCameraSample } from '../../src/components/3d/camera/cameraPath';
+import { ANCHORS, updateAnchors } from '@/components/3d/rig/anchorStore';
+import { BONE_NAMES, type RigBones } from '@/components/3d/rig/rigBones';
+import { headYawTarget, HEAD_LIMIT, HEAD_TOTAL_LIMIT } from '@/components/3d/rig/rigBones';
+import { CameraTrack, createCameraSample } from '@/components/3d/camera/cameraPath';
 
 /** Build a fake skeleton whose bones sit at given world positions. */
 function fakeBones(positions: Partial<Record<keyof typeof BONE_NAMES, [number, number, number]>>) {

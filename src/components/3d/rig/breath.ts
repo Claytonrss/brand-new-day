@@ -1,4 +1,4 @@
-import type { BeatId } from '../beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 import { SPIDER_SENSE } from './spiderSense';
 
 /**

@@ -1,4 +1,4 @@
-import type { BeatId } from '../components/3d/beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 
 /**
  * Editorial stamp per beat (IDEIA-AMB-08, docs/specs/dom-micro-craft.md §2).
