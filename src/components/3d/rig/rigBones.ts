@@ -106,7 +106,6 @@ export function smooth(delta: number, k: number): number {
 
 /** Reusable scratch objects — the rig must not allocate per frame. */
 export const SCRATCH = {
-  quaternion: new THREE.Quaternion(),
   euler: new THREE.Euler(),
 } as const;
 
@@ -119,21 +118,6 @@ export function offsetQuaternion(
 ): THREE.Quaternion {
   SCRATCH.euler.set(x, y, z);
   return out.setFromEuler(SCRATCH.euler);
-}
-
-/** Additive joint offset helper: `bone.quaternion = rest * offset`. */
-export function applyOffset(
-  bone: THREE.Object3D,
-  rest: THREE.Quaternion,
-  offset: THREE.Quaternion,
-  weight = 1,
-): void {
-  if (weight >= 1) {
-    bone.quaternion.copy(rest).multiply(offset);
-    return;
-  }
-  SCRATCH.quaternion.copy(rest).multiply(offset);
-  bone.quaternion.copy(rest).slerp(SCRATCH.quaternion, weight);
 }
 
 /**

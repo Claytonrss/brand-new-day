@@ -18,11 +18,4 @@ pnpm install --frozen-lockfile
 echo "== Setup: installing Playwright browsers =="
 pnpm exec playwright install --with-deps chromium
 
-echo "== Setup: checking Playwright CLI =="
-if command -v playwright-cli >/dev/null 2>&1; then
-  playwright-cli --help >/dev/null
-else
-  npx playwright --help >/dev/null
-fi
-
 echo "STATUS: PASS"

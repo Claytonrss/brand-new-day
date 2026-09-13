@@ -13,12 +13,7 @@
 
 export type Breakpoint = 'mobile' | 'desktop';
 export type KeyframeName =
-  | 'hero'
-  | 'evolutionStart'
-  | 'evolutionEnd'
-  | 'arsenalStart'
-  | 'arsenalEnd'
-  | 'fullBody';
+  'hero' | 'evolutionStart' | 'evolutionEnd' | 'arsenalStart' | 'arsenalEnd' | 'fullBody';
 
 interface KeyframeValues {
   position: readonly [number, number, number];

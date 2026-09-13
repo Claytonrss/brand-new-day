@@ -16,11 +16,11 @@ collect_viewport() {
   height="$3"
 
   echo "== Collecting $label ${width}x${height} =="
-  npx playwright screenshot \
+  pnpm exec playwright screenshot \
     --viewport-size="$width,$height" \
     --wait-for-timeout=5000 \
     "$BASE_URL" \
-    "test-results/visual/${label}-hero.png" || true
+    "test-results/visual/${label}-hero.png"
 }
 
 collect_viewport "390" 390 844

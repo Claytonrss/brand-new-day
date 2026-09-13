@@ -1,27 +1,11 @@
 import { Canvas } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
-import { ReactNode, Suspense } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { PerformanceMonitor } from './PerformanceMonitor';
 
 interface CanvasContainerProps {
   children: ReactNode;
-}
-
-function LoadingFallback() {
-  return (
-    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-ink text-paper">
-      <div className="relative flex items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-2 border-steel border-t-signal" />
-        <span className="absolute font-mono text-[10px] uppercase tracking-widest text-dim">
-          3D
-        </span>
-      </div>
-      <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-dim">
-        Carregando traje...
-      </p>
-    </div>
-  );
 }
 
 /**
@@ -45,7 +29,9 @@ function LoadingFallback() {
 export function CanvasContainer({ children }: CanvasContainerProps) {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-ink">
-      <Suspense fallback={<LoadingFallback />}>
+      {/* Fallback null: the CinematicLoader overlays the viewport while the
+          GLB loads — a spinner here would never be visible. */}
+      <Suspense fallback={null}>
         <Canvas
           dpr={[1, 2]}
           gl={{

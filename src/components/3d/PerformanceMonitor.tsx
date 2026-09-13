@@ -200,8 +200,8 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
 
   // Initial tier: synchronous matchMedia read (FALHA-01) — no first-frame
   // window where the hooks' default would put a phone on `high`.
-  const [profile, setProfile] = useState<QualityProfile>(() =>
-    QUALITY_PROFILES[detectInitialTier()],
+  const [profile, setProfile] = useState<QualityProfile>(
+    () => QUALITY_PROFILES[detectInitialTier()],
   );
   const currentTierRef = useRef<QualityTier>(profile.tier);
 

@@ -33,10 +33,7 @@ export function ProgressBar() {
     let lastAria = 0;
 
     const measure = () => {
-      docHeight = Math.max(
-        document.documentElement.scrollHeight - window.innerHeight,
-        1,
-      );
+      docHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
     };
 
     const write = () => {
