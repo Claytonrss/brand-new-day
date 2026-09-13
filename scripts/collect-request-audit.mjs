@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_URL } from './lib/env.mjs';
+
 import { chromium } from '@playwright/test';
 
 /**
@@ -8,7 +10,7 @@ import { chromium } from '@playwright/test';
  *
  * Usage: node scripts/collect-request-audit.mjs [baseUrl]
  */
-const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
+const BASE_URL = process.argv[2] ?? DEFAULT_BASE_URL;
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });

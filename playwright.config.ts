@@ -1,4 +1,10 @@
+import { existsSync } from 'node:fs';
 import { defineConfig } from '@playwright/test';
+
+// .env (created by scripts/setup.sh) carries this checkout/worktree's PORT.
+if (existsSync(new URL('.env', import.meta.url))) {
+  process.loadEnvFile(new URL('.env', import.meta.url));
+}
 
 // Port follows the env so parallel worktrees never share a dev server
 // (docs/agents/test-isolation.md §10). The webServer inherits this env, so

@@ -6,6 +6,14 @@ trap 'echo "STATUS: FAIL"; exit 1' ERR
 mkdir -p test-results/visual test-results/logs
 
 SESSION="spiderman"
+
+# Per-worktree port (docs/agents/test-isolation.md §10): .env carries PORT.
+if [ -f .env ]; then
+  set -a
+  # shellcheck disable=SC1091
+  . ./.env
+  set +a
+fi
 BASE_URL="${BASE_URL:-http://localhost:${PORT:-5173}}"
 
 echo "== Visual evidence: checking app at $BASE_URL =="
