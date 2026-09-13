@@ -2,7 +2,7 @@
 
 > **Status:** pronto para implementação
 > **Branch:** `perf/headroom-lighting`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave F
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave F
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -15,7 +15,7 @@ sombra (incluindo uma point light, cuja sombra custa 6 render passes).
 
 O objetivo desta wave **não é mudar o look**: é devolver orçamento de GPU
 (draw calls e ms/frame) mantendo a iluminação aprovada no Look Dev v2, e criar
-a infraestrutura de *beat* que as próximas waves vão consumir.
+a infraestrutura de _beat_ que as próximas waves vão consumir.
 
 Seções afetadas: todas (Hero, Chapter 1, Evolution, Chapter 2, Arsenal, FullBody).
 
@@ -62,25 +62,25 @@ Um único `LightRig` substitui as quatro cenas. Em vez de montar/desmontar
 luzes por beat, existem **6 slots permanentes**; cada beat altera apenas
 intensidade, posição e cor, com dissolve.
 
-| Regra | Valor | Motivo (medido) |
-|---|---|---|
-| Slots de luz | 6 permanentes: `ambient`, `key`, `rim`, `accent`, `fill`, `sweep` | montar/desmontar luz muda os defines do shader (`NUM_POINT_LIGHTS`) e força recompilação: `programs` subiu de 10 para 27 com stalls de 200–600 ms durante o scroll |
-| Emissores de sombra | **1** (`key` directional 1024) | cada caster = 1 pass extra × 16 meshes |
-| Sombra de point light | **proibida** | cubemap = 6 passes — era o maior custo individual do baseline |
-| Sombra do spot (Beat 2) | desligada nesta wave | decisão de budget (ver §8); a auto-sombra do Beat 2 volta na Wave C via shader dedicado |
-| Transição | dissolve de intensidade/posição/cor, `1 - Math.exp(-6·delta)` | |
+| Regra                   | Valor                                                             | Motivo (medido)                                                                                                                                                    |
+| ----------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Slots de luz            | 6 permanentes: `ambient`, `key`, `rim`, `accent`, `fill`, `sweep` | montar/desmontar luz muda os defines do shader (`NUM_POINT_LIGHTS`) e força recompilação: `programs` subiu de 10 para 27 com stalls de 200–600 ms durante o scroll |
+| Emissores de sombra     | **1** (`key` directional 1024)                                    | cada caster = 1 pass extra × 16 meshes                                                                                                                             |
+| Sombra de point light   | **proibida**                                                      | cubemap = 6 passes — era o maior custo individual do baseline                                                                                                      |
+| Sombra do spot (Beat 2) | desligada nesta wave                                              | decisão de budget (ver §8); a auto-sombra do Beat 2 volta na Wave C via shader dedicado                                                                            |
+| Transição               | dissolve de intensidade/posição/cor, `1 - Math.exp(-6·delta)`     |                                                                                                                                                                    |
 
 Base constante — reproduz o composite aprovado no Look Dev v2, que mantinha o
 rig do Hero aceso em todas as seções — mais acentos por beat:
 
-| Slot | Base (todos os beats) | Acentos por beat |
-|---|---|---|
-| `ambient` | `steel` 0.35 | — |
-| `key` (directional, sombra) | `paper` 3.0 @ [5, 8, 3] | `fullBody`: posição [3, 6, 4] |
-| `rim` (point) | `oxide` 30cd @ [3, 1, 4] d10 | `fullBody`: 15cd @ [3, -1, -4] d18 |
-| `accent` (point) | `signal` 15cd @ [-2, 3, 5] d8 | — |
-| `fill` (point) | `steel` 14cd @ [-4, 2, -2] d12 | `arsenal`: `steel` 6/8cd no punho d4 · `fullBody`: `steel` 8/12cd @ [-4, 0, 3] d20 |
-| `sweep` (spot) | 0 | `evolution`: varredura do Beat 2 |
+| Slot                        | Base (todos os beats)          | Acentos por beat                                                                   |
+| --------------------------- | ------------------------------ | ---------------------------------------------------------------------------------- |
+| `ambient`                   | `steel` 0.35                   | —                                                                                  |
+| `key` (directional, sombra) | `paper` 3.0 @ [5, 8, 3]        | `fullBody`: posição [3, 6, 4]                                                      |
+| `rim` (point)               | `oxide` 30cd @ [3, 1, 4] d10   | `fullBody`: 15cd @ [3, -1, -4] d18                                                 |
+| `accent` (point)            | `signal` 15cd @ [-2, 3, 5] d8  | —                                                                                  |
+| `fill` (point)              | `steel` 14cd @ [-4, 2, -2] d12 | `arsenal`: `steel` 6/8cd no punho d4 · `fullBody`: `steel` 8/12cd @ [-4, 0, 3] d20 |
+| `sweep` (spot)              | 0                              | `evolution`: varredura do Beat 2                                                   |
 
 O Beat 2 mantém exatamente o comportamento do
 `EvolutionScene.tsx:83-109`: intensidade 0 → 18 (ápice em 60 % do beat) →
@@ -115,15 +115,15 @@ deste ambiente **não são válidos** — o headless usa rasterização por soft
 (SwiftShader, 1–5 FPS em qualquer versão); servem apenas pontos de comparação
 relativa.
 
-| Métrica | Antes (`main`) | Depois | Medição |
-|---|---|---|---|
-| Luzes na cena | ~10 permanentes | 6 slots permanentes | inspeção de `lightCues.ts` |
-| Emissores de sombra | 3 (1 point light = 6 passes) | **1** (directional 1024) | `castShadow` |
-| Draw calls por frame | **118–120** | **44–46** (`medium`) · 11–13 (`low`) | contador WebGL |
-| `programs` (recompilações) | crescia 10 → 27 no scroll | estável em **10** | `gl.info.programs` |
-| Triângulos por frame | ~506 k | ~458 k | `gl.info.render.triangles` |
-| dpr high / medium / low | 2 / 1.5 / 1 | **1.75 / 1.25 / 1** | `qualityContext.ts` |
-| GLB | 22.4 MB | 22.4 MB | **não resolvido aqui** → item F4b |
+| Métrica                    | Antes (`main`)               | Depois                               | Medição                           |
+| -------------------------- | ---------------------------- | ------------------------------------ | --------------------------------- |
+| Luzes na cena              | ~10 permanentes              | 6 slots permanentes                  | inspeção de `lightCues.ts`        |
+| Emissores de sombra        | 3 (1 point light = 6 passes) | **1** (directional 1024)             | `castShadow`                      |
+| Draw calls por frame       | **118–120**                  | **44–46** (`medium`) · 11–13 (`low`) | contador WebGL                    |
+| `programs` (recompilações) | crescia 10 → 27 no scroll    | estável em **10**                    | `gl.info.programs`                |
+| Triângulos por frame       | ~506 k                       | ~458 k                               | `gl.info.render.triangles`        |
+| dpr high / medium / low    | 2 / 1.5 / 1                  | **1.75 / 1.25 / 1**                  | `qualityContext.ts`               |
+| GLB                        | 22.4 MB                      | 22.4 MB                              | **não resolvido aqui** → item F4b |
 
 Composição dos 44–46 draw calls medidos (não estimados): 16 meshes + 16 passes
 de sombra + ~13 passes de post-processing (bloom com `mipmapBlur`, vignette,

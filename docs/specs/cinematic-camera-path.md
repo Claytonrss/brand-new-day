@@ -2,7 +2,7 @@
 
 > **Status:** pronto para implementação
 > **Branch:** `feat/cinematic-camera-path`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave B
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave B
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -83,13 +83,13 @@ resolvido com easing por segmento isolado.
 
 Pontos de controle, por breakpoint, nesta ordem:
 
-| Índice | Ponto | Origem |
-|---|---|---|
-| 0 | `hero` | keyframe |
-| 1 | `evolutionStart` | keyframe |
-| 2 | `evolutionEnd` | keyframe |
-| 3..6 | arco do Arsenal | gerado (ver 6.2) |
-| 7 | `fullBody` | keyframe |
+| Índice | Ponto            | Origem           |
+| ------ | ---------------- | ---------------- |
+| 0      | `hero`           | keyframe         |
+| 1      | `evolutionStart` | keyframe         |
+| 2      | `evolutionEnd`   | keyframe         |
+| 3..6   | arco do Arsenal  | gerado (ver 6.2) |
+| 7      | `fullBody`       | keyframe         |
 
 `lookAt` e `fov` usam curvas/valores paralelos: uma segunda `CatmullRomCurve3`
 para o `lookAt` e interpolação de `fov` pelo mesmo parâmetro `u`.
@@ -98,11 +98,11 @@ para o `lookAt` e interpolação de `fov` pelo mesmo parâmetro `u`.
 
 Cinco pontos gerados em coordenadas esféricas relativas a `WRIST_POSITION`:
 
-| Parâmetro | Início | Fim |
-|---|---|---|
-| azimute | −32° | **+43°** (travessia de ~75°, cruza o eixo) |
-| raio | 5.4 | 3.9 |
-| altura relativa | +0.2 | 0.0 |
+| Parâmetro       | Início | Fim                                        |
+| --------------- | ------ | ------------------------------------------ |
+| azimute         | −32°   | **+43°** (travessia de ~75°, cruza o eixo) |
+| raio            | 5.4    | 3.9                                        |
+| altura relativa | +0.2   | 0.0                                        |
 
 Com uma elevação senoidal de +0.35 no meio do arco (`sin(t·π)`) para o
 movimento não ser plano.
@@ -111,14 +111,14 @@ movimento não ser plano.
 
 Cada beat mapeia para uma faixa `[iInício/(N-1), iFim/(N-1)]` da curva:
 
-| Beat | Índices | Easing |
-|---|:--:|---|
-| `hero` | 0 → 0 (estático) | — |
-| `chapter1` | 0 → 1 | smoothstep |
-| `evolution` | 1 → 2 | easeInOutCubic (push-in lento) |
-| `chapter2` | 2 → 3 | smoothstep |
-| `arsenal` | 3 → 6 | smoothstep |
-| `fullBody` | 6 → 7 | easeOutCubic (recuo que assenta) |
+| Beat        |     Índices      | Easing                           |
+| ----------- | :--------------: | -------------------------------- |
+| `hero`      | 0 → 0 (estático) | —                                |
+| `chapter1`  |      0 → 1       | smoothstep                       |
+| `evolution` |      1 → 2       | easeInOutCubic (push-in lento)   |
+| `chapter2`  |      2 → 3       | smoothstep                       |
+| `arsenal`   |      3 → 6       | smoothstep                       |
+| `fullBody`  |      6 → 7       | easeOutCubic (recuo que assenta) |
 
 `u = (iInício + ease(t)) / (N − 1)`, onde `t` é o progresso local do beat
 fornecido pelo `BeatProvider`.
@@ -165,12 +165,12 @@ A curva é avaliada uma vez por frame (`getPoint` + `getPoint` do lookAt) —
 custo desprezível (~2 chamadas, nenhuma alocação: vetores reutilizados via
 `useMemo`). Nenhuma mudança em luzes, shaders ou draw calls.
 
-| Métrica | Meta |
-|---|---|
-| Draw calls | mantém 44–46 (Wave F) |
-| `programs` | mantém 10 |
-| Custo da câmera por frame | < 0.1 ms (sem alocação) |
-| FPS mobile / desktop | ≥ 45 / ≥ 55 (medição em dispositivo real — não mensurável em headless) |
+| Métrica                   | Meta                                                                   |
+| ------------------------- | ---------------------------------------------------------------------- |
+| Draw calls                | mantém 44–46 (Wave F)                                                  |
+| `programs`                | mantém 10                                                              |
+| Custo da câmera por frame | < 0.1 ms (sem alocação)                                                |
+| FPS mobile / desktop      | ≥ 45 / ≥ 55 (medição em dispositivo real — não mensurável em headless) |
 
 ## 9. Accessibility
 
@@ -192,9 +192,10 @@ custo desprezível (~2 chamadas, nenhuma alocação: vetores reutilizados via
       O teste exige redução ≥ 30% do pico e p95 ≤ 25°.
 
       O pico restante (62°) é de *staging*, não de código: a câmera precisa
-      recuar do close-up do peito para alcançar o punho, então há uma reversão
-      real no fim do Beat 2. O ponto de overshoot (`OVERSHOOT`) distribui essa
-      reversão ao longo do scroll em vez de deixá-la acontecer parada.
+          recuar do close-up do peito para alcançar o punho, então há uma reversão
+          real no fim do Beat 2. O ponto de overshoot (`OVERSHOOT`) distribui essa
+          reversão ao longo do scroll em vez de deixá-la acontecer parada.
+
 - [ ] **Métrica de órbita:** variação de azimute no Beat 3 ≥ 60°
       (baseline medido: 0,2°).
 - [ ] Handheld noise e FOV punch ausentes com `prefers-reduced-motion`.

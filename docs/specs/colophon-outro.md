@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** Colophon (nova seção, depois do FullBody)
-**Wave:** P1b.1 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P1b.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -52,12 +52,14 @@ Reference: `docs/design/design-bible.md`, `docs/design/storyboard.md`
 ## 3. Composition
 
 **Mobile (390×844, 430×932):**
+
 - O modelo **não** precisa estar visível; se estiver, é silhueta distante no
   topo, quase apagada pela névoa.
 - Bloco de texto centralizado verticalmente, max `82vw`, margem ≥ `24px`.
 - Atribuição no rodapé, sempre visível.
 
 **Desktop (1440×900):**
+
 - Muito espaço negativo. Texto em bloco estreito (max ~`480px`), alinhado à
   esquerda ou centralizado — decisão no Look Dev, mas **não** split-screen.
 - Se o modelo aparecer, é uma presença residual (silhueta longínqua, escala
@@ -74,7 +76,7 @@ livre, mas o espaço negativo é obrigatório).
 asset):
 
 - **A (preferida):** a câmera recua para um plano muito distante e o `FogExp2`
-  + dessaturação por profundidade apagam a silhueta; o modelo some na névoa.
+  - dessaturação por profundidade apagam a silhueta; o modelo some na névoa.
 - **B:** fade de opacidade/emissivo do modelo até sumir; câmera estática.
 
 Em ambos, o último frame 3D é uma **composição intencional**, não o modelo
@@ -111,12 +113,12 @@ Reference: `docs/specs/fullbody-living-poster.md` (de onde o colofon parte),
 
 ## 7. Performance Budget
 
-| Metric | Target | Note |
-|---|---|---|
-| Draw calls | ≤ baseline (44–46) | o modelo continua montado; nada novo em cena |
-| Novas luzes | 0 | reusar `LightRig` |
-| Post-processing | inalterado ou reduzido | sem passe novo |
-| Memória | ≤ +2 MB vs FullBody | só DOM/texto novo |
+| Metric          | Target                 | Note                                         |
+| --------------- | ---------------------- | -------------------------------------------- |
+| Draw calls      | ≤ baseline (44–46)     | o modelo continua montado; nada novo em cena |
+| Novas luzes     | 0                      | reusar `LightRig`                            |
+| Post-processing | inalterado ou reduzido | sem passe novo                               |
+| Memória         | ≤ +2 MB vs FullBody    | só DOM/texto novo                            |
 
 Reference: `docs/design/performance-design.md`
 
@@ -130,15 +132,15 @@ Reference: `docs/design/performance-design.md`
 
 ## 9. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Visitante identifica autor, stack e próximo passo sem scroll extra | revisão humana + screenshot |
-| 2 | Atribuição CC-BY visível sem hover | `credits.spec.ts` |
-| 3 | Último frame 3D é composição intencional (não modelo cortado) | screenshot `*-scroll-100` nos 3 viewports |
-| 4 | Rubrica "sensação cinematográfica/editorial" e "originalidade de portfólio" ≥ 4 | rubrica |
-| 5 | Nenhum draw call/luz novo | `budget.spec.ts` |
-| 6 | `prefers-reduced-motion` sem movimento de saída | `reduced-motion.spec.ts` |
-| 7 | CTA focável e funcional | teste de a11y / manual |
+| #   | Critério                                                                        | Medição                                   |
+| --- | ------------------------------------------------------------------------------- | ----------------------------------------- |
+| 1   | Visitante identifica autor, stack e próximo passo sem scroll extra              | revisão humana + screenshot               |
+| 2   | Atribuição CC-BY visível sem hover                                              | `credits.spec.ts`                         |
+| 3   | Último frame 3D é composição intencional (não modelo cortado)                   | screenshot `*-scroll-100` nos 3 viewports |
+| 4   | Rubrica "sensação cinematográfica/editorial" e "originalidade de portfólio" ≥ 4 | rubrica                                   |
+| 5   | Nenhum draw call/luz novo                                                       | `budget.spec.ts`                          |
+| 6   | `prefers-reduced-motion` sem movimento de saída                                 | `reduced-motion.spec.ts`                  |
+| 7   | CTA focável e funcional                                                         | teste de a11y / manual                    |
 
 ## 10. Stop Conditions
 

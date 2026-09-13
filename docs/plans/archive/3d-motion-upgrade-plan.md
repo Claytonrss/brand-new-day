@@ -14,31 +14,31 @@ Medições feitas em 2026-09-09 sobre o estado atual (`main`, após PR #16).
 
 ### 1.1 Fatos verificados
 
-| Fato | Evidência |
-|---|---|
-| GLB não possui nenhuma animação embutida | `node scripts/inspect-glb.mjs` → `animations: 0`, `skins: 1`, 66 bones, 16 meshes, 11 materiais, 30 texturas webp, 22.4 MB |
-| O único movimento do personagem é 1 bone (cabeça) | `src/components/3d/SpiderManModel.tsx:150-155` |
-| Câmera é interpolação linear sem easing | `src/components/3d/CameraRig.tsx:98-112` |
-| Segmentos de câmera são retos, com descontinuidade de direção em 0.14/0.28/0.50/0.64/0.86 | `src/components/3d/cameraPath.ts:39-127` |
-| "Orbit" do Arsenal é dolly reto, não arco | `src/components/3d/cameraKeyframes.ts:44-54` |
-| Todas as 4 scenes (e ~10 luzes) ficam montadas permanentemente | `src/App.tsx:86-92` |
-| Post-processing é 100% de fábrica, parâmetros fixos | `src/components/3d/EffectsStack.tsx:23-46` |
-| Partículas: drift linear uniforme, sem turbulência/parallax | `src/components/3d/Particles.tsx:62-81` |
-| Canvas sem interatividade (`pointer-events-none`); mobile sempre em idle | `src/components/3d/CanvasContainer.tsx:49`, `SpiderManModel.tsx:128-130` |
-| Nenhum teste prova que algo se move | `tests/visual/hero.spec.ts` (1 screenshot após 3s) |
-| `prefers-reduced-motion` fixa a câmera no enquadramento `fullBody` para a página inteira | `src/components/3d/CameraRig.tsx:52-61` |
+| Fato                                                                                      | Evidência                                                                                                                  |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| GLB não possui nenhuma animação embutida                                                  | `node scripts/inspect-glb.mjs` → `animations: 0`, `skins: 1`, 66 bones, 16 meshes, 11 materiais, 30 texturas webp, 22.4 MB |
+| O único movimento do personagem é 1 bone (cabeça)                                         | `src/components/3d/SpiderManModel.tsx:150-155`                                                                             |
+| Câmera é interpolação linear sem easing                                                   | `src/components/3d/CameraRig.tsx:98-112`                                                                                   |
+| Segmentos de câmera são retos, com descontinuidade de direção em 0.14/0.28/0.50/0.64/0.86 | `src/components/3d/cameraPath.ts:39-127`                                                                                   |
+| "Orbit" do Arsenal é dolly reto, não arco                                                 | `src/components/3d/cameraKeyframes.ts:44-54`                                                                               |
+| Todas as 4 scenes (e ~10 luzes) ficam montadas permanentemente                            | `src/App.tsx:86-92`                                                                                                        |
+| Post-processing é 100% de fábrica, parâmetros fixos                                       | `src/components/3d/EffectsStack.tsx:23-46`                                                                                 |
+| Partículas: drift linear uniforme, sem turbulência/parallax                               | `src/components/3d/Particles.tsx:62-81`                                                                                    |
+| Canvas sem interatividade (`pointer-events-none`); mobile sempre em idle                  | `src/components/3d/CanvasContainer.tsx:49`, `SpiderManModel.tsx:128-130`                                                   |
+| Nenhum teste prova que algo se move                                                       | `tests/visual/hero.spec.ts` (1 screenshot após 3s)                                                                         |
+| `prefers-reduced-motion` fixa a câmera no enquadramento `fullBody` para a página inteira  | `src/components/3d/CameraRig.tsx:52-61`                                                                                    |
 
 ### 1.2 Lacuna promessa × entrega
 
-| Documento | Promessa | Entrega atual | Gap |
-|---|---|---|---|
-| `design/memorable-moments.md:9-11` | head-tracking com **slerp**, yaw 25-30°, pitch 12-15° | Euler direto, sem slerp, sem follow-through | parcial |
-| `design/memorable-moments.md:19-25` | "luz atravessando a superfície" do símbolo | só intensidade de spotlight variando | alto |
-| `design/memorable-moments.md:27-33` | câmera **cruzando o eixo** (órbita) | dolly reto | alto |
-| `design/memorable-moments.md:35-42` | "pôster vivo", parallax de HUD em velocidades diferentes | câmera recua, HUD sem parallax real | alto |
-| `design/3d-model-treatment.md:45` | "não parece viewport padrão de model viewer" | é exatamente um model viewer com câmera móvel | **crítico** |
-| `design/performance-design.md:62-63` | < 50 draw calls, máx. 2 efeitos de post em mobile | ~10 luzes (várias com sombra) + 3 efeitos | alto |
-| `design/visual-rubric.md` | "ritmo de scroll e câmera", "sensação cinematográfica" | nota 5/5 autoatribuída sem teste de movimento | **medição inválida** |
+| Documento                            | Promessa                                                 | Entrega atual                                 | Gap                  |
+| ------------------------------------ | -------------------------------------------------------- | --------------------------------------------- | -------------------- |
+| `design/memorable-moments.md:9-11`   | head-tracking com **slerp**, yaw 25-30°, pitch 12-15°    | Euler direto, sem slerp, sem follow-through   | parcial              |
+| `design/memorable-moments.md:19-25`  | "luz atravessando a superfície" do símbolo               | só intensidade de spotlight variando          | alto                 |
+| `design/memorable-moments.md:27-33`  | câmera **cruzando o eixo** (órbita)                      | dolly reto                                    | alto                 |
+| `design/memorable-moments.md:35-42`  | "pôster vivo", parallax de HUD em velocidades diferentes | câmera recua, HUD sem parallax real           | alto                 |
+| `design/3d-model-treatment.md:45`    | "não parece viewport padrão de model viewer"             | é exatamente um model viewer com câmera móvel | **crítico**          |
+| `design/performance-design.md:62-63` | < 50 draw calls, máx. 2 efeitos de post em mobile        | ~10 luzes (várias com sombra) + 3 efeitos     | alto                 |
+| `design/visual-rubric.md`            | "ritmo de scroll e câmera", "sensação cinematográfica"   | nota 5/5 autoatribuída sem teste de movimento | **medição inválida** |
 
 ### 1.3 Causa raiz única
 
@@ -214,25 +214,27 @@ Cada wave exige: branch `feat/<slug>` → Scene Spec (se mudar composição) →
 
 ## 6. Riscos e mitigação
 
-| Risco | Prob. | Impacto | Mitigação |
-|---|---|---|---|
-| Rig additive quebrar a pose Mixamo | alta | alto | A1 (rest pose capturada) + revisão quadro a quadro + fallback para repose em Blender (A5) |
-| Shader não compilar em GPU mobile | média | alto | Flag `shaders` por tier, fallback silencioso, teste de console sem erro |
-| Câmera spline "enlouquecer" em transições | média | médio | Manter keyframes atuais como pontos de controle; easing conservador |
-| Refatoração de luzes perder o look aprovado | média | médio | Wave F com comparação antes/depois nos 3 viewports, checklist do `look-dev-report.md` |
-| GLB re-export ferir licença/autoria | baixa | alto | Preservar original, manter `extras.author`, atribuição visível — ADR obrigatório |
-| Testes de movimento flaky em CI | média | médio | Limiar de delta calibrado por viewport; rodar com `--repeat-each=1` e sem animação de UI |
+| Risco                                       | Prob. | Impacto | Mitigação                                                                                 |
+| ------------------------------------------- | ----- | ------- | ----------------------------------------------------------------------------------------- |
+| Rig additive quebrar a pose Mixamo          | alta  | alto    | A1 (rest pose capturada) + revisão quadro a quadro + fallback para repose em Blender (A5) |
+| Shader não compilar em GPU mobile           | média | alto    | Flag `shaders` por tier, fallback silencioso, teste de console sem erro                   |
+| Câmera spline "enlouquecer" em transições   | média | médio   | Manter keyframes atuais como pontos de controle; easing conservador                       |
+| Refatoração de luzes perder o look aprovado | média | médio   | Wave F com comparação antes/depois nos 3 viewports, checklist do `look-dev-report.md`     |
+| GLB re-export ferir licença/autoria         | baixa | alto    | Preservar original, manter `extras.author`, atribuição visível — ADR obrigatório          |
+| Testes de movimento flaky em CI             | média | médio   | Limiar de delta calibrado por viewport; rodar com `--repeat-each=1` e sem animação de UI  |
 
 ---
 
 ## 7. ADRs
 
 **Criados (Wave F, PR #17):**
+
 - **ADR-008:** `BeatController` como única fonte de verdade de estado narrativo.
 - **ADR-009:** Slots de luz permanentes (proibido montar/desmontar luz em runtime).
 - **ADR-010:** Instrumentação de performance (`window.__perf`) e política de dpr.
 
 **A criar nas próximas waves:**
+
 - **ADR-011:** Câmera por curva de Catmull-Rom com easing por beat (Wave B) — ✅ criado.
 - **ADR-012:** Movimento procedural do rig — additive sobre rest pose Mixamo (Wave A) — ✅ criado.
 - **ADR-013/014:** Âncoras do esqueleto + easing linear (P0) — ✅ criados.

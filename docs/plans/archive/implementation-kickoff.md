@@ -26,20 +26,21 @@ Evidências da auditoria (baseline visual): `docs/evidence/portfolio-audit/`
 
 ## 2. Ordem de implementação (não pular etapas)
 
-| # | Branch sugerida | O quê | Spec / referência | Wave |
-|---|---|---|---|---|
-| 1 | `fix/portfolio-p0-composition` | Composição mobile (Arsenal/FullBody), quebra tipográfica desktop, copy FullBody, rubrica re-preenchida | plano §5 · ADR-017 | P0 |
-| 2 | `feat/loader-teaser` | Preloader como teaser (olho/teia, 2D) | `specs/loader-teaser.md` | P1a |
-| 3 | `feat/opening-title-card` | Beat 0 tipográfico antes do Hero | `specs/opening-title-card.md` | P1a |
-| 4 | `feat/colophon-outro` | Seção final: autoria + stack + CTA + CC-BY | `specs/colophon-outro.md` · ADR-019 | P1b |
-| 5 | `feat/atmosphere-per-beat` | Assinatura de atmosfera por beat + crossfades | `specs/atmosphere-per-beat.md` | P1c |
-| 6 | `feat/arsenal-macro-hud` | Câmera macro no lançador + HUD técnico | `specs/arsenal-macro-hud.md` | P2a |
-| 7 | `feat/desktop-pointer-parallax` | Parallax de cursor (desktop) | `specs/desktop-pointer-parallax.md` | P2b |
-| 8 | `feat/mobile-gyro-permission` | Gyro iOS com permissão + fallback | `specs/mobile-gyro-permission.md` · ADR-018 | P2b |
-| 9 | `feat/web-shoot-discovery` | WebShoot descobrível | `specs/web-shoot-discovery.md` | P3 |
-| 10 | `feat/webgl-fallback` | Fallback como poster editorial | `specs/webgl-static-fallback.md` · ADR-020 | P3 |
+| #   | Branch sugerida                 | O quê                                                                                                  | Spec / referência                           | Wave |
+| --- | ------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ---- |
+| 1   | `fix/portfolio-p0-composition`  | Composição mobile (Arsenal/FullBody), quebra tipográfica desktop, copy FullBody, rubrica re-preenchida | plano §5 · ADR-017                          | P0   |
+| 2   | `feat/loader-teaser`            | Preloader como teaser (olho/teia, 2D)                                                                  | `specs/loader-teaser.md`                    | P1a  |
+| 3   | `feat/opening-title-card`       | Beat 0 tipográfico antes do Hero                                                                       | `specs/opening-title-card.md`               | P1a  |
+| 4   | `feat/colophon-outro`           | Seção final: autoria + stack + CTA + CC-BY                                                             | `specs/colophon-outro.md` · ADR-019         | P1b  |
+| 5   | `feat/atmosphere-per-beat`      | Assinatura de atmosfera por beat + crossfades                                                          | `specs/atmosphere-per-beat.md`              | P1c  |
+| 6   | `feat/arsenal-macro-hud`        | Câmera macro no lançador + HUD técnico                                                                 | `specs/arsenal-macro-hud.md`                | P2a  |
+| 7   | `feat/desktop-pointer-parallax` | Parallax de cursor (desktop)                                                                           | `specs/desktop-pointer-parallax.md`         | P2b  |
+| 8   | `feat/mobile-gyro-permission`   | Gyro iOS com permissão + fallback                                                                      | `specs/mobile-gyro-permission.md` · ADR-018 | P2b  |
+| 9   | `feat/web-shoot-discovery`      | WebShoot descobrível                                                                                   | `specs/web-shoot-discovery.md`              | P3   |
+| 10  | `feat/webgl-fallback`           | Fallback como poster editorial                                                                         | `specs/webgl-static-fallback.md` · ADR-020  | P3   |
 
 **Regras de dependência:**
+
 - P0 (item 1) é pré-requisito absoluto de tudo.
 - Itens 2–4 podem ser paralelos entre si; item 6 depende dos itens 1 e 5.
 - Item 10 depende do asset 2D definido em ADR-020.

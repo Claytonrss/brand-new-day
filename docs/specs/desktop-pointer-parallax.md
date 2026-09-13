@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** transversal (Hero, beats com HUD, FullBody/Colophon)
-**Wave:** P2b.1 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P2b.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -27,11 +27,11 @@ mas dá "vida" e separa a peça de um model viewer.
 
 ## 3. Comportamento (três camadas de profundidade)
 
-| Camada | Resposta ao pointer | Amplitude (guias) |
-|---|---|---|
-| **Modelo / câmera** | micro-parallax aditivo na câmera (além do head-tracking) | deslocamento ≤ ~0.5–1% da posição; muito amortecido |
-| **HUD / texto** | parallax próprio, velocidade diferente do modelo | alguns px; elementos mais "perto" movem mais |
-| **Fundo / atmosfera** | parallax mais lento (já parcialmente existe via partículas) | mínimo |
+| Camada                | Resposta ao pointer                                         | Amplitude (guias)                                   |
+| --------------------- | ----------------------------------------------------------- | --------------------------------------------------- |
+| **Modelo / câmera**   | micro-parallax aditivo na câmera (além do head-tracking)    | deslocamento ≤ ~0.5–1% da posição; muito amortecido |
+| **HUD / texto**       | parallax próprio, velocidade diferente do modelo            | alguns px; elementos mais "perto" movem mais        |
+| **Fundo / atmosfera** | parallax mais lento (já parcialmente existe via partículas) | mínimo                                              |
 
 - **Implementação:** offset de pointer **aditivo** no `CameraRig` (somado ao
   scroll-driven, nunca substituindo), e uma camada de HUD com parallax por
@@ -49,13 +49,13 @@ mas dá "vida" e separa a peça de um model viewer.
 
 ## 5. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Mover o mouse cria profundidade perceptível entre modelo/HUD/fundo | revisão humana + vídeo |
-| 2 | Sem mouse, tudo assenta em repouso (sem drift residual) | observação |
-| 3 | Amplitude sutil — não lê como "efeito" | rubrica "sensação cinematográfica" ≥ 4 |
-| 4 | `prefers-reduced-motion`: parallax desligado | teste |
-| 5 | Nenhum custo de GPU relevante (offsets, não passes) | `budget.spec.ts` |
+| #   | Critério                                                           | Medição                                |
+| --- | ------------------------------------------------------------------ | -------------------------------------- |
+| 1   | Mover o mouse cria profundidade perceptível entre modelo/HUD/fundo | revisão humana + vídeo                 |
+| 2   | Sem mouse, tudo assenta em repouso (sem drift residual)            | observação                             |
+| 3   | Amplitude sutil — não lê como "efeito"                             | rubrica "sensação cinematográfica" ≥ 4 |
+| 4   | `prefers-reduced-motion`: parallax desligado                       | teste                                  |
+| 5   | Nenhum custo de GPU relevante (offsets, não passes)                | `budget.spec.ts`                       |
 
 ## 6. Stop Conditions
 

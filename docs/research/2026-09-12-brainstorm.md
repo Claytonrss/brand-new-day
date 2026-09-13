@@ -13,8 +13,8 @@
      página, ambientação Spider-Man — **apenas ideias que não existem hoje**.
 - **Commits revisados:** `3bd324a` (HEAD, merge PR #31) e o histórico
   `1291d2f…3bd324a` — todas as ondas P0–P3.2 do
-  `docs/plans/portfolio-impact-plan.md` já entregues (só P3.3 pendente) e as
-  waves A–G do `docs/plans/3d-motion-upgrade-plan.md` merged. As ideias abaixo
+  `docs/plans/archive/portfolio-impact-plan.md` já entregues (só P3.3 pendente) e as
+  waves A–G do `docs/plans/archive/3d-motion-upgrade-plan.md` merged. As ideias abaixo
   foram cruzadas contra esses dois planos para não repetir o já mapeado/aplicado.
 - **Assets inventariados:** `public/models/` tem **três** GLBs — o `v2.glb`
   (22,4 MB, único referenciado no código) e as variantes `-512.glb` e
@@ -47,6 +47,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
 ---
 
 **FALHA-01 — Mobile inicia (e possivelmente passa a sessão toda) no tier `high`**
+
 - **Onde:** `src/components/3d/PerformanceMonitor.tsx` + `src/hooks/useMediaQuery.ts`
 - `useMediaQuery` é SSR-safe (`false` inicial) e o tier inicial é computado
   **uma única vez** no inicializador do `useState`, durante o primeiro render —
@@ -60,6 +61,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   "mobile menos fluido mesmo em aparelho potente".
 
 **FALHA-02 — Zona morta de adaptação: 30–45 fps no mobile não degrada nada**
+
 - **Onde:** `PerformanceMonitor.tsx` (thresholds 45/30) + `qualityContext.ts`
 - Mesmo quando degrada para `medium`, o degrau seguinte só acontece abaixo de
   30 fps. Um device cravado em 35–44 fps fica eternamente com **sombras +
@@ -69,9 +71,10 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   partículas) entre medium e low.
 
 **FALHA-03 — Canvas renderiza a custo total enquanto está 100% coberto (~44% do scroll)**
+
 > **Correção (2026-09-12, após challenge):** a estimativa de cobertura acima
 > está **inflada**. Os chapter cards e o opening têm `h-dvh` numa viewport de
-> ~`100dvh` — cobertura *total* do viewport só existe num instante durante o
+> ~`100dvh` — cobertura _total_ do viewport só existe num instante durante o
 > trânsito (e em repouso sobre o card); num fling, a cobertura média é
 > parcial (~50%), o que não permite pausar o render. As janelas reais de
 > cobertura sustentada são: o loader (overlay fixo) e o repouso sobre seções
@@ -81,6 +84,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
 > reclassificado como **não prioritário**; uma variante segura (pause só em
 > repouso + resume em `touchstart`/`wheel`, que precedem o movimento) ficou
 > como gatilho de reavaliação no `docs/plans/pareto-impact-plan.md`.
+
 - **Onde:** `App.tsx` (estrutura) + `OpeningTitleCard`/`ChapterCard`/`ColophonSection` (seções opacas `bg-ink`)
 - Opening (100vh) + 2 chapter cards (100vh cada) + colophon (gradiente chega a
   98% de opacidade a 28% da seção) ≈ **400vh dos 900vh** com o canvas fixo
@@ -93,6 +97,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   direção do scroll antes de descobrir.
 
 **FALHA-04 — Shadow map re-renderiza o modelo skinned a cada frame sem necessidade**
+
 - **Onde:** `LightRig.tsx` (directional 512, único caster) + `qualityContext.ts` (`medium.shadows: true`)
 - Sujeito quase estático + luz-chave fixa por beat ⇒ o shadow map quase não
   muda entre frames, mas é recomputado com o mesh inteiro (a documentação do
@@ -102,6 +107,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   acima de threshold), ou `castShadow` só no tier high.
 
 **FALHA-05 — ProgressBar faz `setState` por evento de scroll + transition de `height`**
+
 - **Onde:** `src/components/ui/ProgressBar.tsx`
 - Cada scroll event → `setProgress` → re-render React + write de
   `style.height` com transition de 150 ms (height = layout) + leitura de
@@ -111,6 +117,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   cache da altura do documento no resize, atualizar ARIA throttled.
 
 **FALHA-06 — `will-change: transform` permanente em centenas de spans**
+
 - **Onde:** `SplitTextHeadline.tsx` + `ChapterCard.tsx`
 - Cada caractere vira `<span>` com `will-change` fixo; **todas** as seções
   estão no DOM ao mesmo tempo ⇒ dezenas/centenas de layers promovidas no
@@ -119,6 +126,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   `onComplete` da animação.
 
 **FALHA-07 — Alocações por frame no caminho quente (GC churn = micro-stutters)**
+
 - **Onde:** `LightRig.tsx` (`targetFor` cria `{ ...slot.base, ...override }`
   por slot por frame ≈ 360 obj/s), `useProceduralRig.ts` (`Object.entries`
   ×2 por frame + `headSprings.find` por bone), `useInteraction.ts` (literal
@@ -128,7 +136,8 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   aparecem como stutter irregular. Fix: memoizar cues por (slot, beat),
   iterar um array estático de roles, reusar objetos scratch.
 
-**FALHA-08 — `Environment preset="city"` depende de CDN externa em runtime** *(precisa verificar o modo exato de falha)*
+**FALHA-08 — `Environment preset="city"` depende de CDN externa em runtime** _(precisa verificar o modo exato de falha)_
+
 - **Onde:** `CanvasContainer.tsx` + drei `useEnvironment` (confirmado no
   `node_modules`: baixa `potsdamer_platz_1k.hdr` de
   `raw.githack.com/pmndrs/drei-assets`).
@@ -138,6 +147,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   self-host do `.hdr` em `public/`.
 
 **FALHA-09 — Transições de tier de qualidade são "pops" instantâneos**
+
 - **Onde:** `QualityAdapter` + `EffectsStack` (multisampling 4→0, dpr
   1.75→1.25 num frame só, desmonte de efeitos).
 - Quando a degradação acontece (~2–3 s após o reveal), a mudança de
@@ -145,7 +155,8 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   mesmo sendo "tecnicamente correto". Ideal: decidir o tier final ainda sob
   o loader (esconder a transição) ou degradar em passos animados.
 
-**FALHA-10 — Scroll touch sem suavização: parte do "feel" menos fluido é input, não só FPS** *(precisa verificar em device)*
+**FALHA-10 — Scroll touch sem suavização: parte do "feel" menos fluido é input, não só FPS** _(precisa verificar em device)_
+
 - **Onde:** `LenisProvider.tsx` — `syncTouch` não habilitado (default false)
   ⇒ touch usa scroll nativo; desktop tem `smoothWheel` + easing.
 - Mesmo com FPS idêntico, o input mobile vem em passos discretos de touchmove
@@ -154,6 +165,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   (trade-off: latência de input); alternativa é subir o k do lerp só no touch.
 
 **FALHA-11 — Janela inicial `dpr={[1,2]}` renderiza a 2.0 no S23 antes do adapter**
+
 - **Onde:** `CanvasContainer.tsx` — os primeiros frames (antes do efeito do
   `QualityAdapter`) rodam a dpr 2 num aparelho dpr 3. Janela curta, mas no
   pior momento (durante o load/reveal). Menor prioridade; some com o fix da
@@ -162,6 +174,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
 ### Outros pontos de falha
 
 **FALHA-12 — Gesto do web-shot no tier errado: o hint promete, o clique não entrega**
+
 - **Onde:** `useInteraction.ts` (tiro exige `profile.tier === 'high'`) vs
   `WebShootHint.tsx` (anel pulsante para `tier !== 'low'`).
 - No mobile — que roda em `medium` — o anel de descoberta pulsa sobre o
@@ -170,23 +183,27 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
   alinhando os gates (o tiro é 1 draw call, não justifica tier high).
 
 **FALHA-13 — Toque no mobile durante o Arsenal dispara tiro E drag simultaneamente**
+
 - **Onde:** `useInteraction.ts` — ambos os handlers escutam `pointerdown` na
   janela; um tap-que-vira-drag no Beat 3 solta a teia e orbita o modelo ao
   mesmo tempo. Pequeno, mas perceptível como "comportamento duplo".
 
 **FALHA-14 — Variantes otimizadas do GLB existem e não são usadas**
+
 - **Onde:** `public/models/*-512.glb` e `*-webp1024.glb` sem nenhuma
   referência no código (`grep` confirma). No mobile, texturas 1024+ sobram
   para ~390 CSS px a dpr 1.25 — usar a variante leve no tier mobile reduz
-  memória GPU e sampling. *(precisa verificar paridade de materiais entre as
-  variantes antes de adotar)*
+  memória GPU e sampling. _(precisa verificar paridade de materiais entre as
+  variantes antes de adotar)_
 
 **FALHA-15 — Cleanup do Lenis nunca remove o ticker do gsap**
+
 - **Onde:** `LenisProvider.tsx` — `gsap.ticker.remove` recebe uma arrow
   function **nova** (referência diferente da adicionada). Hoje inócuo (o App
   não desmonta), mas vaza em testes/HMR.
 
-**FALHA-16 — Padrão frágil: rest pose chega ao rig como valor de render** *(precisa verificar)*
+**FALHA-16 — Padrão frágil: rest pose chega ao rig como valor de render** _(precisa verificar)_
+
 - **Onde:** `SpiderManModel.tsx` passa `rest: restRef.current` (Map vazio no
   render da resolução do Suspense). Funciona hoje só porque o flip de
   `loaded` no `App` re-renderiza a árvore **depois** do efeito que captura a
@@ -200,48 +217,48 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
 
 ### a) Animação do modelo 3D (sem clipes)
 
-| ID | Título | Descrição | Complexidade | Dep nova |
-|---|---|---|---|---|
-| IDEIA-3D-01 | **A chegada (landing)** | Ao fim do loader, o modelo "pousa" no frame: queda curta amortecida por springs em hips/joelhos + kick vertical de câmera e recuo de FOV — como se tivesse acabado de aterrissar na teia | médio | — |
-| IDEIA-3D-02 | **Dedos procedurais** | O rig usa 16 joints mas o esqueleto tem 66 (Mixamo com dedos): curl lento por noise + punho que fecha no instante do web-shot | médio | — (verificar nomes dos bones de dedo) |
-| IDEIA-3D-03 | **Um cut autoral** | Um único hard cut na experiência (ex.: chapter2 → Arsenal: close da lente → corte seco → macro do lançador) — quebrar deliberadamente a curva contínua cria ritmo de trailer | simples | — |
-| IDEIA-3D-04 | **Contra-movimento por velocidade de scroll** | Hoje `velocity` só afeta FOV/dolly; estender para lean de tronco/ombros — o corpo "resiste" ao scroll rápido e reassenta quando para | simples-médio | — |
-| IDEIA-3D-05 | **Olhar na lente (pupilas shader)** | Hotspot especular nas lentes desloca sutilmente com o ponteiro — o olhar lê-se pelo brilho da máscara, não só pela rotação da cabeça | simples | — |
-| IDEIA-3D-06 | **Fio em tensão no Arsenal** | Linha fina permanente do pulso para fora do frame, vibrando com fbm — prontidão, a mão que sempre pode atirar | simples-médio | — |
-| IDEIA-3D-07 | **Contraposto idle de ciclo longo** | Ciclo de 12–20 s de transferência de peso quadril×ombros com rotação oposta — o pôster vivo nunca repete o mesmo frame | médio | — |
-| IDEIA-3D-08 | **Wrist-cam PiP** | Durante o macro do Arsenal, um insert de "câmera do lançador" (scissor render da mesma cena de outro ângulo) num canto do HUD | complexo | — |
-| IDEIA-3D-09 | **Respiração dirigida por beat** | Amplitude/fase da respiração muda por beat (hero: contida; fullBody: aliviada) — hoje é constante | simples | — |
-| IDEIA-3D-10 | **"Tismo" nos boundaries** | Ao cruzar um limite de beat: 2 frames de rim light 3× + micro-inclinação de cabeça — o arrepio de spider-sense | simples-médio | — |
+| ID          | Título                                        | Descrição                                                                                                                                                                                | Complexidade  | Dep nova                              |
+| ----------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------- |
+| IDEIA-3D-01 | **A chegada (landing)**                       | Ao fim do loader, o modelo "pousa" no frame: queda curta amortecida por springs em hips/joelhos + kick vertical de câmera e recuo de FOV — como se tivesse acabado de aterrissar na teia | médio         | —                                     |
+| IDEIA-3D-02 | **Dedos procedurais**                         | O rig usa 16 joints mas o esqueleto tem 66 (Mixamo com dedos): curl lento por noise + punho que fecha no instante do web-shot                                                            | médio         | — (verificar nomes dos bones de dedo) |
+| IDEIA-3D-03 | **Um cut autoral**                            | Um único hard cut na experiência (ex.: chapter2 → Arsenal: close da lente → corte seco → macro do lançador) — quebrar deliberadamente a curva contínua cria ritmo de trailer             | simples       | —                                     |
+| IDEIA-3D-04 | **Contra-movimento por velocidade de scroll** | Hoje `velocity` só afeta FOV/dolly; estender para lean de tronco/ombros — o corpo "resiste" ao scroll rápido e reassenta quando para                                                     | simples-médio | —                                     |
+| IDEIA-3D-05 | **Olhar na lente (pupilas shader)**           | Hotspot especular nas lentes desloca sutilmente com o ponteiro — o olhar lê-se pelo brilho da máscara, não só pela rotação da cabeça                                                     | simples       | —                                     |
+| IDEIA-3D-06 | **Fio em tensão no Arsenal**                  | Linha fina permanente do pulso para fora do frame, vibrando com fbm — prontidão, a mão que sempre pode atirar                                                                            | simples-médio | —                                     |
+| IDEIA-3D-07 | **Contraposto idle de ciclo longo**           | Ciclo de 12–20 s de transferência de peso quadril×ombros com rotação oposta — o pôster vivo nunca repete o mesmo frame                                                                   | médio         | —                                     |
+| IDEIA-3D-08 | **Wrist-cam PiP**                             | Durante o macro do Arsenal, um insert de "câmera do lançador" (scissor render da mesma cena de outro ângulo) num canto do HUD                                                            | complexo      | —                                     |
+| IDEIA-3D-09 | **Respiração dirigida por beat**              | Amplitude/fase da respiração muda por beat (hero: contida; fullBody: aliviada) — hoje é constante                                                                                        | simples       | —                                     |
+| IDEIA-3D-10 | **"Tismo" nos boundaries**                    | Ao cruzar um limite de beat: 2 frames de rim light 3× + micro-inclinação de cabeça — o arrepio de spider-sense                                                                           | simples-médio | —                                     |
 
 ### b) Animação de elementos de página
 
-| ID | Título | Descrição | Complexidade | Dep nova |
-|---|---|---|---|---|
-| IDEIA-PAG-01 | **Tipografia reativa à velocidade** | Tracking/weight das headlines modulados pela velocidade de scroll (fonte variável) — o texto resiste ao movimento | médio | — (verificar se o Space Grotesk servido é variável) |
-| IDEIA-PAG-02 | **Ticker de rádio da polícia** | Linha mono fina com chamados fictícios que mudam por beat ("…suspeito de maiô vermelho na 5ª…") — narrativa ambiente, puro DOM | simples | — |
-| IDEIA-PAG-03 | **Web-wipe entre capítulos** | Transição de chapter card com clip-path diagonal + fio de teia SVG desenhando (em vez do fade/scale atual) | simples-médio | — |
-| IDEIA-PAG-04 | **Fio-guia do cursor (desktop)** | Linha catenária sutil do cursor até a borda mais próxima, com "snap" ao mover rápido — a página é tecida | médio | — |
-| IDEIA-PAG-05 | **Acento de beat no chrome DOM** | `--beat-accent` (steel→oxide→signal) tingindo rules, bordas, HUD e progress bar por beat, sincronizado com a atmosfera 3D | simples | — |
-| IDEIA-PAG-06 | **CTA magnético no colofon** | O link "ver o código" atrai-se suavemente ao cursor num raio de ~120 px | simples | — |
-| IDEIA-PAG-07 | **Boot de terminal no HUD mobile** | Labels do HUD do Arsenal aparecem caractere a caractere com cursor — o beat técnico "liga" o instrumento | simples | — |
-| IDEIA-PAG-08 | **Metadados que respiram** | Kickers/datas mono com oscilação de opacity/letter-spacing em ciclo de 6–8 s (fora de reduced-motion) | simples | — |
-| IDEIA-PAG-09 | **Progress bar como fio de teia** | Re-estilizar a barra como strand serrilhado com leve sag em SVG + nó que sobe | simples | — |
-| IDEIA-PAG-10 | **Modo attract** | 20 s sem input no hero → drift suave de câmera + pulse no hint "role" — convida ao scroll sem UI extra | médio | — |
+| ID           | Título                              | Descrição                                                                                                                      | Complexidade  | Dep nova                                            |
+| ------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------------------------------------------------- |
+| IDEIA-PAG-01 | **Tipografia reativa à velocidade** | Tracking/weight das headlines modulados pela velocidade de scroll (fonte variável) — o texto resiste ao movimento              | médio         | — (verificar se o Space Grotesk servido é variável) |
+| IDEIA-PAG-02 | **Ticker de rádio da polícia**      | Linha mono fina com chamados fictícios que mudam por beat ("…suspeito de maiô vermelho na 5ª…") — narrativa ambiente, puro DOM | simples       | —                                                   |
+| IDEIA-PAG-03 | **Web-wipe entre capítulos**        | Transição de chapter card com clip-path diagonal + fio de teia SVG desenhando (em vez do fade/scale atual)                     | simples-médio | —                                                   |
+| IDEIA-PAG-04 | **Fio-guia do cursor (desktop)**    | Linha catenária sutil do cursor até a borda mais próxima, com "snap" ao mover rápido — a página é tecida                       | médio         | —                                                   |
+| IDEIA-PAG-05 | **Acento de beat no chrome DOM**    | `--beat-accent` (steel→oxide→signal) tingindo rules, bordas, HUD e progress bar por beat, sincronizado com a atmosfera 3D      | simples       | —                                                   |
+| IDEIA-PAG-06 | **CTA magnético no colofon**        | O link "ver o código" atrai-se suavemente ao cursor num raio de ~120 px                                                        | simples       | —                                                   |
+| IDEIA-PAG-07 | **Boot de terminal no HUD mobile**  | Labels do HUD do Arsenal aparecem caractere a caractere com cursor — o beat técnico "liga" o instrumento                       | simples       | —                                                   |
+| IDEIA-PAG-08 | **Metadados que respiram**          | Kickers/datas mono com oscilação de opacity/letter-spacing em ciclo de 6–8 s (fora de reduced-motion)                          | simples       | —                                                   |
+| IDEIA-PAG-09 | **Progress bar como fio de teia**   | Re-estilizar a barra como strand serrilhado com leve sag em SVG + nó que sobe                                                  | simples       | —                                                   |
+| IDEIA-PAG-10 | **Modo attract**                    | 20 s sem input no hero → drift suave de câmera + pulse no hint "role" — convida ao scroll sem UI extra                         | médio         | —                                                   |
 
 ### c) Ambientação temática (Spider-Man)
 
-| ID | Título | Descrição | Complexidade | Dep nova |
-|---|---|---|---|---|
-| IDEIA-AMB-01 | **Teias de canto reativas** | SVG fixo em 1–2 cantos com fios que flexionam sutilmente ao cursor (desktop) / gyro (mobile) — como se tocadas | simples-médio | — |
-| IDEIA-AMB-02 | **Skyline em silhueta** | 2–3 planos SVG (torres de água, antenas, parapeitos) na base do frame com parallax lento — NYC sem modelo de cidade | médio | asset SVG autoral |
-| IDEIA-AMB-03 | **Janelas acesas piscando** | No plano mais distante do skyline, janelas `signal/steel` com flicker estocástico — a cidade viva ao fundo | simples | (sobre AMB-02) |
-| IDEIA-AMB-04 | **Chapter cards como impressão** | Halftone + misregistration cromático vermelho/azul nos cards de capítulo — nod aos quadrinhos impressos, distingue as transições do 3D | simples-médio | — |
-| IDEIA-AMB-05 | **Thwip de partículas no impacto** | Micro-burst de faíscas/poeira no ponto de impacto do web-shot, reutilizando o sistema de partículas GPU | simples-médio | — |
-| IDEIA-AMB-06 | **Áudio diegético opcional** | Toggle discreto: "thwip" no tiro, ruído de cidade distante, sirene rara por beat — WebAudio nativo, opt-in por gesto (autoplay policy) | médio | assets de áudio a licenciar |
-| IDEIA-AMB-07 | **Trama do traje no chrome** | Textura CSS sutil de malha/hex a 3–4% atrás do colofon/opening — o material do herói vira papel da página | simples | — |
-| IDEIA-AMB-08 | **Carimbo editorial por beat** | "NYC · 04:37 · chuva fina" muda por seção — detalhe que fã nota | simples | — |
-| IDEIA-AMB-09 | **Colofon webbed shut** | Fios de teia SVG desenhando (stroke-dashoffset) sobre o colofon conforme ele entra — a página se fecha em teia | simples-médio | — |
-| IDEIA-AMB-10 | **Retículo web-shooter como cursor** | Crosshair mínimo no desktop que "aperta" sobre elementos interativos | simples | — |
+| ID           | Título                               | Descrição                                                                                                                              | Complexidade  | Dep nova                    |
+| ------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------------------------- |
+| IDEIA-AMB-01 | **Teias de canto reativas**          | SVG fixo em 1–2 cantos com fios que flexionam sutilmente ao cursor (desktop) / gyro (mobile) — como se tocadas                         | simples-médio | —                           |
+| IDEIA-AMB-02 | **Skyline em silhueta**              | 2–3 planos SVG (torres de água, antenas, parapeitos) na base do frame com parallax lento — NYC sem modelo de cidade                    | médio         | asset SVG autoral           |
+| IDEIA-AMB-03 | **Janelas acesas piscando**          | No plano mais distante do skyline, janelas `signal/steel` com flicker estocástico — a cidade viva ao fundo                             | simples       | (sobre AMB-02)              |
+| IDEIA-AMB-04 | **Chapter cards como impressão**     | Halftone + misregistration cromático vermelho/azul nos cards de capítulo — nod aos quadrinhos impressos, distingue as transições do 3D | simples-médio | —                           |
+| IDEIA-AMB-05 | **Thwip de partículas no impacto**   | Micro-burst de faíscas/poeira no ponto de impacto do web-shot, reutilizando o sistema de partículas GPU                                | simples-médio | —                           |
+| IDEIA-AMB-06 | **Áudio diegético opcional**         | Toggle discreto: "thwip" no tiro, ruído de cidade distante, sirene rara por beat — WebAudio nativo, opt-in por gesto (autoplay policy) | médio         | assets de áudio a licenciar |
+| IDEIA-AMB-07 | **Trama do traje no chrome**         | Textura CSS sutil de malha/hex a 3–4% atrás do colofon/opening — o material do herói vira papel da página                              | simples       | —                           |
+| IDEIA-AMB-08 | **Carimbo editorial por beat**       | "NYC · 04:37 · chuva fina" muda por seção — detalhe que fã nota                                                                        | simples       | —                           |
+| IDEIA-AMB-09 | **Colofon webbed shut**              | Fios de teia SVG desenhando (stroke-dashoffset) sobre o colofon conforme ele entra — a página se fecha em teia                         | simples-médio | —                           |
+| IDEIA-AMB-10 | **Retículo web-shooter como cursor** | Crosshair mínimo no desktop que "aperta" sobre elementos interativos                                                                   | simples       | —                           |
 
 Notas de restrição: tudo acima foi checado contra as proibições da
 `design-bible.md` (sem bokeh decorativo, sem fundos abstratos, texto nunca
@@ -254,6 +271,7 @@ Ideias com movimento contínuo (PAG-08, AMB-03) precisam do gate
 ## Fontes revisadas
 
 ### Código (lidos na íntegra ou em parte relevante)
+
 - `src/App.tsx`
 - `src/components/3d/CanvasContainer.tsx`, `CameraRig.tsx`, `Stage.tsx`,
   `Atmosphere.tsx`, `EffectsStack.tsx`, `PerformanceMonitor.tsx`,
@@ -279,18 +297,21 @@ Ideias com movimento contínuo (PAG-08, AMB-03) precisam do gate
   `helpers/environment-assets.cjs.js` (confirmar URL da CDN do preset)
 
 ### Docs consultados
+
 - `docs/STATE.md`, `PROGRESS.md`
-- `docs/plans/portfolio-impact-plan.md` (na íntegra — para não repetir ideias),
-  `docs/plans/3d-motion-upgrade-plan.md` (grep de escopo/proibições)
+- `docs/plans/archive/portfolio-impact-plan.md` (na íntegra — para não repetir ideias),
+  `docs/plans/archive/3d-motion-upgrade-plan.md` (grep de escopo/proibições)
 - `docs/design/memorable-moments.md`, `docs/design/design-bible.md`
   (proibições), `docs/specs/headroom-lighting.md` (números de triângulos)
 
 ### Ferramentas
+
 - `node scripts/inspect-glb.mjs` (contagens do GLB: 16 meshes, 30 texturas,
   66 joints, 0 clipes, 22,4 MB)
 - `grep` por uso das variantes `-512`/`-webp1024` (nenhuma referência)
 
 ### Não revisados nesta rodada
+
 - `GyroPrompt.tsx`, `StaticFallback.tsx`, `PerfHud.tsx`,
   `cameraKeyframes.ts` (valores), `interactionStore.ts`, `pointerMath.ts`,
   `spring.ts`, `poses.ts`, `blink.ts`, `lensShader.ts`, `suitShader.ts`,

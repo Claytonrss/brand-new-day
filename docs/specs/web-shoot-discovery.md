@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** Arsenal (Beat 3)
-**Wave:** P3.1 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P3.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -36,10 +36,10 @@ Não usar os dois. O hint aparece **uma vez por sessão** (não a cada scroll) e
 
 ## 4. Gestos por plataforma
 
-| Plataforma | Gesto | Alvo |
-|---|---|---|
-| Desktop | clique | idealmente na região do pulso; fallback: qualquer clique no Beat 3 dispara (comportamento atual) |
-| Mobile | toque | mesma lógica; alvo generoso (o pulso é pequeno em 390px) |
+| Plataforma | Gesto  | Alvo                                                                                             |
+| ---------- | ------ | ------------------------------------------------------------------------------------------------ |
+| Desktop    | clique | idealmente na região do pulso; fallback: qualquer clique no Beat 3 dispara (comportamento atual) |
+| Mobile     | toque  | mesma lógica; alvo generoso (o pulso é pequeno em 390px)                                         |
 
 - O disparo já usa `ANCHORS.wrist` (âncora real, ADR-013) — manter.
 - Zona de toque: ampliar o alvo no mobile para não exigir precisão de pixel.
@@ -60,13 +60,13 @@ Não usar os dois. O hint aparece **uma vez por sessão** (não a cada scroll) e
 
 ## 7. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Visitante descobre a interação sem instrução externa | teste com usuário / revisão |
-| 2 | Hint não cobre o lançador nem vira UI de game | screenshot 1440/390 |
-| 3 | Funciona em touch e mouse | teste de browser (`motion.spec.ts` + manual) |
-| 4 | Hint aparece 1× por sessão, nunca em reduced-motion | teste |
-| 5 | `?debug` mostra o `shotId` incrementando | `window.__interaction` |
+| #   | Critério                                             | Medição                                      |
+| --- | ---------------------------------------------------- | -------------------------------------------- |
+| 1   | Visitante descobre a interação sem instrução externa | teste com usuário / revisão                  |
+| 2   | Hint não cobre o lançador nem vira UI de game        | screenshot 1440/390                          |
+| 3   | Funciona em touch e mouse                            | teste de browser (`motion.spec.ts` + manual) |
+| 4   | Hint aparece 1× por sessão, nunca em reduced-motion  | teste                                        |
+| 5   | `?debug` mostra o `shotId` incrementando             | `window.__interaction`                       |
 
 ## 8. Stop Conditions
 

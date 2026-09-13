@@ -2,7 +2,7 @@
 
 > **Status:** implementado
 > **Branch:** `feat/atmosphere-depth`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave E
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave E
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -53,14 +53,14 @@ Sem mudança. As partículas leem `camera.position` por frame para o parallax.
 
 ### 7.1 Partículas em GPU (`atmosphere/`)
 
-| Item | Valor |
-|---|---|
-| Contagem por tier | high **420** · medium **180** · low **0** |
-| Camadas | **3** (near/mid/far) com drift 0,16 / 0,10 / 0,06 u/s |
-| Parallax por camada | 0,85 / 0,60 / 0,35 |
-| Tamanho por camada | 0,05 / 0,075 / 0,11 |
-| Opacidade por camada | 0,28 / 0,20 / 0,13 |
-| Draw calls | **1** (independe da contagem) |
+| Item                 | Valor                                                 |
+| -------------------- | ----------------------------------------------------- |
+| Contagem por tier    | high **420** · medium **180** · low **0**             |
+| Camadas              | **3** (near/mid/far) com drift 0,16 / 0,10 / 0,06 u/s |
+| Parallax por camada  | 0,85 / 0,60 / 0,35                                    |
+| Tamanho por camada   | 0,05 / 0,075 / 0,11                                   |
+| Opacidade por camada | 0,28 / 0,20 / 0,13                                    |
+| Draw calls           | **1** (independe da contagem)                         |
 
 Todo o movimento é feito no **vertex shader**: drift vertical com wrap no
 volume, turbulência por senos defasados por partícula, parallax proporcional à
@@ -83,11 +83,11 @@ própria névoa (cor = cor de fundo), **sem custo de passe**.
 
 ## 8. Performance Budget
 
-| Recurso | Custo | Política |
-|---|---|---|
+| Recurso    | Custo                         | Política                  |
+| ---------- | ----------------------------- | ------------------------- |
 | Partículas | 1 draw call, 0 alocação/frame | todos os tiers (0 no low) |
-| Névoa | 0 passe (chunk de fog) | todos os tiers |
-| Texturas | nenhuma | — |
+| Névoa      | 0 passe (chunk de fog)        | todos os tiers            |
+| Texturas   | nenhuma                       | —                         |
 
 Meta mobile mantida: ≤ 2 efeitos de post ativos, draw calls 44–46.
 

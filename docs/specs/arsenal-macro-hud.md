@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** Arsenal (Beat 3)
-**Wave:** P2a.1 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P2a.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -38,6 +38,7 @@ fez isso à mão".
 ## 3. Composition
 
 **Desktop (1440×900):**
+
 - O lançador ocupa **≥40% da largura** do frame, em macro.
 - Linhas de chamada (hairlines) partem de pontos do lançador para labels mono
   nas margens — **nunca** cruzando o detalhe que anotam.
@@ -45,6 +46,7 @@ fez isso à mão".
   secundária ou aparece no início do beat e cede lugar ao HUD no macro.
 
 **Mobile (390/430):**
+
 - Linhas de chamada complexas não cabem. O HUD vira uma **legenda inferior**
   (lista mono curta) + no máximo 1–2 marcadores pontuais sobre o lançador.
 - O pulso/lançador continua 100% desobstruído (P0.1).
@@ -72,21 +74,21 @@ Reference: `docs/design/composition-rules.md` (Arsenal: pulso é o foco).
 
 ## 6. Degradação
 
-| Tier | Comportamento |
-|---|---|
-| Desktop High | macro + HUD completo (linhas de chamada) + DOF apertado |
-| Mobile Good | macro + legenda inferior + 1–2 marcadores; DOF reduzido |
+| Tier                        | Comportamento                                                   |
+| --------------------------- | --------------------------------------------------------------- |
+| Desktop High                | macro + HUD completo (linhas de chamada) + DOF apertado         |
+| Mobile Good                 | macro + legenda inferior + 1–2 marcadores; DOF reduzido         |
 | Mobile Low / reduced-motion | enquadramento do lançador legível, HUD estático, sem DOF pesado |
 
 ## 7. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Desktop: lançador ≥40% da largura do frame com HUD legível | screenshot 1440 |
-| 2 | Mobile: mesma informação como legenda, pulso desobstruído | screenshot 390/430 |
-| 3 | Nenhum artefato de geometria/textura visível no macro | revisão Look Dev |
-| 4 | Draw calls/luzes dentro do budget | `budget.spec.ts` |
-| 5 | Rubrica "integração texto/personagem" e "originalidade" ≥ 4 | rubrica |
+| #   | Critério                                                    | Medição            |
+| --- | ----------------------------------------------------------- | ------------------ |
+| 1   | Desktop: lançador ≥40% da largura do frame com HUD legível  | screenshot 1440    |
+| 2   | Mobile: mesma informação como legenda, pulso desobstruído   | screenshot 390/430 |
+| 3   | Nenhum artefato de geometria/textura visível no macro       | revisão Look Dev   |
+| 4   | Draw calls/luzes dentro do budget                           | `budget.spec.ts`   |
+| 5   | Rubrica "integração texto/personagem" e "originalidade" ≥ 4 | rubrica            |
 
 ## 8. Stop Conditions
 

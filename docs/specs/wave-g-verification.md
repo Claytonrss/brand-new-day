@@ -1,8 +1,9 @@
 # Scene Spec — Verificação (Wave G)
 
-> **Status:** implementado
+> **Status:** implementado — registro histórico da Wave G. Os gates
+> descritos aqui vivem hoje em `tests/visual/{budget,console,credits}.spec.ts`.
 > **Branch:** `test/wave-g-verification`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave G
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave G
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -52,18 +53,19 @@ próprio app trata.
 ### 7.2 Atribuição (`credits.spec.ts`)
 
 A atribuição CC-BY 4.0 tem de estar **visível sem hover** (opacidade computada
+
 > 0,3) no Hero e no FullBody, com `href` para o Sketchfab, `target="_blank"` e
-`rel` contendo `noopener` e `noreferrer`.
+> `rel` contendo `noopener` e `noreferrer`.
 
 ### 7.3 Orçamento (`budget.spec.ts`)
 
-| Métrica | Limite | Onde |
-|---|---|---|
-| Draw calls por frame | **≤ 48** | Hero e Arsenal (`fx=subtle`) |
-| `programs` | **≤ 24** | idem |
-| Triângulos | > 100 k | garante que a cena renderizou |
-| Crescimento de `programs` no scroll | **≤ +2** | hero → fullBody |
-| FPS | ≥ 45 mobile / ≥ 55 desktop | **só com `PERF_FPS_ASSERT=1`** |
+| Métrica                             | Limite                     | Onde                           |
+| ----------------------------------- | -------------------------- | ------------------------------ |
+| Draw calls por frame                | **≤ 48**                   | Hero e Arsenal (`fx=subtle`)   |
+| `programs`                          | **≤ 24**                   | idem                           |
+| Triângulos                          | > 100 k                    | garante que a cena renderizou  |
+| Crescimento de `programs` no scroll | **≤ +2**                   | hero → fullBody                |
+| FPS                                 | ≥ 45 mobile / ≥ 55 desktop | **só com `PERF_FPS_ASSERT=1`** |
 
 O FPS fica atrás de uma flag porque este runner usa **SwiftShader** (1–5 FPS
 para qualquer versão do projeto): uma asserção de FPS aqui seria ruído, não

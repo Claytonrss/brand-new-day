@@ -2,7 +2,7 @@
 
 > **Status:** implementado
 > **Branch:** `feat/atmosphere-depth` (mesma branch da Wave E, a pedido)
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave D
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave D
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -50,11 +50,11 @@ que decai exponencialmente — some em ~0,5 s. Nada de shake de posição.
 
 ### 7.1 Arrastar para orbitar (D1)
 
-| Parâmetro | Valor |
-|---|---|
-| Limites | yaw ±0,21 rad (±12°) · pitch ±0,12 rad |
-| Sensibilidade | 0,0045 rad/px (yaw) · 0,003 (pitch) |
-| Retorno ao repouso | `1 − exp(−4·delta)` |
+| Parâmetro          | Valor                                  |
+| ------------------ | -------------------------------------- |
+| Limites            | yaw ±0,21 rad (±12°) · pitch ±0,12 rad |
+| Sensibilidade      | 0,0045 rad/px (yaw) · 0,003 (pitch)    |
+| Retorno ao repouso | `1 − exp(−4·delta)`                    |
 
 O clamp é joelho suave (`tanh`), nunca corte duro. Listener no `window`
 (o canvas é `pointer-events: none`).
@@ -91,14 +91,15 @@ O asset não tem pálpebras. A piscada é um obturador de shader com duas partes
 
 Cadência aleatória de 2,6–7,2 s, duração 180 ms, `?blink=off|subtle|full|hold`,
 desligada em `prefers-reduced-motion`. Medição de aceite: pixels com luminância
->200 na região do rosto caem **98,1%** no ápice.
+
+> 200 na região do rosto caem **98,1%** no ápice.
 
 ## 8. Performance Budget
 
-| Recurso | Custo |
-|---|---|
-| Teia | 1 draw call (só no Beat 3 e tier `high`) |
-| Listeners | 5 no `window`, todos passivos exceto onde necessário |
+| Recurso          | Custo                                                        |
+| ---------------- | ------------------------------------------------------------ |
+| Teia             | 1 draw call (só no Beat 3 e tier `high`)                     |
+| Listeners        | 5 no `window`, todos passivos exceto onde necessário         |
 | Estado por frame | sem alocação (vetores reutilizados; `INTERACTION` é mutável) |
 
 Draw calls base mantidos (44 no desktop `fx=subtle`).

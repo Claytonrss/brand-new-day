@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** novo — antes do Hero (entre o preloader e a primeira dobra 3D)
-**Wave:** P1a.2 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P1a.2 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -61,12 +61,12 @@ portfólio. Não usar os dois.
 
 ## 6. Critérios de aceite
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | O primeiro frame 3D (máscara) acontece **depois** do card, não junto | revisão de scroll |
-| 2 | Card lê como respiração, não como "mais um título" | rubrica "sensação cinematográfica" ≥ 4 |
-| 3 | Não compete com o Hero (o Hero continua o momento de impacto) | comparativo de capturas |
-| 4 | `prefers-reduced-motion`: sem animação de entrada | teste |
+| #   | Critério                                                             | Medição                                |
+| --- | -------------------------------------------------------------------- | -------------------------------------- |
+| 1   | O primeiro frame 3D (máscara) acontece **depois** do card, não junto | revisão de scroll                      |
+| 2   | Card lê como respiração, não como "mais um título"                   | rubrica "sensação cinematográfica" ≥ 4 |
+| 3   | Não compete com o Hero (o Hero continua o momento de impacto)        | comparativo de capturas                |
+| 4   | `prefers-reduced-motion`: sem animação de entrada                    | teste                                  |
 
 ## 7. Stop Conditions
 

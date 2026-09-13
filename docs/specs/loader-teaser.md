@@ -3,13 +3,13 @@
 ## 1. Context
 
 **Section:** preloader (antes do Hero)
-**Wave:** P1a.1 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P1a.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
 > **Motivação:** o preloader atual é funcional ("SPIDER-MAN / barra / %") mas
 > não é o **teaser cinematográfico** que o próprio projeto pede — pelo oposto,
-> a restrição do projeto diz que o carregamento *pode e deve* ser tratado como
+> a restrição do projeto diz que o carregamento _pode e deve_ ser tratado como
 > parte da experiência, não como obstáculo. O GLB pesa ~22 MB; esse tempo
 > existe de qualquer jeito. A decisão é transformá-lo em **build-up**.
 
@@ -77,14 +77,14 @@ abriu um frame de filme").
 
 ## 7. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Quem vê só o loader já entende o tom do site | revisão humana |
-| 2 | Progresso legível (elemento de reveal ou %) | screenshot em 3 estados: 0%, ~50%, 100% |
-| 3 | Transição loader→Hero sem corte perceptível | vídeo / revisão |
-| 4 | `prefers-reduced-motion`: sem reveal, desmonta ao completar | teste |
-| 5 | Nenhum asset pesado novo no loader | inspeção de rede |
-| 6 | Rubrica "primeira dobra / impacto imediato" ≥ 4 | rubrica |
+| #   | Critério                                                    | Medição                                 |
+| --- | ----------------------------------------------------------- | --------------------------------------- |
+| 1   | Quem vê só o loader já entende o tom do site                | revisão humana                          |
+| 2   | Progresso legível (elemento de reveal ou %)                 | screenshot em 3 estados: 0%, ~50%, 100% |
+| 3   | Transição loader→Hero sem corte perceptível                 | vídeo / revisão                         |
+| 4   | `prefers-reduced-motion`: sem reveal, desmonta ao completar | teste                                   |
+| 5   | Nenhum asset pesado novo no loader                          | inspeção de rede                        |
+| 6   | Rubrica "primeira dobra / impacto imediato" ≥ 4             | rubrica                                 |
 
 ## 8. Stop Conditions
 
