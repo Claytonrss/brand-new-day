@@ -11,7 +11,7 @@ import { mkdirSync } from 'node:fs';
  * Usage: node scripts/collect-portfolio-audit.mjs [baseUrl] [outDir] [points]
  *        points: comma-separated scroll percentages (default 0,15,...,100)
  */
-const BASE_URL = process.argv[2] ?? 'http://127.0.0.1:5173';
+const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
 const OUT_DIR = process.argv[3] ?? 'docs/evidence/portfolio-audit-p0';
 const POINTS = (process.argv[4] ?? '0,15,30,45,60,75,90,100')
   .split(',')

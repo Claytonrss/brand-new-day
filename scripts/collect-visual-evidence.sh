@@ -6,7 +6,7 @@ trap 'echo "STATUS: FAIL"; exit 1' ERR
 mkdir -p test-results/visual test-results/logs
 
 SESSION="spiderman"
-BASE_URL="${BASE_URL:-http://localhost:5173}"
+BASE_URL="${BASE_URL:-http://localhost:${PORT:-5173}}"
 
 echo "== Visual evidence: checking app at $BASE_URL =="
 

@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 
-const BASE_URL = 'http://127.0.0.1:5173';
+const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
 const OUT = 'docs/evidence/dom-micro-craft';
 mkdirSync(OUT, { recursive: true });
 
