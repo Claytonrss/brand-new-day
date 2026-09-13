@@ -5,10 +5,15 @@
 
 ## Fontes
 
-| Família | Uso | Pesos |
-|---|---|---|
-| **Space Grotesk** | títulos e copy principal | 400–700 |
+| Família            | Uso                                          | Pesos   |
+| ------------------ | -------------------------------------------- | ------- |
+| **Space Grotesk**  | títulos e copy principal                     | 400–700 |
 | **JetBrains Mono** | labels diegéticos/HUD e metadados narrativos | 400–500 |
+
+> **Entrega (2026-09-12):** fontes **self-hosted** em `public/fonts/`
+> (subset latin, SIL OFL — ADR-021). Space Grotesk é **variável (400–700)**
+> — aberto a weight/tracking dirigidos por velocidade (IDEIA-PAG-01,
+> `docs/plans/backlog.md`).
 
 **Proibido:** cream + serif, eyebrow em caixa-alta decorativo, qualquer fonte
 fora dessas duas.
@@ -24,19 +29,19 @@ existe.
 
 ### Mobile (390px base)
 
-| Elemento | Tamanho | Line-height | Tracking | Peso |
-|---|---|---|---|---|
-| Kicker (mono) | 11px | 1.4 | +0.18em, uppercase | 500 |
-| Título display | 40–52px | 1.02–1.08 | -0.02em | 600–700 |
-| Corpo | 16–17px | 1.55 | 0 | 400 |
+| Elemento       | Tamanho | Line-height | Tracking           | Peso    |
+| -------------- | ------- | ----------- | ------------------ | ------- |
+| Kicker (mono)  | 11px    | 1.4         | +0.18em, uppercase | 500     |
+| Título display | 40–52px | 1.02–1.08   | -0.02em            | 600–700 |
+| Corpo          | 16–17px | 1.55        | 0                  | 400     |
 
 ### Desktop (1440px base)
 
-| Elemento | Tamanho | Line-height | Tracking | Peso |
-|---|---|---|---|---|
-| Kicker (mono) | 12px | 1.4 | +0.2em, uppercase | 500 |
-| Título display | 72–110px | 1.0–1.05 | -0.025em | 600–700 |
-| Corpo | 18–20px | 1.5 | 0 | 400 |
+| Elemento       | Tamanho  | Line-height | Tracking          | Peso    |
+| -------------- | -------- | ----------- | ----------------- | ------- |
+| Kicker (mono)  | 12px     | 1.4         | +0.2em, uppercase | 500     |
+| Título display | 72–110px | 1.0–1.05    | -0.025em          | 600–700 |
+| Corpo          | 18–20px  | 1.5         | 0                 | 400     |
 
 ## Quebras de linha intencionais (fechadas)
 

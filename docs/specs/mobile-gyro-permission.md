@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** transversal (Hero e beats com parallax)
-**Wave:** P2b.2 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P2b.2 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -102,22 +102,22 @@ gyro não sente que perdeu algo.
 
 ## 7. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | iOS: após tocar "ativar", mover o celular orbita a cena | dispositivo real (TD-002) |
-| 2 | iOS: negar → fallback por scroll, sem prompt repetido | dispositivo real |
-| 3 | Android: gyro ativa sem prompt | dispositivo real |
-| 4 | `prefers-reduced-motion`: prompt nunca aparece, gyro nunca ativa | teste de mídia + revisão |
-| 5 | Sem sensor/desktop: nenhum prompt, experiência intacta | teste visual |
-| 6 | Nenhum listener registrado antes do grant | inspeção / unit test |
+| #   | Critério                                                         | Medição                   |
+| --- | ---------------------------------------------------------------- | ------------------------- |
+| 1   | iOS: após tocar "ativar", mover o celular orbita a cena          | dispositivo real (TD-002) |
+| 2   | iOS: negar → fallback por scroll, sem prompt repetido            | dispositivo real          |
+| 3   | Android: gyro ativa sem prompt                                   | dispositivo real          |
+| 4   | `prefers-reduced-motion`: prompt nunca aparece, gyro nunca ativa | teste de mídia + revisão  |
+| 5   | Sem sensor/desktop: nenhum prompt, experiência intacta           | teste visual              |
+| 6   | Nenhum listener registrado antes do grant                        | inspeção / unit test      |
 
 ## 8. Riscos
 
-| Risco | Mitigação |
-|---|---|
+| Risco                                                | Mitigação                                                                    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
 | Não verificável em headless (SwiftShader sem sensor) | aceite em dispositivo real (TD-002); lógica de estados coberta por unit test |
-| Prompt quebrar a imersão do Hero | UI mínima, dismissável, fora da zona da máscara |
-| Usuário nega e a experiência "perde" algo | fallback por scroll + drift idle já é a experiência atual (não há regressão) |
+| Prompt quebrar a imersão do Hero                     | UI mínima, dismissável, fora da zona da máscara                              |
+| Usuário nega e a experiência "perde" algo            | fallback por scroll + drift idle já é a experiência atual (não há regressão) |
 
 ## 9. Evidências
 

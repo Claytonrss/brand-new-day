@@ -1,4 +1,5 @@
 # Plano de Bootstrap — Harness de Engenharia com IA
+
 ### Projeto: `spiderman-landing`
 
 Objetivo: replicar aqui o mesmo padrão de harness de 5 agentes (explore,
@@ -154,28 +155,28 @@ um (isso não deve ser copiado para um projeto novo sem adaptação).
 
 ### Estrutura de Harness de IA — Comparativo
 
-| Tema | FinTrack | our-journey | Padrão para spiderman-landing |
-|---|---|---|---|
-| **Gerenciador de pacotes** | pnpm workspaces | pnpm 9 obrigatório | usar pnpm; não usar npm/yarn |
-| **Runtime** | Node >= 22 | CI usa Node 20, mas app moderno React 19/Next 16 | Node 22 |
-| **Configuração de agentes** | `.opencode/agent/*.md` com frontmatter YAML | `opencode.json` inline + plugins Superpowers/ECC | usar `.opencode/agent/*.md` com frontmatter (padrão FinTrack) |
-| **Agentes base** | orchestrator, explore, planner, implement-backend, implement-frontend, implement-general, test-writer, verify, security-audit, git, architecture-analyst, docs, scout | orchestrator, explore, plan, implement, verify, security-audit, test-writer | manter 5 agentes base (explore, plan, implement, verify, security-audit) + git/docs/test-writer; orquestrador delegation-only |
-| **Documentos permanentes** | `docs/product/`, `docs/architecture/`, `docs/design/`, `docs/engineering/` | `docs/ARCHITECTURE.md`, `docs/BACKLOG.md`, `docs/CHANGELOG.md`, `docs/ENGINEERING.md`, `docs/ROADMAP.md`, `docs/superpowers/` | usar `docs/*` para decisões permanentes e `specs/000N-*` para unidades implementáveis |
-| **PRD** | `docs/product/prd.md` | não encontrado (projeto menor) | criar `docs/prd.md` |
-| **HLD** | `docs/architecture/hld.md` | `docs/ARCHITECTURE.md` | criar `docs/hld.md` |
-| **FDD/Specs** | `specs/000N-*/spec.md` + `tasks.md` | `docs/superpowers/specs/` + `docs/superpowers/plans/` | usar `specs/000N-*/spec.md` (padrão FinTrack) — para este projeto, "Scene Spec" |
-| **ADRs** | `docs/architecture/adr/000N-*.md` | `docs/superpowers/memory/decisions.md` | usar `docs/architecture/adr/` + memória resumida em `docs/STATE.md` |
-| **Memória persistente** | `docs/STATE.md`, `docs/engineering/memory/decisions.md`, `docs/engineering/memory/patterns.md`, `docs/engineering/memory/known-issues.md` | `docs/superpowers/memory/architecture.md`, `docs/superpowers/memory/decisions.md`, `docs/superpowers/memory/patterns.md`, `docs/superpowers/memory/known-issues.md` | criar `docs/STATE.md` + `docs/memory/decisions.md` |
-| **Scripts de validação** | `scripts/validate-*.mjs` (domain, build, coverage, spec, storybook), `scripts/audit-docs.mjs`, `scripts/eval-spec-fidelity.mjs` | `scripts/generate-memories.ts`, `scripts/organize-photos.ts` | criar scripts shell obrigatórios: `setup.sh`, `verify-all.sh`, `collect-visual-evidence.sh` + scripts de inspeção |
-| **CI** | `.github/workflows/ci.yml` + `docs-gate.yml` — lint, test, build, validate-domain, validate-coverage, validate-storybook, docs-audit | `.github/workflows/ci.yml` — format, lint, test:coverage, build, test:e2e, upload artifacts | format, lint, typecheck, unit, coverage, build, visual tests, docs/spec audit |
-| **Workflow git** | Branch por feature (`feat/*`, `fix/*`, `chore/*`), Conventional Commits, PR com checklist, CI verde obrigatório | Branch por feature (`feat/*`, `fix/*`, `chore/*`, `docs/*`), Conventional Commits, commitlint enforced, PR com CI verde | branch obrigatória (`feat/*`, `fix/*`, `docs/*`, `chore/*`), Conventional Commits, PR com evidência real |
-| **Hooks** | `.husky/` + `.lintstagedrc` + `commitlint.config.js` | `.husky/` + `.lintstagedrc` + `commitlint.config.js` | usar husky + lint-staged + commitlint |
-| **Formato de agente** | Markdown com frontmatter YAML (description, mode, model, temperature) + prompt | Configuração inline em `opencode.json` | usar formato FinTrack: `.opencode/agent/*.md` com frontmatter |
-| **Permissões** | Definidas em `opencode.json` por agente (edit, bash, task) | Definidas em `opencode.json` por agente | definir permissões restritivas por agente em `opencode.json` |
-| **Modelos** | orchestrator: deepseek-v4-pro, explore: deepseek-v4-flash, planner: glm-5.2, implement-*: qwen3.7-plus, test-writer: mimo-v2.5, verify: deepseek-v4-flash, security-audit: deepseek-v4-pro, git: deepseek-v4-flash, docs: deepseek-v4-flash, scout: openrouter/cohere/north-mini-code | orchestrator: qwen3.7-plus, explore: deepseek-v4-flash, plan: glm-5, implement: qwen3.7-plus, verify: glm-5, security-audit: glm-5, test-writer: deepseek-v4-flash | usar modelos recomendados no plano (Fase 4.1) |
-| **Template de PR** | `docs/templates/pr.md` | não encontrado | criar `docs/templates/pr.md` |
-| **Design** | `docs/design/direction.md`, `docs/design/tokens.md`, `docs/design/component-library-plan.md`, Storybook | `docs/superpowers/memory/patterns.md` (design system) | design é feature principal; criar `docs/design/` com Design Bible, storyboard, quality matrix, visual rubric, composition rules, look-dev-report |
-| **Testes visuais** | Storybook visual/a11y gate | Playwright E2E | Playwright para validação visual + screenshots mobile/desktop |
+| Tema                        | FinTrack                                                                                                                                                                                                                                                                              | our-journey                                                                                                                                                         | Padrão para spiderman-landing                                                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Gerenciador de pacotes**  | pnpm workspaces                                                                                                                                                                                                                                                                       | pnpm 9 obrigatório                                                                                                                                                  | usar pnpm; não usar npm/yarn                                                                                                                     |
+| **Runtime**                 | Node >= 22                                                                                                                                                                                                                                                                            | CI usa Node 20, mas app moderno React 19/Next 16                                                                                                                    | Node 22                                                                                                                                          |
+| **Configuração de agentes** | `.opencode/agent/*.md` com frontmatter YAML                                                                                                                                                                                                                                           | `opencode.json` inline + plugins Superpowers/ECC                                                                                                                    | usar `.opencode/agent/*.md` com frontmatter (padrão FinTrack)                                                                                    |
+| **Agentes base**            | orchestrator, explore, planner, implement-backend, implement-frontend, implement-general, test-writer, verify, security-audit, git, architecture-analyst, docs, scout                                                                                                                 | orchestrator, explore, plan, implement, verify, security-audit, test-writer                                                                                         | manter 5 agentes base (explore, plan, implement, verify, security-audit) + git/docs/test-writer; orquestrador delegation-only                    |
+| **Documentos permanentes**  | `docs/product/`, `docs/architecture/`, `docs/design/`, `docs/engineering/`                                                                                                                                                                                                            | `docs/ARCHITECTURE.md`, `docs/BACKLOG.md`, `docs/CHANGELOG.md`, `docs/ENGINEERING.md`, `docs/ROADMAP.md`, `docs/superpowers/`                                       | usar `docs/*` para decisões permanentes e `specs/000N-*` para unidades implementáveis                                                            |
+| **PRD**                     | `docs/product/prd.md`                                                                                                                                                                                                                                                                 | não encontrado (projeto menor)                                                                                                                                      | criar `docs/prd.md`                                                                                                                              |
+| **HLD**                     | `docs/architecture/hld.md`                                                                                                                                                                                                                                                            | `docs/ARCHITECTURE.md`                                                                                                                                              | criar `docs/hld.md`                                                                                                                              |
+| **FDD/Specs**               | `specs/000N-*/spec.md` + `tasks.md`                                                                                                                                                                                                                                                   | `docs/superpowers/specs/` + `docs/superpowers/plans/`                                                                                                               | usar `specs/000N-*/spec.md` (padrão FinTrack) — para este projeto, "Scene Spec"                                                                  |
+| **ADRs**                    | `docs/architecture/adr/000N-*.md`                                                                                                                                                                                                                                                     | `docs/superpowers/memory/decisions.md`                                                                                                                              | usar `docs/architecture/adr/` + memória resumida em `docs/STATE.md`                                                                              |
+| **Memória persistente**     | `docs/STATE.md`, `docs/engineering/memory/decisions.md`, `docs/engineering/memory/patterns.md`, `docs/engineering/memory/known-issues.md`                                                                                                                                             | `docs/superpowers/memory/architecture.md`, `docs/superpowers/memory/decisions.md`, `docs/superpowers/memory/patterns.md`, `docs/superpowers/memory/known-issues.md` | criar `docs/STATE.md` + `docs/memory/decisions.md`                                                                                               |
+| **Scripts de validação**    | `scripts/validate-*.mjs` (domain, build, coverage, spec, storybook), `scripts/audit-docs.mjs`, `scripts/eval-spec-fidelity.mjs`                                                                                                                                                       | `scripts/generate-memories.ts`, `scripts/organize-photos.ts`                                                                                                        | criar scripts shell obrigatórios: `setup.sh`, `verify-all.sh`, `collect-visual-evidence.sh` + scripts de inspeção                                |
+| **CI**                      | `.github/workflows/ci.yml` + `docs-gate.yml` — lint, test, build, validate-domain, validate-coverage, validate-storybook, docs-audit                                                                                                                                                  | `.github/workflows/ci.yml` — format, lint, test:coverage, build, test:e2e, upload artifacts                                                                         | format, lint, typecheck, unit, coverage, build, visual tests, docs/spec audit                                                                    |
+| **Workflow git**            | Branch por feature (`feat/*`, `fix/*`, `chore/*`), Conventional Commits, PR com checklist, CI verde obrigatório                                                                                                                                                                       | Branch por feature (`feat/*`, `fix/*`, `chore/*`, `docs/*`), Conventional Commits, commitlint enforced, PR com CI verde                                             | branch obrigatória (`feat/*`, `fix/*`, `docs/*`, `chore/*`), Conventional Commits, PR com evidência real                                         |
+| **Hooks**                   | `.husky/` + `.lintstagedrc` + `commitlint.config.js`                                                                                                                                                                                                                                  | `.husky/` + `.lintstagedrc` + `commitlint.config.js`                                                                                                                | usar husky + lint-staged + commitlint                                                                                                            |
+| **Formato de agente**       | Markdown com frontmatter YAML (description, mode, model, temperature) + prompt                                                                                                                                                                                                        | Configuração inline em `opencode.json`                                                                                                                              | usar formato FinTrack: `.opencode/agent/*.md` com frontmatter                                                                                    |
+| **Permissões**              | Definidas em `opencode.json` por agente (edit, bash, task)                                                                                                                                                                                                                            | Definidas em `opencode.json` por agente                                                                                                                             | definir permissões restritivas por agente em `opencode.json`                                                                                     |
+| **Modelos**                 | orchestrator: deepseek-v4-pro, explore: deepseek-v4-flash, planner: glm-5.2, implement-*: qwen3.7-plus, test-writer: mimo-v2.5, verify: deepseek-v4-flash, security-audit: deepseek-v4-pro, git: deepseek-v4-flash, docs: deepseek-v4-flash, scout: openrouter/cohere/north-mini-code | orchestrator: qwen3.7-plus, explore: deepseek-v4-flash, plan: glm-5, implement: qwen3.7-plus, verify: glm-5, security-audit: glm-5, test-writer: deepseek-v4-flash  | usar modelos recomendados no plano (Fase 4.1)                                                                                                    |
+| **Template de PR**          | `docs/templates/pr.md`                                                                                                                                                                                                                                                                | não encontrado                                                                                                                                                      | criar `docs/templates/pr.md`                                                                                                                     |
+| **Design**                  | `docs/design/direction.md`, `docs/design/tokens.md`, `docs/design/component-library-plan.md`, Storybook                                                                                                                                                                               | `docs/superpowers/memory/patterns.md` (design system)                                                                                                               | design é feature principal; criar `docs/design/` com Design Bible, storyboard, quality matrix, visual rubric, composition rules, look-dev-report |
+| **Testes visuais**          | Storybook visual/a11y gate                                                                                                                                                                                                                                                            | Playwright E2E                                                                                                                                                      | Playwright para validação visual + screenshots mobile/desktop                                                                                    |
 
 ### Padrões IDÊNTICOS (devem ser replicados)
 
@@ -196,6 +197,7 @@ um (isso não deve ser copiado para um projeto novo sem adaptação).
 ### Específicos de cada projeto (NÃO copiar sem adaptação)
 
 **FinTrack:**
+
 - Clean Architecture com Domain/Application/Infrastructure/Presentation
 - NestJS + Next.js + Prisma + PostgreSQL + Redis + BullMQ
 - Monorepo Turborepo com `apps/web`, `apps/api`, `packages/*`
@@ -205,6 +207,7 @@ um (isso não deve ser copiado para um projeto novo sem adaptação).
 - Foco em backend e regras de negócio
 
 **our-journey:**
+
 - Next.js standalone (não monorepo)
 - Mapbox + Cloudinary + Spotify API
 - Foco em experiência visual/emocional
@@ -275,14 +278,14 @@ que o relatório da Fase 1 mostre o contrário:
 Diferenças reais entre uma SaaS com backend (FinTrack) / um app full-stack
 (our-journey) e uma landing page de portfólio majoritariamente 3D:
 
-| Aspecto | FinTrack / our-journey | spiderman-landing |
-|---|---|---|
-| FDD (Feature Design Doc) | por feature de produto | provavelmente vira um **Scene Spec** por seção de scroll (Hero, Evolution, Arsenal, FullBody) — câmera, iluminação, copy, animação |
-| security-audit | segredos de API/DB, auth | licenciamento do asset 3D (CC-BY, atribuição obrigatória), chaves de terceiros (analytics/CDN se houver), nada de segredo de banco |
-| Clean Architecture / Ports & Adapters | núcleo do FinTrack | não se aplica — é componentização React + lógica de câmera/scroll |
-| verify | testes de integração/E2E de fluxo de dados | verificação visual (screenshots por seção em mobile e desktop), performance de frame rate, checagem de que o head-tracking/scroll-rig não quebrou |
-| design | suporte ao fluxo de produto | fase central do projeto: direção visual, composição, ritmo, câmera, luz, contraste e acabamento cinematográfico |
-| mobile | responsividade de app | prioridade de experiência; deve ter câmera, enquadramento, densidade textual e orçamento de performance próprios |
+| Aspecto                               | FinTrack / our-journey                     | spiderman-landing                                                                                                                                 |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FDD (Feature Design Doc)              | por feature de produto                     | provavelmente vira um **Scene Spec** por seção de scroll (Hero, Evolution, Arsenal, FullBody) — câmera, iluminação, copy, animação                |
+| security-audit                        | segredos de API/DB, auth                   | licenciamento do asset 3D (CC-BY, atribuição obrigatória), chaves de terceiros (analytics/CDN se houver), nada de segredo de banco                |
+| Clean Architecture / Ports & Adapters | núcleo do FinTrack                         | não se aplica — é componentização React + lógica de câmera/scroll                                                                                 |
+| verify                                | testes de integração/E2E de fluxo de dados | verificação visual (screenshots por seção em mobile e desktop), performance de frame rate, checagem de que o head-tracking/scroll-rig não quebrou |
+| design                                | suporte ao fluxo de produto                | fase central do projeto: direção visual, composição, ritmo, câmera, luz, contraste e acabamento cinematográfico                                   |
+| mobile                                | responsividade de app                      | prioridade de experiência; deve ter câmera, enquadramento, densidade textual e orçamento de performance próprios                                  |
 
 A Fase 1 deve confirmar se isso é modelado como um "tipo de FDD alternativo"
 nos projetos de referência ou se é melhor um documento novo — não inventar
@@ -311,17 +314,17 @@ quando houver conflito de direção ou dúvida estética realmente bloqueante.
 
 Fontes e aprendizados:
 
-| Fonte | O que absorver | O que evitar |
-|---|---|---|
-| Sony Pictures — página oficial de `Spider-Man: Brand New Day` | Tema narrativo: Peter atua sozinho em um mundo que não lembra dele; pressão, transformação e ameaça invisível devem aparecer como solidão, vigilância e tensão visual. | Copiar página promocional tradicional com CTA comercial, cards e layout institucional. |
-| Sony Pictures Japan — release/trailer oficial | A ideia "ninguém conhece Peter" e a transformação física depois de quatro anos devem orientar copy, close-ups e progressão de câmera. | Recontar sinopse longa na landing; usar texto expositivo demais. |
-| ILM — página do projeto/VFX | Tratar a página como experiência de imagem e VFX, não como landing informativa; personagem, luz e movimento vêm antes de blocos de UI. | Deixar o 3D parecer apenas asset carregado em fundo escuro. |
-| Digital Camera World / entrevista de cinematografia | Direção visual: vermelho e azul saturados protegidos por pretos profundos, sombra como massa gráfica, curva de filme clássica/contemporânea, lentes com caráter mas limpas. | Neon vermelho genérico, cena lavada, excesso de bloom, roxo/azul dominante sem intenção. |
-| Framemode LLC / Three.js Resources | Inspiração estrutural: portfolio scroll-driven com cena Three.js real-time, iluminação dinâmica e narrativa espacial. | Copiar tema espacial/lunar; o aprendizado é o método, não o assunto. |
-| Maurice Däppen ThreeJS Portfolio | Inspiração técnica: React 19 + R3F + GSAP, câmera cinematográfica, ACES filmic tone mapping, cena componentizada e caminhos de câmera definidos. | Usar OrbitControls livre como experiência principal; aqui a câmera deve ser dirigida. |
-| Praxxys Three.js/R3F portfolio performance | Inspiração de performance: experiência 3D precisa carregar e rodar bem em mobile; reduzir dependências e peso antes de sacrificar a experiência. | Aceitar GLB de 50 MB sem plano de otimização/mobile. |
-| Marco Ayuste portfolio case study | Inspiração de ambição: o portfolio em si deve provar capacidade de design/engenharia; R3F fixo atrás de HTML com scroll cinematográfico é padrão adequado. | Virar currículo animado ou lista de skills; o projeto é a peça principal. |
-| landing.love / Three.js collection | Usar como varredura secundária de repertório para padrões de 3D websites e portfolios. | Copiar tendências superficiais como glassmorphism, excesso de chrome visual ou UI genérica. |
+| Fonte                                                         | O que absorver                                                                                                                                                              | O que evitar                                                                                |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Sony Pictures — página oficial de `Spider-Man: Brand New Day` | Tema narrativo: Peter atua sozinho em um mundo que não lembra dele; pressão, transformação e ameaça invisível devem aparecer como solidão, vigilância e tensão visual.      | Copiar página promocional tradicional com CTA comercial, cards e layout institucional.      |
+| Sony Pictures Japan — release/trailer oficial                 | A ideia "ninguém conhece Peter" e a transformação física depois de quatro anos devem orientar copy, close-ups e progressão de câmera.                                       | Recontar sinopse longa na landing; usar texto expositivo demais.                            |
+| ILM — página do projeto/VFX                                   | Tratar a página como experiência de imagem e VFX, não como landing informativa; personagem, luz e movimento vêm antes de blocos de UI.                                      | Deixar o 3D parecer apenas asset carregado em fundo escuro.                                 |
+| Digital Camera World / entrevista de cinematografia           | Direção visual: vermelho e azul saturados protegidos por pretos profundos, sombra como massa gráfica, curva de filme clássica/contemporânea, lentes com caráter mas limpas. | Neon vermelho genérico, cena lavada, excesso de bloom, roxo/azul dominante sem intenção.    |
+| Framemode LLC / Three.js Resources                            | Inspiração estrutural: portfolio scroll-driven com cena Three.js real-time, iluminação dinâmica e narrativa espacial.                                                       | Copiar tema espacial/lunar; o aprendizado é o método, não o assunto.                        |
+| Maurice Däppen ThreeJS Portfolio                              | Inspiração técnica: React 19 + R3F + GSAP, câmera cinematográfica, ACES filmic tone mapping, cena componentizada e caminhos de câmera definidos.                            | Usar OrbitControls livre como experiência principal; aqui a câmera deve ser dirigida.       |
+| Praxxys Three.js/R3F portfolio performance                    | Inspiração de performance: experiência 3D precisa carregar e rodar bem em mobile; reduzir dependências e peso antes de sacrificar a experiência.                            | Aceitar GLB de 50 MB sem plano de otimização/mobile.                                        |
+| Marco Ayuste portfolio case study                             | Inspiração de ambição: o portfolio em si deve provar capacidade de design/engenharia; R3F fixo atrás de HTML com scroll cinematográfico é padrão adequado.                  | Virar currículo animado ou lista de skills; o projeto é a peça principal.                   |
+| landing.love / Three.js collection                            | Usar como varredura secundária de repertório para padrões de 3D websites e portfolios.                                                                                      | Copiar tendências superficiais como glassmorphism, excesso de chrome visual ou UI genérica. |
 
 Direção sintetizada a partir da pesquisa:
 
@@ -398,12 +401,12 @@ desktop e um risco visual.
 
 Formato obrigatório:
 
-| Seção | Emoção | Enquadramento mobile | Enquadramento desktop | Movimento | Texto | Risco |
-|---|---|---|---|---|---|---|
-| Hero | impacto, anonimato, solidão | máscara/torso dominam, copy em área segura inferior ou lateral curta | personagem com mais respiro lateral e presença de silhueta | micro head-tracking + leve drift de câmera | curto, alto contraste | texto cobrir rosto ou parecer pôster estático |
-| Evolution | tensão, transformação interna | close no peito/símbolo, texto em bloco compacto | close assimétrico com mais espaço negativo | push-in lento ou pequena mudança de eixo | frase quebrada com ritmo | close perder legibilidade no mobile |
-| Arsenal | sobrevivência, improviso | pulso/lançador legível, texto sem competir com braço | órbita lateral mais ampla | câmera atravessa para revelar detalhe | direto, seco | detalhe ficar pequeno demais |
-| FullBody | revelação, conclusão, pôster vivo | corpo inteiro se possível; se não couber, priorizar silhueta forte | corpo inteiro com composição final memorável | recuo e estabilização | punch final | parecer tela de créditos sem impacto |
+| Seção     | Emoção                            | Enquadramento mobile                                                 | Enquadramento desktop                                      | Movimento                                  | Texto                    | Risco                                         |
+| --------- | --------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ------------------------ | --------------------------------------------- |
+| Hero      | impacto, anonimato, solidão       | máscara/torso dominam, copy em área segura inferior ou lateral curta | personagem com mais respiro lateral e presença de silhueta | micro head-tracking + leve drift de câmera | curto, alto contraste    | texto cobrir rosto ou parecer pôster estático |
+| Evolution | tensão, transformação interna     | close no peito/símbolo, texto em bloco compacto                      | close assimétrico com mais espaço negativo                 | push-in lento ou pequena mudança de eixo   | frase quebrada com ritmo | close perder legibilidade no mobile           |
+| Arsenal   | sobrevivência, improviso          | pulso/lançador legível, texto sem competir com braço                 | órbita lateral mais ampla                                  | câmera atravessa para revelar detalhe      | direto, seco             | detalhe ficar pequeno demais                  |
+| FullBody  | revelação, conclusão, pôster vivo | corpo inteiro se possível; se não couber, priorizar silhueta forte   | corpo inteiro com composição final memorável               | recuo e estabilização                      | punch final              | parecer tela de créditos sem impacto          |
 
 Critério de saída:
 
@@ -473,11 +476,11 @@ Definir três níveis de qualidade antes da implementação.
 
 Formato obrigatório:
 
-| Perfil | Condição | Modelo | Luz | Post-processing | Motion | Meta |
-|---|---|---|---|---|---|---|
-| Desktop High | telas largas e GPU estável | GLB otimizado ou original se performar | luz completa | Bloom + Vignette + grão discreto | scroll rig completo + parallax | impacto máximo |
-| Mobile Good | celulares modernos | GLB otimizado | luz simplificada, silhueta preservada | Bloom reduzido ou seletivo + Vignette leve | camera rig completo, parallax contido | experiência principal |
-| Mobile Low | FPS baixo, aparelho fraco ou reduced-motion | GLB otimizado/fallback | luz mínima legível | sem Bloom/grão, Vignette opcional | câmera mais estática, entradas reduzidas | manter design e legibilidade |
+| Perfil       | Condição                                    | Modelo                                 | Luz                                   | Post-processing                            | Motion                                   | Meta                         |
+| ------------ | ------------------------------------------- | -------------------------------------- | ------------------------------------- | ------------------------------------------ | ---------------------------------------- | ---------------------------- |
+| Desktop High | telas largas e GPU estável                  | GLB otimizado ou original se performar | luz completa                          | Bloom + Vignette + grão discreto           | scroll rig completo + parallax           | impacto máximo               |
+| Mobile Good  | celulares modernos                          | GLB otimizado                          | luz simplificada, silhueta preservada | Bloom reduzido ou seletivo + Vignette leve | camera rig completo, parallax contido    | experiência principal        |
+| Mobile Low   | FPS baixo, aparelho fraco ou reduced-motion | GLB otimizado/fallback                 | luz mínima legível                    | sem Bloom/grão, Vignette opcional          | câmera mais estática, entradas reduzidas | manter design e legibilidade |
 
 Critério de saída:
 
@@ -600,18 +603,18 @@ Escala:
 
 Itens avaliados:
 
-| Critério | Peso | Nota mínima |
-|---|---:|---:|
-| Primeira dobra / impacto imediato | 3 | 4 |
-| Composição mobile | 3 | 4 |
-| Integração texto + personagem | 3 | 4 |
-| Iluminação e silhueta | 2 | 4 |
-| Tipografia e hierarquia | 2 | 4 |
-| Ritmo de scroll e câmera | 2 | 4 |
-| Sensação cinematográfica/editorial | 2 | 4 |
-| Originalidade de portfólio | 2 | 4 |
-| Performance percebida mobile | 3 | 4 |
-| Motion reduzida ainda bonita | 1 | 3 |
+| Critério                           | Peso | Nota mínima |
+| ---------------------------------- | ---: | ----------: |
+| Primeira dobra / impacto imediato  |    3 |           4 |
+| Composição mobile                  |    3 |           4 |
+| Integração texto + personagem      |    3 |           4 |
+| Iluminação e silhueta              |    2 |           4 |
+| Tipografia e hierarquia            |    2 |           4 |
+| Ritmo de scroll e câmera           |    2 |           4 |
+| Sensação cinematográfica/editorial |    2 |           4 |
+| Originalidade de portfólio         |    2 |           4 |
+| Performance percebida mobile       |    3 |           4 |
+| Motion reduzida ainda bonita       |    1 |           3 |
 
 Regra:
 
@@ -910,19 +913,19 @@ Modelos disponíveis considerados:
 
 Recomendação de uso:
 
-| Agente | Modelo recomendado | Motivo |
-|---|---|---|
-| `orchestrator` | `DeepSeek V4 Flash` | bom equilíbrio para seguir regras, delegar e manter fluxo sem gastar modelo premium |
-| `explore` | `Kimi K3` ou `GLM-5.3-Flash` | tarefa read-only, barata, adequada para mapear arquivos e padrões |
-| `plan` | `GPT 5.6 Luna` | decisões de design/arquitetura têm alto impacto; usar modelo mais forte aqui |
-| `design-review` | `GPT 5.6 Luna` ou `Hy4 preview` | julga rubrica visual, composição e trade-offs estéticos |
-| `implement-frontend` | `Qwen3.7 Plus` | bom custo/benefício para React/TypeScript/R3F |
-| `implement-general` | `MiniMax M3` | scripts, CI, configs, docs estruturais e automação |
-| `test-writer` | `Qwen3.8 Flash` ou `GLM-5.3-Flash` | testes e Playwright são mecânicos, mas precisam precisão |
-| `verify` | `DeepSeek V4 Flash` | checagem objetiva, leitura de logs e bloqueio de falso positivo |
-| `security-audit` | `DeepSeek V4 Flash` | escopo de segurança é limitado, mas exige disciplina |
-| `docs` | `Kimi K3` ou `GLM-5.3-Flash` | atualização documental e resumos de evidência |
-| `git` | `Kimi K3` | commits/PRs com checklist são tarefa mecânica e barata |
+| Agente               | Modelo recomendado                 | Motivo                                                                              |
+| -------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- |
+| `orchestrator`       | `DeepSeek V4 Flash`                | bom equilíbrio para seguir regras, delegar e manter fluxo sem gastar modelo premium |
+| `explore`            | `Kimi K3` ou `GLM-5.3-Flash`       | tarefa read-only, barata, adequada para mapear arquivos e padrões                   |
+| `plan`               | `GPT 5.6 Luna`                     | decisões de design/arquitetura têm alto impacto; usar modelo mais forte aqui        |
+| `design-review`      | `GPT 5.6 Luna` ou `Hy4 preview`    | julga rubrica visual, composição e trade-offs estéticos                             |
+| `implement-frontend` | `Qwen3.7 Plus`                     | bom custo/benefício para React/TypeScript/R3F                                       |
+| `implement-general`  | `MiniMax M3`                       | scripts, CI, configs, docs estruturais e automação                                  |
+| `test-writer`        | `Qwen3.8 Flash` ou `GLM-5.3-Flash` | testes e Playwright são mecânicos, mas precisam precisão                            |
+| `verify`             | `DeepSeek V4 Flash`                | checagem objetiva, leitura de logs e bloqueio de falso positivo                     |
+| `security-audit`     | `DeepSeek V4 Flash`                | escopo de segurança é limitado, mas exige disciplina                                |
+| `docs`               | `Kimi K3` ou `GLM-5.3-Flash`       | atualização documental e resumos de evidência                                       |
+| `git`                | `Kimi K3`                          | commits/PRs com checklist são tarefa mecânica e barata                              |
 
 Regra de economia:
 
@@ -976,16 +979,16 @@ Permissões recomendadas:
 - `orchestrator`: pode ler no máximo poucos arquivos e delegar; não pode
   rodar `pnpm`, `git add`, `git commit`, `git push`, `gh` ou editar.
 - `explore`: read-only; permitir `rg`, `find`, `ls`, `cat`, `sed`, `git
-  status`, `git diff`, `git log`.
+status`, `git diff`, `git log`.
 - `plan`: sem bash e sem edit, a menos que o fluxo do OpenCode exija salvar
   docs por meio de agente `docs`.
 - `implement-frontend`: pode editar e rodar `pnpm run lint`, `pnpm run
-  typecheck`, `pnpm run test`, `pnpm run build`, `pnpm run test:visual`,
+typecheck`, `pnpm run test`, `pnpm run build`, `pnpm run test:visual`,
   `pnpm install`, `pnpm exec playwright *`; não pode push/reset/rm.
 - `implement-general`: pode editar scripts/config/CI e rodar validações;
   não pode ações destrutivas.
 - `verify`: read-only; pode rodar `bash scripts/verify-all.sh`, `pnpm run
-  *`, `pnpm exec playwright *`, `bash scripts/collect-visual-evidence.sh`,
+*`, `pnpm exec playwright *`, `bash scripts/collect-visual-evidence.sh`,
   `node scripts/*.mjs`, `git diff`, `git status`.
 - `security-audit`: read-only; pode rodar `rg`, `find`, `sed`, `cat`,
   `node scripts/inspect-glb.mjs`, `git diff`, `git status`.
@@ -1028,13 +1031,13 @@ Regra de parada:
 
 Contrato dos agentes:
 
-| Agente | Entrada | Saída | Não pode |
-|---|---|---|---|
-| explore | caminhos dos projetos de referência | relatório comparativo literal | inventar convenção ou criar arquivos finais |
-| plan | relatório do explore + plano atual | PRD/HLD/Scene Specs/ADRs/design docs | implementar código |
-| implement | Scene Spec aprovado | código, testes e scripts necessários | mudar escopo sem atualizar spec |
-| verify | app implementada + specs | relatório de gates técnicos e visuais | aprovar visual quebrado só porque build passou |
-| security-audit | app/config/assets | relatório de licença, segredos e superfície pública | ignorar crédito/licença do asset |
+| Agente         | Entrada                             | Saída                                               | Não pode                                       |
+| -------------- | ----------------------------------- | --------------------------------------------------- | ---------------------------------------------- |
+| explore        | caminhos dos projetos de referência | relatório comparativo literal                       | inventar convenção ou criar arquivos finais    |
+| plan           | relatório do explore + plano atual  | PRD/HLD/Scene Specs/ADRs/design docs                | implementar código                             |
+| implement      | Scene Spec aprovado                 | código, testes e scripts necessários                | mudar escopo sem atualizar spec                |
+| verify         | app implementada + specs            | relatório de gates técnicos e visuais               | aprovar visual quebrado só porque build passou |
+| security-audit | app/config/assets                   | relatório de licença, segredos e superfície pública | ignorar crédito/licença do asset               |
 
 ---
 
@@ -1436,7 +1439,7 @@ Testes mínimos em `tests/visual/`:
 - `sections.spec.ts`: rola até Evolution, Arsenal e FullBody, captura
   screenshots e valida que textos principais aparecem dentro do viewport.
 - `reduced-motion.spec.ts`: abre a página com `prefers-reduced-motion:
-  reduce` e confirma que motion pesada/parallax/head-tracking foram
+reduce` e confirma que motion pesada/parallax/head-tracking foram
   reduzidos ou desligados.
 - `credits.spec.ts`: confirma que a atribuição do modelo e o link do
   Sketchfab aparecem no final em mobile e desktop.
@@ -1598,12 +1601,15 @@ Todo PR deve usar este formato:
 
 ```md
 ## Summary
-- 
+
+-
 
 ## Scope
-- 
+
+-
 
 ## Validation
+
 - [ ] pnpm run lint
 - [ ] pnpm run typecheck
 - [ ] pnpm run test
@@ -1611,6 +1617,7 @@ Todo PR deve usar este formato:
 - [ ] pnpm run test:visual
 
 ## Visual QA
+
 - [ ] 390x844 screenshot reviewed
 - [ ] 430x932 screenshot reviewed
 - [ ] 1440x900 screenshot reviewed
@@ -1620,17 +1627,20 @@ Todo PR deve usar este formato:
 - [ ] user/design approval recorded when visual scope changed
 
 ## Performance
+
 - Mobile FPS average:
 - Desktop FPS average:
 - Asset size notes:
 
 ## Security / License
+
 - [ ] Sketchfab attribution visible
 - [ ] Sketchfab link correct
 - [ ] no secrets/placeholders committed
 
 ## Notes
-- 
+
+-
 ```
 
 ### 7.5 — Conventional Commits

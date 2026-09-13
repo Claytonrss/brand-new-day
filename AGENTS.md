@@ -9,30 +9,30 @@
 
 ## 2. Stack
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | Vite 8 + React 19 + TypeScript 5.9 |
-| Estilo | Tailwind CSS v4 |
-| 3D | Three.js + @react-three/fiber v9 + @react-three/drei v10 |
-| Post-processing | @react-three/postprocessing |
-| Animação | GSAP ScrollTrigger |
-| Testes | Vitest (unit) + Playwright (visual) |
-| Package manager | **pnpm 9** — nunca npm/yarn |
-| Runtime | Node.js >= 22 |
+| Camada          | Tecnologia                                               |
+| --------------- | -------------------------------------------------------- |
+| Framework       | Vite 8 + React 19 + TypeScript 5.9                       |
+| Estilo          | Tailwind CSS v4                                          |
+| 3D              | Three.js + @react-three/fiber v9 + @react-three/drei v10 |
+| Post-processing | @react-three/postprocessing                              |
+| Animação        | GSAP ScrollTrigger                                       |
+| Testes          | Vitest (unit) + Playwright (visual)                      |
+| Package manager | **pnpm 9** — nunca npm/yarn                              |
+| Runtime         | Node.js >= 22                                            |
 
 ## 3. Design Tokens
 
 Definidos em `src/index.css` via `@theme` (Tailwind v4):
 
-| Token | Hex | Uso |
-|---|---|---|
-| `ink` | `#0a0a0c` | fundo principal |
-| `concrete` | `#141417` | superfícies secundárias |
-| `steel` | `#2c3b4c` | detalhes frios |
-| `oxide` | `#7a1f24` | acento quente (rim light) |
-| `signal` | `#c23b34` | acento máximo |
-| `paper` | `#e9e5da` | texto principal |
-| `dim` | `#6b6a63` | texto secundário |
+| Token      | Hex       | Uso                       |
+| ---------- | --------- | ------------------------- |
+| `ink`      | `#0a0a0c` | fundo principal           |
+| `concrete` | `#141417` | superfícies secundárias   |
+| `steel`    | `#2c3b4c` | detalhes frios            |
+| `oxide`    | `#7a1f24` | acento quente (rim light) |
+| `signal`   | `#c23b34` | acento máximo             |
+| `paper`    | `#e9e5da` | texto principal           |
+| `dim`      | `#6b6a63` | texto secundário          |
 
 Fontes: **Space Grotesk** (display), **JetBrains Mono** (HUD/labels).
 
@@ -40,16 +40,16 @@ Fontes: **Space Grotesk** (display), **JetBrains Mono** (HUD/labels).
 
 Carregar apenas quando a tarefa exigir:
 
-| Documento | Conteúdo |
-|---|---|
-| `docs/design/design-bible.md` | direção visual vinculante |
-| `docs/design/storyboard.md` | seções como planos de câmera + copy |
-| `docs/design/mobile-first.md` | keyframes por breakpoint |
-| `docs/design/composition-rules.md` | zonas seguras de texto |
-| `docs/design/quality-matrix.md` | perfis de qualidade por dispositivo |
-| `docs/design/visual-rubric.md` | rubrica de avaliação estética |
-| `docs/design/performance-design.md` | FPS alvo, budgets, degradação |
-| `harness-bootstrap-plan.md` | plano completo de bootstrap |
+| Documento                                      | Conteúdo                            |
+| ---------------------------------------------- | ----------------------------------- |
+| `docs/design/design-bible.md`                  | direção visual vinculante           |
+| `docs/design/storyboard.md`                    | seções como planos de câmera + copy |
+| `docs/design/mobile-first.md`                  | keyframes por breakpoint            |
+| `docs/design/composition-rules.md`             | zonas seguras de texto              |
+| `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo |
+| `docs/design/visual-rubric.md`                 | rubrica de avaliação estética       |
+| `docs/design/performance-design.md`            | FPS alvo, budgets, degradação       |
+| `docs/plans/archive/harness-bootstrap-plan.md` | plano completo de bootstrap         |
 
 **Regra:** NUNCA carregar todos preemptivamente.
 

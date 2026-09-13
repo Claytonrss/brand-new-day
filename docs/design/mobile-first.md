@@ -5,11 +5,11 @@
 
 ## Viewports de validação (obrigatórios)
 
-| Nome | Tamanho | Uso |
-|---|---|---|
-| mobile base | `390x844` | viewport principal de design e verify |
-| mobile alto | `430x932` | variação de proporção |
-| desktop | `1440x900` | expansão cinematográfica |
+| Nome        | Tamanho    | Uso                                   |
+| ----------- | ---------- | ------------------------------------- |
+| mobile base | `390x844`  | viewport principal de design e verify |
+| mobile alto | `430x932`  | variação de proporção                 |
+| desktop     | `1440x900` | expansão cinematográfica              |
 
 ## Regras obrigatórias
 
@@ -33,28 +33,32 @@
 - A troca de breakpoint reinicializa os keyframes com interpolação suave a
   partir do progresso de scroll atual — nunca teleporte.
 
-## Keyframes iniciais (ponto de partida — validar no Look Dev)
+## Keyframes iniciais (HISTÓRICO — hipóteses da Fase 3.1)
+
+> **Superseded:** os valores abaixo eram hipóteses de partida e foram
+> substituídos pelo track calibrado (P0 + Waves B/4a). A fonte da verdade é
+> `src/components/3d/cameraKeyframes.ts` (e `camera/cameraPath.ts`).
 
 ### Desktop (1440x900)
 
-| Seção | Posição | Alvo (lookAt) | FOV |
-|---|---|---|---|
-| hero | `[0, 0.2, 4.2]` | `[0, 0.4, 0]` | 35 |
-| evolution | `[0.15, 0.55, 0.9]` | `[0, 0.5, 0]` | 28 |
-| arsenal | `[-1.1, -0.15, 0.85]` | `[-0.55, -0.2, 0.05]` | 30 |
-| fullbody | `[0, 0.1, 6.2]` | `[0, 0.1, 0]` | 40 |
+| Seção     | Posição               | Alvo (lookAt)         | FOV |
+| --------- | --------------------- | --------------------- | --- |
+| hero      | `[0, 0.2, 4.2]`       | `[0, 0.4, 0]`         | 35  |
+| evolution | `[0.15, 0.55, 0.9]`   | `[0, 0.5, 0]`         | 28  |
+| arsenal   | `[-1.1, -0.15, 0.85]` | `[-0.55, -0.2, 0.05]` | 30  |
+| fullbody  | `[0, 0.1, 6.2]`       | `[0, 0.1, 0]`         | 40  |
 
 ### Mobile (390x844 — base)
 
 Em portrait, o assunto precisa de FOV mais aberto ou distância maior para
 caber verticalmente. Pontos de partida:
 
-| Seção | Posição | Alvo (lookAt) | FOV |
-|---|---|---|---|
-| hero | `[0, 0.3, 3.6]` | `[0, 0.45, 0]` | 42 |
-| evolution | `[0.1, 0.52, 1.0]` | `[0, 0.48, 0]` | 34 |
-| arsenal | `[-0.9, -0.1, 0.95]` | `[-0.45, -0.15, 0.05]` | 36 |
-| fullbody | `[0, 0.2, 6.8]` | `[0, 0.25, 0]` | 50 |
+| Seção     | Posição              | Alvo (lookAt)          | FOV |
+| --------- | -------------------- | ---------------------- | --- |
+| hero      | `[0, 0.3, 3.6]`      | `[0, 0.45, 0]`         | 42  |
+| evolution | `[0.1, 0.52, 1.0]`   | `[0, 0.48, 0]`         | 34  |
+| arsenal   | `[-0.9, -0.1, 0.95]` | `[-0.45, -0.15, 0.05]` | 36  |
+| fullbody  | `[0, 0.2, 6.8]`      | `[0, 0.25, 0]`         | 50  |
 
 Estes valores são hipóteses de partida. O Look Dev v1 deve validá-los com
 screenshots reais nos três viewports e ajustá-los antes de qualquer expansão.

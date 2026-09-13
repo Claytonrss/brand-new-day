@@ -60,8 +60,9 @@ mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
       FALHA-14 disparar (medium < 45 fps em devices médios)
 - [ ] FALHA-03 — render gating (variante pause-em-repouso): só se térmica/
       bateria dóiem após as Waves 1–2
-- [ ] Micro-polish (ticker, teias de canto, áudio…): fila separada, após
-      fechamento do plano
+- [ ] Micro-polish / fila de ideias: consolidada em
+      `docs/plans/backlog.md` (varredura 2026-09-12 — ideias verificadas
+      contra o código, quick wins → grandes)
 
 ## Removidos — não mais relevantes (decisão 2026-09-12)
 
@@ -84,7 +85,7 @@ mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
 
 | Período    | Plano                                                                       | Entregas (todas `[x]`)                                                                                                                                                                                                                                                                                                                                                                         |
 | ---------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-09-0x | **Bootstrap** (`harness-bootstrap-plan.md`, Fases 0–7)                      | Design system, specs, scaffold, gates, Playwright, CC-BY audit; CI (PR #30); 7.3/7.5 carregadas (7.5 fechada no Bloco B; 7.3 no Bloco A)                                                                                                                                                                                                                                                       |
+| 2026-09-0x | **Bootstrap** (`docs/plans/archive/harness-bootstrap-plan.md`, Fases 0–7)   | Design system, specs, scaffold, gates, Playwright, CC-BY audit; CI (PR #30); 7.3/7.5 carregadas (7.5 fechada no Bloco B; 7.3 no Bloco A)                                                                                                                                                                                                                                                       |
 | 2026-09-08 | **Premium Waves 1–4** (PRs #10–#13)                                         | Canvas/tone mapping, iluminação física + materiais, Lenis + timeline de câmera, motion tokens + loader + SplitText, chapter cards + progress bar + partículas + monitor adaptativo                                                                                                                                                                                                             |
 | 2026-09-09 | **3D Motion Upgrade** (`3d-motion-upgrade-plan.md`, Waves A–G; PRs #17–#29) | Wave F headroom (draw calls 118→44-46, `window.__perf`, PerfHud) · Wave B câmera Catmull-Rom (mudança de direção −54%, órbita 85°) · Wave A rig procedural 16 joints · Wave C shaders autorais + DOF/CA + `?fx` · P0 calibração de âncoras · Wave E atmosfera GPU · Wave D interatividade · Wave G verificação                                                                                 |
 | 2026-09-10 | **Portfolio Impact** (`portfolio-impact-plan.md`; PR #31)                   | P0 composição/tipografia/copy (rubrica 4,2) · P1a loader teaser + opening card · P1b colofon (900vh) · P1c atmosfera por beat · P2a Arsenal macro + HUD · P2b pointer parallax + gyro iOS (ADR-018) · P3.1 web-shoot descobrível · P3.2 fallback WebGL em poster                                                                                                                               |

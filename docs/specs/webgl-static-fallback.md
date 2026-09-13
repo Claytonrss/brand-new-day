@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** transversal (toda a página quando WebGL falha)
-**Wave:** P3.2 (plano: `docs/plans/portfolio-impact-plan.md`)
+**Wave:** P3.2 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 
@@ -22,7 +22,7 @@ seções em layout editorial + a atribuição. Quem não tem WebGL ainda vê a p
 — só que como um pôster, não como cena.
 
 - **Emoção:** a mesma — sombria, cinematográfica — em forma estática.
-- **Decisão:** o fallback é um *poster*, não um "modo degradado do 3D".
+- **Decisão:** o fallback é um _poster_, não um "modo degradado do 3D".
 
 ## 3. Estratégia do asset 2D
 
@@ -59,13 +59,13 @@ no fallback apenas.
 
 ## 6. Critérios de aceite (mensuráveis)
 
-| # | Critério | Medição |
-|---|---|---|
-| 1 | Sem WebGL, a página é uma landing editorial coerente (não erro) | screenshot com WebGL desabilitado |
-| 2 | Copy das seções e atribuição presentes | revisão |
-| 3 | Aviso sobre WebGL no tom, não alerta | revisão |
-| 4 | Nenhum erro de console no caminho de fallback | `console.spec.ts` com WebGL off |
-| 5 | Imagem do poster dentro da paleta (ink/oxide/signal) | curadoria vs design-bible |
+| #   | Critério                                                        | Medição                           |
+| --- | --------------------------------------------------------------- | --------------------------------- |
+| 1   | Sem WebGL, a página é uma landing editorial coerente (não erro) | screenshot com WebGL desabilitado |
+| 2   | Copy das seções e atribuição presentes                          | revisão                           |
+| 3   | Aviso sobre WebGL no tom, não alerta                            | revisão                           |
+| 4   | Nenhum erro de console no caminho de fallback                   | `console.spec.ts` com WebGL off   |
+| 5   | Imagem do poster dentro da paleta (ink/oxide/signal)            | curadoria vs design-bible         |
 
 ## 7. Stop Conditions
 

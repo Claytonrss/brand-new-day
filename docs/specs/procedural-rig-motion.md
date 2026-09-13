@@ -2,7 +2,7 @@
 
 > **Status:** pronto para implementação
 > **Branch:** `feat/procedural-rig-motion`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave A
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave A
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -18,13 +18,13 @@ filmada por uma câmera que se move. O Beat 1 (`memorable-moments.md:9-11`)
 também pede **slerp** para a cabeça e não menciona limitar o movimento a ela.
 
 **Achado crítico durante a implementação:** `pnpm inspect:glb` imprime os nomes
- crus do glTF (`mixamorig:Head_06`), mas `THREE.PropertyBinding.sanitizeNodeName`
- remove caracteres reservados — incluindo `:` —, então o mapa de nós do
- `useGLTF` é chaveado por `mixamorigHead_06`. O head-tracking anterior buscava
- o nome cru, nunca encontrava, e caía silenciosamente no fallback que girava o
- **modelo inteiro** (`SpiderManModel.tsx:153-155`) — ou seja, o "olhar que
- segue" do Beat 1 nunca existiu: o corpo todo girava ~4°. `BONE_NAMES` usa os
- nomes sanitizados, verificados no browser (16 joints resolvidos).
+crus do glTF (`mixamorig:Head_06`), mas `THREE.PropertyBinding.sanitizeNodeName`
+remove caracteres reservados — incluindo `:` —, então o mapa de nós do
+`useGLTF` é chaveado por `mixamorigHead_06`. O head-tracking anterior buscava
+o nome cru, nunca encontrava, e caía silenciosamente no fallback que girava o
+**modelo inteiro** (`SpiderManModel.tsx:153-155`) — ou seja, o "olhar que
+segue" do Beat 1 nunca existiu: o corpo todo girava ~4°. `BONE_NAMES` usa os
+nomes sanitizados, verificados no browser (16 joints resolvidos).
 
 Nomes dos joints confirmados (66): `mixamorig:Hips_01`, `Spine_02`,
 `Spine1_03`, `Spine2_04`, `Neck_05`, `Head_06`, `Left/RightShoulder_07/_026`,
@@ -80,13 +80,13 @@ já entregou o passeio.
 Todas **additivas** sobre a rest pose, com ruído fbm compartilhado e molas
 criticamente amortecidas:
 
-| Camada | Joints | Amplitude | Frequência |
-|---|---|---|---|
-| Respiração | `Spine1_03`, `Spine2_04` | ±0.006 / ±0.004 rad | 0.25 Hz |
-| Sway | `Hips_01` (yaw/pitch) | ±0.020 / ±0.008 rad | ~0.05 Hz (fbm) |
-| Deslocamento de peso | `Hips_01` (roll) | ±0.015 rad | ~0.09 Hz (fbm) |
-| Micro-tremor | `Left/RightHand_010/_029` | ±0.010 rad | 2.5 Hz + fbm |
-| Assentar das pernas | `Left/RightUpLeg_045/_049` | ±0.004 rad | 0.05 Hz |
+| Camada               | Joints                     | Amplitude           | Frequência     |
+| -------------------- | -------------------------- | ------------------- | -------------- |
+| Respiração           | `Spine1_03`, `Spine2_04`   | ±0.006 / ±0.004 rad | 0.25 Hz        |
+| Sway                 | `Hips_01` (yaw/pitch)      | ±0.020 / ±0.008 rad | ~0.05 Hz (fbm) |
+| Deslocamento de peso | `Hips_01` (roll)           | ±0.015 rad          | ~0.09 Hz (fbm) |
+| Micro-tremor         | `Left/RightHand_010/_029`  | ±0.010 rad          | 2.5 Hz + fbm   |
+| Assentar das pernas  | `Left/RightUpLeg_045/_049` | ±0.004 rad          | 0.05 Hz        |
 
 ### 7.2 Head-tracking v2 (`SpiderManModel` + `rig/`)
 
@@ -105,12 +105,12 @@ criticamente amortecidas:
 Offsets aditivos por joint, alternados por beat com mola criticamente
 amortecida (≈1.2 s):
 
-| Beat | Pose |
-|---|---|
-| `hero` | guarda neutra — ombros 0.03, cotovelos 0.10, cabeça nível |
-| `evolution` | peito aberto — `Spine2_04` −0.03, ombros −0.05 |
-| `arsenal` | punho elevado — antebraço direito −0.25, cabeça +0.10 yaw |
-| `fullBody` | poster — ombros −0.04, braços 0.06, coluna ereta |
+| Beat        | Pose                                                      |
+| ----------- | --------------------------------------------------------- |
+| `hero`      | guarda neutra — ombros 0.03, cotovelos 0.10, cabeça nível |
+| `evolution` | peito aberto — `Spine2_04` −0.03, ombros −0.05            |
+| `arsenal`   | punho elevado — antebraço direito −0.25, cabeça +0.10 yaw |
+| `fullBody`  | poster — ombros −0.04, braços 0.06, coluna ereta          |
 
 Amplitudes intencionalmente conservadoras porque a rest pose do asset é
 desconhecida até a validação visual; um multiplicador `POSE_AMPLITUDE`
@@ -118,12 +118,12 @@ permite zerar a camada sem recompilar.
 
 ### 7.4 Tiers
 
-| Tier | Camadas ativas |
-|---|---|
-| `high` | todas (respiração, sway, peso, tremor, poses, follow-through) |
-| `medium` | respiração + sway + peso + follow-through (sem tremor de mãos) |
-| `low` | respiração apenas |
-| `prefers-reduced-motion` | nenhuma — pose estática |
+| Tier                     | Camadas ativas                                                 |
+| ------------------------ | -------------------------------------------------------------- |
+| `high`                   | todas (respiração, sway, peso, tremor, poses, follow-through)  |
+| `medium`                 | respiração + sway + peso + follow-through (sem tremor de mãos) |
+| `low`                    | respiração apenas                                              |
+| `prefers-reduced-motion` | nenhuma — pose estática                                        |
 
 ## 8. Performance Budget
 
@@ -150,7 +150,7 @@ permite zerar a camada sem recompilar.
       avança com a página parada; com `prefers-reduced-motion`, o rig congela
       (head quaternion idêntico **e** composição pixel a pixel idêntica).
 - [x] **Teste de follow-through:** com o ponteiro, `|yaw(Head_06)| >
-      |yaw(Neck_05)| > |yaw(Spine2_04)|` — medido 0,037 > 0,004 > 0,0006 — e o
+    |yaw(Neck_05)| > |yaw(Spine2_04)|` — medido 0,037 > 0,004 > 0,0006 — e o
       alvo respeita o clamp do Beat 1 (|yaw| ≤ 0,48 rad).
 - [ ] Nenhuma interpenetração visível nos screenshots de close-up
       (Evolution/Arsenal nos 3 viewports) — **requer olho humano**.

@@ -2,7 +2,7 @@
 
 > **Status:** pronto para implementação
 > **Branch:** `feat/authorial-shaders-fx`
-> **Plano de origem:** `docs/plans/3d-motion-upgrade-plan.md` §4 Wave C
+> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave C
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -31,11 +31,11 @@ Consequências verificadas:
 Como a camada muda a leitura da silhueta, ela é controlável por URL — o
 review humano usa isso para A/B:
 
-| Modo | Comportamento |
-|---|---|
-| `?fx=off` | sem camada de shader, sem DOF/CA (baseline da Wave B) |
-| `?fx=subtle` | **padrão**: camada a 22% de intensidade, sem DOF |
-| `?fx=full` | camada a 60% + DOF + aberração cromática |
+| Modo         | Comportamento                                         |
+| ------------ | ----------------------------------------------------- |
+| `?fx=off`    | sem camada de shader, sem DOF/CA (baseline da Wave B) |
+| `?fx=subtle` | **padrão**: camada a 22% de intensidade, sem DOF      |
+| `?fx=full`   | camada a 60% + DOF + aberração cromática              |
 
 Medição isolada no hero (390×844), `off` vs `subtle`: delta médio de
 **5,2/255** — a camada é sutil por construção. A primeira passada (45%) foi
@@ -68,13 +68,13 @@ fora do canvas, e nunca é afetado).
 
 Nenhum asset novo. Materiais usados do GLB (11), curados por nome real:
 
-| Material | Uso | Tratamento nesta wave |
-|---|---|---|
-| `Webs` | malha do traje | teia procedural animada + rim de fresnel |
-| `Lense` | lentes da máscara | iridescência + pulso emissivo |
-| `Frame` | armação | rim de fresnel |
-| `Webshotter` | lançador | rim metálico |
-| `Shoe`, `material_4..8` | resto | rim de fresnel sutil |
+| Material                | Uso               | Tratamento nesta wave                    |
+| ----------------------- | ----------------- | ---------------------------------------- |
+| `Webs`                  | malha do traje    | teia procedural animada + rim de fresnel |
+| `Lense`                 | lentes da máscara | iridescência + pulso emissivo            |
+| `Frame`                 | armação           | rim de fresnel                           |
+| `Webshotter`            | lançador          | rim metálico                             |
+| `Shoe`, `material_4..8` | resto             | rim de fresnel sutil                     |
 
 Nomes confirmados por `pnpm inspect:glb`.
 
@@ -109,13 +109,13 @@ Falha segura: se a chunk âncora não existir, o material fica sem efeito e um
 
 ### 7.2 Modulação por beat (`MaterialFxDriver`)
 
-| Beat | `uRimStrength` | `uWebStrength` | `uLensPulse` | Alvo do DOF |
-|---|:--:|:--:|:--:|---|
-| `hero` | 0.35 | 0.10 | 1.0 | cabeça |
-| `chapter1` / `chapter2` | 0.25 | 0.06 | 0.8 | cabeça/peito |
-| `evolution` | 0.55 | **0.30** | 1.4 | peito (`CHEST_Y`) |
-| `arsenal` | 0.45 | 0.18 | 1.1 | punho (`WRIST_POSITION`) |
-| `fullBody` | 0.70 | 0.22 | 1.2 | centro do modelo |
+| Beat                    | `uRimStrength` | `uWebStrength` | `uLensPulse` | Alvo do DOF              |
+| ----------------------- | :------------: | :------------: | :----------: | ------------------------ |
+| `hero`                  |      0.35      |      0.10      |     1.0      | cabeça                   |
+| `chapter1` / `chapter2` |      0.25      |      0.06      |     0.8      | cabeça/peito             |
+| `evolution`             |      0.55      |    **0.30**    |     1.4      | peito (`CHEST_Y`)        |
+| `arsenal`               |      0.45      |      0.18      |     1.1      | punho (`WRIST_POSITION`) |
+| `fullBody`              |      0.70      |      0.22      |     1.2      | centro do modelo         |
 
 Transição por suavização exponencial (`1 - exp(-3·delta)`).
 
@@ -141,12 +141,12 @@ luminosa percorre o peito no shader (`uWebStrength` no pico + banda por
 
 ## 8. Performance Budget
 
-| Recurso | Custo | Política |
-|---|---|---|
-| Material (fresnel + teia) | ~12 instruções de fragment | todos os tiers |
-| DOF | +3 passes | **tier `high` apenas** |
-| Aberração cromática | +1 pass | **tier `high` apenas** |
-| Draw calls | +4 no máximo (desktop) | mobile mantém 44–46 |
+| Recurso                   | Custo                      | Política               |
+| ------------------------- | -------------------------- | ---------------------- |
+| Material (fresnel + teia) | ~12 instruções de fragment | todos os tiers         |
+| DOF                       | +3 passes                  | **tier `high` apenas** |
+| Aberração cromática       | +1 pass                    | **tier `high` apenas** |
+| Draw calls                | +4 no máximo (desktop)     | mobile mantém 44–46    |
 
 Meta mobile preservada: **≤ 2 efeitos de post ativos** (`performance-design.md`
 §Budget). Desktop passa a ter bloom + vignette + noise + DOF + CA.
@@ -171,7 +171,7 @@ Meta mobile preservada: **≤ 2 efeitos de post ativos** (`performance-design.md
 - [x] `prefers-reduced-motion`: `uTime` congelado, teia/sweep zerados,
       composição pixel-idêntica (teste em `motion.spec.ts`, 3 viewports).
 - [~] Draw calls: desktop 53–59 (DOF + CA no `full`); mobile **44–46** mantido
-      quando DOF/CA estão off — dentro do budget mobile.
+  quando DOF/CA estão off — dentro do budget mobile.
 - [x] Testes unitários da camada: 9 novos (`tests/unit/materials.test.ts`) —
       injeção, fallback seguro com warn, `uWebScale`, intenção por material.
 - [x] Subconjunto visual (`hero` + `motion`, 3 viewports): 18 passed / 3 skipped.
