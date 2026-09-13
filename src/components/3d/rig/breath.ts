@@ -1,4 +1,5 @@
 import type { BeatId } from '../beat/beats';
+import { SPIDER_SENSE } from './spiderSense';
 
 /**
  * Beat-directed breathing — IDEIA-3D-09 (docs/specs/spider-sense.md §2).
@@ -36,14 +37,21 @@ export const breathRuntime: BreathState = {
   amp: BREATH_BEATS.hero.amp,
 };
 
-/** Advance one frame; returns the breath sample (−amp..amp) for the spine. */
-export function breathStep(delta: number, beat: BeatId): number {
+/**
+ * Advance one frame; returns the breath sample (−amp..amp) for the spine.
+ * `sense` (0..1) is the spider-sense envelope: while it rings the breath
+ * catches — the amplitude collapses (held breath) and resumes as the sense
+ * decays, reading as catch → exhale.
+ */
+export function breathStep(delta: number, beat: BeatId, sense = 0): number {
   const target = BREATH_BEATS[beat];
   const alpha = 1 - Math.exp(-BREATH_SMOOTH_K * delta);
   breathRuntime.rate += (target.rate - breathRuntime.rate) * alpha;
   breathRuntime.amp += (target.amp - breathRuntime.amp) * alpha;
   breathRuntime.phase += delta * Math.PI * 2 * breathRuntime.rate;
-  return Math.sin(breathRuntime.phase) * breathRuntime.amp;
+  return (
+    Math.sin(breathRuntime.phase) * breathRuntime.amp * (1 - SPIDER_SENSE.BREATH_CATCH * sense)
+  );
 }
 
 export function breathResetForTest(): void {

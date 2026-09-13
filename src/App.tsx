@@ -24,6 +24,8 @@ import { ColophonSection } from './components/ui/ColophonSection';
 import { GyroPrompt } from './components/ui/GyroPrompt';
 import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
+import { SpiderSense } from './components/ui/SpiderSense';
+import { SenseAnchor } from './components/3d/SenseAnchor';
 import { hasWebGL } from './design/webgl';
 
 interface ErrorBoundaryProps {
@@ -97,88 +99,69 @@ export function App() {
       {/* Scroll progress indicator */}
       <ProgressBar />
 
+      {/* Spider-sense halo — comic emanata around the head (IDEIA-3D-10) */}
+      <SpiderSense />
+
       {/* Cinematic loader — shows during GLB asset loading */}
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
 
       {/* Developer metrics overlay — only with ?debug=1 */}
       <PerfHud />
 
-    <main className="relative w-full overflow-x-hidden bg-ink text-paper">
-      {/* 3D R3F Canvas Layer — fixed, never unmounts */}
-      <ErrorBoundary
-        fallback={null}
-        onError={() => setWebglUnavailable(true)}
-      >
-        <CanvasContainer>
-          <Suspense fallback={null}>
-            <BeatProvider>
-              <CameraRig />
-              <Stage />
-              <Atmosphere />
-              <LightRig />
-              <EffectsStack />
-              <WebShoot />
-              <WebShootHint />
-            </BeatProvider>
-          </Suspense>
-        </CanvasContainer>
-      </ErrorBoundary>
+      <main className="relative w-full overflow-x-hidden bg-ink text-paper">
+        {/* 3D R3F Canvas Layer — fixed, never unmounts */}
+        <ErrorBoundary fallback={null} onError={() => setWebglUnavailable(true)}>
+          <CanvasContainer>
+            <Suspense fallback={null}>
+              <BeatProvider>
+                <CameraRig />
+                <Stage />
+                <Atmosphere />
+                <LightRig />
+                <EffectsStack />
+                <WebShoot />
+                <WebShootHint />
+                <SenseAnchor />
+              </BeatProvider>
+            </Suspense>
+          </CanvasContainer>
+        </ErrorBoundary>
 
-      {/* Scrollable content overlay */}
-      <div className="relative z-10">
-        {/* Opening title card — Beat 0, 100vh, before the model appears */}
-        <OpeningTitleCard />
+        {/* Scrollable content overlay */}
+        <div className="relative z-10">
+          {/* Opening title card — Beat 0, 100vh, before the model appears */}
+          <OpeningTitleCard />
 
-        {/* Hero — 100vh */}
-        <section className="relative h-dvh" aria-label="Hero">
-          <HeroOverlay />
-        </section>
+          {/* Hero — 100vh */}
+          <section className="relative h-dvh" aria-label="Hero">
+            <HeroOverlay />
+          </section>
 
-        {/* Chapter 1: MUDANÇA — 100vh cinematic transition card */}
-        <ChapterCard
-          title="MUDANÇA"
-          subtitle="Capítulo 2"
-          position="before-evolution"
-        />
+          {/* Chapter 1: MUDANÇA — 100vh cinematic transition card */}
+          <ChapterCard title="MUDANÇA" subtitle="Capítulo 2" position="before-evolution" />
 
-        {/* Evolution — 150vh scroll-driven */}
-        <section
-          id="evolution-section"
-          className="relative h-[150vh]"
-          aria-label="Evolution"
-        >
-          <EvolutionOverlay />
-        </section>
+          {/* Evolution — 150vh scroll-driven */}
+          <section id="evolution-section" className="relative h-[150vh]" aria-label="Evolution">
+            <EvolutionOverlay />
+          </section>
 
-        {/* Chapter 2: REVELAÇÃO — 100vh cinematic transition card */}
-        <ChapterCard
-          title="REVELAÇÃO"
-          subtitle="Capítulo 4"
-          position="before-fullbody"
-        />
+          {/* Chapter 2: REVELAÇÃO — 100vh cinematic transition card */}
+          <ChapterCard title="REVELAÇÃO" subtitle="Capítulo 4" position="before-fullbody" />
 
-        {/* Arsenal — 150vh scroll-driven, lateral orbit axis crossing */}
-        <section
-          id="arsenal-section"
-          className="relative h-[150vh]"
-          aria-label="Arsenal"
-        >
-          <ArsenalOverlay />
-        </section>
+          {/* Arsenal — 150vh scroll-driven, lateral orbit axis crossing */}
+          <section id="arsenal-section" className="relative h-[150vh]" aria-label="Arsenal">
+            <ArsenalOverlay />
+          </section>
 
-        {/* FullBody — 100vh, final reveal */}
-        <section
-          id="fullbody-section"
-          className="relative h-dvh"
-          aria-label="FullBody"
-        >
-          <FullBodyOverlay />
-        </section>
+          {/* FullBody — 100vh, final reveal */}
+          <section id="fullbody-section" className="relative h-dvh" aria-label="FullBody">
+            <FullBodyOverlay />
+          </section>
 
-        {/* Colophon — 100vh, editorial outro with authorship + CTA */}
-        <ColophonSection />
-      </div>
-    </main>
+          {/* Colophon — 100vh, editorial outro with authorship + CTA */}
+          <ColophonSection />
+        </div>
+      </main>
     </LenisProvider>
   );
 }

@@ -66,11 +66,7 @@ body {
 
 /* Halftone dot trama — capped at 6% by the spec. */
 .halftone {
-  background-image: radial-gradient(
-    circle,
-    rgba(233, 229, 218, 0.55) 1px,
-    transparent 1.4px
-  );
+  background-image: radial-gradient(circle, rgba(233, 229, 218, 0.55) 1px, transparent 1.4px);
   background-size: 7px 7px;
   opacity: 0.06;
 }
@@ -96,25 +92,13 @@ html.lenis body {
 
 /* Pointer parallax layers (desktop) — docs/specs/desktop-pointer-parallax.md */
 .parallax-near {
-  transform: translate3d(
-    calc(var(--pointer-x, 0) * 10px),
-    calc(var(--pointer-y, 0) * 8px),
-    0
-  );
+  transform: translate3d(calc(var(--pointer-x, 0) * 10px), calc(var(--pointer-y, 0) * 8px), 0);
 }
 .parallax-mid {
-  transform: translate3d(
-    calc(var(--pointer-x, 0) * 6px),
-    calc(var(--pointer-y, 0) * 5px),
-    0
-  );
+  transform: translate3d(calc(var(--pointer-x, 0) * 6px), calc(var(--pointer-y, 0) * 5px), 0);
 }
 .parallax-far {
-  transform: translate3d(
-    calc(var(--pointer-x, 0) * 3px),
-    calc(var(--pointer-y, 0) * 2px),
-    0
-  );
+  transform: translate3d(calc(var(--pointer-x, 0) * 3px), calc(var(--pointer-y, 0) * 2px), 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,6 +106,46 @@ html.lenis body {
   .parallax-mid,
   .parallax-far {
     transform: none;
+  }
+}
+
+/* IDEIA-3D-10 — spider-sense halo (docs/specs/spider-sense.md §1).
+   SenseAnchor publishes --sense-x/y (screen px) while the envelope is
+   alive; the component writes opacity per frame. */
+.sense-halo {
+  left: var(--sense-x, 50vw);
+  top: var(--sense-y, 38vh);
+  width: 230px;
+  height: 230px;
+  transform: translate(-50%, -50%);
+}
+@media (min-width: 768px) {
+  .sense-halo {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.sense-squiggle {
+  stroke: var(--color-signal);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sense-draw 170ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes sense-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sense-squiggle {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
 

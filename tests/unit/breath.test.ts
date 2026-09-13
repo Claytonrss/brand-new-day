@@ -50,4 +50,16 @@ describe('breathStep', () => {
     expect(breathRuntime.amp).toBeCloseTo(BREATH_BEATS.fullBody.amp, 1);
     expect(breathRuntime.rate).toBeCloseTo(BREATH_BEATS.fullBody.rate, 2);
   });
+
+  it('catches — holds the breath — while the spider-sense rings', () => {
+    breathResetForTest();
+    let maxHeld = 0;
+    for (let i = 0; i < 600; i++) {
+      const sample = breathStep(1 / 60, 'fullBody', 1);
+      maxHeld = Math.max(maxHeld, Math.abs(sample));
+    }
+    // amplitude collapses to ~10% — a held breath, not a frozen pose
+    expect(maxHeld).toBeLessThanOrEqual(BREATH_BEATS.fullBody.amp * 0.1 + 1e-9);
+    expect(maxHeld).toBeGreaterThan(0);
+  });
 });
