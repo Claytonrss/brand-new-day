@@ -20,7 +20,7 @@ as seções 3D).
    `text-shadow: 1px 0 0 rgba(122,31,36,.25), -1px 0 0 rgba(44,59,76,.25)`
    (oxide/steel a 25%, offset 1 px). Estático — não é aberração animada.
 3. **Fio de teia** — SVG absoluto (viewBox 100×100, `preserveAspectRatio=
-   "none"`), path diagonal com barriga (`M -2 26 Q 50 44 102 18`),
+"none"`), path diagonal com barriga (`M -2 26 Q 50 44 102 18`),
    `vector-effect: non-scaling-stroke`, stroke paper a 35%:
    - com motion: `stroke-dasharray/dashoffset` via `pathLength=1`, desenha
      uma vez na entrada (ScrollTrigger `once` em `top 70%`, ease power2.out,

@@ -7,7 +7,7 @@ Restante: **sessão de device no S23** (runbook:
 `docs/plans/wave0-s23-runbook.md`), calibrações dependentes de device e
 itens data-gated — ver `PROGRESS.md` (checklist de fechamento).
 
-### Pareto Impact Plan (`docs/plans/pareto-impact-plan.md`)
+### Pareto Impact Plan (`docs/plans/archive/pareto-impact-plan.md`)
 
 - **Wave 1 — PERF-A (PR #32):** tier inicial síncrono (`detectInitialTier`)
   — mobile inicia em `medium`, nunca `high` (FALHA-01); trocas de tier só em
@@ -109,6 +109,9 @@ chapter-print}.md`.
 - PR #35: Wave 4a — a chegada (+ isTap tests perdidos do #34).
 - PR #36: Wave 4b — velocity lean.
 - PR #37: Wave 5 — beat chrome + chapter print.
+- PR #38: pareto closeout (STATE sync + PROGRESS reestruturado).
+- PR #39: auditoria de docs (arquivamento de planos, backlog, statuses).
+- PR #40: DOM micro-craft · PR #41: spider-sense + respiração por beat.
 
 ## Próximos Passos (fila priorizada)
 
@@ -146,14 +149,14 @@ chapter-print}.md`.
 
 ## Métricas
 
-- **PRs:** 37 (todos merged) · **Unit tests:** 134 (16 arquivos) ·
-  **Visual:** 12 specs (gate de PR: 7 `@smoke` no mobile-390; deep suite na
+- **PRs:** 41 (todos merged) · **Unit tests:** 165 (22 arquivos) ·
+  **Visual:** 14 specs (gate de PR: 9 `@smoke` no mobile-390; deep suite na
   `main`) · **Hooks:** husky + commitlint + lint-staged
 - **Rubrica visual:** 4,5/5,0 — autoatribuída por PR contra evidências;
   aprovação humana pendente (Fase 7.3)
 - **Draw calls/frame:** 44–46 (high) · **30–46 no medium entre refreshes de
   sombra** (throttle, vale de 16) · 11–13 (low)
-- **GLB:** 23,4 MB (geometria não comprimida — F4b, budget ≤ 15 MB, ligado
+- **GLB:** ≈ 23,5 MB (geometria não comprimida — F4b, budget ≤ 15 MB, ligado
   ao gatilho FALHA-14)
 - **Requests externos no load:** 0 (HDR + fontes locais)
 - **Total page height:** 900vh (opening + hero + 2 cards + evolution +

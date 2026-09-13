@@ -18,22 +18,22 @@ fundos coloridos, sem texto colorido (design-bible).
 
 2. **Mapa de acentos** (`src/design/beatAccents.ts`):
 
-| Beat | Accent | Racional |
-|---|---|---|
-| `hero` | `steel` | frio, contido |
-| `chapter1` | `oxide` | antecipa o beat seguinte |
-| `evolution` | `oxide` | quente do símbolo |
-| `chapter2` | `signal` | antecipa o beat seguinte |
-| `arsenal` | `signal` | acento máximo do Arsenal |
-| `fullBody` | `paper @ 60%` | poster neutro |
-| `colophon` | `dim` | recolhimento |
+| Beat        | Accent        | Racional                 |
+| ----------- | ------------- | ------------------------ |
+| `hero`      | `steel`       | frio, contido            |
+| `chapter1`  | `oxide`       | antecipa o beat seguinte |
+| `evolution` | `oxide`       | quente do símbolo        |
+| `chapter2`  | `signal`      | antecipa o beat seguinte |
+| `arsenal`   | `signal`      | acento máximo do Arsenal |
+| `fullBody`  | `paper @ 60%` | poster neutro            |
+| `colophon`  | `dim`         | recolhimento             |
 
 3. **Aplicações permitidas (exaustivas):**
    - hairlines do HUD do Arsenal (SVG call-outs + borda da legenda mobile);
    - kicker rules (fio de 28×1 px antes do kicker de cada seção — novo);
    - borda do chip de gyro (`GyroPrompt`, 45% do accent);
    - `::selection` global.
-   Nada mais recebe accent. `::selection` não transiciona (instantâneo).
+     Nada mais recebe accent. `::selection` não transiciona (instantâneo).
 
 4. **Fallbacks:** todo consumo usa `var(--beat-accent, …)` com o valor
    pré-hidratação atual (signal/steel) — a página nunca fica sem cor.

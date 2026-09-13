@@ -4,7 +4,7 @@
 
 **Section:** Opening → Hero (transição)  
 **Branch:** `feat/arrival-landing`  
-**Plan:** `docs/plans/pareto-impact-plan.md` §Wave 4, PR 4a (IDEIA-3D-01)  
+**Plan:** `docs/plans/archive/pareto-impact-plan.md` §Wave 4, PR 4a (IDEIA-3D-01)  
 **Date:** 2026-09-12
 
 ## 2. Visual Goal
@@ -37,28 +37,28 @@ plano anterior).
 
 ## 4. Coreografia (~0,45 s)
 
-| Fase | O que acontece |
-|---|---|
-| Antes do disparo | Grupo do modelo mantido em `y = rest + DROP` (no ar), invisível atrás do opening card |
-| Queda | Spring leva `y` de `DROP` a `0` (semi-implícito, `Spring` de `rig/spring.ts`) |
-| Impacto | Flexão de quadril/joelhos via pose-springs existentes; kick de câmera + FOV punch no pico da velocidade da queda |
-| Assentamento | Overshoot de 4–6% (quique sutil do joelho) e flexão decai a rest (~1 s, amortecido pelos pose-springs) |
+| Fase             | O que acontece                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Antes do disparo | Grupo do modelo mantido em `y = rest + DROP` (no ar), invisível atrás do opening card                            |
+| Queda            | Spring leva `y` de `DROP` a `0` (semi-implícito, `Spring` de `rig/spring.ts`)                                    |
+| Impacto          | Flexão de quadril/joelhos via pose-springs existentes; kick de câmera + FOV punch no pico da velocidade da queda |
+| Assentamento     | Overshoot de 4–6% (quique sutil do joelho) e flexão decai a rest (~1 s, amortecido pelos pose-springs)           |
 
 **Sem braços:** a pose transitória toca apenas `hips`, `upLegL`, `upLegR`.
 
 ## 5. Constantes nomeadas (calibráveis em Look Dev)
 
-| Constante | Valor | Unidade | Nota |
-|---|---:|---|---|
-| `LANDING_DROP` | 0.6 | world units | altura inicial da queda (`y +0,6`) |
-| `LANDING_STIFFNESS` | 9 | rad/s (ω) | "k ≈ 9" do plano |
-| `LANDING_DAMPING` | 0.7 | ζ | ζ < 1 → overshoot ≈ 4,6% (dentro dos 4–6%) |
-| `LANDING_FLEX_HIPS` | 0.105 | rad (~6°) | flexão de quadril |
-| `LANDING_FLEX_KNEE` | 0.14 | rad (~8°) | flexão de joelhos (`upLegL/R`) |
-| `LANDING_FLEX_DECAY` | 3 | 1/s | decaimento da flexão pós-impacto (~1 s) |
-| `LANDING_KICK` | 0.08 | world units | kick vertical de câmera no impacto (dip para baixo) |
-| `LANDING_FOV_PUNCH` | −2 | graus | punch de FOV no impacto |
-| `LANDING_KICK_NORMALIZER` | 4 | units/s | velocidade de queda que satura o kick (ω·DROP·0,75 ≈ 4) |
+| Constante                 | Valor | Unidade     | Nota                                                    |
+| ------------------------- | ----: | ----------- | ------------------------------------------------------- |
+| `LANDING_DROP`            |   0.6 | world units | altura inicial da queda (`y +0,6`)                      |
+| `LANDING_STIFFNESS`       |     9 | rad/s (ω)   | "k ≈ 9" do plano                                        |
+| `LANDING_DAMPING`         |   0.7 | ζ           | ζ < 1 → overshoot ≈ 4,6% (dentro dos 4–6%)              |
+| `LANDING_FLEX_HIPS`       | 0.105 | rad (~6°)   | flexão de quadril                                       |
+| `LANDING_FLEX_KNEE`       |  0.14 | rad (~8°)   | flexão de joelhos (`upLegL/R`)                          |
+| `LANDING_FLEX_DECAY`      |     3 | 1/s         | decaimento da flexão pós-impacto (~1 s)                 |
+| `LANDING_KICK`            |  0.08 | world units | kick vertical de câmera no impacto (dip para baixo)     |
+| `LANDING_FOV_PUNCH`       |    −2 | graus       | punch de FOV no impacto                                 |
+| `LANDING_KICK_NORMALIZER` |     4 | units/s     | velocidade de queda que satura o kick (ω·DROP·0,75 ≈ 4) |
 
 Sinais de flexão/calibração fina pertencem ao Look Dev; os valores acima são
 o ponto de partida vinculante do plano.

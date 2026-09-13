@@ -24,28 +24,28 @@
 
 ## Escala
 
-| Nota | Significado |
-|---|---|
-| 1 | fraco, genérico, parece template ou demo técnica |
-| 2 | funcional, mas sem presença visual |
-| 3 | aceitável, porém ainda comum |
-| 4 | forte, intencional, digno de portfólio |
-| 5 | memorável, com identidade clara e execução refinada |
+| Nota | Significado                                         |
+| ---- | --------------------------------------------------- |
+| 1    | fraco, genérico, parece template ou demo técnica    |
+| 2    | funcional, mas sem presença visual                  |
+| 3    | aceitável, porém ainda comum                        |
+| 4    | forte, intencional, digno de portfólio              |
+| 5    | memorável, com identidade clara e execução refinada |
 
 ## Critérios e pesos
 
-| Critério | Peso | Nota mínima |
-|---|---:|---:|
-| Primeira dobra / impacto imediato | 3 | 4 |
-| Composição mobile | 3 | 4 |
-| Integração texto + personagem | 3 | 4 |
-| Iluminação e silhueta | 2 | 4 |
-| Tipografia e hierarquia | 2 | 4 |
-| Ritmo de scroll e câmera | 2 | 4 |
-| Sensação cinematográfica/editorial | 2 | 4 |
-| Originalidade de portfólio | 2 | 4 |
-| Performance percebida mobile | 3 | 4 |
-| Motion reduzida ainda bonita | 1 | 3 |
+| Critério                           | Peso | Nota mínima |
+| ---------------------------------- | ---: | ----------: |
+| Primeira dobra / impacto imediato  |    3 |           4 |
+| Composição mobile                  |    3 |           4 |
+| Integração texto + personagem      |    3 |           4 |
+| Iluminação e silhueta              |    2 |           4 |
+| Tipografia e hierarquia            |    2 |           4 |
+| Ritmo de scroll e câmera           |    2 |           4 |
+| Sensação cinematográfica/editorial |    2 |           4 |
+| Originalidade de portfólio         |    2 |           4 |
+| Performance percebida mobile       |    3 |           4 |
+| Motion reduzida ainda bonita       |    1 |           3 |
 
 ## Regras de aprovação
 
@@ -59,19 +59,19 @@
 
 Evidência: `docs/evidence/portfolio-audit-p0/` (3 viewports × 8 pontos).
 
-| Critério | Peso | Nota | Nota mínima | OK? | Observação (contra evidência) |
-|---|---:|---:|---:|:---:|---|
-| Primeira dobra / impacto imediato | 3 | 5 | 4 | ✅ | `390/430/1440-scroll-0`: máscara domina, copy ancorada embaixo, rim light separa a silhueta |
-| Composição mobile | 3 | 4 | 4 | ✅ | Arsenal `390/430-scroll-75`: lançador 100% livre (copy na base); FullBody `390/430-scroll-100`: peito/símbolo livre |
-| Integração texto + personagem | 3 | 4 | 4 | ✅ | Nenhuma palavra cortada (`1440-scroll-45/75`, `390-scroll-100`); texto fora do foco em todos os beats |
-| Iluminação e silhueta | 2 | 5 | 4 | ✅ | Rim oxide/signal, materialidade do traje legível nos close-ups (`1440-scroll-30/45`) |
-| Tipografia e hierarquia | 2 | 4 | 4 | ✅ | Quebras manuais do storyboard (`SplitTextHeadline` com `\n`); fim do `ESTÁ M/UDANDO.` |
-| Ritmo de scroll e câmera | 2 | 5 | 4 | ✅ | Chapter cards + órbita do Arsenal + assinatura de atmosfera por beat com crossfade (`atmosphere-per-beat/`) |
-| Sensação cinematográfica/editorial | 2 | 5 | 4 | ✅ | Loader teaser + opening title card + colofon editorial (`loader-teaser/`, `opening-title-card/`, `colophon-outro/`) |
-| Originalidade de portfólio | 2 | 5 | 4 | ✅ | Rig procedural + shaders autorais + assinatura de autor com stack e CTA |
-| Performance percebida mobile | 3 | 4 | 4 | ✅ | `budget.spec.ts`: draw calls ≤ 48, `programs` estável no scroll; FPS real pendente (Fase 7.3) |
-| Motion reduzida ainda bonita | 1 | 4 | 3 | ✅ | `reduced-motion.spec.ts` com enquadramento por seção e composição preservada |
-| **Média ponderada** | | **4,5** | **≥ 4** | ✅ | 103/23 |
+| Critério                           | Peso |    Nota | Nota mínima | OK? | Observação (contra evidência)                                                                                       |
+| ---------------------------------- | ---: | ------: | ----------: | :-: | ------------------------------------------------------------------------------------------------------------------- |
+| Primeira dobra / impacto imediato  |    3 |       5 |           4 | ✅  | `390/430/1440-scroll-0`: máscara domina, copy ancorada embaixo, rim light separa a silhueta                         |
+| Composição mobile                  |    3 |       4 |           4 | ✅  | Arsenal `390/430-scroll-75`: lançador 100% livre (copy na base); FullBody `390/430-scroll-100`: peito/símbolo livre |
+| Integração texto + personagem      |    3 |       4 |           4 | ✅  | Nenhuma palavra cortada (`1440-scroll-45/75`, `390-scroll-100`); texto fora do foco em todos os beats               |
+| Iluminação e silhueta              |    2 |       5 |           4 | ✅  | Rim oxide/signal, materialidade do traje legível nos close-ups (`1440-scroll-30/45`)                                |
+| Tipografia e hierarquia            |    2 |       4 |           4 | ✅  | Quebras manuais do storyboard (`SplitTextHeadline` com `\n`); fim do `ESTÁ M/UDANDO.`                               |
+| Ritmo de scroll e câmera           |    2 |       5 |           4 | ✅  | Chapter cards + órbita do Arsenal + assinatura de atmosfera por beat com crossfade (`atmosphere-per-beat/`)         |
+| Sensação cinematográfica/editorial |    2 |       5 |           4 | ✅  | Loader teaser + opening title card + colofon editorial (`loader-teaser/`, `opening-title-card/`, `colophon-outro/`) |
+| Originalidade de portfólio         |    2 |       5 |           4 | ✅  | Rig procedural + shaders autorais + assinatura de autor com stack e CTA                                             |
+| Performance percebida mobile       |    3 |       4 |           4 | ✅  | `budget.spec.ts`: draw calls ≤ 48, `programs` estável no scroll; FPS real pendente (Fase 7.3)                       |
+| Motion reduzida ainda bonita       |    1 |       4 |           3 | ✅  | `reduced-motion.spec.ts` com enquadramento por seção e composição preservada                                        |
+| **Média ponderada**                |      | **4,5** |     **≥ 4** | ✅  | 103/23                                                                                                              |
 
 **Bloqueantes:** primeira dobra (5), composição mobile (4) e integração
 texto/personagem (4) — todos ≥ 4.

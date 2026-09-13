@@ -93,7 +93,7 @@ Android mid-tier com o HUD `?debug=1`.
 **Aberto em:** 2026-09-09 (item F4b)
 **Status:** aberto
 
-`public/models/spider-man_brand_new_day-v2.glb` tem 22,4 MB, dos quais ~19 MB
+`public/models/spider-man_brand_new_day-v2.glb` tem ≈ 23,5 MB, dos quais ~19 MB
 são geometria **sem Draco/meshopt** (273k vértices). O budget documentado é
 ≤ 15 MB. Texturas estão dentro (30 webp, 3,0 MB). Exige re-export com
 quantização + ADR.

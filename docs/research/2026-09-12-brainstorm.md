@@ -83,7 +83,7 @@ Cobrir também o teste A/B `?fx=off` para isolar o custo da camada de material.
 > shaders para dentro do fade do reveal se pausado durante o load. Item
 > reclassificado como **não prioritário**; uma variante segura (pause só em
 > repouso + resume em `touchstart`/`wheel`, que precedem o movimento) ficou
-> como gatilho de reavaliação no `docs/plans/pareto-impact-plan.md`.
+> como gatilho de reavaliação no `docs/plans/archive/pareto-impact-plan.md`.
 
 - **Onde:** `App.tsx` (estrutura) + `OpeningTitleCard`/`ChapterCard`/`ColophonSection` (seções opacas `bg-ink`)
 - Opening (100vh) + 2 chapter cards (100vh cada) + colophon (gradiente chega a

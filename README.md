@@ -26,13 +26,15 @@ Uma experiência web 3D cinematográfica construída para demonstrar direção d
 ```bash
 pnpm dev              # Iniciar servidor de desenvolvimento
 pnpm build            # Build de produção (TypeScript + Vite)
-pnpm typecheck        # Checagem estática de tipos TS
-pnpm lint             # Linter com ESLint
+pnpm verify           # Rodar todos os gates de qualidade (lint + typecheck + test + build)
 pnpm test             # Testes unitários com Vitest
-pnpm test:visual      # Testes de regressão visual com Playwright
-pnpm verify           # Rodar todos os gates de qualidade
+pnpm test:smoke       # Gate de PR Playwright (@smoke, mobile-390)
+pnpm test:visual      # Suíte visual completa com Playwright
 pnpm inspect:glb      # Inspeção de metadados do modelo GLB
 ```
+
+A lista completa de comandos e o workflow de contribuição estão em
+[AGENTS.md](AGENTS.md).
 
 ---
 
@@ -45,6 +47,21 @@ pnpm inspect:glb      # Inspeção de metadados do modelo GLB
 - `signal` (`#c23b34`) — Accent máximo de destaque
 - `paper` (`#e9e5da`) — Texto e tipografia principal
 - `dim` (`#6b6a63`) — Texto secundário
+
+> Fonte única dos tokens: `src/index.css` (`@theme`) · direção visual
+> vinculante: [docs/design/design-bible.md](docs/design/design-bible.md)
+
+---
+
+## 📚 Documentação
+
+| Documento                                                  | Conteúdo                              |
+| ---------------------------------------------------------- | ------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                     | workflow, comandos e regras de PR     |
+| [PROGRESS.md](PROGRESS.md)                                 | checklist de fechamento (o que falta) |
+| [docs/STATE.md](docs/STATE.md)                             | estado atual, ADRs e métricas         |
+| [docs/design/design-bible.md](docs/design/design-bible.md) | direção visual vinculante             |
+| [docs/specs/README.md](docs/specs/README.md)               | índice de Scene Specs                 |
 
 ---
 

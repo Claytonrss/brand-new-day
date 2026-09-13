@@ -6,10 +6,10 @@
 
 ## Mobile (390px base)
 
-| Regra | Valor |
-|---|---|
-| Margem horizontal mínima de texto | 24px |
-| Bloco de texto principal | máx. 82vw |
+| Regra                             | Valor     |
+| --------------------------------- | --------- |
+| Margem horizontal mínima de texto | 24px      |
+| Bloco de texto principal          | máx. 82vw |
 
 ### Zonas por seção
 

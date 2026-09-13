@@ -17,14 +17,14 @@ Três problemas foram reportados após as Waves B/A/C:
 
 Diagnóstico por medição (via `window.__rig.world`):
 
-| Fato medido (desktop) | Valor |
-|---|---|
-| Peito real (`Spine2_04` + `Spine1_03`) | **(1,028; −2,254)** |
-| `lookAt` do keyframe de Evolution | **(0; −2,0)** → 1 unidade à esquerda |
-| Punho/antebraço real no Beat 3 | **(−1,23; −2,72; −0,38)** |
-| `lookAt` do keyframe de Arsenal | **(−0,5; −3,3; 0)** |
-| Mão no Beat 3 (pose anterior) | **(−2,34; −3,32; 0,44)** — ombro abaixo, sem apresentação |
-| Cabeça: yaw com ponteiro à esq. / dir. | **−0,31 / +0,48** (assimétrico por causa da rest pose) |
+| Fato medido (desktop)                  | Valor                                                     |
+| -------------------------------------- | --------------------------------------------------------- |
+| Peito real (`Spine2_04` + `Spine1_03`) | **(1,028; −2,254)**                                       |
+| `lookAt` do keyframe de Evolution      | **(0; −2,0)** → 1 unidade à esquerda                      |
+| Punho/antebraço real no Beat 3         | **(−1,23; −2,72; −0,38)**                                 |
+| `lookAt` do keyframe de Arsenal        | **(−0,5; −3,3; 0)**                                       |
+| Mão no Beat 3 (pose anterior)          | **(−2,34; −3,32; 0,44)** — ombro abaixo, sem apresentação |
+| Cabeça: yaw com ponteiro à esq. / dir. | **−0,31 / +0,48** (assimétrico por causa da rest pose)    |
 
 Causa raiz: cada consumidor tinha sua própria âncora hardcoded e elas
 discordavam entre si. O modelo desktop fica em `x ≈ 1,02` (offset de
@@ -67,7 +67,7 @@ O spotlight do Beat 2 passa a mirar a altura do peito **medida**
 
 - **Easing:** os beats intermediários passam de `smoothstep`/`easeInOutCubic`
   para **`linear`**. Qualquer ease-in-out zera a derivada nas pontas, então a
-  câmera *parava* em cada fronteira — a sensação de "duro" reportada. O suavizador
+  câmera _parava_ em cada fronteira — a sensação de "duro" reportada. O suavizador
   exponencial do `useFrame` (k=2) já arredonda as quinas; só a aterrissagem
   final (`fullBody`, `easeOutCubic`) mantém ease próprio.
 - **Cabeça:** `headYawTarget(x, baseYaw)` — bias `baseYaw · −0,6` (compensa a
