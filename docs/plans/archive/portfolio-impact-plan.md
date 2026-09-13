@@ -1,6 +1,6 @@
 # Plano Mestre — Portfolio Impact (spiderman-landing)
 
-> **Status:** proposto — aguardando aprovação para execução
+> **Status:** ✅ executado — P0–P3.2 no PR #31 (arquivado)
 > **Data:** 2026-09-10
 > **Origem:** auditoria pós-Wave G (24 screenshots reais em 3 viewports)
 > **Escopo pedido:** elevar a peça de "demo de engine 3D" para "portfólio de
@@ -233,6 +233,6 @@ três critérios de sucesso (mobile correto, autoria, ritmo).
 - `docs/design/storyboard.md`, `design-bible.md`, `composition-rules.md`,
   `mobile-first.md`, `quality-matrix.md`, `performance-design.md`,
   `visual-rubric.md`, `memorable-moments.md`
-- `docs/plans/3d-motion-upgrade-plan.md` (diagnóstico técnico da base)
+- `docs/plans/archive/3d-motion-upgrade-plan.md` (diagnóstico técnico da base)
 - `docs/memory/decisions.md` (ADR-017 a ADR-020)
 - `docs/evidence/portfolio-audit/` (24 screenshots da auditoria)

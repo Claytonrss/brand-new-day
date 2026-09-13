@@ -35,11 +35,11 @@
 - **Status:** Aprovado
 - **Contexto:** Garantir que o enquadramento, contraste e tipografia funcionem perfeitamente tanto em telas móbiles pequenas quanto em monitores desktop.
 - **Decisão:**
-  - Playwright configurado com 3 viewports padrão:
-    - Mobile iPhone 14/15: `390x844`
-    - Mobile Pro Max: `430x932`
-    - Desktop Standard: `1440x900`
-  - Gate visual acionado via `pnpm verify` / `pnpm test:visual`.
+  - Playwright com dois projetos de teste (fonte única: `playwright.config.ts`):
+    - Mobile iPhone 14/15: `390x844` (projeto `mobile-390`, gate de PR)
+    - Desktop Standard: `1440x900` (projeto `desktop-1440`, deep suite na main)
+  - O terceiro viewport (`430x932`) é coberto pelas evidências de PR
+    (`pnpm evidence:visual` fotografa 390/430/1440), não por um projeto de teste.
 
 ---
 
@@ -57,6 +57,7 @@ FullBody). A câmera atual é estática (Hero apenas).
 ### Decisão
 
 Implementar um camera rig baseado em:
+
 - **Objeto mutável alvo** (position, lookAt, fov) atualizado por GSAP ScrollTrigger
 - **Suavização** via lerp no useFrame com k=3 (frame-rate independent)
 - **Condicionais por breakpoint** (768px) para keyframes mobile/desktop
@@ -87,12 +88,15 @@ Implementar um camera rig baseado em:
 **Status:** ✅ Aprovado
 
 ### Contexto
+
 O projeto precisava de smooth scroll premium para a wave 2. GSAP ScrollSmoother é a solução oficial, mas tem conflitos conhecidos com Lenis e é pago (GSAP Premium).
 
 ### Decisão
+
 Adotar Lenis v1.3.x para smooth scroll.
 
 **Rationale:**
+
 - Open source (MIT license)
 - Integração nativa com GSAP ScrollTrigger
 - Easing exponencial `1.001 - 2^(-10t)` — curva "premium" da indústria
@@ -100,11 +104,13 @@ Adotar Lenis v1.3.x para smooth scroll.
 - Comunidade ativa (Awwwards, GSAP showcase sites usam)
 
 ### Alternativas Consideradas
+
 1. **GSAP ScrollSmoother** — rejeitado: pago, conflitos com Lenis
 2. **CSS scroll-behavior: smooth** — rejeitado: não é "premium", não integra com ScrollTrigger
 3. **Locomotive Scroll** — rejeitado: menos maintainable, comunidade menor
 
 ### Consequências
+
 - ✅ Smooth scroll premium implementado
 - ✅ Integração com ScrollTrigger (Lenis ↔ GSAP sync)
 - ⚠️ Dependência externa (Lenis) — monitorar updates
@@ -118,9 +124,11 @@ Adotar Lenis v1.3.x para smooth scroll.
 **Status:** ✅ Aprovado
 
 ### Contexto
+
 A wave 4 adiciona elementos de profundidade e polish final: chapter cards, progress bar, particles, performance monitor.
 
 ### Decisão
+
 Implementar 4 componentes independentes:
 
 1. **ChapterCard** — transições cinematográficas entre seções (100vh, GSAP animations)
@@ -129,18 +137,21 @@ Implementar 4 componentes independentes:
 4. **PerformanceMonitor** — FPS tracking + adaptive quality (high/medium/low)
 
 **Rationale:**
+
 - Chapter cards marcam atos narrativos (MUDANÇA, REVELAÇÃO)
 - Progress bar dá feedback de scroll (1px, não intrusivo)
 - Particles criam profundidade atmosférica (design-bible §Atmosfera)
 - Performance monitor garante experiência consistente em dispositivos low-end
 
 ### Alternativas Consideradas
+
 1. **Chapter cards como overlays** — rejeitado: não integra com camera path
 2. **Progress bar horizontal (top)** — rejeitado: intrusivo, compete com copy
 3. **Particles como post-processing** — rejeitado: performance cost, não é "grão sutil"
 4. **Performance monitor externo (Lighthouse)** — rejeitado: não é real-time, não adapta
 
 ### Consequências
+
 - ✅ Chapter cards integrados ao camera path (700vh total)
 - ✅ Progress bar acessível (role="progressbar", ARIA labels)
 - ✅ Particles quality-aware (high=200, medium=120, low=0)
@@ -156,38 +167,46 @@ Implementar 4 componentes independentes:
 **Status:** ✅ Aprovado
 
 ### Contexto
+
 O EffectsStack era incondicional (bloom + vignette + noise sempre ativos), causando performance ruim em mobile e desperdício de GPU em dispositivos que não precisam de todos os efeitos.
 
 ### Decisão
+
 Implementar post-processing adaptativo baseado em quality profile:
 
 **Quality Presets:**
+
 - **High** (desktop): bloom 0.85/0.8, vignette 0.6, noise 0.032, MSAA 4x
 - **Medium** (mobile): bloom 0.45/0.9, vignette 0.45, noise disabled, MSAA 0
 - **Low** (reduced-motion): bloom disabled, vignette 0.3, noise disabled, MSAA 0
 
 **Initial Tier Detection:**
+
 - `prefers-reduced-motion` → low
 - mobile (max-width: 768px) → medium
 - desktop → high
 
 **FPS Degradation:**
+
 - Mantida lógica de histerese (evita oscilação)
 - Degradação automática high → medium → low baseada em FPS
 
 **Rationale:**
+
 - Desktop mantém qualidade máxima (rubrica 5.0)
 - Mobile reduz carga GPU (≤2 efeitos ativos)
 - Reduced-motion respeita preferências de acessibilidade
 - Performance monitor já existia, só precisava integrar com EffectsStack
 
 ### Alternativas Consideradas
+
 1. **EffectsStack incondicional** — rejeitado: performance ruim em mobile
 2. **CSS media queries para desabilitar efeitos** — rejeitado: não integra com quality context
 3. **User agent detection** — rejeitado: frágil, não considera preferências do usuário
 4. **Lighthouse CI thresholds** — rejeitado: não é real-time, não adapta dinamicamente
 
 ### Consequências
+
 - ✅ Desktop 1440×900 pixel-identical (rubrica 5.0 preservada)
 - ✅ Mobile 390/430 com bloom reduzido (0.45 vs 0.85)
 - ✅ Noise desabilitado em mobile (performance)
@@ -314,7 +333,7 @@ perfil.
 
 ### Alternativas Consideradas
 
-1. **Medir só FPS** — rejeitado: não explica *onde* está o custo
+1. **Medir só FPS** — rejeitado: não explica _onde_ está o custo
 2. **HUD dentro do canvas** — rejeitado: não é DOM, não serve a testes
 3. **Manter dpr 2 / 1.5** — rejeitado: fill rate é o gargalo em mobile e a
    diferença de nitidez é marginal
@@ -383,7 +402,7 @@ tier `low` e em `prefers-reduced-motion`.
 - ✅ `prefers-reduced-motion` corrigido: enquadramento estático por seção em vez
   de `fullBody` na página inteira (o Hero era exibido como corpo inteiro)
 - ✅ Draw calls e `programs` inalterados (44–46 e 10)
-- ⚠️ Pico residual de 62° é de *staging* (recuo obrigatório do close-up até o
+- ⚠️ Pico residual de 62° é de _staging_ (recuo obrigatório do close-up até o
   punho), não de implementação
 - ⚠️ Evolution/Arsenal/FullBody mudaram muito visualmente (43–65 % dos pixels
   no mobile) — exigiu aprovação visual humana
@@ -459,11 +478,11 @@ O review visual apontou que o Beat 2 enquadrava a axila (desktop) e o Beat 3
 não mostrava o lançador de teia. A medição no runtime mostrou a causa: cada
 consumidor tinha a própria âncora hardcoded e elas discordavam.
 
-| Consumidor | Âncora assumida | Realidade medida |
-|---|---|---|
-| `cameraKeyframes` (Evolution `lookAt`) | (0; −2,0) | peito em **(1,028; −2,254)** |
-| `cameraKeyframes` (Arsenal `lookAt`) | (−0,5; −3,3; 0) | antebraço em **(−1,23; −2,72; −0,38)** |
-| `CHEST_Y` / `WRIST_POSITION` | literais | idem |
+| Consumidor                             | Âncora assumida | Realidade medida                       |
+| -------------------------------------- | --------------- | -------------------------------------- |
+| `cameraKeyframes` (Evolution `lookAt`) | (0; −2,0)       | peito em **(1,028; −2,254)**           |
+| `cameraKeyframes` (Arsenal `lookAt`)   | (−0,5; −3,3; 0) | antebraço em **(−1,23; −2,72; −0,38)** |
+| `CHEST_Y` / `WRIST_POSITION`           | literais        | idem                                   |
 
 O modelo no desktop fica em `x ≈ 1,02` por **composição intencional** (texto à
 esquerda) — o erro não era o offset, era a câmera ignorá-lo.
@@ -514,7 +533,7 @@ baixo do antebraço.
 
 O review reportou movimento "duro". A causa não era amplitude: os segmentos
 usavam `smoothstep`/`easeInOutCubic`, e **todo ease-in-out zera a derivada nas
-duas pontas** — a câmera *parava* em cada fronteira de beat, seis vezes por
+duas pontas** — a câmera _parava_ em cada fronteira de beat, seis vezes por
 página.
 
 ### Decisão
@@ -735,7 +754,10 @@ assinatura da obra. Spec: `docs/specs/colophon-outro.md`.
 ## ADR-020: Assets 2D via Higgsfield (poster, grão, marca) — sem vídeo
 
 **Data:** 2026-09-10
-**Status:** ✅ Aprovado (auditoria portfolio-impact)
+**Status:** ⛔ Superseded (2026-09-12) — as três necessidades originais foram cobertas
+por outros meios (poster = render off-screen do modelo real, grão = `Noise` do
+postprocessing, marca = loader teaser SVG + fontes self-hosted); ver
+`PROGRESS.md` (Removidos). Reavaliar só se surgir demanda real de asset gerado.
 
 ### Contexto
 
@@ -767,6 +789,56 @@ render off-screen do próprio modelo (Opção A).
 - ⚠️ Qualquer saída fora da paleta é descartada na curadoria (design-bible).
 
 ---
+
+## ADR-021: HDR de ambiente self-hosted (FALHA-08 — loader determinístico)
+
+**Data:** 2026-09-12
+**Status:** ✅ Aprovado (Wave 3 do Pareto Impact Plan)
+
+### Contexto
+
+O `Environment` do drei usava `preset="city"`, que baixa o HDR
+`potsdamer_platz_1k.hdr` de um CDN externo (assets do pmndrs) em tempo de
+runtime. O portfólio vive de link compartilhado: CDN fora do ar, bloqueado
+ou lento deixava o loader travado (ou a experiência sem reflexos) — um modo
+de falha catastrófico fora do nosso controle.
+
+### Decisão
+
+1. **HDRI:** self-host do mesmo asset — `public/env/city_1k.hdr`
+   (`potsdamer_platz_1k.hdr`, Poly Haven, **CC0 / domínio público**,
+   verificado na página do asset em 2026-09-12); `Environment` passa de
+   `preset="city"` para `files="/env/city_1k.hdr"`.
+2. **Fontes (descoberto pela auditoria de requests):** o Google Fonts
+   (`fonts.googleapis.com`/`fonts.gstatic.com`) era o único request externo
+   restante. Space Grotesk (variável 400–700) e JetBrains Mono (400/500,
+   subset latin, ~53 KB) migraram para `public/fonts/` com `@font-face`
+   local (`public/fonts/fonts.css`); licença **SIL OFL 1.1** permite
+   self-host. A entrega tipográfica muda; as fontes são as mesmas tokens.
+
+O loader passa a depender **só de assets da própria origem** — auditoria:
+`docs/evidence/wave3-loader-determinism/requests-audit.txt`
+(0 requests externos).
+
+### Alternativas Consideradas
+
+1. **Manter preset (CDN pmndrs)** — rejeitado: dependência externa em hora
+   crítica (primeiro load).
+2. **Trocar de HDRI** — rejeitado: o look calibrado (P0/Look Dev) usa o
+   Potsdamer Platz; trocar reabriria calibração de materiais sem ganho.
+3. **Gerar HDRI autoral** — rejeitado para agora: asset novo com custo de
+   direção; CC0 permite uso comercial sem atribuição obrigatória (crédito
+   mantido por cortesia neste ADR).
+
+### Consequências
+
+- ✅ Loader determinístico: **zero requests externos** no primeiro load
+  (auditoria: `docs/evidence/wave3-loader-determinism/requests-audit.txt`).
+- ✅ Smoke "modo avião" passa a depender só da origem; fontes renderizam
+  offline (font-display: swap vira irrelevante sem rede).
+- ⚠️ +1,5 MB (HDR) + ~53 KB (fontes) em `public/` (fora do bundle JS).
+- ℹ️ Créditos: "Potsdamer Platz" por Greg Zaal / Poly Haven (CC0);
+  Space Grotesk (Florian Karsten) e JetBrains Mono (JetBrains), SIL OFL 1.1.
 
 ## ADR-022: Política de tier inicial síncrona (mobile nunca inicia em `high`)
 
@@ -825,62 +897,12 @@ lê como glitch (FALHA-09).
 - ✅ Nenhum tier pop visível durante scroll (aplica só em idle/loader).
 - ✅ Tier legível em device via `window.__perf.tier` (evidência Wave 0/1).
 - ⚠️ Degradação pode adiar alguns segundos durante scroll contínuo — aceito:
-    o estado estacionário é o mesmo e o usuário não está olhando movimento
-    quando aplica.
+  o estado estacionário é o mesmo e o usuário não está olhando movimento
+  quando aplica.
 - ⚠️ Se a Wave 0 medir ≥ 55 fps com queixa de "feel" persistente, o problema
-    é input-feel (FALHA-10 volta à mesa), não tier.
+  é input-feel (FALHA-10 volta à mesa), não tier.
 
 ---
-
-## ADR-021: HDR de ambiente self-hosted (FALHA-08 — loader determinístico)
-
-**Data:** 2026-09-12
-**Status:** ✅ Aprovado (Wave 3 do Pareto Impact Plan)
-
-### Contexto
-
-O `Environment` do drei usava `preset="city"`, que baixa o HDR
-`potsdamer_platz_1k.hdr` de um CDN externo (assets do pmndrs) em tempo de
-runtime. O portfólio vive de link compartilhado: CDN fora do ar, bloqueado
-ou lento deixava o loader travado (ou a experiência sem reflexos) — um modo
-de falha catastrófico fora do nosso controle.
-
-### Decisão
-
-1. **HDRI:** self-host do mesmo asset — `public/env/city_1k.hdr`
-   (`potsdamer_platz_1k.hdr`, Poly Haven, **CC0 / domínio público**,
-   verificado na página do asset em 2026-09-12); `Environment` passa de
-   `preset="city"` para `files="/env/city_1k.hdr"`.
-2. **Fontes (descoberto pela auditoria de requests):** o Google Fonts
-   (`fonts.googleapis.com`/`fonts.gstatic.com`) era o único request externo
-   restante. Space Grotesk (variável 400–700) e JetBrains Mono (400/500,
-   subset latin, ~53 KB) migraram para `public/fonts/` com `@font-face`
-   local (`public/fonts/fonts.css`); licença **SIL OFL 1.1** permite
-   self-host. A entrega tipográfica muda; as fontes são as mesmas tokens.
-
-O loader passa a depender **só de assets da própria origem** — auditoria:
-`docs/evidence/wave3-loader-determinism/requests-audit.txt`
-(0 requests externos).
-
-### Alternativas Consideradas
-
-1. **Manter preset (CDN pmndrs)** — rejeitado: dependência externa em hora
-   crítica (primeiro load).
-2. **Trocar de HDRI** — rejeitado: o look calibrado (P0/Look Dev) usa o
-   Potsdamer Platz; trocar reabriria calibração de materiais sem ganho.
-3. **Gerar HDRI autoral** — rejeitado para agora: asset novo com custo de
-   direção; CC0 permite uso comercial sem atribuição obrigatória (crédito
-   mantido por cortesia neste ADR).
-
-### Consequências
-
-- ✅ Loader determinístico: **zero requests externos** no primeiro load
-  (auditoria: `docs/evidence/wave3-loader-determinism/requests-audit.txt`).
-- ✅ Smoke "modo avião" passa a depender só da origem; fontes renderizam
-  offline (font-display: swap vira irrelevante sem rede).
-- ⚠️ +1,5 MB (HDR) + ~53 KB (fontes) em `public/` (fora do bundle JS).
-- ℹ️ Créditos: "Potsdamer Platz" por Greg Zaal / Poly Haven (CC0);
-  Space Grotesk (Florian Karsten) e JetBrains Mono (JetBrains), SIL OFL 1.1.
 
 ## ADR-023: Shadow throttle — passe de sombra sob demanda no tier `medium`
 

@@ -2,14 +2,14 @@
 
 > **Para quem vai implementar:** este é o documento de entrada. Leia-o por
 > inteiro antes de abrir qualquer branch. O plano mestre é
-> `docs/plans/portfolio-impact-plan.md`; este arquivo é apenas o roteiro de
+> `docs/plans/archive/portfolio-impact-plan.md`; este arquivo é apenas o roteiro de
 > execução.
 
 ---
 
 ## 1. Leitura obrigatória antes de começar
 
-1. `docs/plans/portfolio-impact-plan.md` — contexto, critérios de sucesso,
+1. `docs/plans/archive/portfolio-impact-plan.md` — contexto, critérios de sucesso,
    waves, métricas, riscos.
 2. `docs/design/design-bible.md` — paleta, regras de cor/textura/composição
    (vinculante).
@@ -84,4 +84,4 @@ Cada Scene Spec tem seção "Critérios de aceite" mensuráveis. O item só est�
 pronto quando: gates passam + critérios do spec medidos + evidências anexadas
 no PR + rubrica ≥ 4 nos bloqueantes.
 
-Ordem íntegra e contexto completo: `docs/plans/portfolio-impact-plan.md`.
+Ordem íntegra e contexto completo: `docs/plans/archive/portfolio-impact-plan.md`.

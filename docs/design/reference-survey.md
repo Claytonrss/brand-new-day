@@ -6,17 +6,17 @@
 
 ## Tabela de aprendizados
 
-| Fonte | O que absorver | O que evitar |
-|---|---|---|
-| Sony Pictures — página oficial de Brand New Day | Tema narrativo: Peter atua sozinho em um mundo que não lembra dele. Pressão, transformação e ameaça invisível como solidão, vigilância e tensão visual. | Página promocional tradicional com CTA comercial, cards e layout institucional. |
-| Sony Pictures Japan — release/trailer | "Ninguém conhece Peter" e a transformação física após quatro anos orientam copy, close-ups e progressão de câmera. | Recontar sinopse longa; texto expositivo demais. |
-| ILM — página do projeto/VFX | A página é experiência de imagem e VFX, não landing informativa. Personagem, luz e movimento antes de blocos de UI. | 3D parecendo apenas asset carregado em fundo escuro. |
+| Fonte                                               | O que absorver                                                                                                                                              | O que evitar                                                                             |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Sony Pictures — página oficial de Brand New Day     | Tema narrativo: Peter atua sozinho em um mundo que não lembra dele. Pressão, transformação e ameaça invisível como solidão, vigilância e tensão visual.     | Página promocional tradicional com CTA comercial, cards e layout institucional.          |
+| Sony Pictures Japan — release/trailer               | "Ninguém conhece Peter" e a transformação física após quatro anos orientam copy, close-ups e progressão de câmera.                                          | Recontar sinopse longa; texto expositivo demais.                                         |
+| ILM — página do projeto/VFX                         | A página é experiência de imagem e VFX, não landing informativa. Personagem, luz e movimento antes de blocos de UI.                                         | 3D parecendo apenas asset carregado em fundo escuro.                                     |
 | Digital Camera World — entrevista de cinematografia | Vermelho e azul saturados protegidos por pretos profundos; sombra como massa gráfica; curva de filme clássica/contemporânea; lentes com caráter mas limpas. | Neon vermelho genérico, cena lavada, excesso de bloom, roxo/azul dominante sem intenção. |
-| Framemode LLC / Three.js Resources | Método: portfolio scroll-driven com cena Three.js real-time, iluminação dinâmica e narrativa espacial. | Copiar tema espacial/lunar — o aprendizado é o método, não o assunto. |
-| Maurice Däppen — ThreeJS Portfolio | Técnica: React 19 + R3F + GSAP, câmera cinematográfica, ACES filmic tone mapping, cena componentizada, caminhos de câmera definidos. | OrbitControls livre como experiência principal — aqui a câmera é dirigida. |
-| Praxxys — R3F portfolio performance | Performance: experiência 3D precisa carregar e rodar bem em mobile; reduzir dependências e peso antes de sacrificar a experiência. | Aceitar GLB de ~50 MB sem plano de otimização/mobile. |
-| Marco Ayuste — portfolio case study | Ambição: o portfolio prova capacidade de design/engenharia; R3F fixo atrás de HTML com scroll cinematográfico é o padrão adequado. | Virar currículo animado ou lista de skills — o projeto é a peça principal. |
-| landing.love — Three.js collection | Varredura secundária de repertório para padrões de 3D websites e portfolios. | Tendências superficiais: glassmorphism, excesso de chrome visual, UI genérica. |
+| Framemode LLC / Three.js Resources                  | Método: portfolio scroll-driven com cena Three.js real-time, iluminação dinâmica e narrativa espacial.                                                      | Copiar tema espacial/lunar — o aprendizado é o método, não o assunto.                    |
+| Maurice Däppen — ThreeJS Portfolio                  | Técnica: React 19 + R3F + GSAP, câmera cinematográfica, ACES filmic tone mapping, cena componentizada, caminhos de câmera definidos.                        | OrbitControls livre como experiência principal — aqui a câmera é dirigida.               |
+| Praxxys — R3F portfolio performance                 | Performance: experiência 3D precisa carregar e rodar bem em mobile; reduzir dependências e peso antes de sacrificar a experiência.                          | Aceitar GLB de ~50 MB sem plano de otimização/mobile.                                    |
+| Marco Ayuste — portfolio case study                 | Ambição: o portfolio prova capacidade de design/engenharia; R3F fixo atrás de HTML com scroll cinematográfico é o padrão adequado.                          | Virar currículo animado ou lista de skills — o projeto é a peça principal.               |
+| landing.love — Three.js collection                  | Varredura secundária de repertório para padrões de 3D websites e portfolios.                                                                                | Tendências superficiais: glassmorphism, excesso de chrome visual, UI genérica.           |
 
 ## Direção sintetizada
 

@@ -14,7 +14,7 @@ Arquivos sob sua responsabilidade:
 - `docs/STATE.md` — estado atual e próximo passo
 - `docs/memory/decisions.md` — ADRs e decisões
 - `docs/design/` — documentos de design
-- `docs/scene-specs/` — specs de cena
+- `docs/specs/` — specs de cena
 - `docs/templates/pr.md` — template de PR
 
 Regras:

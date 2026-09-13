@@ -1,6 +1,6 @@
 # Scene Spec — Efeitos Autorais (Wave C)
 
-> **Status:** pronto para implementação
+> **Status:** ✅ implementado — 3D Motion Upgrade (PRs #17–#29)
 > **Branch:** `feat/authorial-shaders-fx`
 > **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave C
 > **Data:** 2026-09-09

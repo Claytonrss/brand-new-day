@@ -22,17 +22,18 @@ não que carregou uma página.
 
 ## Regras de cor
 
-| Token | Hex | Uso |
-|---|---|---|
-| `ink` | `#0a0a0c` | fundo principal, base escura |
-| `concrete` | `#141417` | superfícies secundárias, variação de fundo |
-| `steel` | `#2c3b4c` | detalhes frios, sombras azuladas |
-| `oxide` | `#7a1f24` | acento dramático quente, rim light |
-| `signal` | `#c23b34` | acento máximo (olhos, pontos de luz, UI mínima) |
-| `paper` | `#e9e5da` | texto principal |
-| `dim` | `#6b6a63` | texto secundário, metadados |
+| Token      | Hex       | Uso                                             |
+| ---------- | --------- | ----------------------------------------------- |
+| `ink`      | `#0a0a0c` | fundo principal, base escura                    |
+| `concrete` | `#141417` | superfícies secundárias, variação de fundo      |
+| `steel`    | `#2c3b4c` | detalhes frios, sombras azuladas                |
+| `oxide`    | `#7a1f24` | acento dramático quente, rim light              |
+| `signal`   | `#c23b34` | acento máximo (olhos, pontos de luz, UI mínima) |
+| `paper`    | `#e9e5da` | texto principal                                 |
+| `dim`      | `#6b6a63` | texto secundário, metadados                     |
 
 **Proibições de cor:**
+
 - Vermelho neon genérico.
 - Azul/roxo dominante sem intenção narrativa.
 - Gradientes decorativos.

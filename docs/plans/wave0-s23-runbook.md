@@ -1,6 +1,6 @@
 # Wave 0 — Runbook de baseline no Samsung Galaxy S23
 
-> Plano: `docs/plans/pareto-impact-plan.md` §Wave 0 · **sem PR** — a saída
+> Plano: `docs/plans/archive/pareto-impact-plan.md` §Wave 0 · **sem PR** — a saída
 > são números "antes" que entram no corpo do PR da Wave 1
 > (`fix/mobile-tier-policy`) e decidem FALHA-02 / FALHA-10 / FALHA-14.
 >
@@ -22,12 +22,12 @@
 Para cada cenário: aguardar o loader sumir + 10 s de assentamento, anotar
 `fps/ms/calls/triangles/programs` e o `tier`.
 
-| # | Cenário | Procedimento | O que registrar |
-|---|---|---|---|
-| T0.1 | **Hero parado** | Sem tocar, 30 s; 3 amostras espaçadas | média/desvio de fps e ms; `tier` inicial (anote se `high`!) |
-| T0.2 | **Roldagem contínua** hero → colofon | Flings contínuos e constantes até o fim, 2× | fps mínimo observado; **o momento do tier pop** (overlay `tier` muda / console `[PerformanceMonitor]`) |
-| T0.3 | **Scroll coberto** (chapter cards) | Scroll lento atravessando MUDANÇA e REVELAÇÃO | fps durante a travessia |
-| T0.4 | **A/B `?fx=off`** | Recarregar com `&fx=off`, repetir T0.1 e T0.2 | mesma tabela — isola o custo da camada de material |
+| #    | Cenário                              | Procedimento                                  | O que registrar                                                                                        |
+| ---- | ------------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| T0.1 | **Hero parado**                      | Sem tocar, 30 s; 3 amostras espaçadas         | média/desvio de fps e ms; `tier` inicial (anote se `high`!)                                            |
+| T0.2 | **Roldagem contínua** hero → colofon | Flings contínuos e constantes até o fim, 2×   | fps mínimo observado; **o momento do tier pop** (overlay `tier` muda / console `[PerformanceMonitor]`) |
+| T0.3 | **Scroll coberto** (chapter cards)   | Scroll lento atravessando MUDANÇA e REVELAÇÃO | fps durante a travessia                                                                                |
+| T0.4 | **A/B `?fx=off`**                    | Recarregar com `&fx=off`, repetir T0.1 e T0.2 | mesma tabela — isola o custo da camada de material                                                     |
 
 Preencher (uma linha por cenário):
 

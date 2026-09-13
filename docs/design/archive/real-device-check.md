@@ -24,6 +24,6 @@
 
 ## Registro de execução
 
-| Data | Aparelho | OS/Browser | Resultado | Observações |
-|---|---|---|---|---|
-| _pendente_ | | | | |
+| Data       | Aparelho | OS/Browser | Resultado | Observações |
+| ---------- | -------- | ---------- | --------- | ----------- |
+| _pendente_ |          |            |           |             |

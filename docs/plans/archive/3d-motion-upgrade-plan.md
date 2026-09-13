@@ -1,6 +1,6 @@
 # Plano de Upgrade — Movimento e Efeitos do Objeto 3D
 
-> **Status:** proposto — aguardando aprovação para execução
+> **Status:** ✅ executado — Waves A–G nos PRs #17–#29 (arquivado)
 > **Data:** 2026-09-09
 > **Escopo aprovado:** plano completo F → B → A → C → E → D → G, com shaders
 > customizados sem restrição de tier, permissão para re-export/repose do GLB e

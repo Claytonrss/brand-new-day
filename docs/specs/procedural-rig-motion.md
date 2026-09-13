@@ -1,6 +1,6 @@
 # Scene Spec — Sujeito Vivo (Wave A)
 
-> **Status:** pronto para implementação
+> **Status:** ✅ implementado — 3D Motion Upgrade (PRs #17–#29)
 > **Branch:** `feat/procedural-rig-motion`
 > **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave A
 > **Data:** 2026-09-09
@@ -150,7 +150,7 @@ permite zerar a camada sem recompilar.
       avança com a página parada; com `prefers-reduced-motion`, o rig congela
       (head quaternion idêntico **e** composição pixel a pixel idêntica).
 - [x] **Teste de follow-through:** com o ponteiro, `|yaw(Head_06)| >
-    |yaw(Neck_05)| > |yaw(Spine2_04)|` — medido 0,037 > 0,004 > 0,0006 — e o
+|yaw(Neck_05)| > |yaw(Spine2_04)|` — medido 0,037 > 0,004 > 0,0006 — e o
       alvo respeita o clamp do Beat 1 (|yaw| ≤ 0,48 rad).
 - [ ] Nenhuma interpenetração visível nos screenshots de close-up
       (Evolution/Arsenal nos 3 viewports) — **requer olho humano**.

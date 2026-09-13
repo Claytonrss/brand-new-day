@@ -14,7 +14,7 @@ Leia primeiro:
 - `docs/design/design-bible.md`
 - `docs/design/composition-rules.md`
 - `docs/design/mobile-first.md`
-- Scene Spec relevante em `docs/scene-specs/`
+- Scene Spec relevante em `docs/specs/`
 
 Regras:
 
