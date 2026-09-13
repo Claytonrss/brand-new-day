@@ -1,7 +1,8 @@
 import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { smooth } from '../../lib/math';
 import { BREAKPOINTS } from '../../design/breakpoints';
 import { COLORS } from '../../design/tokens';
 import { useQualityProfile } from './qualityContext';
@@ -62,7 +63,7 @@ export function Atmosphere() {
   const scene = useThree((state) => state.scene);
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const profile = useQualityProfile();
   const { beat } = useBeat();
 
@@ -102,7 +103,7 @@ export function Atmosphere() {
 
     // Reduced motion: snap to the beat (signature reads via colour/light, not
     // motion) and keep the frame stable.
-    const alpha = prefersReducedMotion ? 1 : 1 - Math.exp(-FADE_K * delta);
+    const alpha = prefersReducedMotion ? 1 : smooth(delta, FADE_K);
 
     // Fog is beat-directed even when the particle tier is `low` (count 0).
     const fog = scene.fog as THREE.FogExp2 | undefined;

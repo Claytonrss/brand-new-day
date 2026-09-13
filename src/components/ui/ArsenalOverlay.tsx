@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../lib/gsap';
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { OverlayBody, OverlayKicker } from './overlay';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { MOTION } from '../../design/motion';
+import { smoothstep } from '../../lib/math';
 import { arsenalReveal } from '../3d/interaction/arsenalReveal';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /** Technical annotation copy (docs/specs/arsenal-macro-hud.md §2). */
 const HUD_LABELS = [
@@ -22,11 +21,6 @@ const HUD_LABELS = [
  * beat must read for visitors who never discover the gesture.
  */
 const AUTO_REVEAL_PROGRESS = 0.8;
-
-function smoothstep(x: number, a: number, b: number): number {
-  const t = Math.min(Math.max((x - a) / (b - a), 0), 1);
-  return t * t * (3 - 2 * t);
-}
 
 /**
  * Arsenal section overlay — narrative copy, then a technical macro HUD.
@@ -55,7 +49,7 @@ function smoothstep(x: number, a: number, b: number): number {
 export function ArsenalOverlay() {
   const copyRef = useRef<HTMLElement>(null);
   const hudRef = useRef<HTMLDivElement>(null);
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const section = document.querySelector('#arsenal-section');
@@ -144,19 +138,17 @@ export function ArsenalOverlay() {
         aria-labelledby="arsenal-title"
         className="flex max-w-[82vw] flex-col items-start text-left md:max-w-[420px] lg:max-w-[560px]"
       >
-        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
-          <span aria-hidden="true" className="beat-accent-rule" />O que sobrou
-        </p>
+        <OverlayKicker>O que sobrou</OverlayKicker>
         <SplitTextHeadline
           text={'SEM APOIO.\nSÓ O ESSENCIAL.'}
           as="h2"
           id="arsenal-title"
           className="mt-2 font-display text-[36px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[48px] lg:text-[64px]"
         />
-        <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
+        <OverlayBody>
           Sem Stark, sem SHIELD, sem ninguém para ligar. Só o que ele mesmo construiu nos pulsos — e
           a cidade que continua escolhendo proteger.
-        </p>
+        </OverlayBody>
       </section>
 
       {/* Technical HUD — fixed layer, driven by Arsenal scroll progress */}

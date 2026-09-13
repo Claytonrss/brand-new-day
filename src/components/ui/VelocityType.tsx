@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { beatRuntime } from '../3d/beat/beatState';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { VELOCITY_TYPE, velocityWeight } from '../../design/velocityType';
 
 /** Without scroll events for this long the page counts as at rest. */
@@ -25,7 +25,7 @@ const EASE_PER_FRAME = 0.25;
  * @see src/design/velocityType.ts
  */
 export function VelocityType() {
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (prefersReducedMotion) return;

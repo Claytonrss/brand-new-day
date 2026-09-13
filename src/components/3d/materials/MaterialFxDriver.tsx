@@ -9,6 +9,8 @@ import { FX } from './fxUniforms';
 import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
 import { BLINK_AMOUNT, BLINK_MODE, blinkClosure, nextBlinkAt, rand } from './blink';
 import { SPIDER_SENSE, spiderSense } from '../rig/spiderSense';
+import { isDebugMode } from '../../../lib/debugFlag';
+import { smooth } from '../../../lib/math';
 
 /** Per-beat targets for the material layer. See spec §7.2. */
 interface BeatTargets {
@@ -90,10 +92,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
   const anchor = useMemo(() => new THREE.Vector3(), []);
   const bokehRef = useRef(TARGETS.hero.bokeh);
   const blinkRef = useRef({ at: 0, start: -1, seed: 0, count: 0 });
-  const debug = useMemo(
-    () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
-    [],
-  );
+  const debug = useMemo(isDebugMode, []);
 
   const publish = (visible: boolean, web: number, sweep: number, rim: number, lens: number) => {
     if (!debug || typeof window === 'undefined') return;
@@ -115,7 +114,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
 
   useFrame(({ clock }, delta) => {
     const targets = TARGETS[beat];
-    const alpha = 1 - Math.exp(-K * delta);
+    const alpha = smooth(delta, K);
 
     if (prefersReducedMotion) {
       // Frozen: the web weave is the only time-driven term, so holding uTime

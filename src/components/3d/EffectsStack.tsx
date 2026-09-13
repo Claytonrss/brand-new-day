@@ -17,7 +17,7 @@ import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
 import { useQualityProfile } from './qualityContext';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { BREAKPOINTS } from '../../design/breakpoints';
 import { useMaterialFx } from './materials/MaterialFxDriver';
 import { FX_POST_ENABLED } from '../../design/fxFlags';
@@ -54,7 +54,7 @@ export function EffectsStack() {
   const profile = useQualityProfile();
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const { beat, stateRef } = useBeat();
   const { anchor, bokehRef } = useMaterialFx(isMobile, prefersReducedMotion);
 

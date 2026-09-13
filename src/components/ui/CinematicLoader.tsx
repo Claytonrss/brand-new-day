@@ -1,7 +1,7 @@
 import { useProgress } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
 import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { loaderCover } from './loaderCover';
 
 interface CinematicLoaderProps {
@@ -29,7 +29,7 @@ interface CinematicLoaderProps {
 export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
   const { progress, active } = useProgress();
   const [fadeOut, setFadeOut] = useState(false);
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
   const onLoadedRef = useRef(onLoaded);
   onLoadedRef.current = onLoaded;
 

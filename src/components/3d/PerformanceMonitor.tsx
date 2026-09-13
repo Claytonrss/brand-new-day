@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { BREAKPOINTS } from '../../design/breakpoints';
 import { loaderCover } from '../ui/loaderCover';
 import { beatRuntime } from './beat/beatState';
@@ -191,7 +192,7 @@ function QualityAdapter({ profile }: { profile: QualityProfile }) {
  */
 export function PerformanceMonitor({ children }: { children: ReactNode }) {
   const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const fpsRef = useRef(60);
   const frameCountRef = useRef(0);

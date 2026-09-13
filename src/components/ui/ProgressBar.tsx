@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 
 /** Max ARIA update rate — screen readers don't need 60 Hz (FALHA-05). */
 const ARIA_INTERVAL_MS = 200;
@@ -21,7 +21,7 @@ const ARIA_INTERVAL_MS = 200;
  */
 export function ProgressBar() {
   const fillRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const fill = fillRef.current;

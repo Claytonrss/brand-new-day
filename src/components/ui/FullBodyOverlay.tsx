@@ -1,5 +1,6 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
+import { OverlayBody, OverlayKicker } from './overlay';
 import { MOTION } from '../../design/motion';
 
 /**
@@ -22,10 +23,7 @@ export function FullBodyOverlay() {
         aria-labelledby="fullbody-title"
         className="flex max-w-[82vw] flex-col items-center text-center md:max-w-[480px] lg:max-w-[560px]"
       >
-        <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-dim">
-          <span aria-hidden="true" className="beat-accent-rule" />
-          31 de julho
-        </p>
+        <OverlayKicker>31 de julho</OverlayKicker>
         <SplitTextHeadline
           text={'UM HOMEM\nSEM NOME.\nUMA CIDADE\nSEM ESCOLHA.'}
           as="h2"
@@ -33,9 +31,9 @@ export function FullBodyOverlay() {
           stagger={MOTION.stagger.base}
           className="mt-2 font-display text-[32px] font-bold leading-[0.98] tracking-[-0.03em] text-paper sm:text-[40px] lg:text-[64px]"
         />
-        <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">
+        <OverlayBody>
           SPIDER-MAN: BRAND NEW DAY chega aos cinemas em 31 de julho de 2026.
-        </p>
+        </OverlayBody>
       </section>
 
       {/* CC-BY Attribution */}

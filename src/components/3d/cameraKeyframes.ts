@@ -11,7 +11,8 @@
  * @see docs/specs/evolution-chest-symbol.md
  */
 
-export type Breakpoint = 'mobile' | 'desktop';
+import type { Breakpoint } from '../../design/breakpoints';
+
 export type KeyframeName =
   'hero' | 'evolutionStart' | 'evolutionEnd' | 'arsenalStart' | 'arsenalEnd' | 'fullBody';
 

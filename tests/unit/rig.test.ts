@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { fbm } from '../../src/design/noise';
 import { Spring } from '../../src/components/3d/rig/spring';
 import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from '../../src/components/3d/rig/poses';
-import { BONE_NAMES, softClamp, MOTION } from '../../src/components/3d/rig/rigBones';
+import { BONE_NAMES, softClamp, RIG_AMPLITUDE } from '../../src/components/3d/rig/rigBones';
 import { BEAT_TIMELINE } from '../../src/components/3d/beat/beats';
 
 describe('procedural rig', () => {
@@ -57,8 +57,8 @@ describe('procedural rig', () => {
   });
 
   it('keeps breathing within the subtle range of the spec', () => {
-    expect(MOTION.breath.spine2).toBeLessThanOrEqual(0.01);
-    expect(MOTION.breath.rate).toBeCloseTo(0.25, 5);
+    expect(RIG_AMPLITUDE.breath.spine2).toBeLessThanOrEqual(0.01);
+    expect(RIG_AMPLITUDE.breath.rate).toBeCloseTo(0.25, 5);
   });
 });
 

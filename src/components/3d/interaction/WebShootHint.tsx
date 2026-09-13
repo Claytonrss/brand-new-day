@@ -5,7 +5,7 @@ import { useBeat } from '../beat/beatContext';
 import { WRIST_POSITION } from '../beat/beats';
 import { ANCHORS } from '../rig/anchorStore';
 import { useQualityProfile } from '../qualityContext';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
 import { BREAKPOINTS } from '../../../design/breakpoints';
 import { COLORS } from '../../../design/tokens';
 import { MOTION } from '../../../design/motion';
@@ -42,7 +42,7 @@ export function WebShootHint() {
   const profile = useQualityProfile();
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const breathPhase = useRef(0);
   const fadeRef = useRef(0);

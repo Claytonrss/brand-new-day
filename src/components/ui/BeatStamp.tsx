@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { BEAT_STAMPS } from '../../design/beatStamps';
 import type { BeatId } from '../3d/beat/beats';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 
 /** The text swap happens while the label is transparent. */
 const FADE_MS = 180;
@@ -21,7 +21,7 @@ export function BeatStamp() {
   const [stamp, setStamp] = useState(BEAT_STAMPS.hero);
   const [visible, setVisible] = useState(true);
   const currentRef = useRef<BeatId>('hero');
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const main = document.querySelector('main');

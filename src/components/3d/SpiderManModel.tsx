@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useBeat } from './beat/beatContext';
 import { useQualityProfile } from './qualityContext';
 import { collectRigBones, captureRestPose, type RestPose, type BoneRole } from './rig/rigBones';
@@ -45,7 +46,7 @@ export function SpiderManModel({
   const extendLoader = useMemo(() => extendGltfLoaderWithKtx2(gl), [gl]);
   const { scene, nodes } = useGLTF(MODEL_PATH, false, true, extendLoader);
   const groupRef = useRef<THREE.Group>(null);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const hasHover = useMediaQuery('(hover: hover)');
   const { beat } = useBeat();
   const profile = useQualityProfile();

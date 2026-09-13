@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap } from '../../lib/gsap';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 
 /**
  * OpeningTitleCard — Beat 0, the breath before the mask.
@@ -26,7 +23,7 @@ export function OpeningTitleCard() {
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLParagraphElement>(null);
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (reduceMotion || !cardRef.current || !contentRef.current) return;
