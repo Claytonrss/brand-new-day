@@ -71,7 +71,5 @@ export function BeatProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return (
-    <BeatContext.Provider value={{ beat, stateRef }}>{children}</BeatContext.Provider>
-  );
+  return <BeatContext.Provider value={{ beat, stateRef }}>{children}</BeatContext.Provider>;
 }

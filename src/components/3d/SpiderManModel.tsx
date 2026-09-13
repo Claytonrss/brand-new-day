@@ -66,10 +66,7 @@ export function SpiderManModel({
 
   // Material curation — physical intent + authorial shader layer (Wave C)
   useEffect(() => {
-    const result = curateMaterials(scene);
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug')) {
-      (window as unknown as Record<string, unknown>).__materials = result;
-    }
+    curateMaterials(scene);
   }, [scene]);
 
   // Capture the authored pose before any layer touches it
@@ -108,7 +105,14 @@ export function SpiderManModel({
   });
 
   return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={scale} castShadow userData={{ modelReady: true }}>
+    <group
+      ref={groupRef}
+      position={position}
+      rotation={rotation}
+      scale={scale}
+      castShadow
+      userData={{ modelReady: true }}
+    >
       <primitive object={scene} />
     </group>
   );

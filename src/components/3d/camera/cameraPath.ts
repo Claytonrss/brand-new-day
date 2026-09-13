@@ -68,8 +68,7 @@ const APPROACH = {
 export const EASING = {
   linear: (t: number) => t,
   smoothstep: (t: number) => t * t * (3 - 2 * t),
-  easeInOutCubic: (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  easeInOutCubic: (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
   easeOutCubic: (t: number) => 1 - Math.pow(1 - t, 3),
 } as const;
 
@@ -217,7 +216,11 @@ export class CameraTrack {
 
     const arcFov = Array.from({ length: arc.points.length }, (_, i) => {
       const t = i / (arc.points.length - 1);
-      return THREE.MathUtils.lerp(kf.arsenalStart[breakpoint].fov, kf.arsenalEnd[breakpoint].fov, t);
+      return THREE.MathUtils.lerp(
+        kf.arsenalStart[breakpoint].fov,
+        kf.arsenalEnd[breakpoint].fov,
+        t,
+      );
     });
 
     this.fovs = [

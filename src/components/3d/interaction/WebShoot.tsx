@@ -28,10 +28,7 @@ export function WebShoot() {
   const geometry = useMemo(() => {
     const buffer = new THREE.BufferGeometry();
     // 12 segments + the moving tip
-    buffer.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(13 * 3), 3),
-    );
+    buffer.setAttribute('position', new THREE.BufferAttribute(new Float32Array(13 * 3), 3));
     return buffer;
   }, []);
 
@@ -93,7 +90,10 @@ export function WebShoot() {
     geometry.computeBoundingSphere();
 
     // fade out over the second half of the lifetime
-    material.opacity = progress < EXTEND_FRACTION ? 0.9 : 0.9 * (1 - (progress - EXTEND_FRACTION) / (1 - EXTEND_FRACTION));
+    material.opacity =
+      progress < EXTEND_FRACTION
+        ? 0.9
+        : 0.9 * (1 - (progress - EXTEND_FRACTION) / (1 - EXTEND_FRACTION));
     line.visible = true;
   });
 

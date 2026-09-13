@@ -167,7 +167,3 @@ export function getGyroController(): GyroController {
 
   return singleton;
 }
-
-export function resetGyroControllerForTests(): void {
-  singleton = null;
-}

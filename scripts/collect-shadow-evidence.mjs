@@ -35,7 +35,8 @@ const readings = await page.evaluate(
       const frames = [];
       const tick = () => {
         const snapshot = window.__perf;
-        if (snapshot) frames.push({ calls: snapshot.calls, tier: snapshot.tier, fps: snapshot.fps });
+        if (snapshot)
+          frames.push({ calls: snapshot.calls, tier: snapshot.tier, fps: snapshot.fps });
         if (frames.length >= frameCount) resolve(frames);
         else requestAnimationFrame(tick);
       };
@@ -62,7 +63,9 @@ for (const tier of tiers) {
     `calls [${tier}]: fps ~${fps.toFixed(1)} · min ${levels[0]} · max ${levels[levels.length - 1]} · levels [${levels.join(', ')}]`,
   );
   if (tier !== 'low' && levels.length >= 2) {
-    console.log(`shadow-pass valley on ${tier}: ${valley} calls between refreshes — throttle observable`);
+    console.log(
+      `shadow-pass valley on ${tier}: ${valley} calls between refreshes — throttle observable`,
+    );
     observable = true;
   }
 }

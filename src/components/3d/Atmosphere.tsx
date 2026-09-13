@@ -8,11 +8,7 @@ import { useQualityProfile } from './qualityContext';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
 import { FX } from './materials/fxUniforms';
-import {
-  ATMOSPHERE,
-  buildParticleAttributes,
-  particleCount,
-} from './atmosphere/particles';
+import { ATMOSPHERE, buildParticleAttributes, particleCount } from './atmosphere/particles';
 import { PARTICLE_FRAGMENT, PARTICLE_VERTEX } from './atmosphere/particlesShader';
 
 /**
@@ -75,7 +71,11 @@ export function Atmosphere() {
   const attributes = useMemo(() => buildParticleAttributes(Math.max(count, 1)), [count]);
 
   const colors = useMemo(
-    () => ({ dim: new THREE.Color(COLORS.dim), oxide: new THREE.Color(COLORS.oxide), target: new THREE.Color() }),
+    () => ({
+      dim: new THREE.Color(COLORS.dim),
+      oxide: new THREE.Color(COLORS.oxide),
+      target: new THREE.Color(),
+    }),
     [],
   );
 
@@ -128,10 +128,7 @@ export function Atmosphere() {
   return (
     <points ref={pointsRef} frustumCulled={false}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[attributes.positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[attributes.positions, 3]} />
         <bufferAttribute attach="attributes-aLayer" args={[attributes.layers, 1]} />
         <bufferAttribute attach="attributes-aPhase" args={[attributes.phases, 1]} />
         <bufferAttribute attach="attributes-aSeed" args={[attributes.seeds, 1]} />

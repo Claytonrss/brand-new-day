@@ -59,8 +59,7 @@ export function GyroPrompt() {
     void controller.request();
   }, [controller]);
 
-  const visible =
-    state === 'prompt' && gestureSeen && !dismissed && controller.needsChip();
+  const visible = state === 'prompt' && gestureSeen && !dismissed && controller.needsChip();
 
   if (!visible) return null;
 

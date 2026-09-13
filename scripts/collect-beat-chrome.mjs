@@ -58,7 +58,10 @@ for (const v of VIEWPORTS) {
   await bar.waitFor({ state: 'hidden', timeout: 120_000 });
   await p.waitForTimeout(3000);
 
-  for (const [name, mult] of [['mudanca', 2.05], ['revelacao', 5.05]]) {
+  for (const [name, mult] of [
+    ['mudanca', 2.05],
+    ['revelacao', 5.05],
+  ]) {
     await p.evaluate((m) => window.scrollTo(0, window.innerHeight * m), mult);
     await p.waitForTimeout(2500);
     await p.screenshot({ path: `${OUT}/${v.name}-${name}.png` });

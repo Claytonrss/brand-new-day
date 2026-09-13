@@ -32,10 +32,7 @@ export interface PointerSample {
 export function isTap(down: PointerSample, up: PointerSample): boolean {
   const dx = up.x - down.x;
   const dy = up.y - down.y;
-  return (
-    Math.hypot(dx, dy) < TAP_MAX_DISTANCE_PX &&
-    up.time - down.time < TAP_MAX_DURATION_MS
-  );
+  return Math.hypot(dx, dy) < TAP_MAX_DISTANCE_PX && up.time - down.time < TAP_MAX_DURATION_MS;
 }
 
 /** Device orientation authority (radians). */
@@ -51,10 +48,7 @@ export function softClamp(value: number, limit: number): number {
  * Convert pointer travel (pixels, from the gesture origin) into a clamped
  * rotation offset. Dragging right turns the model toward the pointer.
  */
-export function dragTarget(
-  deltaX: number,
-  deltaY: number,
-): { yaw: number; pitch: number } {
+export function dragTarget(deltaX: number, deltaY: number): { yaw: number; pitch: number } {
   return {
     yaw: softClamp(deltaX * DRAG_SENSITIVITY.yaw, DRAG_LIMITS.yaw),
     pitch: softClamp(deltaY * DRAG_SENSITIVITY.pitch, DRAG_LIMITS.pitch),
@@ -95,7 +89,6 @@ export function webStrandPoints(
   sag = 0.25,
 ): THREE.Vector3[] {
   const points: THREE.Vector3[] = [];
-  const midpoint = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
   const down = new THREE.Vector3(0, -1, 0);
 
   for (let i = 0; i <= segments; i++) {
@@ -105,9 +98,6 @@ export function webStrandPoints(
     point.addScaledVector(down, sag * 4 * t * (1 - t));
     points.push(point);
   }
-
-  // keep the control point in scope for future lateral variation
-  void midpoint;
 
   return points;
 }

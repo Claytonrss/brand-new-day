@@ -24,8 +24,7 @@ const context = await browser.newContext({
 await context.addInitScript(() => {
   const view = globalThis;
   function FakeDeviceOrientationEvent() {}
-  FakeDeviceOrientationEvent.requestPermission = () =>
-    Promise.resolve('granted');
+  FakeDeviceOrientationEvent.requestPermission = () => Promise.resolve('granted');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   view.DeviceOrientationEvent = FakeDeviceOrientationEvent;
 });
@@ -40,9 +39,7 @@ await page.waitForTimeout(3500);
 
 // First gesture reveals the chip.
 await page.mouse.click(200, 500);
-await page
-  .getByText('Esta cena reage ao movimento.')
-  .waitFor({ state: 'visible', timeout: 5000 });
+await page.getByText('Esta cena reage ao movimento.').waitFor({ state: 'visible', timeout: 5000 });
 const target = `${OUT_DIR}/390-gyro-prompt.png`;
 await page.screenshot({ path: target });
 console.log(target);

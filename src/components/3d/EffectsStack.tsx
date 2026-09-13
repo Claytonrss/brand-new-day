@@ -8,7 +8,11 @@ import {
   Noise,
   Vignette,
 } from '@react-three/postprocessing';
-import { BlendFunction, type ChromaticAberrationEffect, type DepthOfFieldEffect } from 'postprocessing';
+import {
+  BlendFunction,
+  type ChromaticAberrationEffect,
+  type DepthOfFieldEffect,
+} from 'postprocessing';
 import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
