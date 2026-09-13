@@ -18,9 +18,11 @@ import {
 } from './rigBones';
 import { BEAT_POSES, POSE_AMPLITUDE, POSE_ROLES } from './poses';
 import { Spring } from './spring';
-import { updateAnchors } from './anchorStore';
+import { ANCHORS, updateAnchors } from './anchorStore';
 import { landing, landingDebug, landingStep, LANDING_POSE } from '../landing';
 import { lean, leanShoulderLift, leanStep, LEAN_SPINE2_WEIGHT } from './lean';
+import { spiderSense, spiderSenseStep, spiderSenseTilt } from './spiderSense';
+import { breathStep } from './breath';
 import { beatRuntime } from '../beat/beatState';
 
 /** Head chain — the head leads, neck and upper spine follow. See spec §7.2. */
@@ -29,8 +31,6 @@ const HEAD_CHAIN = [
   { role: 'neck' as BoneRole, k: 3.2, weight: 0.35 },
   { role: 'spine2' as BoneRole, k: 1.8, weight: 0.15 },
 ];
-
-
 
 export interface RigDebugState {
   head: [number, number, number, number];
@@ -45,6 +45,10 @@ export interface RigDebugState {
   target: [number, number];
   hover: boolean;
   lean: number;
+  /** Spider-sense envelope (0..1) — spikes when the narrative beat changes. */
+  sense: number;
+  /** Latched fire count — survives the envelope decay (evidence/tests). */
+  senseCount: number;
 }
 
 declare global {
@@ -115,6 +119,7 @@ export function useProceduralRig({
       procedural: new THREE.Quaternion(),
       head: new THREE.Quaternion(),
       composed: new THREE.Quaternion(),
+      sense: new THREE.Quaternion(),
     }),
     [],
   );
@@ -132,21 +137,49 @@ export function useProceduralRig({
     }
   }, [poseSprings, headSprings]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     // Anchors first: camera, lighting and post-processing read them every frame
     updateAnchors(bones);
+
+    // Beat-response envelopes step before any early return so they decay even
+    // while the pose is frozen (reduced motion) or the model is still loading.
+    // The halo overlay and the lens flare read spiderSense; the spine reads
+    // the breath — which catches while the sense rings.
+    spiderSenseStep(delta, beat);
+    // Breath freezes under reduced motion (statue by design): the sample is
+    // what `window.__rig` publishes, and a still-integrating phase made the
+    // freeze probe report motion on a visually frozen pose.
+    const breathSample = prefersReducedMotion ? 0 : breathStep(delta, beat, spiderSense.envelope);
 
     if (debug && typeof window !== 'undefined') {
       const read = (role: BoneRole): [number, number, number, number] => {
         const bone = bones[role];
-        return bone ? [bone.quaternion.x, bone.quaternion.y, bone.quaternion.z, bone.quaternion.w] : [0, 0, 0, 1];
+        return bone
+          ? [bone.quaternion.x, bone.quaternion.y, bone.quaternion.z, bone.quaternion.w]
+          : [0, 0, 0, 1];
       };
       const world: Partial<Record<BoneRole, [number, number, number]>> = {};
-      for (const role of ['head', 'neck', 'spine2', 'spine1', 'hips', 'armR', 'foreArmR', 'handR', 'armL', 'foreArmL', 'handL'] as BoneRole[]) {
+      for (const role of [
+        'head',
+        'neck',
+        'spine2',
+        'spine1',
+        'hips',
+        'armR',
+        'foreArmR',
+        'handR',
+        'armL',
+        'foreArmL',
+        'handL',
+      ] as BoneRole[]) {
         const bone = bones[role];
         if (!bone) continue;
         bone.getWorldPosition(worldScratch);
-        world[role] = [+worldScratch.x.toFixed(3), +worldScratch.y.toFixed(3), +worldScratch.z.toFixed(3)];
+        world[role] = [
+          +worldScratch.x.toFixed(3),
+          +worldScratch.y.toFixed(3),
+          +worldScratch.z.toFixed(3),
+        ];
       }
 
       window.__rig = {
@@ -154,13 +187,15 @@ export function useProceduralRig({
         neck: read('neck'),
         spine2: read('spine2'),
         world,
-        breath: Math.sin(timeRef.current * Math.PI * 2 * MOTION.breath.rate),
+        breath: breathSample,
         time: timeRef.current,
         joints: rest.size,
         pointer: [pointerRef.current?.x ?? 0, pointerRef.current?.y ?? 0],
         target: [headSprings[0].yaw.target, headSprings[0].pitch.target],
         hover: hasHover,
         lean: lean.value,
+        sense: spiderSense.envelope,
+        senseCount: spiderSense.count,
       };
       window.__landing = landingDebug();
     }
@@ -199,6 +234,25 @@ export function useProceduralRig({
         targetYaw = headYawTarget(pointer?.x ?? 0, baseYaw);
         targetPitch = softClamp(-(pointer?.y ?? 0), HEAD_LIMIT.pitch);
       }
+    }
+
+    // --- spider-sense alert snap (docs/specs/spider-sense.md §2) -----------
+    // While the sense rings, the head whips toward the camera — the alert
+    // look — then blends back to tracking as the envelope decays. The stiff
+    // head springs (k=6) turn the blend into a snap and the decay into a
+    // release.
+    if (spiderSense.envelope > 0.01 && ANCHORS.ready) {
+      const dx = state.camera.position.x - ANCHORS.head.x;
+      const dy = state.camera.position.y - ANCHORS.head.y;
+      const dz = state.camera.position.z - ANCHORS.head.z;
+      const rawYaw = Math.atan2(dx, dz) - baseYaw;
+      const yawToCamera =
+        rawYaw >= 0
+          ? softClamp(rawYaw, HEAD_LIMIT.yawRight)
+          : -softClamp(-rawYaw, HEAD_LIMIT.yawLeft);
+      const pitchToCamera = softClamp(Math.atan2(dy, Math.hypot(dx, dz)), HEAD_LIMIT.pitch);
+      targetYaw = THREE.MathUtils.lerp(targetYaw, yawToCamera, spiderSense.envelope);
+      targetPitch = THREE.MathUtils.lerp(targetPitch, pitchToCamera, spiderSense.envelope);
     }
 
     for (const entry of headSprings) {
@@ -245,11 +299,9 @@ export function useProceduralRig({
       let pz = 0;
 
       if (role === 'spine1') {
-        px = Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine1 + lean.value;
+        px = breathSample * MOTION.breath.spine1 + lean.value;
       } else if (role === 'spine2') {
-        px =
-          Math.sin(time * Math.PI * 2 * MOTION.breath.rate) * MOTION.breath.spine2 +
-          lean.value * LEAN_SPINE2_WEIGHT;
+        px = breathSample * MOTION.breath.spine2 + lean.value * LEAN_SPINE2_WEIGHT;
       } else if (role === 'shoulderL' || role === 'shoulderR') {
         pz = leanShoulderLift(role);
       } else if (role === 'hips') {
@@ -279,8 +331,14 @@ export function useProceduralRig({
         scratch.composed.slerp(scratch.head, chain.weight);
       }
 
+      // spider-sense tick: head leads the boundary shiver, neck follows.
+      // Applied after the chain so the tracking spring cannot mask it.
+      if ((role === 'head' || role === 'neck') && spiderSense.envelope > 0) {
+        offsetQuaternion(scratch.sense, 0, 0, spiderSenseTilt() * (role === 'head' ? 1 : 0.4));
+        scratch.composed.multiply(scratch.sense);
+      }
+
       bone.quaternion.copy(scratch.composed);
     }
-
   });
 }

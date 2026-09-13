@@ -42,6 +42,30 @@ itens data-gated — ver `PROGRESS.md` (checklist de fechamento).
   (reduced: nasce desenhado). Specs: `docs/specs/{beat-chrome,
 chapter-print}.md`.
 
+### Micro-craft (2026-09-13)
+
+- **PR #40 — DOM micro-craft (`feat/dom-micro-craft`):** tipografia reativa
+  à velocidade (headlines 700→480, quantizada; repouso por _tempo_ >300ms
+  com easing de volta — `--type-wght`); carimbo editorial por beat na
+  lombada esquerda (noite contínua 04:37→05:00, MutationObserver em
+  `data-beat`); CTA magnético no colofon (raio 120px, transform-only);
+  trama do traje (~3,5%) no opening/colofon. Inclui trabalho paralelo
+  commitado: drag-orbit hover-only (touch mantém gyro + tap) com teste
+  touch corrigido (contexto mobile+touch) e glow do loader na raiz do SVG.
+  Spec: `docs/specs/dom-micro-craft.md`.
+- **PR #41 — Spider-sense + respiração (`feat/spider-sense`):** v2
+  (redesenhada após observação em device — a v1, flash de rim ×3 em toda
+  fronteira, lia como brilho ambiente). Agora com iconografia própria:
+  **halo de 6 traços ondulados** hairline desenhando-se ao redor da cabeça
+  projetada (clamped ao viewport — quando a cabeça sai do quadro, espiar
+  pela borda), **expressão de alerta** (snap da cabeça para a lente + flare
+  nas lentes via `uLensPulse` + respiração travando) e **disciplina de
+  gatilho** — só na entrada dos 3 beats de perigo (Evolution/Arsenal/
+  FullBody), nunca no Hero/cards, latch `senseCount` para evidência.
+  Respiração dirigida por beat com fase integrada (hero 0.18 Hz ×0.7 →
+  fullBody 0.14 Hz ×1.3). Zero draw calls/lights novos. Specs:
+  `docs/specs/spider-sense.md`.
+
 ### Pendências consolidadas (detalhe em `PROGRESS.md`)
 
 - **Sessão S23 (única pendência de execução):** Wave 0 (T0.1–T0.5),

@@ -8,17 +8,9 @@
 
 ## Quick wins (simples, sem dependência nova)
 
-| ID           | Ideia                                                                                              | Ganho                                           | Gancho existente                                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| IDEIA-PAG-01 | **Tipografia reativa à velocidade** — weight/tracking das headlines dirigidos pelo scroll          | o texto resiste ao movimento junto com o lean   | ficou **mais viável**: o Space Grotesk local é **variável (400–700)** (ADR-021); fonte: `beatRuntime.velocity` |
-| IDEIA-3D-09  | **Respiração dirigida por beat** — contida no hero, aliviada no fullBody                           | sujeito mais vivo por beat                      | hoje `breath.rate` é constante (`rigBones.ts`); 1 lookup de beat                                               |
-| IDEIA-3D-10  | **"Spider-sense" nos boundaries** — 2 frames de rim 3× + micro-inclinação de cabeça ao cruzar beat | o arrepio de transição                          | `beatRuntime.beat` muda 6× por scroll                                                                          |
-| IDEIA-AMB-08 | **Carimbo editorial por beat** — "NYC · 04:37 · chuva fina" por seção                              | detalhe que fã nota; conversa com o beat chrome | `data-beat` já publicado no `<main>`                                                                           |
-| IDEIA-PAG-06 | **CTA magnético no colofon** — link atrai o cursor num raio de ~120 px                             | acabamento do fechamento                        | colofon já tem CTA único                                                                                       |
-| IDEIA-AMB-07 | **Trama do traje no chrome** — malha/hex a 3–4% atrás do colofon/opening                           | o material do herói vira papel da página        | padrão `.halftone` do chapter print é o ponto de partida                                                       |
-| IDEIA-PAG-09 | **Progress bar como fio de teia** — strand serrilhado com nó que sobe                              | identidade contínua com o chapter print         | ProgressBar já é rAF + transform (compositor)                                                                  |
-
-## Médios (calibrar em device — junto com o Bloco A do PROGRESS)
+> Os sete quick wins originais foram **todos executados** — ver "Já
+> absorvidos" abaixo (PRs #40 e #41). O que resta aqui são os médios e
+> grandes.
 
 | ID           | Ideia                                                                                              | Ganho                                          | Notas                                                           |
 | ------------ | -------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------- |
@@ -42,6 +34,16 @@
 
 ## Já absorvidos (não refazer)
 
+- **Quick wins (PRs #40–#41, 2026-09-13):**
+  - PAG-01 tipografia reativa, AMB-08 carimbo por beat, PAG-06 CTA
+    magnético, AMB-07 trama do traje — PR #40 (`feat/dom-micro-craft`),
+    spec `docs/specs/dom-micro-craft.md`.
+  - 3D-10 spider-sense (rim 3× + tick de cabeça alternante nos boundaries),
+    3D-09 respiração por beat (presa no hero, funda no fullBody) — PR
+    #41 (`feat/spider-sense`), spec `docs/specs/spider-sense.md`.
+  - PAG-09 (progress bar como fio de teia) ficou de fora de propósito:
+    mexeria na ProgressBar recém-otimizada (Wave 1) — reavaliar pós
+    sessão de device.
 - 3D-01 landing, 3D-04 lean, PAG-05 beat chrome, AMB-04 chapter print —
   entregues nas Waves 1–5 (PRs #32–#37).
 - 3D-03 hard cut — rejeitado na 2ª revisão (quebraria a assinatura contínua).

@@ -59,7 +59,8 @@ function evolutionSweep(t: number) {
     intensity = SWEEP.residualIntensity;
   }
 
-  const sweepT = t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
+  const sweepT =
+    t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
 
   return {
     intensity,
