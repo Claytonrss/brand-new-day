@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_URL } from './lib/env.mjs';
+
 import { chromium } from '@playwright/test';
 
 /**
@@ -10,7 +12,7 @@ import { chromium } from '@playwright/test';
  *
  * Usage: node scripts/collect-fallback-poster.mjs [baseUrl] [outDir]
  */
-const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
+const BASE_URL = process.argv[2] ?? DEFAULT_BASE_URL;
 const OUT_DIR = process.argv[3] ?? 'public';
 
 const VIEWPORTS = [

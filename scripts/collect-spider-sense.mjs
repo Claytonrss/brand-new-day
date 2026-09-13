@@ -1,7 +1,9 @@
+import { DEFAULT_BASE_URL } from './lib/env.mjs';
+
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 
-const BASE_URL = 'http://127.0.0.1:5173';
+const BASE_URL = process.argv[2] ?? DEFAULT_BASE_URL;
 const OUT = 'docs/evidence/spider-sense';
 mkdirSync(OUT, { recursive: true });
 

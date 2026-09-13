@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_URL } from './lib/env.mjs';
+
 import { chromium } from '@playwright/test';
 
 /**
@@ -11,7 +13,7 @@ import { chromium } from '@playwright/test';
  *
  * Usage: node scripts/collect-shadow-evidence.mjs [baseUrl]
  */
-const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
+const BASE_URL = process.argv[2] ?? DEFAULT_BASE_URL;
 const FRAMES = 90;
 
 const browser = await chromium.launch();

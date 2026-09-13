@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_URL } from './lib/env.mjs';
+
 import { chromium } from '@playwright/test';
 import { mkdirSync, readdirSync, renameSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -10,7 +12,7 @@ import { join } from 'node:path';
  *
  * Usage: node scripts/collect-motion-evidence.mjs [baseUrl]
  */
-const BASE_URL = process.argv[2] ?? `http://127.0.0.1:${process.env.PORT ?? 5173}`;
+const BASE_URL = process.argv[2] ?? DEFAULT_BASE_URL;
 const OUT_DIR = 'docs/evidence/wave-g-verification';
 const TEMP_DIR = 'test-results/motion-video';
 

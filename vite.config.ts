@@ -1,8 +1,14 @@
+import { existsSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+
+// .env (created by scripts/setup.sh) carries this checkout/worktree's PORT.
+if (existsSync(new URL('.env', import.meta.url))) {
+  process.loadEnvFile(new URL('.env', import.meta.url));
+}
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],

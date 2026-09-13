@@ -8,6 +8,7 @@
     "pnpm": ">=9"
   },
   "scripts": {
+    "bootstrap": "bash scripts/setup.sh",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
