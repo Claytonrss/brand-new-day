@@ -59,7 +59,8 @@ Decisão:
 ## 4. Worktrees: isolamento de código
 
 1. Crie a worktree a partir da main: `git worktree add -b <branch> <caminho> origin/main`.
-2. Rode `pnpm install` **dentro da worktree** (store global do pnpm torna isso rápido).
+2. Rode **`pnpm bootstrap`** dentro da worktree — instala dependências, cria o
+   `.env` com a porta isolada da worktree (§10) e abre o VS Code na pasta.
 3. Todos os comandos (`verify`, `test:smoke`, evidências) rodam **a partir da
    worktree** — nunca de outro checkout "por conveniência".
 4. `git worktree list` mostra worktrees esquecidas; `git worktree remove <caminho>`
@@ -157,6 +158,14 @@ fi
 
 O mesmo vale para evidências (`collect-*.mjs`) — elas abrem Chromium também.
 
+### 9.4 Sintomas de saturação
+
+- Suíte que normalmente leva 1 min levando 5×+ isso (timeouts em cascata, tests
+  `slow()` estourando 240s).
+- `uptime` com load muito acima dos núcleos durante/antes do run.
+- Testes aleatórios falhando com timeout sem motivo de código — pode ser outra
+  suíte comendo a máquina em paralelo, não flakiness.
+
 ## 10. Porta por worktree (`PORT`)
 
 Vite, Playwright e todos os scripts de evidência honram `PORT` (default
@@ -165,24 +174,19 @@ alheio na 5173) deixa de existir: a sua suíte nunca olha a porta de outro
 checkout.
 
 - **Checkout principal:** mantenha o default — `pnpm dev` na 5173.
-- **Worktrees:** escolha uma porta livre e fixa para a worktree e use em
-  **todos** os comandos (vite, Playwright e evidências herdam o mesmo env):
+- **Worktrees:** rode **`pnpm bootstrap`** ao criar a worktree — o setup cria o
+  `.env` da worktree com uma porta determinística e livre (faixa 5174+, hash do
+  caminho) e abre o VS Code na pasta. Depois disso, todos os comandos saem
+  falando na porta do `.env` **sem flags**:
 
   ```bash
-  PORT=5200 pnpm test:smoke        # sobe o vite na 5200 e testa nela
-  PORT=5200 pnpm evidence:visual   # fotografa a 5200
+  pnpm dev               # sobe na porta do .env
+  pnpm test:smoke        # testa na porta do .env
+  pnpm evidence:visual   # fotografa a porta do .env
   ```
 
+- Sem `.env` (ou para forçar outra porta), o env explícito vence:
+  `PORT=5200 pnpm test:smoke`.
 - Pre-flight vira "checar **a sua** porta": `lsof -nP -iTCP:5200 -sTCP:LISTEN`.
-- Convenção sugerida: 5173 = principal; worktrees pegam 5174+ (ou um hash do
-  nome da branch, como o worktrunk faz com `hash_port`).
 - A regra de contaminação (§3/§6) continua valendo **para a porta que você
   usar** — portas diferentes só isolam se forem realmente únicas.
-
-### 9.4 Sintomas de saturação
-
-- Suíte que normalmente leva 1 min levando 5×+ isso (timeouts em cascata, tests
-  `slow()` estourando 240s).
-- `uptime` com load muito acima dos núcleos durante/antes do run.
-- Testes aleatórios falhando com timeout sem motivo de código — pode ser outra
-  suíte comendo a máquina em paralelo, não flakiness.

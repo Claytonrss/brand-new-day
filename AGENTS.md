@@ -127,12 +127,14 @@ O Playwright local reusa **qualquer** server que responda na porta **5173**
 servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
 a suíte silenciosamente. Regras:
 
-1. **Worktree própria por tarefa**, criada de `origin/main`, com `pnpm install`
-   dentro dela; todos os comandos rodam a partir da worktree.
-2. **Porta por worktree:** vite, Playwright e evidências honram `PORT`
-   (default 5173 = checkout principal). Em worktree, fixe uma porta livre e
-   use em todos os comandos — `PORT=5200 pnpm test:smoke` sobe o vite na 5200
-   e testa nela.
+1. **Worktree própria por tarefa**, criada de `origin/main`. Rode **`pnpm
+bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
+   da worktree e abre o VS Code na pasta; todos os comandos rodam a partir da
+   worktree.
+2. **Porta por worktree:** vite, Playwright e evidências honram o `.env`
+   criado pelo bootstrap (default 5173 = checkout principal) — `pnpm dev`,
+   `pnpm test:smoke` e `pnpm evidence:visual` saem falando na porta do `.env`
+   **sem flags**. Sem `.env`, o env explícito vence: `PORT=5200 …`.
 3. **Pre-flight antes de Playwright/evidências** (barato e obrigatório):
 
    ```bash
