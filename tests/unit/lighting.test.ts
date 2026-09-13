@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { LIGHT_SLOTS } from '../../src/components/3d/lighting/lightCues';
-import { BEAT_TIMELINE } from '../../src/components/3d/beat/beats';
+import { LIGHT_SLOTS } from '@/components/3d/lighting/lightCues';
+import { BEAT_TIMELINE } from '@/components/3d/beat/beats';
 
 /**
  * Guardrails for docs/specs/headroom-lighting.md §5 — these rules are what

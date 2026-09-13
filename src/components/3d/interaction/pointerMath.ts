@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { softClamp } from '../../../lib/math';
+import { softClamp } from '@/lib/math';
 
 /**
  * Pure interaction math — kept free of React and the DOM so it can be unit

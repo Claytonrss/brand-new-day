@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
-import { gsap, ScrollTrigger } from '../lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 export function LenisProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {

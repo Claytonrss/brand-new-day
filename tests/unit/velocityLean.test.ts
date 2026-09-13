@@ -7,7 +7,7 @@ import {
   leanShoulderLift,
   LEAN_MAX,
   LEAN_SHOULDER_LIFT,
-} from '../../src/components/3d/rig/lean';
+} from '@/components/3d/rig/lean';
 
 const DT = 1 / 60;
 

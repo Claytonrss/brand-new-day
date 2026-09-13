@@ -4,7 +4,7 @@
  * No dependency, no allocation, stable across reloads — the same input always
  * produces the same output, which keeps screenshots comparable.
  */
-import { smoothstep } from '../lib/math';
+import { smoothstep } from '@/lib/math';
 
 function hash(n: number): number {
   const value = Math.sin(n * 127.1) * 43758.5453123;

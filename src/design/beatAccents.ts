@@ -1,4 +1,4 @@
-import type { BeatId } from '../components/3d/beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 
 /**
  * Beat accent for the DOM chrome (docs/specs/beat-chrome.md, T5.1).

@@ -11,9 +11,9 @@
  * @see docs/specs/evolution-chest-symbol.md
  */
 
-import type { Breakpoint } from '../../design/breakpoints';
+import type { Breakpoint } from '@/design/breakpoints';
 
-export type KeyframeName =
+type KeyframeName =
   'hero' | 'evolutionStart' | 'evolutionEnd' | 'arsenalStart' | 'arsenalEnd' | 'fullBody';
 
 interface KeyframeValues {

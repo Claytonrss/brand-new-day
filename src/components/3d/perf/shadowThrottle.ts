@@ -1,4 +1,4 @@
-import type { BeatId } from './beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 
 /** Shadow map refresh cadence on the throttled (medium) tier — 10 Hz. */
 export const SHADOW_INTERVAL_S = 1 / 10;
@@ -10,7 +10,7 @@ export const SHADOW_MOVE_EPSILON = 0.001;
 export const SHADOW_IDLE_VELOCITY = 0.02;
 
 /** Mutable per-frame bookkeeping for `shouldRefreshShadow`. */
-export interface ShadowThrottleState {
+interface ShadowThrottleState {
   sinceRefresh: number;
   beat: BeatId;
   dragging: boolean;

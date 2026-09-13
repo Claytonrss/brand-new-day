@@ -1,6 +1,6 @@
-import type { BeatId } from '../beat/beats';
+import type { BeatId } from '@/components/3d/beat/beats';
 import type { BoneRole } from './rigBones';
-import { LANDING_POSE } from '../landing';
+import { LANDING_POSE } from '@/components/3d/landing';
 
 /**
  * Additive pose offsets per beat, in radians (x, y, z).

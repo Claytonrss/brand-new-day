@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { beatRuntime } from '../3d/beat/beatState';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { VELOCITY_TYPE, velocityWeight } from '../../design/velocityType';
+import { beatRuntime } from '@/components/3d/beat/beatState';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { VELOCITY_TYPE, velocityWeight } from '@/design/velocityType';
 
 /** Without scroll events for this long the page counts as at rest. */
 const IDLE_MS = 300;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { PerfSnapshot } from '../3d/PerformanceMonitor';
-import { isDebugMode } from '../../lib/debugFlag';
+import type { PerfSnapshot } from '@/components/3d/perf/PerfProbe';
+import { isDebugMode } from '@/lib/debugFlag';
 
 const POLL_MS = 500;
 

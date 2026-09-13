@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from '../../lib/gsap';
+import { gsap } from '@/lib/gsap';
 import { SplitTextHeadline } from './SplitTextHeadline';
-import { MOTION } from '../../design/motion';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /**
  * OpeningTitleCard — Beat 0, the breath before the mask.

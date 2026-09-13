@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { getGyroController } from '../3d/interaction/gyroController';
+import { getGyroController } from '@/components/3d/interaction/gyroController';
 
 /**
  * GyroPrompt — the discreet iOS motion-permission chip.

@@ -1,6 +1,6 @@
-import { useMediaQuery } from '../hooks/useMediaQuery';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
-import { usePointerParallax } from '../hooks/usePointerParallax';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { usePointerParallax } from '@/hooks/usePointerParallax';
 
 /**
  * PointerParallax — enables desktop pointer parallax only where it belongs.

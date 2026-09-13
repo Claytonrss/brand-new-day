@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SENSE_ARCS, senseSquigglePath } from '../../src/design/senseArcs';
+import { SENSE_ARCS, senseSquigglePath } from '@/design/senseArcs';
 
 /**
  * Halo geometry guardrails — docs/specs/spider-sense.md §1: the strokes fan

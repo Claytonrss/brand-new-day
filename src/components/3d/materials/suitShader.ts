@@ -36,7 +36,7 @@ float fxWebWeave(vec2 p, float t) {
 }
 `;
 
-export interface SuitShaderOptions {
+interface SuitShaderOptions {
   /** Enables the animated web weave (suit fabric / chest). */
   web?: boolean;
   /** Fresnel rim multiplier. */

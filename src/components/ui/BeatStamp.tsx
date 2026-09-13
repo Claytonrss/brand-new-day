@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { BEAT_STAMPS } from '../../design/beatStamps';
-import type { BeatId } from '../3d/beat/beats';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { BEAT_STAMPS } from '@/design/beatStamps';
+import type { BeatId } from '@/components/3d/beat/beats';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /** The text swap happens while the label is transparent. */
 const FADE_MS = 180;

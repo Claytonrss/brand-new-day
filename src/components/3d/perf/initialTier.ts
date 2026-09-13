@@ -1,6 +1,6 @@
-import { BREAKPOINTS } from '../../design/breakpoints';
-import type { QualityTier } from './qualityContext';
-import { REDUCED_MOTION_QUERY } from '../../hooks/usePrefersReducedMotion';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import type { QualityTier } from '@/components/3d/perf/qualityContext';
+import { REDUCED_MOTION_QUERY } from '@/hooks/usePrefersReducedMotion';
 
 /**
  * Synchronous initial quality tier (FALHA-01).

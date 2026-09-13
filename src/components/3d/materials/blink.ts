@@ -6,7 +6,7 @@
  * blink. `?blink=off|subtle|full` picks the intensity; reduced motion disables
  * it entirely.
  */
-import { readQueryMode } from '../../../lib/queryMode';
+import { readQueryMode } from '@/lib/queryMode';
 
 export type BlinkMode = 'off' | 'subtle' | 'full' | 'hold';
 

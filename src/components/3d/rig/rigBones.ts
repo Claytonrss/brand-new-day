@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { fbm } from '../../../design/noise';
-import { smooth, softClamp } from '../../../lib/math';
+import { fbm } from '@/design/noise';
+import { smooth, softClamp } from '@/lib/math';
 
 // Re-exported for the rig unit tests (single implementation lives in lib/math).
 export { smooth, softClamp };

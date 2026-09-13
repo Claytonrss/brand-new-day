@@ -15,7 +15,7 @@ import type { BoneRole, RigBones } from './rigBones';
  * only a first-frame fallback (desktop values) so the initial frames are not
  * framed against the origin.
  */
-export interface WorldAnchors {
+interface WorldAnchors {
   head: THREE.Vector3;
   chest: THREE.Vector3;
   wrist: THREE.Vector3;

@@ -1,12 +1,9 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import * as THREE from 'three';
-import { patchSuitMaterial } from '../../src/components/3d/materials/suitShader';
-import {
-  measureLidBounds,
-  patchLensMaterial,
-} from '../../src/components/3d/materials/lensShader';
-import { curateMaterials } from '../../src/components/3d/materials/curateMaterials';
-import { FX_MODE, FX_STRENGTH, FX_POST_ENABLED } from '../../src/design/fxFlags';
+import { patchSuitMaterial } from '@/components/3d/materials/suitShader';
+import { measureLidBounds, patchLensMaterial } from '@/components/3d/materials/lensShader';
+import { curateMaterials } from '@/components/3d/materials/curateMaterials';
+import { FX_MODE, FX_STRENGTH, FX_POST_ENABLED } from '@/design/fxFlags';
 
 /** Minimal stand-in for the object three hands to `onBeforeCompile`. */
 function fakeShader() {
@@ -89,7 +86,14 @@ describe('lens shader', () => {
 
   it('declares the lid uniforms', () => {
     const { shader } = compile(patchLensMaterial);
-    for (const uniform of ['uBlink', 'uLidMinY', 'uLidMaxY', 'uLidCenterY', 'uLidColor', 'uSquash']) {
+    for (const uniform of [
+      'uBlink',
+      'uLidMinY',
+      'uLidMaxY',
+      'uLidCenterY',
+      'uLidColor',
+      'uSquash',
+    ]) {
       expect(shader.uniforms[uniform]).toBeDefined();
     }
   });

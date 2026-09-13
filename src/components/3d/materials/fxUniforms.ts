@@ -28,5 +28,3 @@ export const FX = {
   uRimColor: { value: new THREE.Color('#c23b34') },
   uWebColor: { value: new THREE.Color('#eaf4ff') },
 };
-
-export type FxUniformName = keyof typeof FX;
