@@ -22,13 +22,15 @@ estiver servido em `localhost:5173`, venha de onde vier.
 
 ## 2. Quem usa a porta 5173
 
-| Comando                                | Comportamento na porta 5173                                                                                            |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                             | Sobe o Vite em 5173                                                                                                    |
-| `pnpm test:smoke` / `pnpm test:visual` | Sobe `pnpm dev` em 5173 **só se a porta estiver livre**; senão **reusa** o que estiver lá (`reuseExistingServer: !CI`) |
-| `pnpm evidence:visual`                 | **Não sobe servidor** — captura `localhost:5173` (`BASE_URL` configurável)                                             |
-| `scripts/collect-*.mjs`                | Idem; alguns aceitam a URL como `argv[2]`                                                                              |
-| `pnpm preview`                         | Porta **4173** (build pronto); usada em capturas manuais                                                               |
+| Comando                                | Comportamento na porta 5173                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm dev`                             | Sobe o Vite em 5173 (ou em `PORT`, ver §10)                                                                              |
+| `pnpm test:smoke` / `pnpm test:visual` | Sobe `pnpm dev` na porta alvo **só se ela estiver livre**; senão **reusa** o que estiver lá (`reuseExistingServer: !CI`) |
+| `pnpm evidence:visual`                 | **Não sobe servidor** — captura `localhost:5173` (`BASE_URL`/`PORT` configuráveis)                                       |
+| `scripts/collect-*.mjs`                | Idem; alguns aceitam a URL como `argv[2]`                                                                                |
+| `pnpm preview`                         | Porta **4173** (build pronto); usada em capturas manuais                                                                 |
+
+Tudo honra `PORT` (default 5173) — ver §10.
 
 ## 3. Regra de ouro
 
@@ -154,6 +156,28 @@ fi
 ```
 
 O mesmo vale para evidências (`collect-*.mjs`) — elas abrem Chromium também.
+
+## 10. Porta por worktree (`PORT`)
+
+Vite, Playwright e todos os scripts de evidência honram `PORT` (default
+**5173**). Com uma porta única por worktree, o cenário do incidente (server
+alheio na 5173) deixa de existir: a sua suíte nunca olha a porta de outro
+checkout.
+
+- **Checkout principal:** mantenha o default — `pnpm dev` na 5173.
+- **Worktrees:** escolha uma porta livre e fixa para a worktree e use em
+  **todos** os comandos (vite, Playwright e evidências herdam o mesmo env):
+
+  ```bash
+  PORT=5200 pnpm test:smoke        # sobe o vite na 5200 e testa nela
+  PORT=5200 pnpm evidence:visual   # fotografa a 5200
+  ```
+
+- Pre-flight vira "checar **a sua** porta": `lsof -nP -iTCP:5200 -sTCP:LISTEN`.
+- Convenção sugerida: 5173 = principal; worktrees pegam 5174+ (ou um hash do
+  nome da branch, como o worktrunk faz com `hash_port`).
+- A regra de contaminação (§3/§6) continua valendo **para a porta que você
+  usar** — portas diferentes só isolam se forem realmente únicas.
 
 ### 9.4 Sintomas de saturação
 
