@@ -40,16 +40,17 @@ Fontes: **Space Grotesk** (display), **JetBrains Mono** (HUD/labels).
 
 Carregar apenas quando a tarefa exigir:
 
-| Documento                                      | Conteúdo                            |
-| ---------------------------------------------- | ----------------------------------- |
-| `docs/design/design-bible.md`                  | direção visual vinculante           |
-| `docs/design/storyboard.md`                    | seções como planos de câmera + copy |
-| `docs/design/mobile-first.md`                  | keyframes por breakpoint            |
-| `docs/design/composition-rules.md`             | zonas seguras de texto              |
-| `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo |
-| `docs/design/visual-rubric.md`                 | rubrica de avaliação estética       |
-| `docs/design/performance-design.md`            | FPS alvo, budgets, degradação       |
-| `docs/plans/archive/harness-bootstrap-plan.md` | plano completo de bootstrap         |
+| Documento                                      | Conteúdo                                        |
+| ---------------------------------------------- | ----------------------------------------------- |
+| `docs/design/design-bible.md`                  | direção visual vinculante                       |
+| `docs/design/storyboard.md`                    | seções como planos de câmera + copy             |
+| `docs/design/mobile-first.md`                  | keyframes por breakpoint                        |
+| `docs/design/composition-rules.md`             | zonas seguras de texto                          |
+| `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo             |
+| `docs/design/visual-rubric.md`                 | rubrica de avaliação estética                   |
+| `docs/design/performance-design.md`            | FPS alvo, budgets, degradação                   |
+| `docs/plans/archive/harness-bootstrap-plan.md` | plano completo de bootstrap                     |
+| `docs/agents/test-isolation.md`                | runbook: isolar ambiente/porta 5173 para testes |
 
 **Regra:** NUNCA carregar todos preemptivamente.
 
@@ -57,11 +58,12 @@ Carregar apenas quando a tarefa exigir:
 
 1. Ler `PROGRESS.md` para estado atual.
 2. Consultar Scene Spec relevante antes de implementar.
-3. Criar branch: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`, `chore/<slug>`.
+3. Criar branch: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`, `chore/<slug>` — de preferência em **worktree própria** (ver §11).
 4. Implementar seguindo Design Bible e composition rules.
 5. Rodar `bash scripts/verify-all.sh` antes de push.
 6. Commit com Conventional Commits.
-7. **PR Obrigatório com Evidências:** Todo PR DEVE obrigatoriamente incluir no seu corpo/descrição o log de saída real do `pnpm verify` (lint, typecheck, unit test, build) **e** do `pnpm test:smoke` (tier Playwright rápido, mobile-390), a tabela de rubrica visual preenchida com nota >= 4 e a relação de evidências (screenshots dos viewports 390px, 430px e 1440px via `pnpm evidence:visual`). O suite visual completo (`pnpm test:visual`) roda no CI em push para `main`.
+7. Antes de Playwright/evidências: **pre-flight da porta 5173** (ver §11) — server de outro checkout contamina a suíte silenciosamente.
+8. **PR Obrigatório com Evidências:** Todo PR DEVE obrigatoriamente incluir no seu corpo/descrição o log de saída real do `pnpm verify` (lint, typecheck, unit test, build) **e** do `pnpm test:smoke` (tier Playwright rápido, mobile-390), a tabela de rubrica visual preenchida com nota >= 4 e a relação de evidências (screenshots dos viewports 390px, 430px e 1440px via `pnpm evidence:visual`). O suite visual completo (`pnpm test:visual`) roda no CI em push para `main`.
 
 ## 6. Comandos
 
@@ -117,3 +119,33 @@ pnpm inspect:glb      # Inspect GLB asset metadata
 - Editar arquivos existentes (exceto configs de agente)
 - Rodar `pnpm lint`, `pnpm test`, `pnpm build`, `pnpm typecheck`
 - Criar branches locais
+
+## 11. Isolamento de Ambiente para Testes (obrigatório)
+
+O Playwright local reusa **qualquer** server que responda na porta **5173**
+(`reuseExistingServer: !CI`), e `pnpm evidence:visual` fotografa o que estiver
+servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
+a suíte silenciosamente. Regras:
+
+1. **Worktree própria por tarefa**, criada de `origin/main`, com `pnpm install`
+   dentro dela; todos os comandos rodam a partir da worktree.
+2. **Pre-flight antes de Playwright/evidências** (barato e obrigatório):
+
+   ```bash
+   lsof -nP -iTCP:5173 -sTCP:LISTEN        # porta ocupada?
+   lsof -p <PID> | grep cwd                # de qual checkout o server serve?
+   ```
+
+   - Porta livre → pode rodar.
+   - Server do **seu** checkout → ok.
+   - Server de **outro** checkout → não rode: mate se for processo órfão de
+     agent; coordene se for sessão do usuário.
+
+3. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
+   Vitest unit, typecheck, lint e build são seguros em paralelo.
+4. **Sintomas de contaminação** (`element(s) not found` para seletores que você
+   adicionou; snapshot mostrando features de outra branch) → checar a 5173
+   **antes** de debugar código.
+5. **Limpeza:** mate servers que você subiu e remova worktrees de rascunho.
+
+Runbook completo com tabelas de comandos e decisão: `docs/agents/test-isolation.md`.
