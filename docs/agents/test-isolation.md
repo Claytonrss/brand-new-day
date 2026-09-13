@@ -73,7 +73,8 @@ Decisão:
 | `pnpm inspect:glb`                           | `pnpm exec playwright screenshot ...`            |
 
 Dois agents em worktrees diferentes **não** devem rodar suites Playwright ao
-mesmo tempo sem coordenar a porta: o segundo reusaria o server do primeiro.
+mesmo tempo sem coordenar a porta: o segundo reusaria o server do primeiro. E
+mesmo em portas diferentes há o custo de máquina — ver §9.
 
 ## 6. Sintomas de contaminação
 
@@ -100,3 +101,64 @@ No CI (`process.env.CI`), `reuseExistingServer` é `false` e cada job tem
 ambiente próprio — o risco descrito aqui é **exclusivamente local**. Por isso
 suíte que passa no CI pode falhar localmente (e vice-versa) quando há server
 estranho na porta: o CI não é o sintoma, a máquina compartilhada é.
+
+## 9. Capacidade da máquina: processos Playwright e concorrência
+
+Playwright aqui é **pesado por construção**: cada worker sobe um Chromium com
+renderização WebGL por software (SwiftShader), carrega um GLB de dezenas de MB
+e roda com timeout de 240s. Com `workers: 3` (local), uma suíte profunda pode
+consumir todos os núcleos por 10+ minutos. Duas suítes simultâneas = máquina
+travada para todo mundo, inclusive para o usuário.
+
+### 9.1 Limite
+
+> **Uma (1) suíte Playwright por máquina, por vez.** Vale para `test:smoke`,
+> `test:visual`, `evidence:visual` e `collect-*.mjs` — cada um abre os próprios
+> browsers. O limite é **global na máquina**, não por checkout/worktree.
+
+Não aumente `--workers` (o config já limita: 3 local, 2 CI). Em máquina
+modesta, reduza: `pnpm test:visual --workers=2`.
+
+### 9.2 Pre-flight: já existe Playwright rodando?
+
+```bash
+pgrep -fl "playwright" | head -10        # runners e processos utilitários
+ps aux | grep -ic "[c]hromium"           # browsers vivos (contagem)
+uptime                                   # load average — compare com hw.ncpu
+memory_pressure | head -1                # % livre de memória (macOS)
+```
+
+- **Nada rodando e máquina folgada** (load < núcleos) → pode iniciar.
+- **Suíte em andamento (de você ou de outro agent)** → **aguarde**, não empilhe
+  (ver 9.3).
+- **Processos Chromium/Playwright órfãos** (ninguém rodando suíte, mas há
+  browsers vivos e load alta) → sobra de run morto: `pkill -f playwright` e
+  `pkill -if chromium` **limitados aos PIDs que você confirmou serem órfãos** —
+  nunca um `pkill` largo sem olhar a lista.
+
+### 9.3 Esperar a liberação (poll com timeout)
+
+Se houver suíte rodando, espere em vez de iniciar outra — poll de 30s, teto de
+15 min:
+
+```bash
+for i in $(seq 1 30); do
+  pgrep -f "playwright test" >/dev/null || break
+  sleep 30
+done
+
+if pgrep -f "playwright test" >/dev/null; then
+  echo "PLAYWRIGHT BUSY: suíte de outro agent ainda em execução após 15 min."
+  # Reporte ao usuário / devolva a tarefa. NÃO inicie a sua em cima.
+fi
+```
+
+O mesmo vale para evidências (`collect-*.mjs`) — elas abrem Chromium também.
+
+### 9.4 Sintomas de saturação
+
+- Suíte que normalmente leva 1 min levando 5×+ isso (timeouts em cascata, tests
+  `slow()` estourando 240s).
+- `uptime` com load muito acima dos núcleos durante/antes do run.
+- Testes aleatórios falhando com timeout sem motivo de código — pode ser outra
+  suíte comendo a máquina em paralelo, não flakiness.

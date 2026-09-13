@@ -143,9 +143,23 @@ a suíte silenciosamente. Regras:
 
 3. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
    Vitest unit, typecheck, lint e build são seguros em paralelo.
-4. **Sintomas de contaminação** (`element(s) not found` para seletores que você
+4. **Capacidade — cheque antes de abrir novos runs** (cada worker sobe um
+   Chromium com WebGL por software; duas suítes travam a máquina):
+
+   ```bash
+   pgrep -fl "playwright" | head -10   # já há suíte rodando?
+   uptime                              # load vs núcleos
+   ```
+
+   Já há suíte rodando? **Aguarde a liberação**: poll de 30s com teto de
+   15 min; se continuar ocupada após o teto, reporte ao usuário — não empilhe
+   processos. Nunca aumente `--workers`.
+
+5. **Sintomas de contaminação** (`element(s) not found` para seletores que você
    adicionou; snapshot mostrando features de outra branch) → checar a 5173
-   **antes** de debugar código.
-5. **Limpeza:** mate servers que você subiu e remova worktrees de rascunho.
+   **antes** de debugar código. Timeouts aleatórios em cascata → checar se há
+   **outra suíte** comendo a máquina.
+6. **Limpeza:** mate servers e browsers que você subiu (confirmando os PIDs) e
+   remova worktrees de rascunho.
 
 Runbook completo com tabelas de comandos e decisão: `docs/agents/test-isolation.md`.
