@@ -13,8 +13,8 @@ const WATCH_MS = 90;
  * Six wavy hairline strokes that draw on around the projected head position
  * (`--sense-x/y`, published by `SenseAnchor`) and fade with the envelope.
  * The trigger discipline lives in `spiderSense.ts`: it only fires when the
- * narrative enters a danger beat, never in the hero — so nothing is
- * "pre-activated" and every fire is an event.
+ * narrative arrives at a danger beat scrolling forward, never in the hero —
+ * so nothing is "pre-activated" and every fire is an event.
  *
  * Cost follows the ProgressBar pattern: a 90ms watcher while idle, one rAF
  * loop only while the halo is alive, opacity written directly (no re-renders

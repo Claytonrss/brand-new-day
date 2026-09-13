@@ -956,3 +956,58 @@ o `QualityAdapter` só injeta `beatRuntime`/`INTERACTION` e escreve
   aos inputs do throttle.
 - ⚠️ Aceite em device (vídeo do drag no S23, vale de calls) pendente da
   re-medição da Wave 0.
+
+## ADR-024: Portão de direção no gatilho do spider-sense
+
+**Data:** 2026-09-13
+**Status:** ✅ Aprovado (fix do bug "disparo encoberto" pós-redesign v2)
+
+### Contexto
+
+O redesign v2 (PR #41) dispara o sense em _qualquer_ mudança de beat para um
+beat de perigo — inclusive entrando **por baixo** (rolando para cima).
+Reprodução em desktop 1440×900: a fronteira `chapter2 → evolution`
+(progress 0.5625) coincide **exatamente** com o scroll em que o card
+"REVELAÇÃO" cobre 100% da viewport (o card ocupa página 450–550vh e o beat
+chapter2 é 450–550vh por construção). Toda re-entrada subindo gastava o fire
+atrás do card opaco: halo clampeado num canto (`SenseAnchor`), snap/lentes/
+respiração invisíveis. As outras duas re-entradas subindo
+(`colophon → fullBody` em 0.95, `fullBody → arsenal` em 0.86) disparam no
+meio de transições — as fronteiras 0.86/0.95 não coincidem com as bordas
+reais das seções (700/800vh). Nenhum teste cobria cruzamento para cima.
+
+### Decisão
+
+`spiderSenseStep(delta, beat, velocity)` só dispara numa **chegada**:
+`DANGER.has(beat) && velocity > 0 && isForwardEntry(previous, beat)` —
+sinal da velocity normalizada de `beatRuntime` **e** beat alvo depois do
+anterior na `BEAT_TIMELINE`. As duas condições se completam: a timeline
+bloqueia re-entrada subindo mesmo quando a velocity defasada é positiva
+(salto programático), e a velocity bloqueia viradas sem scroll (jitter de
+refresh do ScrollTrigger). Re-armar continua natural: sair e voltar rolando
+para **baixo** re-dispara. GSAP garante o sinal no frame da virada:
+`getVelocity()` usa o scroll ao vivo menos a amostra anterior
+(`(scrollFunc() - scroll2) / Δt`), e `lenis.on('scroll', ScrollTrigger.update)`
+passa a instância como argumento, mantendo `recordVelocity` truthy.
+
+### Alternativas Consideradas
+
+1. **Portão só por velocity** — rejeitado sozinho: `getVelocity()` num salto
+   programático pode ler 0/defasado no frame da virada e a janela de uma
+   virada real depende do easing do Lenis; a timeline é determinística.
+2. **Portão só por timeline** — rejeitado sozinho: jitter de refresh
+   (resize/fontes) cruzando uma fronteira para frente dispararia sem scroll.
+3. **Adiar o fire até a cabeça projetada estar em quadro** — rejeitado:
+   estado novo ("fire pendente") com janela de expiração ambígua; resolve um
+   problema diferente (cabeça fora de quadro nos close-ups, já aceito no
+   clamp do `SenseAnchor`).
+
+### Consequências
+
+- ✅ Zero disparos encobertos: subir nunca dispara; o fire volta na próxima
+  descida visível (re-arm preservado).
+- ✅ Custo zero: dois booleanos avaliados só em mudança de beat (~6×/scroll).
+- ⚠️ Re-entrar num beat subindo não toca o sense — decisão consciente: é
+  releitura de conteúdo já anunciado na descida.
+- ✅ Testes: 3 casos unitários novos (subindo, velocity 0, re-arm para
+  frente) + 1 visual `@smoke` de regressão (mobile-390 + desktop-1440).

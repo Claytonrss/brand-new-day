@@ -193,7 +193,7 @@ export function useProceduralRig({
     // while the pose is frozen (reduced motion) or the model is still loading.
     // The halo overlay and the lens flare read spiderSense; the spine reads
     // the breath — which catches while the sense rings.
-    spiderSenseStep(delta, beat);
+    spiderSenseStep(delta, beat, beatRuntime.velocity);
     // Breath freezes under reduced motion (statue by design): the sample is
     // what `window.__rig` publishes, and a still-integrating phase made the
     // freeze probe report motion on a visually frozen pose.
