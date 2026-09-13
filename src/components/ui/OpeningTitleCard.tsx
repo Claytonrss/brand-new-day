@@ -69,7 +69,9 @@ export function OpeningTitleCard() {
       className="relative flex h-dvh flex-col items-center justify-center overflow-hidden bg-ink px-6"
       data-opening="title-card"
     >
-      <div ref={contentRef} className="flex flex-col items-center text-center">
+      {/* Suit weave — IDEIA-AMB-07: the hero's material under the title card. */}
+      <div aria-hidden="true" className="suit-weave absolute inset-0" />
+      <div ref={contentRef} className="relative flex flex-col items-center text-center">
         <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-dim">
           uma peça de portfólio
         </p>

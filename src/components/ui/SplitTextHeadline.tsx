@@ -81,7 +81,7 @@ export function SplitTextHeadline({
     <Tag
       ref={containerRef}
       id={id}
-      className={`${className} overflow-hidden`}
+      className={`${className} velocity-type overflow-hidden`}
       aria-label={text.replace(/\n/g, ' ')}
     >
       <span aria-hidden="true">{lines}</span>

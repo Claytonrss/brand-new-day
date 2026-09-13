@@ -41,6 +41,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         requestAnimationFrame: 'readonly',
+        getComputedStyle: 'readonly',
+        setTimeout: 'readonly',
       },
     },
   },
