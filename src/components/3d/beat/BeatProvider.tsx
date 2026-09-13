@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { beatAt, beatLocalProgress } from './beats';
 import { BeatContext } from './beatContext';
 import { beatRuntime, type BeatState } from './beatState';
-import { BEAT_ACCENTS } from '../../../design/beatAccents';
+import { BEAT_ACCENTS } from '@/design/beatAccents';
 
 /**
  * BeatProvider — single master ScrollTrigger publishing narrative state.
@@ -71,7 +71,5 @@ export function BeatProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return (
-    <BeatContext.Provider value={{ beat, stateRef }}>{children}</BeatContext.Provider>
-  );
+  return <BeatContext.Provider value={{ beat, stateRef }}>{children}</BeatContext.Provider>;
 }

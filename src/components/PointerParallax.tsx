@@ -1,5 +1,6 @@
-import { useMediaQuery } from '../hooks/useMediaQuery';
-import { usePointerParallax } from '../hooks/usePointerParallax';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { usePointerParallax } from '@/hooks/usePointerParallax';
 
 /**
  * PointerParallax — enables desktop pointer parallax only where it belongs.
@@ -11,7 +12,7 @@ import { usePointerParallax } from '../hooks/usePointerParallax';
  */
 export function PointerParallax() {
   const hasHover = useMediaQuery('(hover: hover)');
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
 
   usePointerParallax(hasHover && !reduceMotion);
 

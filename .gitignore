@@ -24,3 +24,7 @@ coverage/
 
 # Logs
 *.log
+.zcode/
+
+# Evidências visuais/vídeo ficam fora do git (187 MB) — manter cópia local
+docs/evidence/

@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { loaderCover } from '../ui/loaderCover';
+import { ScrollTrigger } from '@/lib/gsap';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { loaderCover } from '@/components/ui/loaderCover';
 import { landingFire, landingSnap } from './landing';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
  * LandingTrigger — arms "a chegada" (docs/specs/arrival-landing.md).
@@ -21,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
  *   at rest from the first frame.
  */
 export function LandingTrigger() {
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (prefersReducedMotion) return;

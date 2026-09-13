@@ -18,13 +18,6 @@ pnpm install --frozen-lockfile
 echo "== Setup: installing Playwright browsers =="
 pnpm exec playwright install --with-deps chromium
 
-echo "== Setup: checking Playwright CLI =="
-if command -v playwright-cli >/dev/null 2>&1; then
-  playwright-cli --help >/dev/null
-else
-  npx playwright --help >/dev/null
-fi
-
 echo "== Setup: per-checkout .env (isolated dev port) =="
 # The main checkout keeps the default 5173; a worktree (.git is a file there)
 # gets a deterministic free port derived from its path — so parallel worktrees

@@ -24,13 +24,7 @@
  * @see docs/specs/headroom-lighting.md §7
  */
 export type BeatId =
-  | 'hero'
-  | 'chapter1'
-  | 'evolution'
-  | 'chapter2'
-  | 'arsenal'
-  | 'fullBody'
-  | 'colophon';
+  'hero' | 'chapter1' | 'evolution' | 'chapter2' | 'arsenal' | 'fullBody' | 'colophon';
 
 export interface Beat {
   id: BeatId;

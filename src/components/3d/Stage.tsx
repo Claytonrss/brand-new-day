@@ -1,8 +1,9 @@
 import { useThree } from '@react-three/fiber';
-import { heroModelPosition, TARGET_HEAD_Y } from './heroModelLayout';
+import { heroModelPosition, TARGET_HEAD_Y } from '@/components/3d/camera/heroModelLayout';
 import { SpiderManModel } from './SpiderManModel';
-import { COLORS } from '../../design/tokens';
-import { BREAKPOINTS } from '../../design/breakpoints';
+import { COLORS } from '@/design/tokens';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { isDebugMode } from '@/lib/debugFlag';
 
 /**
  * Stage — background + the shared model (no lights).
@@ -15,9 +16,7 @@ import { BREAKPOINTS } from '../../design/breakpoints';
  */
 export function Stage() {
   const { size } = useThree();
-  const debug =
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('debug') === '1';
+  const debug = isDebugMode();
 
   const isMobile = size.width < BREAKPOINTS.MOBILE;
   const modelScale = isMobile ? 0.9 : 1.1;

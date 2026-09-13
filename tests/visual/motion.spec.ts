@@ -33,10 +33,7 @@ function readRig(page: import('@playwright/test').Page) {
 }
 
 /** Polls the rig until the lean leaves the dead zone (slow renderers). */
-async function waitForLeanBeyond(
-  page: import('@playwright/test').Page,
-  magnitude: number,
-) {
+async function waitForLeanBeyond(page: import('@playwright/test').Page, magnitude: number) {
   await page.waitForFunction(
     (threshold) => window.__rig !== undefined && Math.abs(window.__rig.lean) > threshold,
     magnitude,
@@ -166,10 +163,9 @@ test.describe('Arrival landing', () => {
 
     // The drop settles to rest well within a few seconds of simulated time
     // (SwiftShader clamps spring dt, so wall-clock is a few times longer).
-    await page.waitForFunction(
-      () => Math.abs(window.__landing?.offset ?? 1) < 0.05,
-      { timeout: 30_000 },
-    );
+    await page.waitForFunction(() => Math.abs(window.__landing?.offset ?? 1) < 0.05, {
+      timeout: 30_000,
+    });
     landing = await readLanding(page);
     expect(landing?.fireCount ?? 0).toBe(1);
 

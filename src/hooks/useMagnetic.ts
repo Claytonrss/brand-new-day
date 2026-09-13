@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { MAGNET, magneticOffset } from '../design/magnetic';
+import { MAGNET, magneticOffset } from '@/design/magnetic';
 import { useMediaQuery } from './useMediaQuery';
+import { usePrefersReducedMotion } from './usePrefersReducedMotion';
 
 interface MagneticOptions {
   radius?: number;
@@ -20,7 +21,7 @@ interface MagneticOptions {
  */
 export function useMagnetic<T extends HTMLElement>(options: MagneticOptions = {}) {
   const ref = useRef<T>(null);
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
   const finePointer = useMediaQuery('(pointer: fine)');
 
   useEffect(() => {

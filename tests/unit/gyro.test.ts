@@ -3,7 +3,7 @@ import {
   createGyroController,
   GYRO_STORAGE_KEY,
   type GyroControllerDeps,
-} from '../../src/components/3d/interaction/gyroController';
+} from '@/components/3d/interaction/gyroController';
 
 function memoryStorage(initial: Record<string, string> = {}) {
   const map = new Map(Object.entries(initial));

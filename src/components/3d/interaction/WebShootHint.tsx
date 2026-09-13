@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useBeat } from '../beat/beatContext';
-import { WRIST_POSITION } from '../beat/beats';
-import { ANCHORS } from '../rig/anchorStore';
-import { useQualityProfile } from '../qualityContext';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
-import { BREAKPOINTS } from '../../../design/breakpoints';
-import { COLORS } from '../../../design/tokens';
-import { MOTION } from '../../../design/motion';
+import { useBeat } from '@/components/3d/beat/beatContext';
+import { WRIST_POSITION } from '@/components/3d/beat/beats';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { COLORS } from '@/design/tokens';
+import { MOTION } from '@/design/motion';
 import { arsenalReveal } from './arsenalReveal';
 
 /** Breathing cycle (seconds) — one full inhale/exhale of the ring. */
@@ -42,7 +42,7 @@ export function WebShootHint() {
   const profile = useQualityProfile();
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const breathPhase = useRef(0);
   const fadeRef = useRef(0);

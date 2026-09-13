@@ -1,18 +1,15 @@
 import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { BREAKPOINTS } from '../../design/breakpoints';
-import { COLORS } from '../../design/tokens';
-import { useQualityProfile } from './qualityContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { smooth } from '@/lib/math';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { COLORS } from '@/design/tokens';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
 import { FX } from './materials/fxUniforms';
-import {
-  ATMOSPHERE,
-  buildParticleAttributes,
-  particleCount,
-} from './atmosphere/particles';
+import { ATMOSPHERE, buildParticleAttributes, particleCount } from './atmosphere/particles';
 import { PARTICLE_FRAGMENT, PARTICLE_VERTEX } from './atmosphere/particlesShader';
 
 /**
@@ -66,7 +63,7 @@ export function Atmosphere() {
   const scene = useThree((state) => state.scene);
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const profile = useQualityProfile();
   const { beat } = useBeat();
 
@@ -75,7 +72,11 @@ export function Atmosphere() {
   const attributes = useMemo(() => buildParticleAttributes(Math.max(count, 1)), [count]);
 
   const colors = useMemo(
-    () => ({ dim: new THREE.Color(COLORS.dim), oxide: new THREE.Color(COLORS.oxide), target: new THREE.Color() }),
+    () => ({
+      dim: new THREE.Color(COLORS.dim),
+      oxide: new THREE.Color(COLORS.oxide),
+      target: new THREE.Color(),
+    }),
     [],
   );
 
@@ -102,7 +103,7 @@ export function Atmosphere() {
 
     // Reduced motion: snap to the beat (signature reads via colour/light, not
     // motion) and keep the frame stable.
-    const alpha = prefersReducedMotion ? 1 : 1 - Math.exp(-FADE_K * delta);
+    const alpha = prefersReducedMotion ? 1 : smooth(delta, FADE_K);
 
     // Fog is beat-directed even when the particle tier is `low` (count 0).
     const fog = scene.fog as THREE.FogExp2 | undefined;
@@ -128,10 +129,7 @@ export function Atmosphere() {
   return (
     <points ref={pointsRef} frustumCulled={false}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[attributes.positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[attributes.positions, 3]} />
         <bufferAttribute attach="attributes-aLayer" args={[attributes.layers, 1]} />
         <bufferAttribute attach="attributes-aPhase" args={[attributes.phases, 1]} />
         <bufferAttribute attach="attributes-aSeed" args={[attributes.seeds, 1]} />

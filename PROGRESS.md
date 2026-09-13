@@ -1,14 +1,14 @@
 # PROGRESS.md — spiderman-landing
 
 Checklist de fechamento do **Pareto Impact Plan**
-(`docs/plans/pareto-impact-plan.md`): as Waves 1–5 estão **entregues e
+(`docs/plans/archive/pareto-impact-plan.md`): as Waves 1–5 estão **entregues e
 mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
 **device** (só você executa), **housekeeping** (executável por agente) e
 **condicionais** (decididos com os números do device).
 
 **Legenda:** `[ ]` pendente · `[~]` em progresso · `[x]` concluído · `[-]` não aplicável
 
-**Última atualização:** 2026-09-12
+**Última atualização:** 2026-09-13
 
 ---
 
@@ -50,6 +50,11 @@ mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
 - [x] Fase 7.5 — `commitlint` + `husky` + `lint-staged` (pre-commit roda
       lint-staged; commit-msg valida Conventional Commits)
 - [x] G5 — rubrica re-preenchida nos PRs #32–#37 (fold concluído)
+- [x] FIX — drag-orbit hover-only (gate `(hover: hover)`): swipe de scroll no
+      touch tremia o modelo (condição de escala prevista em
+      `model-interaction.md` §7.1, disparada em uso real). Mobile mantém gyro +
+      tap-to-shoot + drift idle; desktop intocado. Vídeos de device que usavam
+      drag (Bloco A, Waves 2–3) passam a valer drag de desktop
 
 ## Bloco C — Condicionais / data-gated (não executar sem os números)
 
@@ -60,9 +65,10 @@ mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
       FALHA-14 disparar (medium < 45 fps em devices médios)
 - [ ] FALHA-03 — render gating (variante pause-em-repouso): só se térmica/
       bateria dóiem após as Waves 1–2
-- [ ] Micro-polish / fila de ideias: consolidada em
-      `docs/plans/backlog.md` (varredura 2026-09-12 — ideias verificadas
-      contra o código, quick wins → grandes)
+- [x] Micro-polish quick wins — executados (2026-09-13): PR #40
+      (tipografia reativa, carimbo por beat, CTA magnético, trama do traje) + PR #41 (spider-sense, respiração por beat). Restantes na fila
+      (`docs/plans/backlog.md`) são médios/grandes, para calibrar em device
+      junto com o Bloco A
 
 ## Removidos — não mais relevantes (decisão 2026-09-12)
 
@@ -91,7 +97,5 @@ mergeadas** (PRs #32–#37). O que resta está organizado em três blocos:
 | 2026-09-10 | **Portfolio Impact** (`portfolio-impact-plan.md`; PR #31)                   | P0 composição/tipografia/copy (rubrica 4,2) · P1a loader teaser + opening card · P1b colofon (900vh) · P1c atmosfera por beat · P2a Arsenal macro + HUD · P2b pointer parallax + gyro iOS (ADR-018) · P3.1 web-shoot descobrível · P3.2 fallback WebGL em poster                                                                                                                               |
 | 2026-09-12 | **Pareto Impact Plan** (`pareto-impact-plan.md`; PRs #32–#37)               | W1 PERF-A: tier síncrono (mobile nunca `high`) + idle-gate + ProgressBar rAF + drive-bys + smoke tier · W2 PERF-B: shadow throttle (vale 16 calls) · W3 FIX: HDR/fontes self-hosted (0 requests externos) + isTap · W4a SIG: a chegada · W4b SIG: velocity lean · W5 POL: beat chrome + chapter cards impressos · ADRs 021–023 · specs arrival-landing/velocity-lean/beat-chrome/chapter-print |
 
-**Marcos acumulados:** draw calls 44–46 (high) · 30–46 medium com vale de
-sombra · 11–13 (low) · tier inicial síncrono (mobile = medium) · 0 requests
-externos · rubrica 4,5/5,0 (auto; humana pendente) · 134 unit tests · 12
-specs visuais (7 `@smoke` no gate de PR) · hooks de commit · página 900vh.
+**Marcos acumulados:** ver `docs/STATE.md` (Métricas) — fonte única de
+números; este arquivo mantém apenas o checklist executável.

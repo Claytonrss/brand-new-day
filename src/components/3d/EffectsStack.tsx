@@ -8,15 +8,19 @@ import {
   Noise,
   Vignette,
 } from '@react-three/postprocessing';
-import { BlendFunction, type ChromaticAberrationEffect, type DepthOfFieldEffect } from 'postprocessing';
+import {
+  BlendFunction,
+  type ChromaticAberrationEffect,
+  type DepthOfFieldEffect,
+} from 'postprocessing';
 import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
 import type { BeatId } from './beat/beats';
-import { useQualityProfile } from './qualityContext';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { BREAKPOINTS } from '../../design/breakpoints';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { BREAKPOINTS } from '@/design/breakpoints';
 import { useMaterialFx } from './materials/MaterialFxDriver';
-import { FX_POST_ENABLED } from '../../design/fxFlags';
+import { FX_POST_ENABLED } from '@/design/fxFlags';
 
 /** Chromatic aberration limits (NDC offset). */
 const CA_MAX = 0.0015;
@@ -50,7 +54,7 @@ export function EffectsStack() {
   const profile = useQualityProfile();
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const { beat, stateRef } = useBeat();
   const { anchor, bokehRef } = useMaterialFx(isMobile, prefersReducedMotion);
 

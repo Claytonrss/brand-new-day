@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap } from '@/lib/gsap';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { SplitChars } from './SplitChars';
 
 interface ChapterCardProps {
   title: string;
@@ -29,7 +27,7 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (prefersReducedMotion || !cardRef.current || !titleRef.current) return;
@@ -103,12 +101,7 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
   }, [prefersReducedMotion]);
 
   // Split title into individual characters for stagger animation
-  // (no permanent `will-change` — see SplitTextHeadline, FALHA-06)
-  const titleChars = title.split('').map((char, i) => (
-    <span key={i} className="char inline-block">
-      {char === ' ' ? '\u00A0' : char}
-    </span>
-  ));
+  const titleChars = <SplitChars text={title} />;
 
   return (
     <div

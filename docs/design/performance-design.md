@@ -5,11 +5,12 @@
 
 ## Metas de frame rate
 
-| Alvo | Valor | Onde |
-|---|---|---|
-| Mínimo aceitável | **45 FPS** | mobile moderno |
-| Ideal | **60 FPS** | desktop |
-| Medição | FPS médio registrado durante o verify | ambos |
+| Alvo              | Valor                                                     | Onde                     |
+| ----------------- | --------------------------------------------------------- | ------------------------ |
+| Mínimo aceitável  | **30 FPS** — abaixo disso o código degrada `medium → low` | mobile                   |
+| Alvo de qualidade | **45–60 FPS**                                             | mobile moderno / desktop |
+| Ideal             | **60 FPS**                                                | desktop                  |
+| Medição           | FPS médio registrado durante o verify                     | ambos                    |
 
 "FPS médio" significa medição real (ex: contador em `useFrame` agregado por
 janela de 5s), não impressão subjetiva.
@@ -55,12 +56,12 @@ O fallback é uma **escolha visual**, não uma página quebrada.
 
 ## Budget inicial
 
-| Recurso | Budget mobile |
-|---|---|
+| Recurso         | Budget mobile                                     |
+| --------------- | ------------------------------------------------- |
 | GLB em produção | ≤ 15 MB (meta de otimização a partir do original) |
-| Texturas | ≤ 2K, KTX2/WebP quando viável |
-| Draw calls | < 50 por frame |
-| Post-processing | máx. 2 efeitos ativos em mobile |
+| Texturas        | ≤ 2K, KTX2/WebP quando viável                     |
+| Draw calls      | < 50 por frame                                    |
+| Post-processing | máx. 2 efeitos ativos em mobile                   |
 
 ## Critérios de aceite
 

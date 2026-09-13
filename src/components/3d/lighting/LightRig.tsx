@@ -1,24 +1,21 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useBeat } from '../beat/beatContext';
-import { CHEST_Y } from '../beat/beats';
-import { ANCHORS } from '../rig/anchorStore';
-import type { BeatState } from '../beat/beatState';
-import type { BeatId } from '../beat/beats';
-import { useQualityProfile } from '../qualityContext';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
-import { BREAKPOINTS } from '../../../design/breakpoints';
-import { COLORS } from '../../../design/tokens';
+import { useBeat } from '@/components/3d/beat/beatContext';
+import { CHEST_Y } from '@/components/3d/beat/beats';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
+import type { BeatState } from '@/components/3d/beat/beatState';
+import type { BeatId } from '@/components/3d/beat/beats';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { COLORS } from '@/design/tokens';
 import { LIGHT_SLOTS, SWEEP, type LightSlot, type LightTarget } from './lightCues';
-import { INTERACTION } from '../interaction/interactionStore';
+import { INTERACTION } from '@/components/3d/interaction/interactionStore';
+import { smooth } from '@/lib/math';
 
 /** Cross-fade rate between beats (exponential, frame-rate independent). */
 const FADE_K = 6;
-
-function smooth(delta: number): number {
-  return 1 - Math.exp(-FADE_K * delta);
-}
 
 /**
  * Merge the slot base with the current beat's override.
@@ -59,7 +56,8 @@ function evolutionSweep(t: number) {
     intensity = SWEEP.residualIntensity;
   }
 
-  const sweepT = t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
+  const sweepT =
+    t <= SWEEP.start ? 0 : t >= SWEEP.end ? 1 : (t - SWEEP.start) / (SWEEP.end - SWEEP.start);
 
   return {
     intensity,
@@ -94,7 +92,7 @@ function useFadedIntensity(
 
     const cue = targetFor(slot, beat);
     const goal = override ?? (isMobile ? cue.intensity.mobile : cue.intensity.desktop);
-    const alpha = instant ? 1 : smooth(delta);
+    const alpha = instant ? 1 : smooth(delta, FADE_K);
 
     light.intensity = THREE.MathUtils.lerp(light.intensity, goal, alpha);
 
@@ -171,7 +169,9 @@ function SpotSlot(props: SlotProps) {
     const active = beat === 'evolution';
     const goal = active ? state.intensity : 0;
 
-    light.intensity = instant ? goal : THREE.MathUtils.lerp(light.intensity, goal, smooth(delta));
+    light.intensity = instant
+      ? goal
+      : THREE.MathUtils.lerp(light.intensity, goal, smooth(delta, FADE_K));
 
     if (active && state.sweeping) {
       light.position.set(state.x, chestY + state.y, state.z);
@@ -220,7 +220,7 @@ export function LightRig() {
   const profile = useQualityProfile();
   const { size } = useThree();
   const isMobile = size.width < BREAKPOINTS.MOBILE;
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const props: SlotProps = {
     beat,

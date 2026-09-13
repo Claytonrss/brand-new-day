@@ -13,7 +13,7 @@ Leia primeiro:
 
 - `docs/design/` — todos os documentos de design
 - `harness-bootstrap-plan.md` — plano completo
-- Specs existentes em `docs/scene-specs/`
+- Specs existentes em `docs/specs/`
 
 Entregue:
 

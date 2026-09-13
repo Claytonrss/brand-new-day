@@ -18,7 +18,7 @@
 
 ## Detecção de perfil
 
-- **Mobile Low**: `prefers-reduced-motion: reduce` OU FPS médio < 45 medido
+- **Mobile Low**: `prefers-reduced-motion: reduce` OU FPS médio < 30 medido
   nos primeiros segundos OU device memory/hardware concurrency baixo
   (quando disponível via `navigator`).
 - **Mobile Good**: viewport < 768px sem as condições acima.

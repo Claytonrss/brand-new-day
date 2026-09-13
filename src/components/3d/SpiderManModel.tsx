@@ -3,9 +3,10 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { extendGltfLoaderWithKtx2 } from './gltfKtx2Loader';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useBeat } from './beat/beatContext';
-import { useQualityProfile } from './qualityContext';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { collectRigBones, captureRestPose, type RestPose, type BoneRole } from './rig/rigBones';
 import { curateMaterials } from './materials/curateMaterials';
 import { useProceduralRig } from './rig/useProceduralRig';
@@ -45,7 +46,7 @@ export function SpiderManModel({
   const extendLoader = useMemo(() => extendGltfLoaderWithKtx2(gl), [gl]);
   const { scene, nodes } = useGLTF(MODEL_PATH, false, true, extendLoader);
   const groupRef = useRef<THREE.Group>(null);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const hasHover = useMediaQuery('(hover: hover)');
   const { beat } = useBeat();
   const profile = useQualityProfile();
@@ -66,10 +67,7 @@ export function SpiderManModel({
 
   // Material curation — physical intent + authorial shader layer (Wave C)
   useEffect(() => {
-    const result = curateMaterials(scene);
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug')) {
-      (window as unknown as Record<string, unknown>).__materials = result;
-    }
+    curateMaterials(scene);
   }, [scene]);
 
   // Capture the authored pose before any layer touches it
@@ -108,7 +106,14 @@ export function SpiderManModel({
   });
 
   return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={scale} castShadow userData={{ modelReady: true }}>
+    <group
+      ref={groupRef}
+      position={position}
+      rotation={rotation}
+      scale={scale}
+      castShadow
+      userData={{ modelReady: true }}
+    >
       <primitive object={scene} />
     </group>
   );

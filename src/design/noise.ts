@@ -4,6 +4,7 @@
  * No dependency, no allocation, stable across reloads — the same input always
  * produces the same output, which keeps screenshots comparable.
  */
+import { smoothstep } from '@/lib/math';
 
 function hash(n: number): number {
   const value = Math.sin(n * 127.1) * 43758.5453123;
@@ -13,7 +14,7 @@ function hash(n: number): number {
 function noise(x: number): number {
   const i = Math.floor(x);
   const f = x - i;
-  const u = f * f * (3 - 2 * f);
+  const u = smoothstep(f, 0, 1);
   const a = hash(i);
   const b = hash(i + 1);
   return (a + (b - a) * u) * 2 - 1;

@@ -6,7 +6,7 @@ import * as THREE from 'three';
  * Same pattern as `anchorStore` and the FX uniforms: writing React state at
  * pointer-move frequency would re-render the tree on every event.
  */
-export interface InteractionState {
+interface InteractionState {
   /** Drag / gyro rotation offset applied to the model group. */
   yaw: number;
   pitch: number;

@@ -1,13 +1,16 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useBeat } from '../beat/beatContext';
-import type { BeatId } from '../beat/beats';
-import { CHEST_Y, WRIST_POSITION } from '../beat/beats';
-import { ANCHORS } from '../rig/anchorStore';
+import { useBeat } from '@/components/3d/beat/beatContext';
+import type { BeatId } from '@/components/3d/beat/beats';
+import { CHEST_Y, WRIST_POSITION } from '@/components/3d/beat/beats';
+import { ANCHORS } from '@/components/3d/rig/anchorStore';
 import { FX } from './fxUniforms';
-import { FX_MODE, FX_STRENGTH } from '../../../design/fxFlags';
+import { FX_MODE, FX_STRENGTH } from '@/design/fxFlags';
 import { BLINK_AMOUNT, BLINK_MODE, blinkClosure, nextBlinkAt, rand } from './blink';
+import { SPIDER_SENSE, spiderSense } from '@/components/3d/rig/spiderSense';
+import { isDebugMode } from '@/lib/debugFlag';
+import { smooth } from '@/lib/math';
 
 /** Per-beat targets for the material layer. See spec §7.2. */
 interface BeatTargets {
@@ -38,7 +41,9 @@ export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): 
     // Focus the measured joints, falling back to the authored anchors only
     // before the rig has published them.
     case 'evolution':
-      return ANCHORS.ready ? out.copy(ANCHORS.chest) : out.set(0, CHEST_Y[isMobile ? 'mobile' : 'desktop'], 0);
+      return ANCHORS.ready
+        ? out.copy(ANCHORS.chest)
+        : out.set(0, CHEST_Y[isMobile ? 'mobile' : 'desktop'], 0);
     case 'arsenal':
       return ANCHORS.ready ? out.copy(ANCHORS.wrist) : out.set(wrist[0], wrist[1], wrist[2]);
     case 'fullBody':
@@ -56,7 +61,7 @@ export function dofAnchor(beat: BeatId, isMobile: boolean, out: THREE.Vector3): 
  *
  * @see docs/specs/authorial-shaders-fx.md §7.2
  */
-export interface FxBlinkDebug {
+interface FxBlinkDebug {
   /** Scheduled time of the next blink (seconds since load). */
   at: number;
   /** Start time of the blink currently playing, or -1. */
@@ -87,10 +92,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
   const anchor = useMemo(() => new THREE.Vector3(), []);
   const bokehRef = useRef(TARGETS.hero.bokeh);
   const blinkRef = useRef({ at: 0, start: -1, seed: 0, count: 0 });
-  const debug = useMemo(
-    () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
-    [],
-  );
+  const debug = useMemo(isDebugMode, []);
 
   const publish = (visible: boolean, web: number, sweep: number, rim: number, lens: number) => {
     if (!debug || typeof window === 'undefined') return;
@@ -112,7 +114,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
 
   useFrame(({ clock }, delta) => {
     const targets = TARGETS[beat];
-    const alpha = 1 - Math.exp(-K * delta);
+    const alpha = smooth(delta, K);
 
     if (prefersReducedMotion) {
       // Frozen: the web weave is the only time-driven term, so holding uTime
@@ -160,18 +162,32 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
     const strength = FX_STRENGTH[FX_MODE];
 
     FX.uTime.value = clock.elapsedTime;
-    FX.uRimStrength.value = THREE.MathUtils.lerp(FX.uRimStrength.value, targets.rim * strength, alpha);
-    FX.uWebStrength.value = THREE.MathUtils.lerp(FX.uWebStrength.value, targets.web * strength, alpha);
+    FX.uRimStrength.value = THREE.MathUtils.lerp(
+      FX.uRimStrength.value,
+      targets.rim * strength,
+      alpha,
+    );
+    FX.uWebStrength.value = THREE.MathUtils.lerp(
+      FX.uWebStrength.value,
+      targets.web * strength,
+      alpha,
+    );
     // Lens pulse is a multiplier: keep it centred on 1 so `subtle` never
     // brightens the mask, it only modulates it.
     const lensTarget = FX_MODE === 'off' ? 1 : 1 + (targets.lens - 1) * strength;
-    FX.uLensPulse.value = THREE.MathUtils.lerp(FX.uLensPulse.value, lensTarget, alpha);
+    let lens = THREE.MathUtils.lerp(FX.uLensPulse.value, lensTarget, alpha);
+    // Spider-sense (spec §2): the lenses flare while the sense rings — the
+    // eyes go wide — on top of the beat's own target.
+    lens += SPIDER_SENSE.LENS_BOOST * spiderSense.envelope * strength;
+    FX.uLensPulse.value = lens;
     FX.uBeat.value = stateRef.current?.t ?? 0;
 
     // Beat 2 band: active between 50% and 70% of the evolution beat
     const t = stateRef.current?.t ?? 0;
     const inBeat = beat === 'evolution';
-    const sweep = inBeat ? Math.max(0, Math.sin(Math.min(Math.max((t - 0.5) / 0.2, 0), 1) * Math.PI)) : 0;
+    const sweep = inBeat
+      ? Math.max(0, Math.sin(Math.min(Math.max((t - 0.5) / 0.2, 0), 1) * Math.PI))
+      : 0;
     FX.uSweep.value = THREE.MathUtils.lerp(FX.uSweep.value, sweep * strength, alpha);
     FX.uSweepY.value = ANCHORS.ready ? ANCHORS.chest.y : CHEST_Y[isMobile ? 'mobile' : 'desktop'];
 

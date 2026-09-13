@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap } from '@/lib/gsap';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { SplitChars } from './SplitChars';
 
 interface SplitTextHeadlineProps {
   /** Newlines (`\n`) are intentional line breaks — words never break mid-line. */
@@ -38,7 +36,7 @@ export function SplitTextHeadline({
   stagger = MOTION.stagger.cinematic,
 }: SplitTextHeadlineProps) {
   const containerRef = useRef<HTMLHeadingElement>(null);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (prefersReducedMotion || !containerRef.current) return;
@@ -64,16 +62,9 @@ export function SplitTextHeadline({
   }, [stagger, prefersReducedMotion]);
 
   // Split text into intentional lines, then into individual characters.
-  // No `will-change` on the chars (FALHA-06): the browser promotes layers by
-  // heuristics while the transform runs — a permanent hint on ~143 small
-  // spans only costs compositor memory.
   const lines = text.split('\n').map((line, lineIndex) => (
     <span key={lineIndex} className="block whitespace-nowrap">
-      {line.split('').map((char, i) => (
-        <span key={i} className="char inline-block">
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ))}
+      <SplitChars text={line} />
     </span>
   ));
 

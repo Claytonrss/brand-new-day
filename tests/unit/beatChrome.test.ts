@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { BEAT_TIMELINE } from '../../src/components/3d/beat/beats';
-import { BEAT_ACCENTS } from '../../src/design/beatAccents';
+import { BEAT_TIMELINE } from '@/components/3d/beat/beats';
+import { BEAT_ACCENTS } from '@/design/beatAccents';
 
 /**
  * Beat chrome guardrails — docs/specs/beat-chrome.md §3: every beat has an

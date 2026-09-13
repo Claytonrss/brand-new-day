@@ -1,7 +1,7 @@
-import type { BeatId } from '../beat/beats';
-import type { COLORS } from '../../../design/tokens';
+import type { BeatId } from '@/components/3d/beat/beats';
+import type { COLORS } from '@/design/tokens';
 
-export type LightKind = 'ambient' | 'directional' | 'point' | 'spot';
+type LightKind = 'ambient' | 'directional' | 'point' | 'spot';
 
 export interface LightTarget {
   /** Intensity per breakpoint. Point/spot use candela-like units. */
@@ -9,14 +9,12 @@ export interface LightTarget {
   /** Design token key — never a raw hex (spec-driven contract §2.2). */
   color: keyof typeof COLORS;
   position?: readonly [number, number, number];
-  /** Aim point for spot lights. */
-  aim?: readonly [number, number, number];
   distance?: number;
   decay?: number;
 }
 
 /** Per-beat override — every field is optional, merged over `base`. */
-export type LightOverride = Partial<LightTarget>;
+type LightOverride = Partial<LightTarget>;
 
 /**
  * A light slot exists for the entire session.
@@ -136,7 +134,7 @@ export const LIGHT_SLOTS: readonly LightSlot[] = [
     base: { intensity: { mobile: 0, desktop: 0 }, color: 'signal', position: [-0.4, -0.7, 0.8] },
     beats: {
       // Intensity is fully driven by the Beat 2 sweep curve.
-      evolution: { aim: [0, -1.5, 0], distance: 3, decay: 1.5 },
+      evolution: { distance: 3, decay: 1.5 },
     },
   },
 ];

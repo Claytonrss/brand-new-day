@@ -5,11 +5,8 @@ import {
   PARTICLE_BUDGET,
   buildParticleAttributes,
   particleCount,
-} from '../../src/components/3d/atmosphere/particles';
-import {
-  PARTICLE_FRAGMENT,
-  PARTICLE_VERTEX,
-} from '../../src/components/3d/atmosphere/particlesShader';
+} from '@/components/3d/atmosphere/particles';
+import { PARTICLE_FRAGMENT, PARTICLE_VERTEX } from '@/components/3d/atmosphere/particlesShader';
 
 describe('atmosphere particles', () => {
   it('scales the budget per tier and skips low entirely', () => {
@@ -65,7 +62,16 @@ describe('atmosphere particles', () => {
 
 describe('particle shader source', () => {
   it('declares the custom attributes and uniforms it relies on', () => {
-    for (const token of ['aLayer', 'aPhase', 'aSeed', 'aSize', 'uTime', 'uCameraPos', 'uParallax', 'uDrift']) {
+    for (const token of [
+      'aLayer',
+      'aPhase',
+      'aSeed',
+      'aSize',
+      'uTime',
+      'uCameraPos',
+      'uParallax',
+      'uDrift',
+    ]) {
       expect(PARTICLE_VERTEX).toContain(token);
     }
   });

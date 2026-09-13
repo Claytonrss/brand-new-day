@@ -6,4 +6,4 @@
  *
  * @see docs/specs/cinematic-camera-path.md §6.5
  */
-export { fbm } from '../../../design/noise';
+export { fbm } from '@/design/noise';

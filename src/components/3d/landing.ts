@@ -97,7 +97,11 @@ export function landingStep(delta: number): void {
 
   // Flexion grows as the model approaches the ground, then decays away.
   const approach = 1 - Math.min(1, Math.abs(spring.value) / LANDING_DROP);
-  if (settledFor === null && Math.abs(spring.value) < LANDING_SETTLE_EPS && Math.abs(spring.velocity) < LANDING_SETTLE_EPS) {
+  if (
+    settledFor === null &&
+    Math.abs(spring.value) < LANDING_SETTLE_EPS &&
+    Math.abs(spring.velocity) < LANDING_SETTLE_EPS
+  ) {
     settledFor = 0;
   }
   if (settledFor !== null) settledFor += delta;

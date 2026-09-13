@@ -36,7 +36,7 @@ float fxWebWeave(vec2 p, float t) {
 }
 `;
 
-export interface SuitShaderOptions {
+interface SuitShaderOptions {
   /** Enables the animated web weave (suit fabric / chest). */
   web?: boolean;
   /** Fresnel rim multiplier. */
@@ -120,7 +120,10 @@ export function patchSuitMaterial(
     `;
 
     shader.fragmentShader = shader.fragmentShader
-      .replace('void main() {', `${VARYINGS}\n${WEB_WEAVE}\nuniform float uTime;\nuniform float uRimStrength;\nuniform float uWebStrength;\nuniform float uBeat;\nuniform float uSweep;\nuniform float uSweepY;\nuniform vec3 uRimColor;\nuniform vec3 uWebColor;\nuniform vec3 uRimTint;\nuniform float uRimScale;\nuniform float uWebScale;\nvoid main() {`)
+      .replace(
+        'void main() {',
+        `${VARYINGS}\n${WEB_WEAVE}\nuniform float uTime;\nuniform float uRimStrength;\nuniform float uWebStrength;\nuniform float uBeat;\nuniform float uSweep;\nuniform float uSweepY;\nuniform vec3 uRimColor;\nuniform vec3 uWebColor;\nuniform vec3 uRimTint;\nuniform float uRimScale;\nuniform float uWebScale;\nvoid main() {`,
+      )
       .replace(FRAGMENT_ANCHOR, body);
 
     material.userData.fxPatched = true;

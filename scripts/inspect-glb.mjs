@@ -42,7 +42,20 @@ console.log('');
 const count = (key) => (Array.isArray(json[key]) ? json[key].length : 0);
 
 console.log('## Counts');
-for (const key of ['scenes', 'nodes', 'meshes', 'materials', 'textures', 'images', 'skins', 'animations', 'cameras', 'samplers', 'accessors', 'bufferViews']) {
+for (const key of [
+  'scenes',
+  'nodes',
+  'meshes',
+  'materials',
+  'textures',
+  'images',
+  'skins',
+  'animations',
+  'cameras',
+  'samplers',
+  'accessors',
+  'bufferViews',
+]) {
   console.log(`${key}: ${count(key)}`);
 }
 console.log('');
@@ -60,7 +73,7 @@ if (Array.isArray(json.images) && json.images.length) {
   console.log('## Images');
   json.images.forEach((img, i) => {
     const bv = img.bufferView !== undefined ? json.bufferViews?.[img.bufferView] : null;
-    const sizeStr = bv ? mb(bv.byteLength ?? 0) : (img.uri ? 'external uri' : '?');
+    const sizeStr = bv ? mb(bv.byteLength ?? 0) : img.uri ? 'external uri' : '?';
     console.log(`[${i}] ${img.name ?? '(unnamed)'} mime=${img.mimeType ?? '?'} size=${sizeStr}`);
   });
   console.log('');
@@ -77,7 +90,9 @@ if (Array.isArray(json.materials) && json.materials.length) {
     if (m.normalTexture) tex.push('normal');
     if (m.emissiveTexture) tex.push('emissive');
     if (m.occlusionTexture) tex.push('occlusion');
-    console.log(`[${i}] ${m.name ?? '(unnamed)'} textures=[${tex.join(',')}] alphaMode=${m.alphaMode ?? 'OPAQUE'}`);
+    console.log(
+      `[${i}] ${m.name ?? '(unnamed)'} textures=[${tex.join(',')}] alphaMode=${m.alphaMode ?? 'OPAQUE'}`,
+    );
   });
   console.log('');
 }
@@ -152,7 +167,9 @@ if (Array.isArray(json.scenes) && json.scenes.length && Array.isArray(json.nodes
   const walk = (idx, depth) => {
     const node = json.nodes[idx];
     if (!node || depth > 2) return;
-    console.log(`${'  '.repeat(depth)}- ${node.name ?? `(node ${idx})`}${node.mesh !== undefined ? ' [mesh]' : ''}${node.skin !== undefined ? ' [skin]' : ''}`);
+    console.log(
+      `${'  '.repeat(depth)}- ${node.name ?? `(node ${idx})`}${node.mesh !== undefined ? ' [mesh]' : ''}${node.skin !== undefined ? ' [skin]' : ''}`,
+    );
     for (const child of node.children ?? []) walk(child, depth + 1);
   };
   for (const r of roots) walk(r, 0);

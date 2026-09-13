@@ -1,4 +1,4 @@
-import type { QualityTier } from '../qualityContext';
+import type { QualityTier } from '@/components/3d/perf/qualityContext';
 
 /** Particle budget per tier — one draw call regardless of count. */
 export const PARTICLE_BUDGET: Record<QualityTier, number> = {
@@ -34,7 +34,7 @@ export function particleCount(tier: QualityTier): number {
  * Kept as plain arrays so the geometry is built without per-frame work; the
  * animation itself lives entirely in the vertex shader.
  */
-export interface ParticleAttributes {
+interface ParticleAttributes {
   positions: Float32Array;
   layers: Float32Array;
   phases: Float32Array;

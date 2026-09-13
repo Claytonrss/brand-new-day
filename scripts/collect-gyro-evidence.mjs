@@ -27,7 +27,7 @@ await context.addInitScript(() => {
   const view = globalThis;
   function FakeDeviceOrientationEvent() {}
   FakeDeviceOrientationEvent.requestPermission = () => Promise.resolve('granted');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   view.DeviceOrientationEvent = FakeDeviceOrientationEvent;
 });
 

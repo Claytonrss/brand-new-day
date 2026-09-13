@@ -1,7 +1,7 @@
 import { useProgress } from '@react-three/drei';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { MOTION } from '../../design/motion';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useEffect, useRef, useState } from 'react';
+import { MOTION } from '@/design/motion';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { loaderCover } from './loaderCover';
 
 interface CinematicLoaderProps {
@@ -29,11 +29,12 @@ interface CinematicLoaderProps {
 export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
   const { progress, active } = useProgress();
   const [fadeOut, setFadeOut] = useState(false);
-  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const reduceMotion = usePrefersReducedMotion();
   const onLoadedRef = useRef(onLoaded);
   onLoadedRef.current = onLoaded;
 
   const hasStartedLoading = useRef(false);
+  const unmountTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Publish "loader covers the viewport" for the tier idle-gate (FALHA-09).
   // Unmount (load complete) is the single source of truth for clearing it.
@@ -41,6 +42,13 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
     loaderCover.covering = true;
     return () => {
       loaderCover.covering = false;
+    };
+  }, []);
+
+  // The fade-out unmount timer must not fire into an unmounted component.
+  useEffect(() => {
+    return () => {
+      if (unmountTimerRef.current !== null) clearTimeout(unmountTimerRef.current);
     };
   }, []);
 
@@ -52,29 +60,24 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
     }
   }, [active]);
 
-  const handleComplete = useCallback(() => {
-    if (reduceMotion) {
-      // Skip animation — immediately unmount
-      onLoadedRef.current();
-    } else {
-      setFadeOut(true);
-      const timer = setTimeout(() => {
-        onLoadedRef.current();
-      }, MOTION.duration.slow);
-      return () => clearTimeout(timer);
-    }
-  }, [reduceMotion]);
-
   useEffect(() => {
     if (!hasStartedLoading.current) return;
-    if (progress >= 100 && !active) {
-      // Small delay so the user sees 100% before fade
-      const fadeTimer = setTimeout(() => {
-        handleComplete();
-      }, 300);
-      return () => clearTimeout(fadeTimer);
-    }
-  }, [progress, active, handleComplete]);
+    if (progress < 100 || active) return;
+
+    // Small delay so the user sees 100% before fade
+    const fadeTimer = setTimeout(() => {
+      if (reduceMotion) {
+        // Skip animation — immediately unmount
+        onLoadedRef.current();
+        return;
+      }
+      setFadeOut(true);
+      unmountTimerRef.current = setTimeout(() => {
+        onLoadedRef.current();
+      }, MOTION.duration.slow);
+    }, 300);
+    return () => clearTimeout(fadeTimer);
+  }, [progress, active, reduceMotion]);
 
   const transitionDuration = reduceMotion ? 0 : MOTION.duration.slow;
   const revealMs = reduceMotion ? 0 : MOTION.duration.fast;

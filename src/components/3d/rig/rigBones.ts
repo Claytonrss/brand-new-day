@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { fbm } from '../../../design/noise';
+import { fbm } from '@/design/noise';
+import { smooth, softClamp } from '@/lib/math';
+
+// Re-exported for the rig unit tests (single implementation lives in lib/math).
+export { smooth, softClamp };
 
 /** Semantic joints used by the procedural rig. */
 export type BoneRole =
@@ -82,16 +86,11 @@ export function captureRestPose(bones: RigBones): Map<BoneRole, RestPose> {
 }
 
 /**
- * Soft clamp with a knee — keeps small pointer movements linear and bends the
- * extremes instead of cutting them hard.
+ * Procedural layer amplitudes (radians) and rates (Hz). See spec §7.1.
+ * Named `RIG_AMPLITUDE` to avoid collision with the UI motion tokens in
+ * `src/design/motion.ts`.
  */
-export function softClamp(value: number, limit: number): number {
-  if (limit <= 0) return 0;
-  return limit * Math.tanh(value / limit);
-}
-
-/** Procedural layer amplitudes (radians) and rates (Hz). See spec §7.1. */
-export const MOTION = {
+export const RIG_AMPLITUDE = {
   breath: { rate: 0.25, spine1: 0.005, spine2: 0.008 },
   sway: { rate: 0.05, yaw: 0.028, pitch: 0.011 },
   weightShift: { rate: 0.09, roll: 0.02 },
@@ -99,14 +98,8 @@ export const MOTION = {
   legs: { rate: 0.05, amount: 0.004 },
 } as const;
 
-/** Frame-rate independent smoothing. */
-export function smooth(delta: number, k: number): number {
-  return 1 - Math.exp(-k * delta);
-}
-
 /** Reusable scratch objects — the rig must not allocate per frame. */
 export const SCRATCH = {
-  quaternion: new THREE.Quaternion(),
   euler: new THREE.Euler(),
 } as const;
 
@@ -119,21 +112,6 @@ export function offsetQuaternion(
 ): THREE.Quaternion {
   SCRATCH.euler.set(x, y, z);
   return out.setFromEuler(SCRATCH.euler);
-}
-
-/** Additive joint offset helper: `bone.quaternion = rest * offset`. */
-export function applyOffset(
-  bone: THREE.Object3D,
-  rest: THREE.Quaternion,
-  offset: THREE.Quaternion,
-  weight = 1,
-): void {
-  if (weight >= 1) {
-    bone.quaternion.copy(rest).multiply(offset);
-    return;
-  }
-  SCRATCH.quaternion.copy(rest).multiply(offset);
-  bone.quaternion.copy(rest).slerp(SCRATCH.quaternion, weight);
 }
 
 /**

@@ -21,13 +21,13 @@
 
 ## Históricos (Fases 3.1/3.2 — valor de registro)
 
-| Arquivo                 | Conteúdo                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| `reference-survey.md`   | síntese das referências visuais avaliadas na fundação                          |
-| `look-dev-plan.md`      | processo das 3 rodadas de Look Dev (v3 = aceite humano, ver PROGRESS Bloco A)  |
-| `look-dev-report.md`    | relatório do Look Dev v1 (2026-09-05)                                          |
-| `3d-model-treatment.md` | diretrizes de material/luz/pós que originaram `curateMaterials`                |
-| `real-device-check.md`  | checklist de device — consolidado no runbook `docs/plans/wave0-s23-runbook.md` |
+| Arquivo                        | Conteúdo                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| `reference-survey.md`          | síntese das referências visuais avaliadas na fundação                          |
+| `look-dev-plan.md`             | processo das 3 rodadas de Look Dev (v3 = aceite humano, ver PROGRESS Bloco A)  |
+| `look-dev-report.md`           | relatório do Look Dev v1 (2026-09-05)                                          |
+| `3d-model-treatment.md`        | diretrizes de material/luz/pós que originaram `curateMaterials`                |
+| `archive/real-device-check.md` | checklist de device — consolidado no runbook `docs/plans/wave0-s23-runbook.md` |
 
 > Planos executados vivem em `docs/plans/archive/`; o estado corrente é
 > `docs/STATE.md` e o checklist em `PROGRESS.md`.

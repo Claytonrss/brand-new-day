@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react';
-import type { PerfSnapshot } from '../3d/PerformanceMonitor';
+import type { PerfSnapshot } from '@/components/3d/perf/PerfProbe';
+import { isDebugMode } from '@/lib/debugFlag';
 
 const POLL_MS = 500;
 
 /**
  * PerfHud — developer overlay with real per-frame metrics.
  *
- * Renders only with `?debug=1`. Reads `window.__perf`, published by
+ * Renders only with `?debug`. Reads `window.__perf`, published by
  * `PerfProbe` inside the canvas.
  *
  * @see docs/specs/headroom-lighting.md §8
  */
 export function PerfHud() {
-  const [enabled] = useState(
-    () =>
-      typeof window !== 'undefined' &&
-      new URLSearchParams(window.location.search).get('debug') === '1',
-  );
+  const [enabled] = useState(isDebugMode);
   const [stats, setStats] = useState<PerfSnapshot | null>(null);
 
   useEffect(() => {

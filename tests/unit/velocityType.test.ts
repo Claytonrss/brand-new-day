@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { VELOCITY_TYPE, velocityWeight } from '../../src/design/velocityType';
+import { VELOCITY_TYPE, velocityWeight } from '@/design/velocityType';
 
 /**
  * Velocity typography guardrails — docs/specs/dom-micro-craft.md §1: the

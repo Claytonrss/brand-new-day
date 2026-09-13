@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { getGyroController } from '../3d/interaction/gyroController';
+import { getGyroController } from '@/components/3d/interaction/gyroController';
 
 /**
  * GyroPrompt — the discreet iOS motion-permission chip.
@@ -59,8 +59,7 @@ export function GyroPrompt() {
     void controller.request();
   }, [controller]);
 
-  const visible =
-    state === 'prompt' && gestureSeen && !dismissed && controller.needsChip();
+  const visible = state === 'prompt' && gestureSeen && !dismissed && controller.needsChip();
 
   if (!visible) return null;
 

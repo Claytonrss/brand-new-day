@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useBeat } from './beat/beatContext';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { BREAKPOINTS } from '../../design/breakpoints';
-import { useQualityProfile } from './qualityContext';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { smooth } from '@/lib/math';
+import { BREAKPOINTS } from '@/design/breakpoints';
+import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { CameraTrack, createCameraSample, type Breakpoint } from './camera/cameraPath';
 import { fbm } from './camera/handheld';
 import { INTERACTION } from './interaction/interactionStore';
@@ -42,7 +44,7 @@ export function CameraRig() {
   const { beat, stateRef } = useBeat();
   const profile = useQualityProfile();
   const isMobile = useMediaQuery(`(max-width: ${BREAKPOINTS.MOBILE - 1}px)`);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = usePrefersReducedMotion();
   const hasHover = useMediaQuery('(hover: hover)');
 
   const breakpoint: Breakpoint = isMobile ? 'mobile' : 'desktop';
@@ -54,9 +56,6 @@ export function CameraRig() {
   const dollyDirection = useMemo(() => new THREE.Vector3(), []);
   const velocityRef = useRef(0);
   const initializedRef = useRef(false);
-  const debugRef = useRef(
-    typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'),
-  );
 
   // Re-seed the current pose when the breakpoint changes (no teleport)
   useEffect(() => {
@@ -69,7 +68,7 @@ export function CameraRig() {
   }, [track, target, current]);
 
   useFrame(({ clock }, delta) => {
-    const alpha = 1 - Math.exp(-LERP_K * delta);
+    const alpha = smooth(delta, LERP_K);
 
     if (prefersReducedMotion) {
       // Static framing per section — fixes the old "fullBody everywhere" bug
@@ -87,7 +86,7 @@ export function CameraRig() {
         velocityRef.current = THREE.MathUtils.lerp(
           velocityRef.current,
           state.velocity,
-          1 - Math.exp(-VELOCITY_SMOOTH_K * delta),
+          smooth(delta, VELOCITY_SMOOTH_K),
         );
 
         const time = clock.elapsedTime * HANDHELD_RATE;
@@ -137,13 +136,6 @@ export function CameraRig() {
 
     camera.position.copy(current.position);
     camera.lookAt(current.lookAt);
-
-    if (debugRef.current && typeof window !== 'undefined') {
-      const world = ((window as unknown as Record<string, unknown>).__world ?? {}) as Record<string, unknown>;
-      world.camera = [+camera.position.x.toFixed(3), +camera.position.y.toFixed(3), +camera.position.z.toFixed(3)];
-      world.cameraLookAt = [+current.lookAt.x.toFixed(3), +current.lookAt.y.toFixed(3), +current.lookAt.z.toFixed(3)];
-      (window as unknown as Record<string, unknown>).__world = world;
-    }
 
     const perspective = camera as THREE.PerspectiveCamera;
     perspective.fov = current.fov;

@@ -1,6 +1,6 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
-import { useMagnetic } from '../../hooks/useMagnetic';
+import { useMagnetic } from '@/hooks/useMagnetic';
 
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
 

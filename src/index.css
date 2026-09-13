@@ -169,6 +169,46 @@ html.lenis body {
   }
 }
 
+/* IDEIA-3D-10 — spider-sense halo (docs/specs/spider-sense.md §1).
+   SenseAnchor publishes --sense-x/y (screen px) while the envelope is
+   alive; the component writes opacity per frame. */
+.sense-halo {
+  left: var(--sense-x, 50vw);
+  top: var(--sense-y, 38vh);
+  width: 230px;
+  height: 230px;
+  transform: translate(-50%, -50%);
+}
+@media (min-width: 768px) {
+  .sense-halo {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.sense-squiggle {
+  stroke: var(--color-signal);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sense-draw 170ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes sense-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sense-squiggle {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAGNET, magneticOffset } from '../../src/design/magnetic';
+import { MAGNET, magneticOffset } from '@/design/magnetic';
 
 /**
  * Magnetic CTA guardrails — docs/specs/dom-micro-craft.md §3: rest outside

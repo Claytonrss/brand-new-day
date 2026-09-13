@@ -32,7 +32,8 @@ rígida. A piscada é um **obturador no shader** (`materials/lensShader.ts` +
 Evidência: `docs/evidence/wave-d-interaction/{1440,390}-lens-{off,subtle,hold}.png`.
 
 Verificado: 11 testes unitários (curva, cadência, determinismo, bounds, uniforms)
-+ 6 testes de browser.
+
+- 6 testes de browser.
 
 ### Achado durante a medição
 
@@ -54,12 +55,12 @@ quando o material for renomeado no re-export.
 
 ### Opções de evolução (ordenadas por custo/benefício)
 
-| # | Abordagem | Custo | Risco | Resultado |
-|---|---|---|---|---|
-| **E** | **Pálpebra desenhada no shader** (superfície na cor do traje cobrindo a lente de cima para baixo, em vez de só apagar o brilho) | baixo (~1 dia) | baixo | Bom; é o upgrade natural do que existe |
-| **D** | **Squash da lente** (escalar `Lense`/`LED` em Y até ~0,1 no ápice, somado ao shader) | baixo | médio (revela o encaixe da lente) | Bom em combinação com E |
-| **A** | **Lids geométricos** (dois capuzes finos por lente, gerados a partir do bounding box do mesh `Lense` e animados por rotação) | médio (~2–3 dias) | médio (pode parecer flaps plásticos) | Muito bom se modelado com cuidado |
-| **B** | **Pálpebras de verdade no Blender** (geometria esculpida + skin no osso da cabeça) | alto (~3–5 dias + re-export) | alto (muda o asset) | Definitivo |
+| #     | Abordagem                                                                                                                       | Custo                        | Risco                                | Resultado                              |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------ | -------------------------------------- |
+| **E** | **Pálpebra desenhada no shader** (superfície na cor do traje cobrindo a lente de cima para baixo, em vez de só apagar o brilho) | baixo (~1 dia)               | baixo                                | Bom; é o upgrade natural do que existe |
+| **D** | **Squash da lente** (escalar `Lense`/`LED` em Y até ~0,1 no ápice, somado ao shader)                                            | baixo                        | médio (revela o encaixe da lente)    | Bom em combinação com E                |
+| **A** | **Lids geométricos** (dois capuzes finos por lente, gerados a partir do bounding box do mesh `Lense` e animados por rotação)    | médio (~2–3 dias)            | médio (pode parecer flaps plásticos) | Muito bom se modelado com cuidado      |
+| **B** | **Pálpebras de verdade no Blender** (geometria esculpida + skin no osso da cabeça)                                              | alto (~3–5 dias + re-export) | alto (muda o asset)                  | Definitivo                             |
 
 **Recomendação:** **E + D** como próximo incremento (sem tocar no asset),
 medindo o eixo da fenda a partir do bounding box real do `Lense` em vez de
@@ -92,7 +93,12 @@ Android mid-tier com o HUD `?debug=1`.
 **Aberto em:** 2026-09-09 (item F4b)
 **Status:** aberto
 
-`public/models/spider-man_brand_new_day-v2.glb` tem 22,4 MB, dos quais ~19 MB
+`public/models/spider-man_brand_new_day-v2.glb` tem ≈ 23,5 MB, dos quais ~19 MB
 são geometria **sem Draco/meshopt** (273k vértices). O budget documentado é
 ≤ 15 MB. Texturas estão dentro (30 webp, 3,0 MB). Exige re-export com
 quantização + ADR.
+
+> **Nota (2026-09-13):** as variantes pré-geradas `spider-man_brand_new_day-v2-512.glb`
+> (20 MB) e `spider-man_brand_new_day-v2-webp1024.glb` (22 MB) foram removidas do
+> repositório por não terem nenhuma referência no código. Se o F4b avançar,
+> recuperáveis do histórico git ou re-geradas a partir do modelo original.

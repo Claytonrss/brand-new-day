@@ -8,15 +8,11 @@
  * Exists because the material/DOF layer changes the read of the silhouette and
  * needs a human A/B before it becomes the default.
  */
+import { readQueryMode } from '@/lib/queryMode';
+
 export type FxMode = 'off' | 'subtle' | 'full';
 
-function readMode(): FxMode {
-  if (typeof window === 'undefined') return 'subtle';
-  const value = new URLSearchParams(window.location.search).get('fx');
-  return value === 'off' || value === 'full' ? value : 'subtle';
-}
-
-export const FX_MODE: FxMode = readMode();
+export const FX_MODE: FxMode = readQueryMode<FxMode>('fx', ['off', 'full'], 'subtle');
 
 /** Multiplier applied to every per-beat material target. */
 export const FX_STRENGTH: Record<FxMode, number> = {

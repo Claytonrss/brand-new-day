@@ -21,13 +21,13 @@
 
 ## 2. Rubrica Visual (Notas de 1 a 5)
 
-| Critério Bloqueante | Nota | Observações |
-|---|---|---|
-| Primeira Dobra (Hero) | **5/5** | Presença cinematográfica forte sem necessidade de rolar |
-| Composição Mobile | **5/5** | Texto respeita área segura de 82vw sem cobrir o rosto |
-| Composição Desktop | **5/5** | Enquadramento assimétrico elegante com espaço negativo |
-| Tratamento de Luz/Contraste | **5/5** | Rim light tom oxide `#7a1f24` destaca a silhueta |
-| Integração Texto/Personagem | **5/5** | Leitura limpa e harmônica com paleta de cores |
+| Critério Bloqueante         | Nota    | Observações                                             |
+| --------------------------- | ------- | ------------------------------------------------------- |
+| Primeira Dobra (Hero)       | **5/5** | Presença cinematográfica forte sem necessidade de rolar |
+| Composição Mobile           | **5/5** | Texto respeita área segura de 82vw sem cobrir o rosto   |
+| Composição Desktop          | **5/5** | Enquadramento assimétrico elegante com espaço negativo  |
+| Tratamento de Luz/Contraste | **5/5** | Rim light tom oxide `#7a1f24` destaca a silhueta        |
+| Integração Texto/Personagem | **5/5** | Leitura limpa e harmônica com paleta de cores           |
 
 ---
 

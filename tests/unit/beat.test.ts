@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BEAT_TIMELINE, beatAt, beatLocalProgress } from '../../src/components/3d/beat/beats';
+import { BEAT_TIMELINE, beatAt, beatLocalProgress } from '@/components/3d/beat/beats';
 
 describe('beat timeline', () => {
   it('covers the whole scroll without gaps', () => {
