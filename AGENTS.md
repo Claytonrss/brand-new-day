@@ -145,13 +145,19 @@ O Playwright local reusa **qualquer** server que responda na porta **5173**
 servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
 a suíte silenciosamente. Regras:
 
-1. **Worktree própria por tarefa**, criada de `origin/main`, com `pnpm install`
-   dentro dela; todos os comandos rodam a partir da worktree.
-2. **Pre-flight antes de Playwright/evidências** (barato e obrigatório):
+1. **Worktree própria por tarefa**, criada de `origin/main`. Rode **`pnpm
+bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
+   da worktree e abre o VS Code na pasta; todos os comandos rodam a partir da
+   worktree.
+2. **Porta por worktree:** vite, Playwright e evidências honram o `.env`
+   criado pelo bootstrap (default 5173 = checkout principal) — `pnpm dev`,
+   `pnpm test:smoke` e `pnpm evidence:visual` saem falando na porta do `.env`
+   **sem flags**. Sem `.env`, o env explícito vence: `PORT=5200 …`.
+3. **Pre-flight antes de Playwright/evidências** (barato e obrigatório):
 
    ```bash
-   lsof -nP -iTCP:5173 -sTCP:LISTEN        # porta ocupada?
-   lsof -p <PID> | grep cwd                # de qual checkout o server serve?
+   lsof -nP -iTCP:${PORT:-5173} -sTCP:LISTEN  # a porta alvo está ocupada?
+   lsof -p <PID> | grep cwd                   # de qual checkout o server serve?
    ```
 
    - Porta livre → pode rodar.
@@ -159,9 +165,9 @@ a suíte silenciosamente. Regras:
    - Server de **outro** checkout → não rode: mate se for processo órfão de
      agent; coordene se for sessão do usuário.
 
-3. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
+4. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
    Vitest unit, typecheck, lint e build são seguros em paralelo.
-4. **Capacidade — cheque antes de abrir novos runs** (cada worker sobe um
+5. **Capacidade — cheque antes de abrir novos runs** (cada worker sobe um
    Chromium com WebGL por software; duas suítes travam a máquina):
 
    ```bash
@@ -173,11 +179,11 @@ a suíte silenciosamente. Regras:
    15 min; se continuar ocupada após o teto, reporte ao usuário — não empilhe
    processos. Nunca aumente `--workers`.
 
-5. **Sintomas de contaminação** (`element(s) not found` para seletores que você
-   adicionou; snapshot mostrando features de outra branch) → checar a 5173
+6. **Sintomas de contaminação** (`element(s) not found` para seletores que você
+   adicionou; snapshot mostrando features de outra branch) → checar a porta
    **antes** de debugar código. Timeouts aleatórios em cascata → checar se há
    **outra suíte** comendo a máquina.
-6. **Limpeza:** mate servers e browsers que você subiu (confirmando os PIDs) e
+7. **Limpeza:** mate servers e browsers que você subiu (confirmando os PIDs) e
    remova worktrees de rascunho.
 
 Runbook completo com tabelas de comandos e decisão: `docs/agents/test-isolation.md`.
