@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Mask lenses from the cinematic loader (CinematicLoader.tsx) — the piece's mark. -->
+  <rect width="32" height="32" rx="6" fill="#0a0a0c" />
+  <g transform="translate(1.7 8.85) scale(0.13)">
+    <path
+      d="M100 38C78 20 50 14 32 18C16 22 10 40 16 56C22 72 48 80 70 78C86 76 96 66 100 56C102 50 102 44 100 38Z"
+      fill="#e9e5da"
+    />
+    <path
+      d="M120 38C142 20 170 14 188 18C204 22 210 40 204 56C198 72 172 80 150 78C134 76 124 66 120 56C118 50 118 44 120 38Z"
+      fill="#e9e5da"
+    />
+    <g fill="none" stroke="#c23b34" stroke-width="7" stroke-linejoin="round">
+      <path d="M100 38C78 20 50 14 32 18C16 22 10 40 16 56C22 72 48 80 70 78C86 76 96 66 100 56C102 50 102 44 100 38Z" />
+      <path d="M120 38C142 20 170 14 188 18C204 22 210 40 204 56C198 72 172 80 150 78C134 76 124 66 120 56C118 50 118 44 120 38Z" />
+    </g>
+  </g>
+</svg>
