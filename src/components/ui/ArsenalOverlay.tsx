@@ -83,6 +83,14 @@ export function ArsenalOverlay() {
       // Narrative copy always recedes with scroll, reveal or not.
       if (copy) copy.style.opacity = String(1 - smoothstep(progress, 0.28, 0.44));
 
+      if (arsenalReveal.gestureCapable === null) {
+        // Canvas not mounted yet (ADR-028): the gate is indeterminate —
+        // neither the scroll reveal nor the auto-reveal may run, or a HUD
+        // written during the GLB load would survive the gesture gate.
+        hud.style.opacity = '0';
+        return;
+      }
+
       if (!arsenalReveal.gestureCapable) {
         // No hint/shot for this profile (reduced motion handled above, tier
         // `low` here): the scroll envelope remains the reveal path.
