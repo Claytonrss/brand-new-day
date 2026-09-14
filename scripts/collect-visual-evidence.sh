@@ -16,6 +16,13 @@ if [ -f .env ]; then
 fi
 BASE_URL="${BASE_URL:-http://localhost:${PORT:-5173}}"
 
+# Pre-flight gate (docs/agents/test-isolation.md §3): evidence photographs
+# whatever answers on $BASE_URL, so refuse unless the environment is clear.
+bash scripts/doctor.sh || {
+  echo "STATUS: FAIL — environment not clear (run \`pnpm env:doctor --fix\`)"
+  exit 1
+}
+
 echo "== Visual evidence: checking app at $BASE_URL =="
 
 collect_viewport() {

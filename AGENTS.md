@@ -91,6 +91,8 @@ pnpm verify           # All gates (lint + typecheck + test + build)
 pnpm evidence:visual  # Screenshots 390/430/1440 (evidência de PR)
 pnpm evidence:motion  # Vídeos de motion (calibração em device)
 pnpm inspect:glb      # Inspect GLB asset metadata
+pnpm env:doctor       # Pre-flight de ambiente (porta/suíte/capacidade) — exit 1 bloqueia
+pnpm env:teardown     # Stop escopado por checkout (--force órfãos, --clean artefatos)
 ```
 
 ## 7. Qualidade Visual & Regra de PRs
@@ -145,7 +147,10 @@ O Playwright local reusa **qualquer** server que responda na porta **5173**
 servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
 a suíte silenciosamente. Regras:
 
-1. **Worktree própria por tarefa**, criada de `origin/main`. Rode **`pnpm
+1. **Worktree própria por tarefa**, criada de `origin/main` **dentro do
+   próprio projeto**: `git worktree add -b <branch> .worktrees/<slug>
+origin/main` (dot-dir gitignore — status do checkout principal fica limpo;
+   nada de pastas irmãs do diretório de projetos). Rode **`pnpm
 bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
    da worktree e abre o VS Code na pasta; todos os comandos rodam a partir da
    worktree.
@@ -153,7 +158,11 @@ bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
    criado pelo bootstrap (default 5173 = checkout principal) — `pnpm dev`,
    `pnpm test:smoke` e `pnpm evidence:visual` saem falando na porta do `.env`
    **sem flags**. Sem `.env`, o env explícito vence: `PORT=5200 …`.
-3. **Pre-flight antes de Playwright/evidências** (barato e obrigatório):
+3. **Pre-flight antes de Playwright/evidências** (barato e obrigatório): rode
+   **`pnpm env:doctor`** — ele codifica as checagens abaixo e sai com exit 1
+   quando bloqueado (`test:smoke`, `test:visual` e `evidence:visual` já rodam o
+   gate automaticamente). NÃO use `pnpm doctor` — é builtin do pnpm e sombreia
+   o script silenciosamente. Fallback manual:
 
    ```bash
    lsof -nP -iTCP:${PORT:-5173} -sTCP:LISTEN  # a porta alvo está ocupada?
@@ -163,12 +172,18 @@ bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
    - Porta livre → pode rodar.
    - Server do **seu** checkout → ok.
    - Server de **outro** checkout → não rode: mate se for processo órfão de
-     agent; coordene se for sessão do usuário.
+     agent; coordene se for sessão do usuário. O doctor **nunca mata sozinho**
+     processo de outro checkout — reporta e bloqueia.
+   - `pnpm env:doctor --fix` repara o ambiente **deste** checkout: mata server
+     degradado/órfãos seus e, se a porta estiver livre, sobe um dev server
+     com health check.
 
 4. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
    Vitest unit, typecheck, lint e build são seguros em paralelo.
 5. **Capacidade — cheque antes de abrir novos runs** (cada worker sobe um
-   Chromium com WebGL por software; duas suítes travam a máquina):
+   Chromium com WebGL por software; duas suítes travam a máquina). O
+   `pnpm env:doctor` já embute as checagens (suíte ativa, Chromium órfão, load
+   vs núcleos); fallback manual:
 
    ```bash
    pgrep -fl "playwright" | head -10   # já há suíte rodando?
@@ -181,9 +196,10 @@ bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
 
 6. **Sintomas de contaminação** (`element(s) not found` para seletores que você
    adicionou; snapshot mostrando features de outra branch) → checar a porta
-   **antes** de debugar código. Timeouts aleatórios em cascata → checar se há
-   **outra suíte** comendo a máquina.
-7. **Limpeza:** mate servers e browsers que você subiu (confirmando os PIDs) e
-   remova worktrees de rascunho.
+   **antes** de debugar código (`pnpm env:doctor`). Timeouts aleatórios em
+   cascata → checar se há **outra suíte** comendo a máquina.
+7. **Limpeza:** rode **`pnpm env:teardown`** (para o server **deste** checkout;
+   `--force` mata órfãos seus, `--clean` remove artefatos) — nunca processos de
+   outro checkout — e remova worktrees de rascunho.
 
 Runbook completo com tabelas de comandos e decisão: `docs/agents/test-isolation.md`.
