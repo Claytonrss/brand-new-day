@@ -91,12 +91,13 @@ Android mid-tier com o HUD `?debug=1`.
 ## TD-003: GLB com geometria não comprimida
 
 **Aberto em:** 2026-09-09 (item F4b)
-**Status:** aberto
+**Status:** ✅ **fechado (2026-09-14, ADR-029)** — re-export meshopt + quantização
 
-`public/models/spider-man_brand_new_day-v2.glb` tem ≈ 23,5 MB, dos quais ~19 MB
-são geometria **sem Draco/meshopt** (273k vértices). O budget documentado é
-≤ 15 MB. Texturas estão dentro (30 webp, 3,0 MB). Exige re-export com
-quantização + ADR.
+Resolução: `spider-man_brand_new_day-v3-meshopt.glb` (**6,52 MB**, −72%)
+via `EXT_meshopt_compression` (glTF-Transform, level high; quantização
+position 14 / normal 10 / texcoord 12 / weights 8 bits). Draw calls, tris e
+programs idênticos ao original; visual imperceptível na comparação. O original
+(23,48 MB) saiu de `public/` e permanece no histórico git.
 
 > **Nota (2026-09-13):** as variantes pré-geradas `spider-man_brand_new_day-v2-512.glb`
 > (20 MB) e `spider-man_brand_new_day-v2-webp1024.glb` (22 MB) foram removidas do

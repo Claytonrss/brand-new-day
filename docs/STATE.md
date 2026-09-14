@@ -99,7 +99,8 @@ chapter-print}.md`.
   aceites das Waves 1–3 em device, T4.6 (lean × punch × lag), TD-002
   (gyro iOS), aprovação estética humana (Fase 7.3).
 - **Data-gated:** FALHA-02 (threshold medium→low), FALHA-10 (syncTouch),
-  F4b (GLB ≤ 15 MB), FALHA-03 (variante segura), micro-polish.
+  FALHA-03 (variante segura), micro-polish. ~~F4b (GLB ≤ 15 MB)~~ — fechado
+  (ADR-029).
 
 ### Implementado (acumulado)
 
@@ -176,6 +177,10 @@ chapter-print}.md`.
 - ADR-023: Shadow throttle no tier `medium`
 - ADR-024: Portão de direção no gatilho do spider-sense
 - ADR-025: Re-engrenagem do scroll (pacing por distância, sem hijack)
+- ADR-026: Baseline de lint (jsx-a11y) e política de comentários
+- ADR-027: Halo do spider-sense ancorado no topo do crânio e adaptativo à câmera
+- ADR-028: Estado indeterminado (`null`) em `arsenalReveal` contra a race de canvas
+- ADR-029: GLB comprimido com meshopt + quantização (TD-003/F4b) e entrega via edge da Vercel
 
 ## Métricas
 
@@ -186,8 +191,8 @@ chapter-print}.md`.
   aprovação humana pendente (Fase 7.3)
 - **Draw calls/frame:** 44–46 (high) · **30–46 no medium entre refreshes de
   sombra** (throttle, vale de 16) · 11–13 (low)
-- **GLB:** ≈ 23,5 MB (geometria não comprimida — F4b, budget ≤ 15 MB, ligado
-  ao gatilho FALHA-14)
+- **GLB:** 6,5 MB (meshopt + quantização, ADR-029 — TD-003/F4b fechado;
+  budget ≤ 15 MB atendido; original 23,5 MB no histórico git)
 - **Requests externos no load:** 0 (HDR + fontes locais)
 - **Total page height:** 1070vh (ADR-025 — opening + hero + 2 cards +
   evolution + arsenal + fullbody + colofon; 970vh de scroll)

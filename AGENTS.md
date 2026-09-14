@@ -105,7 +105,7 @@ pnpm inspect:glb      # Inspect GLB asset metadata
 
 ## 8. Asset 3D
 
-- Modelo: `public/models/spider-man_brand_new_day-v2.glb` (≈ 23,5 MB)
+- Modelo: `public/models/spider-man_brand_new_day-v3-meshopt.glb` (≈ 6,5 MB; meshopt + quantização, ADR-029)
 - Autor: Eskze (Sketchfab), licença CC-BY 4.0
 - Atribuição obrigatória visível sem hover
 - Rig: Mixamo (66 joints, incluindo `mixamorig:Head_06` e `mixamorig:Neck_05`)

@@ -54,7 +54,7 @@ legaliza a publicação do repo; tudo o resto pode rodar em público depois dele
 ### 1.2 `NOTICE.md` — esqueleto
 
 - Código: MIT (este repo, Clayton Rafael).
-- `public/models/spider-man_brand_new_day-v2.glb` — "Spider-Man Brand New Day"
+- `public/models/spider-man_brand_new_day-v3-meshopt.glb` — "Spider-Man Brand New Day"
   por Eskze (Sketchfab), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/),
   convertido/otimizado a partir do original (link da obra igual ao de
   `ModelAttribution.tsx:1-2`).

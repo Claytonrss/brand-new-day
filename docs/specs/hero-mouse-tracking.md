@@ -47,8 +47,8 @@ Reference: `docs/design/composition-rules.md`
 
 ## 4. 3D Assets
 
-**Model:** `public/models/spider-man_brand_new_day-v2.glb`  
-**Size:** 22.4 MB  
+**Model:** `public/models/spider-man_brand_new_day-v3-meshopt.glb`  
+**Size:** 6.5 MB  
 **Textures:** KTX2/Basis ready (loader wired via `extendGltfLoaderWithKtx2`,
 assets staged)  
 **Animations:** None — static pose with mouse tracking  

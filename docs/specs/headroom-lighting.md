@@ -44,8 +44,8 @@ não é tocada.
 
 ## 4. 3D Assets
 
-- Modelo: `public/models/spider-man_brand_new_day-v2.glb` (22.4 MB, 16 meshes,
-  11 materiais, 273k vértices / 278k triângulos, 1 skin de 66 bones, **0 clips
+- Modelo: `public/models/spider-man_brand_new_day-v3-meshopt.glb` (6.5 MB, 16 meshes,
+  11 materiais, 273k vértices / 278k triângulos, skins de 66 bones — ADR-029, **0 clips
   de animação**).
 - Texturas: 30 imagens WebP somando **3.0 MB** — dentro do budget; **nenhuma
   recompressão de textura é necessária nesta wave**.
