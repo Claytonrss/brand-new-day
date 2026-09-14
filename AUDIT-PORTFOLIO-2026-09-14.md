@@ -12,6 +12,8 @@
 >
 > **Atualização 2026-09-14 (execução):** o plano `docs/plans/launch-readiness-plan.md` foi executado. **C2** fechado no PR #58 (LICENSE MIT + NOTICE + CC-BY estrita + disclaimer), **C1** no PR #59 (OG/favicon/metas — validado em produção) e **C3** no PR-3 `docs/readme-showcase` (README showcase EN-first + GIF + Lighthouse publicado em `docs/research/2026-09-14-lighthouse.md` + homepage/description do repo corrigidos). Resta **C4** (claim de performance), que aguarda a sessão de device do Bloco A — ou o fallback de copy do plano.
 >
+> **Consolidação final (2026-09-14):** re-score por dimensão pós-execução completa — nota geral **8,5** (§7); 9,0 projetado após a tarde de device.
+>
 > **Atualização 2026-09-14 (pós-TD-003):** **A7 fechado** no PR #61 (GLB 23,5 → 6,5 MB, ADR-029) e segunda onda iniciada via `docs/plans/post-launch-polish-plan.md` — números públicos ressincronizados (Lighthouse: mobile 43 / desktop 94; TBT −9,4×), colofon atualizado para "6,5 MB de GLB".
 
 ---
@@ -244,6 +246,37 @@ A sequência acima já está certa; este bloco demarca a fronteira do que **não
 ## 6. Nota geral consolidada — **6,5/10**
 
 Não é a média das dimensões (7,2); é o julgamento ponderado pelo impacto real em quem avalia. O teto deste projeto é altíssimo — a execução de código, motion e processo está no percentil superior de portfolios individuais, e a régua "excelente" está ao alcance. Com o deploy no ar, um recrutador não-técnico **que receba o link diretamente** já vive a experiência completa — a variável distribuição saiu de 0. Mas a peça continua sem embalagem: o link compartilhado não gera preview (OG/favicon), o repo não aponta para a demo nem tem LICENSE, o README não vende nada, um tech lead encontra um claim de performance desmentido pelo próprio repo, e a pergunta mais óbvia de todas — "você pode usar o Homem-Aranha assim?" — não tem resposta escrita em lugar nenhum. A experiência é 8; a engenharia é 9; o copy é 9; a embalagem é 3; a conformidade legal está a 1–2 horas de distância. O dia em que OG + LICENSE/disclaimer + README showcase + claim verificado existirem, esta auditoria se reescreve em **9/10** sem tocar em uma linha de código 3D. A meta-auditoria de 2026-09-14 acrescentou a dimensão que faltava (5.11 — browsers reais; nota baixa por ser não-verificado, não por falha conhecida) e promoveu a acessibilidade a dimensão própria (5.12, 7,5) sem alterar este consolidado: a recomendação operacional permanece idêntica. Com **C1–C3 executados** (PRs #58/#59/PR-3, ver atualização no topo), a embalagem existe: o link gera preview, o repo é publicável e aponta para a demo correta, o README vende nos dois públicos com números publicados. O que separa este consolidado do **9/10** é exclusivamente **C4** — o claim de performance sustentado por medição.
+
+---
+
+## 7. Consolidação final — re-score pós-execução (2026-09-14)
+
+> Todo o plano de fechamento foi executado entre 2026-09-14 (mesmo dia da
+> auditoria): ondas de lançamento (#58–#60), TD-003 (#61), pós-lançamento
+> (#62–#65, #68, #69) e fechamento (#70). Tudo verificado **em produção**.
+> Este re-score substitui o §6 como julgamento vigente.
+
+| Dimensão                     | Audit → Hoje | Evidência do movimento                                                                                                                                 |
+| ---------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 5.1 Impacto visual           | 8 → **8**    | Sem trabalho visual nesta fase (correto — o report não pedia); rubrica humana segue no Bloco A                                                         |
+| 5.2 Performance              | 6 → **8**    | GLB 23,5→6,5 MB (ADR-029), vendor split entry 265 kB (A6), Lighthouse 43/94 publicado com método, TBT mobile −9,4×; faltam números de device para o 9  |
+| 5.3 Segurança/compliance     | 7 → **9**    | CSP validada em 3 iterações contra headless Chrome antes de produzir (#65), nosniff/XFO/Referrer/Permissions-Policy, LICENSE+NOTICE+disclaimer         |
+| 5.4 Código                   | 9 → **9**    | Intocado no essencial; `vite.config.ts` ganhou `build` documentado (A6) sem derrubar a nota                                                            |
+| 5.5 Docs/portfolio-readiness | 4 → **8,5**  | README showcase EN-first com GIF + números + case study, OG/favicon, LICENSE/NOTICE, Lighthouse público, robots/sitemap; falta a rubrica formal humana |
+| 5.6 IA e agentes             | 8,5 → **9**  | M11 fechado: o diferencial agora é contado (`docs/case-study-ai-harness.md`) com limitações honestas                                                   |
+| 5.7 Copy & direitos          | 7 → **9**    | CC-BY §3(a) estrita, disclaimer fan-made em 4 superfícies, NOTICE completo; copy intacto e claim disciplinado por ADR-031                              |
+| 5.8 Distribuição             | 2 → **5**    | Artefatos prontos (checklist com post PT/EN, profile README, robots/sitemap, OG); o ganho real chega com o post — ação do dono                         |
+| 5.9 Observabilidade          | 2 → **7**    | Analytics + Speed Insights + beacon `webgl_unavailable` (204 verificado em produção); dados agregam valor com toggle + tráfego                         |
+| 5.10 Marca pessoal           | 3 → **6**    | Autor no `<title>`, OG, description e homepage corrigida; post/pin/profile README seguem com o dono                                                    |
+| 5.11 Browsers                | 5 → **5**    | Ponto cego genuíno — só a tarde de device (M15) resolve                                                                                                |
+| 5.12 Acessibilidade          | 7,5 → **9**  | Contraste AA (ADR-030), a11y **100**; caminho de teclado em backlog consciente                                                                         |
+
+### Nota geral consolidada — **8,5/10** (projetado 9,0 pós-device)
+
+O desconto restante concentra-se no que **não é código**: tarde de device
+(C4/A8/M15 — o claim volta com número ou permanece suave por decisão
+documentada) e ações externas de distribuição (5.8/5.10). Nenhuma linha de
+código 3D separa este projeto do teto que a auditoria original projetou.
 
 ---
 
