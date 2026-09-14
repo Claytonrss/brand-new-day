@@ -40,13 +40,12 @@ visual vinculante: `docs/design/design-bible.md`.
 
 ## 4. Documentos sob Demanda
 
-Carregar apenas quando a tarefa exigir:
+Carregar apenas quando a tarefa exigir — **nunca preemptivamente**:
 
 | Documento                                      | Conteúdo                                          |
 | ---------------------------------------------- | ------------------------------------------------- |
 | `docs/design/design-bible.md`                  | direção visual vinculante                         |
 | `docs/design/storyboard.md`                    | seções como planos de câmera + copy               |
-| `docs/design/mobile-first.md`                  | keyframes por breakpoint                          |
 | `docs/design/composition-rules.md`             | zonas seguras de texto                            |
 | `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo               |
 | `docs/design/visual-rubric.md`                 | rubrica de avaliação estética                     |
@@ -58,24 +57,20 @@ Carregar apenas quando a tarefa exigir:
 | `docs/memory/tech-debt.md`                     | débitos aceitos conscientemente                   |
 | `docs/plans/backlog.md`                        | ideias não implementadas (curadas)                |
 | `docs/plans/wave0-s23-runbook.md`              | runbook ativo da sessão de device (S23)           |
-| `docs/plans/archive/harness-bootstrap-plan.md` | plano completo de bootstrap                       |
-| `docs/agents/test-isolation.md`                | runbook: isolar ambiente/porta 5173 para testes   |
-
-**Regra:** NUNCA carregar todos preemptivamente.
+| `docs/agents/test-isolation.md`                | runbook: isolar ambiente/porta para testes        |
 
 ## 5. Workflow
 
 1. Ler `PROGRESS.md` para estado atual.
 2. Consultar Scene Spec relevante antes de implementar.
-3. Criar branch: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`, `chore/<slug>` — de preferência em **worktree própria** (ver §11).
+3. Criar branch: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`, `chore/<slug>` — de preferência em **worktree própria** (ver §10).
 4. Implementar seguindo Design Bible e composition rules.
 5. Rodar `bash scripts/verify-all.sh` antes de push.
 6. Commit com Conventional Commits.
-7. Antes de Playwright/evidências: **pre-flight da porta 5173** (ver §11) — server de outro checkout contamina a suíte silenciosamente.
-8. **PR Obrigatório com Evidências:** todo PR inclui no corpo os logs reais
-   de `pnpm verify` + `pnpm test:smoke`, a rubrica visual (nota ≥ 4) e as
-   evidências dos 3 viewports (`pnpm evidence:visual`). Fonte única da regra:
-   `docs/workflow/spec-driven-contract.md` §2.5.
+7. **PR obrigatoriamente com evidências** — logs reais de `pnpm verify` +
+   `pnpm test:smoke`, rubrica visual (nota ≥ 4) e os 3 viewports
+   (`pnpm evidence:visual`). Fonte única da regra:
+   `docs/workflow/spec-driven-contract.md` §2.5 — sem evidências, o PR não abre.
 
 ## 6. Comandos
 
@@ -83,7 +78,7 @@ Carregar apenas quando a tarefa exigir:
 pnpm dev              # Dev server
 pnpm build            # TypeScript + Vite build
 pnpm typecheck        # Type check only
-pnpm lint             # ESLint
+pnpm lint             # ESLint (inclui import/no-unresolved)
 pnpm test             # Vitest unit tests
 pnpm test:smoke       # Playwright tier rápido (@smoke, mobile-390) — gate de PR
 pnpm test:visual      # Playwright suite completo (deep tier) — CI na main / sob demanda
@@ -95,21 +90,20 @@ pnpm env:doctor       # Pre-flight de ambiente (porta/suíte/capacidade) — exi
 pnpm env:teardown     # Stop escopado por checkout (--force órfãos, --clean artefatos)
 ```
 
+Coletores de evidência avulsos (por feature): `scripts/collect-*.mjs` —
+inventário em `scripts/README.md`.
+
 ## 7. Qualidade Visual & Regra de PRs
 
 - Design é a feature principal — implementação funcional sem impacto visual não está pronta.
-- Verify revisa composição, hierarquia visual e impressão de portfólio.
-- Rubrica visual com nota mínima 4 para bloqueantes (ver `docs/design/visual-rubric.md`).
+- Rubrica visual com nota mínima 4 para bloqueantes (`docs/design/visual-rubric.md`).
 - Playwright roda nos projetos `mobile-390` e `desktop-1440` (fonte única:
-  `playwright.config.ts`); evidências dos 3 viewports (390/430/1440) vêm de
-  `pnpm evidence:visual`.
-- **Regra de Ouro do PR:** sem as evidências do §5.8 no corpo, o PR não abre.
+  `playwright.config.ts`); evidências dos 3 viewports vêm de `pnpm evidence:visual`.
 
 ## 8. Asset 3D
 
 - Modelo: `public/models/spider-man_brand_new_day-v3-meshopt.glb` (≈ 6,5 MB; meshopt + quantização, ADR-029)
-- Autor: Eskze (Sketchfab), licença CC-BY 4.0
-- Atribuição obrigatória visível sem hover
+- Autor: Eskze (Sketchfab), licença CC-BY 4.0 — atribuição obrigatória visível sem hover
 - Rig: Mixamo (66 joints, incluindo `mixamorig:Head_06` e `mixamorig:Neck_05`)
 - Inspeção: `pnpm inspect:glb`
 
@@ -117,89 +111,38 @@ pnpm env:teardown     # Stop escopado por checkout (--force órfãos, --clean ar
 
 - `PROGRESS.md` — checklist de fechamento (o que falta, não o que foi feito)
 - `docs/STATE.md` — estado narrativo atual (entregas, ADRs resumidos, métricas)
-- `docs/memory/decisions.md` — ADRs completos (ADR-001…ADR-023)
-- `docs/memory/tech-debt.md` — débitos aceitos (TD-001…TD-003)
+- `docs/memory/decisions.md` — ADRs completos
+- `docs/memory/tech-debt.md` — débitos aceitos
 - `docs/plans/backlog.md` — fila de ideias não implementadas
+- Planos concluídos: `docs/plans/archive/` (referência histórica indexada)
 
-## 10. ACI Rules
+## 10. Isolamento de Ambiente para Testes (obrigatório)
 
-### Paths
+O Playwright local reusa **qualquer** server na porta do `.env` (default 5173) — um dev server de outro checkout contamina a suíte silenciosamente.
+Resumo vinculante (runbook completo com tabelas de decisão:
+`docs/agents/test-isolation.md`):
 
-- Sempre usar paths absolutos ou relativos ao root do projeto.
+1. **Worktree própria por tarefa**, criada de `origin/main` dentro do repo:
+   `git worktree add -b <branch> .worktrees/<slug> origin/main` + `pnpm
+bootstrap` (deps + `.env` com porta isolada). Todos os comandos rodam a
+   partir da worktree.
+2. **Pre-flight antes de Playwright/evidências:** `pnpm env:doctor` (exit 1
+   bloqueia; `test:smoke`/`test:visual`/`evidence:visual` já rodam o gate).
+   NÃO use `pnpm doctor` — builtin do pnpm, sombreia o script.
+3. **Exclusão mútua:** uma suíte Playwright/evidência por vez na máquina
+   (Vitest/lint/typecheck/build podem paralelizar). Suíte ocupada → aguardar
+   (poll 30s, teto 15 min), nunca aumentar `--workers`.
+4. **Contaminação suspeita** (`element not found` para seletor novo, timeouts
+   em cascata): checar a porta **antes** de debugar código.
+5. **Limpeza:** `pnpm env:teardown` (nunca processos de outro checkout) e
+   remover worktrees de rascunho.
 
-### Ações Destrutivas (confirmar com usuário)
+## 11. Limites de Ação (ACI)
 
-- `rm -rf` em qualquer diretório
-- `git push --force` ou `git reset --hard`
-- Alterações em `opencode.json` ou configs de agente
-
-### Ações Seguras (proceder autonomamente)
-
-- Criar novos arquivos
-- Editar arquivos existentes (exceto configs de agente)
-- Rodar `pnpm lint`, `pnpm test`, `pnpm build`, `pnpm typecheck`
-- Criar branches locais
-
-## 11. Isolamento de Ambiente para Testes (obrigatório)
-
-O Playwright local reusa **qualquer** server que responda na porta **5173**
-(`reuseExistingServer: !CI`), e `pnpm evidence:visual` fotografa o que estiver
-servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
-a suíte silenciosamente. Regras:
-
-1. **Worktree própria por tarefa**, criada de `origin/main` **dentro do
-   próprio projeto**: `git worktree add -b <branch> .worktrees/<slug>
-origin/main` (dot-dir gitignore — status do checkout principal fica limpo;
-   nada de pastas irmãs do diretório de projetos). Rode **`pnpm
-bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
-   da worktree e abre o VS Code na pasta; todos os comandos rodam a partir da
-   worktree.
-2. **Porta por worktree:** vite, Playwright e evidências honram o `.env`
-   criado pelo bootstrap (default 5173 = checkout principal) — `pnpm dev`,
-   `pnpm test:smoke` e `pnpm evidence:visual` saem falando na porta do `.env`
-   **sem flags**. Sem `.env`, o env explícito vence: `PORT=5200 …`.
-3. **Pre-flight antes de Playwright/evidências** (barato e obrigatório): rode
-   **`pnpm env:doctor`** — ele codifica as checagens abaixo e sai com exit 1
-   quando bloqueado (`test:smoke`, `test:visual` e `evidence:visual` já rodam o
-   gate automaticamente). NÃO use `pnpm doctor` — é builtin do pnpm e sombreia
-   o script silenciosamente. Fallback manual:
-
-   ```bash
-   lsof -nP -iTCP:${PORT:-5173} -sTCP:LISTEN  # a porta alvo está ocupada?
-   lsof -p <PID> | grep cwd                   # de qual checkout o server serve?
-   ```
-
-   - Porta livre → pode rodar.
-   - Server do **seu** checkout → ok.
-   - Server de **outro** checkout → não rode: mate se for processo órfão de
-     agent; coordene se for sessão do usuário. O doctor **nunca mata sozinho**
-     processo de outro checkout — reporta e bloqueia.
-   - `pnpm env:doctor --fix` repara o ambiente **deste** checkout: mata server
-     degradado/órfãos seus e, se a porta estiver livre, sobe um dev server
-     com health check.
-
-4. **Exclusão mútua:** só uma suíte Playwright/evidência por vez na máquina.
-   Vitest unit, typecheck, lint e build são seguros em paralelo.
-5. **Capacidade — cheque antes de abrir novos runs** (cada worker sobe um
-   Chromium com WebGL por software; duas suítes travam a máquina). O
-   `pnpm env:doctor` já embute as checagens (suíte ativa, Chromium órfão, load
-   vs núcleos); fallback manual:
-
-   ```bash
-   pgrep -fl "playwright" | head -10   # já há suíte rodando?
-   uptime                              # load vs núcleos
-   ```
-
-   Já há suíte rodando? **Aguarde a liberação**: poll de 30s com teto de
-   15 min; se continuar ocupada após o teto, reporte ao usuário — não empilhe
-   processos. Nunca aumente `--workers`.
-
-6. **Sintomas de contaminação** (`element(s) not found` para seletores que você
-   adicionou; snapshot mostrando features de outra branch) → checar a porta
-   **antes** de debugar código (`pnpm env:doctor`). Timeouts aleatórios em
-   cascata → checar se há **outra suíte** comendo a máquina.
-7. **Limpeza:** rode **`pnpm env:teardown`** (para o server **deste** checkout;
-   `--force` mata órfãos seus, `--clean` remove artefatos) — nunca processos de
-   outro checkout — e remova worktrees de rascunho.
-
-Runbook completo com tabelas de comandos e decisão: `docs/agents/test-isolation.md`.
+- **Confirmar com o usuário antes:** `rm -rf` em qualquer diretório ·
+  `git push --force` / `git reset --hard` · alterações em `opencode.json`,
+  `.opencode/**` ou outras configs de agente · `pnpm install`/`add`
+  (mudança de dependência é operação revisada por humano).
+- **Autônomo:** criar/editar arquivos (exceto configs de agente) · rodar
+  `pnpm lint`/`test`/`build`/`typecheck` · criar branches locais.
+- Paths sempre absolutos ou relativos ao root do projeto.
