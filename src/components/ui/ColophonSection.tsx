@@ -11,7 +11,7 @@ const CHALLENGES = [
   'Rig procedural com molas, respiração e spider-sense em runtime',
   'Câmera Catmull-Rom sincronizada com 7 beats de narrativa',
   'Três tiers de performance sem corte visual brusco',
-  '6,5 MB de GLB · 66 joints · zero janks em mobile mid-range',
+  '6,5 MB de GLB · 66 joints · zero requests externos no load',
 ] as const;
 
 /**
