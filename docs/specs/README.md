@@ -29,7 +29,7 @@ contrato de processo é `docs/workflow/spec-driven-contract.md`.
 | `beat-chrome.md`                    | Acento de beat no chrome DOM               | Pareto Wave 5 (PR #37)          |
 | `chapter-print.md`                  | Chapter cards impressos                    | Pareto Wave 5 (PR #37)          |
 | `dom-micro-craft.md`                | Tipografia reativa, carimbo, CTA magnético | PR #40                          |
-| `spider-sense.md`                   | Spider-sense + respiração por beat         | PR #41                          |
+| `spider-sense.md`                   | Spider-sense + respiração por beat         | PR #44                          |
 
 ## Bootstrap (implementadas; detalhe superseded pelas calibrações posteriores)
 
@@ -41,9 +41,9 @@ contrato de processo é `docs/workflow/spec-driven-contract.md`.
 
 ## Superseded / histórico
 
-| Spec                     | Motivo                                                    |
-| ------------------------ | --------------------------------------------------------- |
-| `hero-mouse-tracking.md` | Substituído pelo head-tracking do rig procedural (Wave A) |
+| Spec                             | Motivo                                                    |
+| -------------------------------- | --------------------------------------------------------- |
+| `archive/hero-mouse-tracking.md` | Substituído pelo head-tracking do rig procedural (Wave A) |
 
 ## Arquivadas
 
