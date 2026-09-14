@@ -179,7 +179,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
    - _Fazer:_ rodar Lighthouse (desktop + mobile throttled) **contra o deploy ao vivo** — antes impossível, agora trivial — e publicar os 4 números no README + mencionar o `window.__perf`/`?debug=1` como feature de inspeção aberta.
    - _Por quê:_ "performance engineering" é um dos argumentos centrais do case; sem número, é alegação. Com a URL no ar, não há mais desculpa para não medir.
 
-10. **A10 · Zero canais de distribuição — ninguém chega à peça.**
+10. ~~**A10 · Zero canais de distribuição — ninguém chega à peça.**~~ **✅ RESOLVIDO (2026-09-14, onda W6):** kit completo em `docs/plans/launch-checklist.md` — rascunho do post (LinkedIn PT + X EN), snippet do profile README, checklist de pin/featured e loop de feedback pós-post. As ações externas são do dono por definição.
     - _Evidência:_ grep por robots/sitemap em `public/` = zero; nenhum artefato de lançamento (post, artigo, vídeo curto) existe ou está planejado em docs; superfícies de descoberta (repo pinado, profile README, LinkedIn featured) vazias.
     - _Fazer:_ checklist de lançamento **antes** do primeiro post: (a) produzir o GIF/clip de 10–15 s a partir do pipeline `pnpm evidence:visual`/`evidence:motion`; (b) artigo de case study (dev.to/Medium/LinkedIn) — o material dos ADRs + harness dá um texto forte; (c) post principal com vídeo + link; (d) repo pinado + profile README + LinkedIn featured apontando para a demo; (e) `robots.txt`/`sitemap.xml` + `<title>` pesquisável (ver B16).
     - _Efeito esperado:_ a peça deixa de depender de "quem recebe o link diretamente" — o funil passa a existir.
@@ -192,7 +192,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
 ### 🟡 Médio
 
 10. **M10 · Idioma do showcase.** README, copy da landing e docs estão em pt-BR. A landing pode ficar em pt-BR (é a peça), mas o README deveria ser EN-first (ou bilíngue com EN no topo) — recrutadores internacionais são parte do público-alvo declarado.
-11. **M11 · Harness de IA invisível.** Criar `docs/case-study-ai-harness.md` (ou seção no README) contando honestamente: orquestrador delegation-only, 10 agentes com permissões granulares, gates de evidência, 28 ADRs — com link para `opencode.json`. Diferencial real para vagas de AI-augmented engineering; hoje só quem fuça o repo descobre.
+11. ~~**M11 · Harness de IA invisível.**~~ **✅ RESOLVIDO (2026-09-14, onda W6):** `docs/case-study-ai-harness.md` (EN) — sistema, trade-offs e limitações honestas — linkado do README. Criar `docs/case-study-ai-harness.md` (ou seção no README) contando honestamente: orquestrador delegation-only, 10 agentes com permissões granulares, gates de evidência, 28 ADRs — com link para `opencode.json`. Diferencial real para vagas de AI-augmented engineering; hoje só quem fuça o repo descobre.
 12. **M12 · Headers de segurança no deploy.** O deploy existe e já traz HSTS; falta o resto: CSP básico (`default-src 'self'` + `data:`/`blob:` para shaders e workers do three), `X-Content-Type-Options: nosniff`, `Referrer-Policy`. Na Vercel é um `vercel.json` com bloco `headers` de ~15 linhas — sinal barato de cuidado para avaliador técnico.
 13. **M13 · Arquivos de licença de terceiros ausentes no bundle.** Fontes SIL OFL 1.1 (`public/fonts/fonts.css:1-3` declara, mas a OFL exige distribuir o texto da licença junto aos woff2) e transcoder Basis/Khronos Apache-2.0 (`public/basis/` sem LICENSE/NOTICE). _Fazer:_ `public/fonts/OFL.txt` + `public/basis/LICENSE` (Apache-2.0). Esforço de 15 minutos, fecha a conformidade de ponta a ponta.
 14. **M14 · Higiene de arquivos soltos.**
@@ -204,7 +204,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
 
 ### 🟢 Baixo
 
-16. **B16 ·** `robots.txt`/`sitemap.xml` triviais para o domínio do deploy.
+16. ~~**B16 ·** `robots.txt`/`sitemap.xml`~~ **✅ RESOLVIDO (2026-09-14, onda W6).**
 17. **B17 ·** Nota no README sobre telemetria (ausência dela) — sinal positivo e gratuito.
 18. **B18 ·** OG image dedicada com composição (lente + título), em vez de reusar o poster cru.
 
@@ -223,7 +223,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
 | ~~6~~ | ~~Code-splitting vendor (A6)~~                                                                                                          | —                  | ✅ **FEITO** — onda W2 (entry 265 kB + vendor cacheável)                          |
 | ~~7~~ | ~~Compressão GLB meshopt ≤ 15 MB (A7)~~                                                                                                 | —                  | ✅ **FEITO** — PR #61 (23,5 → 6,5 MB, ADR-029)                                    |
 | 8     | Headers de segurança via `vercel.json` (M12)                                                                                            | 30 min             | Polish técnico                                                                    |
-| 9     | Case study do harness de IA (M11)                                                                                                       | 2–3 h              | Diferencial narrativo                                                             |
+| ~~9~~ | ~~Case study do harness de IA (M11)~~                                                                                                   | —                  | ✅ **FEITO** — onda W6 (`docs/case-study-ai-harness.md`)                          |
 | 10    | Passada manual Safari macOS + iPhone real (de carona no TD-002) + `webkit` opcional no smoke (M15)                                      | 1–2 h              | Fecha o ponto cego do browser nº 1 (5.11)                                         |
 
 **Recomendação (atualizada na execução):** itens 1–3 **executados** (PRs #58/#59/PR-3). A divulgação fica liberada com **C4 resolvido** — via sessão de device (Bloco A + FALHA-02 ou claim sustentado) ou, se a sessão atrasar, via fallback de copy do plano. O item 10 (passada Safari/iPhone) segue recomendado de carona na mesma sessão de device. O que fica explicitamente **de fora** desta fase está no bloco Overkill abaixo.
