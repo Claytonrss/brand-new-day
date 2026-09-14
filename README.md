@@ -17,13 +17,13 @@ A cinematic, scroll-driven 3D experience: one rainy NYC night, told as a single 
 
 ## Numbers
 
-| Metric                   | Value                                                                    |
-| ------------------------ | ------------------------------------------------------------------------ |
-| Draw calls/frame         | 44–46 (`high` tier)                                                      |
-| Tests                    | 168 unit (Vitest) + 14 visual specs (Playwright)                         |
-| Lighthouse (live deploy) | Perf **43 mobile / 94 desktop** · A11y 96 · Best practices 100 · SEO 100 |
-| Bundle                   | 1,573 kB (460 kB gzip, single chunk — code-splitting queued)             |
-| Model                    | 6.5 MB GLB (meshopt + quantization, ADR-029)                             |
+| Metric                   | Value                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| Draw calls/frame         | 44–46 (`high` tier)                                                                      |
+| Tests                    | 168 unit (Vitest) + 14 visual specs (Playwright)                                         |
+| Lighthouse (live deploy) | Perf **43 mobile / 94 desktop** · A11y 96 · Best practices 100 · SEO 100                 |
+| Bundle                   | 265 kB entry + vendor chunks (461 kB gzip total — 3D/motion split, cached across visits) |
+| Model                    | 6.5 MB GLB (meshopt + quantization, ADR-029)                                             |
 
 The mobile performance score is the honest number for a 6.5 MB GLB under simulated slow-4G + CPU throttling — the download itself dominates the simulation; TBT dropped 9× after the meshopt compression (7,360 ms → 780 ms), and the adaptive tier system covers the real-world gap. On-device numbers (Samsung S23 session) are being collected. Want the receipts? `?debug=1` exposes a live perf HUD (`window.__perf`), and every PR ships real logs from `pnpm verify` + `pnpm test:smoke`.
 
@@ -57,7 +57,7 @@ Uma experiência 3D guiada por scroll: uma noite chuvosa em NYC, contada como um
 
 **Destaques técnicos:** rig procedural de 16 joints (respiração, lean por velocidade, spider-sense) no lugar de clipes; câmera Catmull-Rom contínua por 7 beats; três tiers adaptativos de qualidade com degradação idle-gated; construído com um harness de agentes de IA delegation-only com gates de evidência (detalhes acima, em inglês).
 
-**Números:** 44–46 draw calls · 168 testes unitários + 14 specs visuais · Lighthouse 43/94 (mobile/desktop) · GLB de 6,5 MB (meshopt) · bundle de 460 kB gzip. Métricas em device (S23) em coleta — `?debug=1` expõe o HUD de performance.
+**Números:** 44–46 draw calls · 168 testes unitários + 14 specs visuais · Lighthouse 43/94 (mobile/desktop) · GLB de 6,5 MB (meshopt) · entry de 85 kB gzip + vendor 3D cacheável. Métricas em device (S23) em coleta — `?debug=1` expõe o HUD de performance.
 
 **Setup:** `pnpm install` · `pnpm dev` · `pnpm verify` — detalhes na seção em inglês e em [AGENTS.md](AGENTS.md). Sem analytics, sem cookies.
 
