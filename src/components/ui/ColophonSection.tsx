@@ -4,9 +4,7 @@ import { useMagnetic } from '@/hooks/useMagnetic';
 import { SECTION_SPANS } from '@/components/3d/beat/sections';
 
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
-// TODO(autor): handle real do LinkedIn — placeholder visivelmente inválido de
-// propósito; não mergeável assim (BUG-PLAN-2026-09-13 B3).
-const LINKEDIN_URL = 'https://www.linkedin.com/in/<HANDLE>';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/clayton-rafael/';
 
 /** Craft arguments the portfolio is selling — mono list under the body copy. */
 const CHALLENGES = [
