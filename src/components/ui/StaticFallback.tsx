@@ -95,8 +95,8 @@ export function StaticFallback() {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
           a versão interativa requer WebGL
         </p>
-        <ModelAttribution className="mt-4 font-mono text-[10px] uppercase leading-relaxed tracking-[0.15em] text-dim/60" />
-        <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
+        <ModelAttribution className="mt-4 font-mono text-[10px] uppercase leading-relaxed tracking-[0.15em] text-dim" />
+        <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-dim">
           <a
             href={REPO_URL}
             target="_blank"

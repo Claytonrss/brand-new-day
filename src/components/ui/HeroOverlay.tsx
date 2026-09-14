@@ -37,7 +37,7 @@ export function HeroOverlay() {
       </section>
 
       {/* CC-BY Attribution Footer */}
-      <footer className="pointer-events-auto mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60 sm:mt-12">
+      <footer className="pointer-events-auto mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-dim sm:mt-12">
         <ModelAttribution />
       </footer>
     </div>

@@ -222,7 +222,7 @@ export function ArsenalOverlay() {
       </div>
 
       {/* CC-BY attribution — never fades, never hidden by the macro transition */}
-      <footer className="absolute bottom-6 left-6 right-6 z-10 font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60 sm:bottom-10 sm:left-12 md:left-16">
+      <footer className="absolute bottom-6 left-6 right-6 z-10 font-mono text-[10px] uppercase tracking-[0.15em] text-dim sm:bottom-10 sm:left-12 md:left-16">
         <ModelAttribution />
       </footer>
     </div>

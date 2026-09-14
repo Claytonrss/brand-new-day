@@ -78,7 +78,7 @@ lead vê primeiro.
 
 ---
 
-## W3 — PR `fix/contrast`: legibilidade do texto pequeno (5.12, 2–3 h)
+## W3 — PR `fix/contrast`: legibilidade do texto pequeno (5.12, 2–3 h) — ✅ executada
 
 Achado novo, confirmado pelo Lighthouse desktop (`color-contrast` = a dedução
 do a11y 96). Duas famílias medidas em produção:

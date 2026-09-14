@@ -21,7 +21,7 @@ A cinematic, scroll-driven 3D experience: one rainy NYC night, told as a single 
 | ------------------------ | ---------------------------------------------------------------------------------------- |
 | Draw calls/frame         | 44–46 (`high` tier)                                                                      |
 | Tests                    | 168 unit (Vitest) + 14 visual specs (Playwright)                                         |
-| Lighthouse (live deploy) | Perf **43 mobile / 94 desktop** · A11y 96 · Best practices 100 · SEO 100                 |
+| Lighthouse (live deploy) | Perf **43 mobile / 94 desktop** · A11y 100 · Best practices 100 · SEO 100                |
 | Bundle                   | 265 kB entry + vendor chunks (461 kB gzip total — 3D/motion split, cached across visits) |
 | Model                    | 6.5 MB GLB (meshopt + quantization, ADR-029)                                             |
 

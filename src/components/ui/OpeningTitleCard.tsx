@@ -86,7 +86,7 @@ export function OpeningTitleCard() {
       <p
         ref={hintRef}
         aria-hidden="true"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.3em] text-dim/70"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.3em] text-dim"
       >
         role
       </p>

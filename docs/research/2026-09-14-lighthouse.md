@@ -69,3 +69,22 @@ de mobile é o peso em rede — KTX2 nas texturas (fase 2 do plano TD-003) e
 code-splitting do JS (A6, 460 kB gzip) são os restantes. Accessibility 96
 segue na espera do contraste (achado 5.12, onda W3 do
 `post-launch-polish-plan.md`).
+
+---
+
+## Re-run pós-W3 — contraste AA (2026-09-14, onda W3)
+
+Medido contra **build local de preview** (`vite preview`, mesmo bundle de
+produção) porque o deploy só recebe esta mudança no merge. ADR-030: token
+`dim` #6b6a63 → **#7d7c74** (3,64:1 → 4,7:1 sobre ink) e fim das variantes
+de opacidade em texto (`dim/60` media 2,0:1 — era o footer legal do colofon).
+
+| Categoria      | Desktop (local preview)                                        |
+| -------------- | -------------------------------------------------------------- |
+| Performance    | 94 (estável vs produção)                                       |
+| Accessibility  | **100** (era 96)                                               |
+| Best Practices | 100                                                            |
+| SEO            | 92 (artefato local: `canonical` aponta para a URL de produção) |
+
+`color-contrast`: score 0 → **1** (resolvido). Produção deve refletir a11y 100
+assim que esta onda mergear.

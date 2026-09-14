@@ -30,7 +30,7 @@ não que carregou uma página.
 | `oxide`    | `#7a1f24` | acento dramático quente, rim light              |
 | `signal`   | `#c23b34` | acento máximo (olhos, pontos de luz, UI mínima) |
 | `paper`    | `#e9e5da` | texto principal                                 |
-| `dim`      | `#6b6a63` | texto secundário, metadados                     |
+| `dim`      | `#7d7c74` | texto secundário, metadados                     |
 
 **Proibições de cor:**
 
