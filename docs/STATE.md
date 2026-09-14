@@ -83,6 +83,16 @@ chapter-print}.md`.
   Spec de interação do Arsenal agora deriva do bounding box da seção.
   ADR-025.
 
+### Higiene de tooling (2026-09-13)
+
+- **Lint + comentários (`chore/lint-comment-hygiene`):** `eslint-plugin-jsx-a11y`
+  (recommended, escopo `*.tsx`), `prefer-const`, `eqeqeq` e
+  `tsconfig.node.json` alinhado ao strictness de app — zero violações no
+  codebase. Política de comentários vinculante (comentário = porquê não
+  visível no código) + limpeza retroativa de ~110 comentários-narração
+  (removidos/aparados) e 6 contas de scroll corrigidas em src/tests/scripts,
+  constraints FALHA/IDEIA/spec/contrato preservados. ADR-026.
+
 ### Pendências consolidadas (detalhe em `PROGRESS.md`)
 
 - **Sessão S23 (única pendência de execução):** Wave 0 (T0.1–T0.5),

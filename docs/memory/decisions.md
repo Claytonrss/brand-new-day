@@ -1085,3 +1085,56 @@ não mudam: as frações novas são ~hero 0–0.247 · chapter1 –0.320 · evol
   evidence (`collect-beat-chrome`, `collect-micro-craft`) recalibrados em
   múltiplos de viewport; specs que usam frações conferidos contra a nova
   timeline.
+
+---
+
+## ADR-026: Baseline de lint (jsx-a11y) e política de comentários
+
+**Data:** 2026-09-13
+**Status:** ✅ Aprovado
+
+### Contexto
+
+Auditoria do tooling de lint (flat config ESLint 9 + Prettier + husky/lint-
+staged + commitlint, `verify-all.sh` e job `static` do CI) confirmou three-
+layer enforcement e zero supressões (`eslint-disable`/`@ts-ignore`) no
+codebase — mas com lacunas: (1) nenhum lint de acessibilidade num projeto
+ARIA-heavy (overlays, `aria-label`, atribuição CC-BY visível sem hover);
+(2) `tsconfig.node.json` menos estrito que `tsconfig.app.json`/`tests.json`
+(sem `noUnusedLocals`/`noUnusedParameters`/`noFallthroughCasesInSwitch`/
+`noUncheckedSideEffectImports`); (3) regras baratas ausentes (`prefer-const`,
+`eqeqeq`). A mesma auditoria inventariou **784 comentários** no código: ~46%
+eram narração/obviedade ("// Wait for canvas", "/** Advance the spring. */"),
+convivendo com 132 constraints legítimos (FALHA-xx, IDEIA-xx, refs de spec,
+contratos cross-file).
+
+### Decisão
+
+1. **Lint:** `eslint-plugin-jsx-a11y` (config `recommended`, escopo
+   `**/*.tsx`), `prefer-const: error` e `eqeqeq: ['error', 'smart']` no bloco
+   `**/*.{ts,tsx}`; `tsconfig.node.json` recebe o mesmo strictness de
+   `tsconfig.app.json`.
+2. **Política de comentários** (vinculante para código novo e retroativa
+   nesta limpeza): comentário só existe para declarar um **porquê** não
+   visível no código — constraints (FALHA-xx/IDEIA-xx/ADR/spec), contratos
+   cross-file (CSS vars, `window.__rig`, `data-beat`), quirks de ambiente de
+   teste (SwiftShader, `hover: none`) e licença. Proibido: narração do que a
+   linha seguinte faz, JSDoc que repete o identificador, divisor de seção sem
+   informação e label JSX que duplica `aria-label`/props. Com comentário meio
+   informativo, aparar a parte óbvia e manter só a cláusula informativa.
+
+### Consequências
+
+- ✅ Zero violações no codebase atual com as regras novas (lint e typecheck
+  passam sem nenhuma correção de código além da config).
+- ✅ Regressões de a11y passam a ser capturadas no lint/pre-commit, não só na
+  suíte visual.
+- ✅ `tsconfig.node.json` uniforme — configs de build herdam a mesma rede de
+  proteção de código morto/parâmetro solto.
+- ⚠️ Nova devDependency (`eslint-plugin-jsx-a11y` 6.10.2) — impacto só em dev.
+- ⚠️ Limpeza retroativa aplicada na mesma branch (`chore/cleanup` commits):
+  109 comentários removidos, 10 aparados e 6 contas de scroll desatualizadas
+  corrigidas (efeito do re-engrenagem do ADR-025). A estimativa prévia de
+  ~300–380 caiu na inspeção direta: grande parte do que o inventário classificou
+  como óbvio carregava unidade/semântica/porquê. Risco de conflito trivial de
+  comentários em merges paralelos.
