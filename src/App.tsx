@@ -90,7 +90,18 @@ export function App() {
 
       <main className="relative w-full overflow-x-hidden bg-ink text-paper">
         {/* 3D R3F Canvas Layer — fixed, never unmounts */}
-        <ErrorBoundary fallback={null} onError={() => setWebglUnavailable(true)}>
+        <ErrorBoundary
+          fallback={null}
+          onError={() => {
+            // Falha silenciosa virou sinal (A11): beacon sem PII para o log
+            // da Vercel — até hoje ninguém ficava sabendo do fallback.
+            navigator.sendBeacon?.(
+              '/api/log',
+              JSON.stringify({ event: 'webgl_unavailable', ua: navigator.userAgent }),
+            );
+            setWebglUnavailable(true);
+          }}
+        >
           <CanvasContainer>
             <Suspense fallback={null}>
               <BeatProvider>

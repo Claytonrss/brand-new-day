@@ -129,7 +129,7 @@ paper/dim tem de continuar legível como escala) + smoke.
 
 ---
 
-## W5 — PR `feat/observability`: saber o que acontece com o visitante (A11, 2–3 h)
+## W5 — PR `feat/observability`: saber o que acontece com o visitante (A11, 2–3 h) — ✅ executada
 
 1. **`@vercel/analytics`** (cookie-free, sem banner — mantém a nota do README
    verdadeira): `<Analytics />` em `main.tsx`. **Requer o toggle no dashboard

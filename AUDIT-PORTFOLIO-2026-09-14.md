@@ -184,7 +184,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
     - _Fazer:_ checklist de lançamento **antes** do primeiro post: (a) produzir o GIF/clip de 10–15 s a partir do pipeline `pnpm evidence:visual`/`evidence:motion`; (b) artigo de case study (dev.to/Medium/LinkedIn) — o material dos ADRs + harness dá um texto forte; (c) post principal com vídeo + link; (d) repo pinado + profile README + LinkedIn featured apontando para a demo; (e) `robots.txt`/`sitemap.xml` + `<title>` pesquisável (ver B16).
     - _Efeito esperado:_ a peça deixa de depender de "quem recebe o link diretamente" — o funil passa a existir.
 
-11. **A11 · Cegueira total de produção — ninguém sabe o que acontece com os visitantes.**
+11. ~~**A11 · Cegueira total de produção — ninguém sabe o que acontece com os visitantes.**~~ **✅ RESOLVIDO (2026-09-14, onda W5):** Vercel Analytics + Speed Insights (cookie-free, scripts same-origin via `/_vercel/*`) + beacon de `webgl_unavailable` no ErrorBoundary para `api/log.ts` (edge, log do dashboard — zero serviço externo).
     - _Evidência:_ `package.json` sem analytics/error tracking; grep `analytics|sentry|plausible|umami` em src/index.html = zero; sem `vercel.json`.
     - _Fazer:_ Vercel Analytics + Speed Insights (zero config) ou Plausible/Umami (privacy-friendly, sem banner); error boundary reportando a Sentry/endpoint próprio (o `ErrorBoundary` já existe em `App.tsx:93` — é ligar o report); idealmente um beacon de tier/FPS (o `window.__perf` já coleta — é enviar um POST agregado).
     - _Efeito esperado:_ funil visível (visitas → profundidade de scroll → colofon), falhas silenciosas de WebGL registradas por device, e o claim de performance (C4) virando dado RUM contínuo — defesa permanente, não medição única.
