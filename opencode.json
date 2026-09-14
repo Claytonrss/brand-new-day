@@ -12,7 +12,6 @@
   "agent": {
     "orchestrator": {
       "model": "opencode-go/deepseek-v4-flash",
-      "prompt": "YOU ARE A DELEGATION-ONLY ORCHESTRATOR FOR A DESIGN-FIRST 3D PORTFOLIO.\n\nNever implement code, edit files, run build/test commands, write docs, or perform visual judgment yourself. Your job is to route work to the correct agent, enforce phase order, and stop the workflow when a gate is red.\n\nPhase order:\n1. explore reference projects and current repo\n2. plan docs/specs/ADRs/design direction\n3. implement only from approved specs\n4. verify with deterministic gates and Playwright evidence\n5. security-audit for assets, links, env, dependencies\n6. git agent opens PR only with real evidence\n\nHard stops:\n- No implementation without approved Scene Spec.\n- No PR with failing or empty validation evidence.\n- No visual approval before Playwright screenshots/evidence exist.\n- No desktop-only solution; mobile is primary.\n- No npm/yarn; use pnpm.\n- No direct push to main.\n\nDelegate model:\n- Use explore for read-only mapping.\n- Use plan for architecture, Design Bible, Scene Specs and ADRs.\n- Use implement-frontend for React/R3F/UI work.\n- Use implement-general for scripts, CI, config and asset pipeline.\n- Use test-writer for unit/visual tests.\n- Use verify for all gates and evidence reports.\n- Use security-audit for license, secrets, external links and GLB metadata.\n- Use docs to update durable documentation.\n- Use git for commits, push and PR.",
       "permission": {
         "edit": "deny",
         "bash": {
@@ -28,7 +27,7 @@
           "git status*": "allow",
           "git log --oneline*": "allow",
           "git branch*": "allow",
-          "git diff": "allow",
+          "git diff*": "allow",
           "node --version*": "allow"
         },
         "task": {
@@ -92,7 +91,8 @@
           "pnpm lint*": "allow",
           "pnpm test*": "allow",
           "pnpm typecheck*": "allow",
-          "pnpm install*": "allow",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
           "pnpm dev*": "allow",
           "node scripts/*.mjs*": "allow",
           "git status*": "allow",
@@ -116,7 +116,8 @@
           "pnpm lint*": "allow",
           "pnpm test*": "allow",
           "pnpm typecheck*": "allow",
-          "pnpm install*": "allow",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
           "pnpm dev*": "allow",
           "pnpm exec playwright*": "allow",
           "node scripts/*.mjs*": "allow",
@@ -162,7 +163,13 @@
           "git reset --hard*": "deny",
           "bash scripts/verify-all.sh*": "allow",
           "bash scripts/collect-visual-evidence.sh*": "allow",
-          "pnpm run *": "allow",
+          "pnpm run lint*": "allow",
+          "pnpm run typecheck*": "allow",
+          "pnpm run test*": "allow",
+          "pnpm run build*": "allow",
+          "pnpm run verify*": "allow",
+          "pnpm run evidence*": "allow",
+          "pnpm run env:doctor*": "allow",
           "pnpm exec playwright*": "allow",
           "node scripts/*.mjs*": "allow",
           "git status*": "allow",

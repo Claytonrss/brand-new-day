@@ -7,10 +7,11 @@ This portfolio piece (Spider-Man: Brand New Day — a cinematic, scroll-driven 3
 ## The shape of the system
 
 - **A delegation-only orchestrator.** The top-level orchestrator never edits code. It decomposes work, dispatches to specialized agents, and enforces hard stops between phases. If an agent's output lacks evidence, the orchestrator bounces it back.
-- **10 specialized agents** with per-command permissions: implementation, verification, documentation, PR assembly, and so on. The verify agent, for example, may run `pnpm lint`, `pnpm typecheck`, `pnpm test` — and nothing destructive. Permissions live in one declarative config ([`opencode.json`](../opencode.json)), not in prompts' honor system.
-- **Specs drive code.** Features start as Scene Specs (27 so far) that pin camera choreography, thresholds, and copy. `mobile-gyro-permission.md §3` _is_ the state machine you'll find in `gyroController.ts`; `spec-driven-contract.md` defines the Spec → Implement → Verify → PR pipeline every change follows.
+- **Ten agents** (a delegation-only orchestrator plus nine specialists) with per-command permissions: implementation, verification, documentation, PR assembly, and so on. The verify agent, for example, may run `pnpm lint`, `pnpm typecheck`, `pnpm test` — and nothing destructive. Permissions live in one declarative config ([`opencode.json`](../opencode.json)); each agent's prompt lives in its own file under [`.opencode/agent/`](../.opencode/agent/) — JSON wires, markdown instructs.
+- **Specs drive code.** Features start as Scene Specs (24 shipped — index in `docs/specs/README.md`) that pin camera choreography, thresholds, and copy. `mobile-gyro-permission.md §3` _is_ the state machine you'll find in `gyroController.ts`; `spec-driven-contract.md` defines the Spec → Implement → Verify → PR pipeline every change follows.
 - **Evidence, not impressions.** Every PR body carries real logs (`pnpm verify`, `pnpm test:smoke`), visual evidence from three viewports, and a visual rubric score. The verify agent's instruction says it plainly: _"reporte evidências, não impressões"_ — report evidence, not impressions.
-- **30 ADRs with rejected alternatives.** Decisions record what was _not_ chosen and why — e.g. why the canvas is not lazy-loaded (it would break the progress-driven loading choreography), why the GLB ships meshopt-compressed instead of KTX2-first.
+- **Dependency changes are human-reviewed.** Agents cannot run `pnpm install`/`pnpm add`: a hallucinated package name (the _slopsquatting_ vector) would execute arbitrary postinstall code before any gate sees it. The defense is layered — the permission deny, `import/no-unresolved` + `no-extraneous-dependencies` at lint time, strict `tsc` and Vite resolution in the verify gate, pnpm's isolated `node_modules` (no phantom hoisting), and `--frozen-lockfile` in CI.
+- **31 ADRs with rejected alternatives.** Decisions record what was _not_ chosen and why — e.g. why the canvas is not lazy-loaded (it would break the progress-driven loading choreography), why the GLB ships meshopt-compressed instead of KTX2-first.
 
 ## Why not an off-the-shelf plugin?
 
@@ -23,7 +24,7 @@ Off-the-shelf creative-coding skill packs are good and I've mined them for refer
 ## What it actually produced
 
 - 44–46 draw calls on the top tier (down from 118), three adaptive quality tiers with idle-gated degradation, and a TBT of 780 ms on throttled mobile after compressing the model 23.5 → 6.5 MB.
-- 168 unit tests + 14 visual specs, Conventional Commits enforced by husky, and **67 merged PRs** with readable history.
+- 168 unit tests + 14 visual specs, Conventional Commits enforced by husky, and **72 merged PRs** with readable history.
 - A Security-Policy-validated deployment (the CSP was iterated three times against headless Chrome _before_ reaching production — the validation loop is documented in PR #65).
 
 ## Honest limitations
