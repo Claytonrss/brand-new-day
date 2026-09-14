@@ -65,8 +65,9 @@ A lista completa de comandos e o workflow de contribuição estão em
 
 ---
 
-## 📜 Créditos e Licença dos Assets 3D
+## 📜 Créditos e Licenças
 
-- Modelo 3D: **Spider-Man: Brand New Day (v2)**
-- Autor: Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda))
-- Licença: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (atribuição curta `Modelo 3D por Eskze · CC BY 4.0` mantida visível na aplicação)
+- **Código:** MIT — ver [LICENSE](LICENSE)
+- **Modelo 3D:** "Spider-Man Brand New Day" por Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda)), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), convertido e otimizado a partir do original — atribuição completa visível na aplicação
+- **Fontes:** Space Grotesk e JetBrains Mono ([SIL OFL 1.1](public/fonts/OFL.txt))
+- **Disclaimer:** projeto fan-made, sem fins comerciais — sem afiliação ou endosso da Marvel/Sony/Disney. Lista completa de assets de terceiros: [NOTICE.md](NOTICE.md)

@@ -6,17 +6,22 @@ const LINK_CLASS =
   'pointer-events-auto underline decoration-dim/40 underline-offset-2 transition-colors hover:text-paper/80';
 
 /**
- * CC-BY 4.0 attribution — required by the license (creator + source + license
- * URI) and mandatory in every section that shows the model, visible without
- * hover. Typography (mono, 10px, uppercase, dim) is inherited from the
+ * CC-BY 4.0 attribution — required by the license §3(a) (title of work +
+ * copyright notice + creator + source + license URI + indication of
+ * modifications) and mandatory in every section that shows the model, visible
+ * without hover. Typography (mono, 10px, uppercase, dim) is inherited from the
  * wrapping footer; pass `className` only when the site owns the type itself.
  *
+ * The link accessible names ("Eskze", "CC BY 4.0") are contract —
+ * tests/visual/credits.spec.ts matches them by exact name.
+ *
  * @see docs/specs/colophon-outro.md
+ * @see NOTICE.md
  */
 export function ModelAttribution({ className = '' }: { className?: string }) {
   return (
     <p className={className}>
-      Modelo 3D por{' '}
+      Modelo 3D "Spider-Man Brand New Day" · ©{' '}
       <a href={MODEL_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
         Eskze
       </a>
@@ -24,6 +29,7 @@ export function ModelAttribution({ className = '' }: { className?: string }) {
       <a href={LICENSE_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
         CC BY 4.0
       </a>
+      {' · convertido e otimizado a partir do original'}
     </p>
   );
 }

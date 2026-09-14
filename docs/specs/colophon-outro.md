@@ -45,8 +45,10 @@ intencional: a revelação já aconteceu; agora é a assinatura.
 - Linha de stack (mono, pequena; inalterada):
   `React 19 · Three.js · GSAP ScrollTrigger · Lenis · WebGL`
 - Atribuição (obrigatória, visível sem hover):
-  > Modelo 3D por Eskze · CC BY 4.0
-  > ("Eskze" linkado à página do modelo no Sketchfab; "CC BY 4.0" linkado ao legal code da licença)
+  > Modelo 3D "Spider-Man Brand New Day" · © Eskze · CC BY 4.0 · convertido e otimizado a partir do original
+  > ("Eskze" linkado à página do modelo no Sketchfab; "CC BY 4.0" linkado ao legal code da licença; conformidade estrita CC-BY §3(a) — título da obra, © e indicação de modificação)
+- Disclaimer fan-made (obrigatório, mesma tipografia da atribuição):
+  > Projeto fan-made, sem fins comerciais — sem afiliação ou endosso da Marvel/Sony/Disney.
 - CTAs (dois pesos; a regra antiga do "CTA único" evolui: o segundo destino
   existe, mas nunca com o peso do primário):
   - Primário: `ver o código →` (repositório, `signal` + `.magnetic-cta`)
