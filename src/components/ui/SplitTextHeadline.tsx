@@ -61,7 +61,6 @@ export function SplitTextHeadline({
     return () => ctx.revert();
   }, [stagger, prefersReducedMotion]);
 
-  // Split text into intentional lines, then into individual characters.
   const lines = text.split('\n').map((line, lineIndex) => (
     <span key={lineIndex} className="block whitespace-nowrap">
       <SplitChars text={line} />

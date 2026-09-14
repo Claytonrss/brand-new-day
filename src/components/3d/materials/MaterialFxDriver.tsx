@@ -129,7 +129,7 @@ export function useMaterialFx(isMobile: boolean, prefersReducedMotion = false) {
       return;
     }
 
-    // --- stylised blink (mask lenses have no eyelids) ----------------------
+    // Stylised blink: mask lenses have no eyelids
     if (BLINK_MODE === 'hold') {
       // pinned closed for visual review
       FX.uBlink.value = 1;

@@ -233,7 +233,6 @@ export function useProceduralRig({
     const detailed = tier === 'high';
     const idleOnly = !hasHover;
 
-    // --- pointer / idle target -------------------------------------------
     let targetYaw = 0;
     let targetPitch = 0;
 
@@ -282,7 +281,6 @@ export function useProceduralRig({
     // --- velocity lean (docs/specs/velocity-lean.md) -----------------------
     leanStep(delta, beatRuntime.velocity);
 
-    // --- pose layer -------------------------------------------------------
     const pose = BEAT_POSES[beat] ?? {};
     for (const role of POSE_ROLES) {
       const springs = poseSprings.get(role);
@@ -297,7 +295,6 @@ export function useProceduralRig({
       }
     }
 
-    // --- compose per bone -------------------------------------------------
     layerCtx.time = time;
     layerCtx.breath = breathSample;
     layerCtx.leanValue = lean.value;
@@ -307,14 +304,12 @@ export function useProceduralRig({
       const base = rest.get(role);
       if (!base) continue;
 
-      // pose offsets
       const poseSpring = poseSprings.get(role);
       const sx = poseSpring?.[0].value ?? 0;
       const sy = poseSpring?.[1].value ?? 0;
       const sz = poseSpring?.[2].value ?? 0;
       offsetQuaternion(scratch.pose, sx, sy, sz);
 
-      // procedural layers
       const layer = PROCEDURAL_LAYERS[role];
       if (layer) {
         layer(role, layerCtx, scratch.layer);
@@ -325,7 +320,6 @@ export function useProceduralRig({
 
       scratch.composed.copy(base.quaternion).multiply(scratch.pose).multiply(scratch.procedural);
 
-      // head chain: slerp toward the tracked orientation with per-bone weight
       const chain = headChainByRole.get(role);
       if (chain) {
         // final = rest * headOffset (offset applied in local space)

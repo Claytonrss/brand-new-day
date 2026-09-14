@@ -16,11 +16,10 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       touchMultiplier: 2,
     });
 
-    // Connect Lenis to GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    // Connect GSAP ticker to Lenis — keep the exact reference so the cleanup
-    // removes the same function it registered (a fresh closure never matches).
+    // Keep the exact reference so the cleanup removes the same function it
+    // registered (a fresh closure never matches).
     const tick = (time: number) => {
       lenis.raf(time * 1000);
     };

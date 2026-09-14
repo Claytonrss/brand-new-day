@@ -79,7 +79,6 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
     [],
   );
 
-  // Force low tier if prefers-reduced-motion
   useEffect(() => {
     if (prefersReducedMotion && currentTierRef.current !== 'low') {
       applyTier('low', fpsRef.current, 'force');
@@ -93,21 +92,19 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
     }
   }, [isMobile, applyTier]);
 
-  // FPS measurement in useFrame (runs every frame)
   useFrame(() => {
     frameCountRef.current++;
     totalFramesRef.current++;
     const now = performance.now();
     const elapsed = now - lastTimeRef.current;
 
-    // Update FPS every second
     if (elapsed >= 1000) {
       const fps = (frameCountRef.current * 1000) / elapsed;
       fpsRef.current = fps;
       frameCountRef.current = 0;
       lastTimeRef.current = now;
 
-      // Skip degradation logic during warmup (let GPU stabilize)
+      // Let the GPU stabilize before the first tier decision
       if (totalFramesRef.current < WARMUP_FRAMES) return;
 
       // Skip if prefers-reduced-motion (already locked to low)
@@ -120,22 +117,19 @@ export function PerformanceMonitor({ children }: { children: ReactNode }) {
 
       const currentTier = currentTierRef.current;
 
-      // Degrade: high → medium (FPS < 45)
       if (fps < FPS_THRESHOLD_MEDIUM && currentTier === 'high') {
         applyTier('medium', fps, 'degrade');
       }
 
-      // Degrade: medium → low (FPS < 30)
       if (fps < FPS_THRESHOLD_LOW && currentTier === 'medium') {
         applyTier('low', fps, 'degrade');
       }
 
-      // Upgrade: low → medium (FPS recovered > 45)
       if (fps > FPS_THRESHOLD_MEDIUM && currentTier === 'low') {
         applyTier('medium', fps, 'upgrade');
       }
 
-      // Upgrade: medium → high (FPS recovered > 55, hysteresis)
+      // Hysteresis: the threshold to climb back up is higher than to degrade
       if (fps > 55 && currentTier === 'medium' && !isMobile) {
         applyTier('high', fps, 'upgrade');
       }

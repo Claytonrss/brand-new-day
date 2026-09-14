@@ -12,13 +12,10 @@ import { Spring } from './spring';
 
 /** Absolute lean ceiling (rad, ~2.5°) — the plan's max. */
 export const LEAN_MAX = 0.0436;
-/** Radians of lean per progress-unit/s of scroll velocity. */
 export const LEAN_GAIN = 0.02;
-/** Spring angular frequency — follows the target without perceptible delay. */
 export const LEAN_STIFFNESS = 6;
 /** Damping ratio 1 = critically damped: inertia, never oscillation. */
 export const LEAN_DAMPING = 1;
-/** Curvature split between the two spine joints. */
 export const LEAN_SPINE2_WEIGHT = 0.6;
 /** Shoulder lift at full lean (rad, ~2°), mirrored L/R. */
 export const LEAN_SHOULDER_LIFT = 0.035;
@@ -27,7 +24,6 @@ const spring = new Spring(0, LEAN_STIFFNESS, LEAN_DAMPING);
 
 export const lean = { value: 0 };
 
-/** Current clamped lean target for a scroll velocity (progress-units/s). */
 export function leanTarget(velocity: number): number {
   return Math.max(-LEAN_MAX, Math.min(LEAN_MAX, velocity * LEAN_GAIN));
 }
@@ -41,7 +37,6 @@ export function leanStep(delta: number, velocity: number): void {
   lean.value = spring.step(delta);
 }
 
-/** Shoulder lift (rad, mirrored) for a role at the current lean. */
 export function leanShoulderLift(role: 'shoulderL' | 'shoulderR'): number {
   const magnitude = (Math.abs(lean.value) / LEAN_MAX) * LEAN_SHOULDER_LIFT;
   return role === 'shoulderL' ? magnitude : -magnitude;

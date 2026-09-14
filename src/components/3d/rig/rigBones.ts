@@ -133,7 +133,6 @@ export const HEAD_TOTAL_LIMIT = 0.52;
 /** Neutral yaw compensation applied per unit of model rotation. */
 export const HEAD_BIAS_FACTOR = -0.6;
 
-/** Pointer x (-1..1) + model yaw -> head target yaw, biased and asymmetric. */
 export function headYawTarget(pointerX: number, baseYaw = 0): number {
   const yaw =
     pointerX >= 0

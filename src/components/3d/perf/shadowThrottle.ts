@@ -9,7 +9,6 @@ export const SHADOW_MOVE_EPSILON = 0.001;
 /** Scroll velocity below which a fling counts as finished (tier idle-gate value). */
 export const SHADOW_IDLE_VELOCITY = 0.02;
 
-/** Mutable per-frame bookkeeping for `shouldRefreshShadow`. */
 interface ShadowThrottleState {
   sinceRefresh: number;
   beat: BeatId;
