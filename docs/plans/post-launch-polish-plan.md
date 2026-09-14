@@ -56,7 +56,7 @@ essa linha; conferir `micro-craft`/colophon specs verdes).
 
 ---
 
-## W2 — PR `perf/code-splitting`: vendor chunks (A6, 1–2 h)
+## W2 — PR `perf/code-splitting`: vendor chunks (A6, 1–2 h) — ✅ executada
 
 **Baseline medido em 2026-09-14 pós-#61:** `dist/assets/index-*.js 1.573,22 kB │ gzip: 460,64 kB` (chunk único + warning do Vite).
 
