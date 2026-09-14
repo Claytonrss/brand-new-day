@@ -1261,3 +1261,37 @@ só geometria.
 - ⚠️ O HUD reporta `tex` 66 → 51 (objetos de textura na GPU, contagem
   transitória) sem correlato visual — nenhuma textura removida do arquivo
   (30 imagens antes/depois).
+
+## ADR-030: Token `dim` elevado para contraste AA e fim das variantes de opacidade em texto
+
+**Data:** 2026-09-14 · **Contexto:** auditoria 5.12 + dedução `color-contrast`
+do Lighthouse (a11y 96) · **Onda:** W3 do `post-launch-polish-plan.md`
+
+### Decisão
+
+- `--color-dim` passa de `#6b6a63` para **`#7d7c74`** — contraste sobre `ink`
+  (#0a0a0c) vai de **3,64:1** para **≈4,7:1**, passando WCAG AA (4,5:1) para
+  texto normal. Todo uso de `text-dim` na peça é label informativo de 10–12px
+  (kickers, datas, atribuição, hints) — nenhum puramente decorativo.
+- **Variantes de opacidade em texto eliminadas** (`text-dim/60`, `text-dim/70`
+  → `text-dim`): mesmo com o token base claro, `dim/60` sobre ink mede
+  ≈2,0:1 — e o footer legal do colofon (atribuição CC-BY + disclaimer,
+  obrigatórios "legíveis sem hover") era o pior caso da página.
+- `decoration-dim/40` (sublinhado decorativo dos links) permanece — não é
+  texto.
+
+### Alternativas consideradas
+
+- **Segundo token `dim-raised`** mantendo o `dim` original: rejeitado — dois
+  cinzas vizinhos com fronteiras sutis é hierarquia difícil de manter
+  consistente em 11 arquivos, e nenhum uso atual pede o tom mais escuro.
+- **Aumentar só o footer legal:** rejeitado — o problema é sistêmico
+  (todos os labels de 10–12px falham AA), não local.
+
+### Consequências
+
+- Hierarquia paper → dim preservada (dim continua visivelmente abaixo de
+  paper #e9e5da); tom levemente mais quente/claro nos metadados.
+- `AGENTS.md` e `design-bible.md` sincronizados com o novo hex.
+- Lighthouse `color-contrast` deve sair da lista de deduções (a11y 96 → 100
+  esperado; medido no PR).

@@ -70,7 +70,7 @@ export function ColophonSection() {
           inteira é um argumento em código.
         </p>
 
-        <ul className="mx-auto mt-6 flex w-fit flex-col gap-1.5 text-left font-mono text-[11px] leading-relaxed text-dim/70 md:mx-0">
+        <ul className="mx-auto mt-6 flex w-fit flex-col gap-1.5 text-left font-mono text-[11px] leading-relaxed text-dim md:mx-0">
           {CHALLENGES.map((challenge) => (
             <li key={challenge} className="flex gap-2">
               <span aria-hidden="true" className="text-signal/60">
@@ -107,7 +107,7 @@ export function ColophonSection() {
       </div>
 
       {/* CC-BY Attribution + fan-work disclaimer — required, visible without hover */}
-      <footer className="absolute bottom-6 left-1/2 z-10 w-full max-w-[92vw] -translate-x-1/2 space-y-1 px-6 text-center font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
+      <footer className="absolute bottom-6 left-1/2 z-10 w-full max-w-[92vw] -translate-x-1/2 space-y-1 px-6 text-center font-mono text-[10px] uppercase tracking-[0.15em] text-dim">
         <ModelAttribution />
         <p>
           Projeto fan-made, sem fins comerciais — sem afiliação ou endosso da Marvel/Sony/Disney.

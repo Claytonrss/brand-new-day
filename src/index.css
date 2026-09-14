@@ -8,7 +8,9 @@
   --color-oxide: #7a1f24;
   --color-signal: #c23b34;
   --color-paper: #e9e5da;
-  --color-dim: #6b6a63;
+  /* dim: elevado de #6b6a63 para passar WCAG AA 4,5:1 sobre ink em texto
+     pequeno (medido 3,64:1 antes; achado 5.12 da auditoria) — ADR-030. */
+  --color-dim: #7d7c74;
   --color-glow: #eaf4ff;
 
   --font-display: 'Space Grotesk', system-ui, sans-serif;

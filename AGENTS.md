@@ -32,7 +32,7 @@ Definidos em `src/index.css` via `@theme` (Tailwind v4):
 | `oxide`    | `#7a1f24` | acento quente (rim light) |
 | `signal`   | `#c23b34` | acento máximo             |
 | `paper`    | `#e9e5da` | texto principal           |
-| `dim`      | `#6b6a63` | texto secundário          |
+| `dim`      | `#7d7c74` | texto secundário          |
 | `glow`     | `#eaf4ff` | brilho frio (teia/lente)  |
 
 Fontes: **Space Grotesk** (display), **JetBrains Mono** (HUD/labels). Direção
