@@ -14,16 +14,16 @@ describe('arsenalReveal', () => {
     arsenalReveal.setGestureCapable(true);
     expect(listener).toHaveBeenCalledTimes(1);
     arsenalReveal.setGestureCapable(true);
-    expect(listener).toHaveBeenCalledTimes(1); // no change → no notify
+    expect(listener).toHaveBeenCalledTimes(1);
 
     arsenalReveal.reveal();
     expect(arsenalReveal.revealed).toBe(true);
     expect(listener).toHaveBeenCalledTimes(2);
     arsenalReveal.reveal();
-    expect(listener).toHaveBeenCalledTimes(2); // idempotent — first reveal wins
+    expect(listener).toHaveBeenCalledTimes(2);
 
     unsubscribe();
     arsenalReveal.setGestureCapable(false);
-    expect(listener).toHaveBeenCalledTimes(2); // unsubscribed → silent
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 });

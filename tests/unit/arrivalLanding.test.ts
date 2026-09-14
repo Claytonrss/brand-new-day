@@ -56,7 +56,7 @@ describe('arrival landing', () => {
     const trace = simulate();
 
     const min = Math.min(...trace.map((s) => s.offset));
-    expect(min).toBeLessThan(0); // crosses rest (impact)
+    expect(min).toBeLessThan(0);
     expect(min).toBeGreaterThanOrEqual(-LANDING_DROP * 0.06); // 4–6% overshoot
 
     const settled = trace.find((s) => Math.abs(s.offset) < LANDING_SETTLE_EPS);
