@@ -12,7 +12,8 @@ O GLB não tem nenhuma animação (`node scripts/inspect-glb.mjs` →
 **um único osso**: `SpiderManModel.tsx:150-155` escreve `rotation.x/y` direto
 em `mixamorig:Head_06`. Os outros 65 joints nunca se movem.
 
-É literalmente a situação que `3d-model-treatment.md:45` manda evitar ("o
+É literalmente a situação que `archive/3d-model-treatment.md:45` (em
+`docs/design/`) manda evitar ("o
 visual não parece viewport padrão de model viewer"): o personagem é uma estátua
 filmada por uma câmera que se move. O Beat 1 (`memorable-moments.md:9-11`)
 também pede **slerp** para a cabeça e não menciona limitar o movimento a ela.

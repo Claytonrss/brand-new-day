@@ -135,7 +135,7 @@ fullBody: {
 > lowered hip/feet position in the wide shot, keeping the character
 > vertically centered in the frame despite the camera pulling back to z=11/16.
 
-Reference: `docs/specs/hero-mouse-tracking.md`, `docs/specs/evolution-chest-symbol.md`, `docs/specs/arsenal-web-shooters.md`, `src/components/3d/cameraKeyframes.ts`
+Reference: `docs/specs/archive/hero-mouse-tracking.md`, `docs/specs/evolution-chest-symbol.md`, `docs/specs/arsenal-web-shooters.md`, `src/components/3d/cameraKeyframes.ts`
 
 ## 7. Interactions
 
