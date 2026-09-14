@@ -45,7 +45,7 @@ Reference: `docs/design/composition-rules.md`
 
 ## 4. 3D Assets
 
-**Model:** `public/models/spider-man_brand_new_day-v2.glb` (22.4 MB)  
+**Model:** `public/models/spider-man_brand_new_day-v3-meshopt.glb` (6.5 MB)  
 **Focus:** peito/símbolo (chest symbol)  
 **Rig:** Mixamo, torso joints relevantes  
 **Validação necessária:** confirmar posição do símbolo no modelo real (análogo

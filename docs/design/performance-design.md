@@ -56,12 +56,12 @@ O fallback é uma **escolha visual**, não uma página quebrada.
 
 ## Budget inicial
 
-| Recurso         | Budget mobile                                     |
-| --------------- | ------------------------------------------------- |
-| GLB em produção | ≤ 15 MB (meta de otimização a partir do original) |
-| Texturas        | ≤ 2K, KTX2/WebP quando viável                     |
-| Draw calls      | < 50 por frame                                    |
-| Post-processing | máx. 2 efeitos ativos em mobile                   |
+| Recurso         | Budget mobile                                                   |
+| --------------- | --------------------------------------------------------------- |
+| GLB em produção | ≤ 15 MB — **atendido: 6,5 MB** (meshopt + quantização, ADR-029) |
+| Texturas        | ≤ 2K, KTX2/WebP quando viável                                   |
+| Draw calls      | < 50 por frame                                                  |
+| Post-processing | máx. 2 efeitos ativos em mobile                                 |
 
 ## Critérios de aceite
 

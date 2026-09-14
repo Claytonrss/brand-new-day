@@ -15,7 +15,7 @@ import { useInteraction } from './interaction/useInteraction';
 import { INTERACTION } from './interaction/interactionStore';
 import { landingOffset } from './landing';
 
-const MODEL_PATH = '/models/spider-man_brand_new_day-v2.glb';
+const MODEL_PATH = '/models/spider-man_brand_new_day-v3-meshopt.glb';
 
 interface SpiderManModelProps {
   pointerTracking?: boolean;

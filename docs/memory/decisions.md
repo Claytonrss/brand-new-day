@@ -1214,3 +1214,50 @@ Um rótulo booleano não distingue "sem gesto" de "ainda não sei".
   o próximo `onUpdate` do ScrollTrigger resolve o estado.
 - ⚠️ Consumidores novos de `gestureCapable` precisam lidar com os três
   estados (`null`/`false`/`true`) — o tipo obriga.
+
+## ADR-029: GLB comprimido com meshopt + quantização (TD-003/F4b) e entrega via edge da Vercel
+
+**Data:** 2026-09-14
+**Status:** ✅ Aprovado
+
+### Contexto
+
+O asset `spider-man_brand_new_day-v2.glb` tinha 23,48 MB, dos quais ~19 MB de
+geometria float32 **sem compressão** (273k vértices) — fora do budget de
+≤ 15 MB (TD-003, item F4b). O loader já era _meshopt-ready_: `useGLTF(path,
+false, true, extendLoader)` liga o decoder `EXT_meshopt_compression` e mantém
+Draco desligado. Texturas já estavam em WebP (30 imagens, 3,0 MB) — o alvo era
+só geometria.
+
+### Decisão
+
+1. Re-export com **glTF-Transform CLI** (`meshopt`, level `high`,
+   quantização: position 14 bits, normal/tangent 10, texcoord 12, weights 8)
+   → `spider-man_brand_new_day-v3-meshopt.glb`, **nome novo versionado**
+   (cache-busting na Vercel; rollback = reverter 1 linha em
+   `SpiderManModel.tsx`).
+2. O original sai de `public/` no mesmo PR (recuperável do histórico git) —
+   evita 22 MB de asset morto no deploy.
+3. **Entrega:** a Vercel já distribui `public/` pelo edge CDN global — não há
+   CDN externo. Gatilho de migração documentado: Fast Data Transfer > ~50% dos
+   100 GB/mês do Hobby por 2 meses seguidos → mover o GLB para Cloudflare R2
+   (egress gratuito; exige domínio próprio + CORS + `Cache-Control: immutable`).
+
+### Consequências
+
+- ✅ **23,48 MB → 6,52 MB (−72%)**, dentro do budget, com folga.
+- ✅ HUD `?debug=1` idêntico antes/depois no close-up do Arsenal (1440):
+  draw calls 44, tris 440k, programs 15, geo 31 — custo de runtime inalterado.
+- ✅ Diferença visual imperceptível: mobile 390/430 pixel-idênticos no estado
+  de intro; close-up do traje/webshooter indistinguível (evidência local
+  `test-results/visual/closeup-{before,after}.png`).
+- ⚠️ Estrutura de skins mudou de 1 → 16 (um por mesh), todas com o **mesmo
+  conjunto de 66 joints Mixamo** verificado por diff — custo ~64 KB de
+  bone textures, head-tracking e piscada intactos (`collectRigBones` lê
+  `nodes` por nome).
+- ⚠️ `inspect-glb.mjs` reporta bounding box ±32767 em assets quantizados
+  (lê min/max cru do accessor, que fica em espaço quantizado) — limitação do
+  script, não do asset; o three.js calcula bbox da geometria decodificada.
+- ⚠️ O HUD reporta `tex` 66 → 51 (objetos de textura na GPU, contagem
+  transitória) sem correlato visual — nenhuma textura removida do arquivo
+  (30 imagens antes/depois).

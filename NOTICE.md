@@ -5,10 +5,11 @@ This repository's source code is licensed under the MIT License (see
 
 ## 3D model
 
-- **File:** `public/models/spider-man_brand_new_day-v2.glb`
+- **File:** `public/models/spider-man_brand_new_day-v3-meshopt.glb`
 - **Work:** "Spider-Man Brand New Day" by [Eskze](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda)
 - **License:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · © Eskze
 - **Modified:** converted and optimized from the original (KTX2 texture pipeline);
+  meshopt compression with vertex quantization (2026-09-14, ADR-029);
   in-app attribution shown in every section that renders the model.
 
 ## Fonts (SIL Open Font License 1.1)

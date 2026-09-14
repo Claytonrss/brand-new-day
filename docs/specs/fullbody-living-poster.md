@@ -63,8 +63,8 @@ Reference: `docs/design/composition-rules.md`
 
 ## 4. 3D Assets
 
-**Model:** `public/models/spider-man_brand_new_day-v2.glb`  
-**Size:** 22.4 MB  
+**Model:** `public/models/spider-man_brand_new_day-v3-meshopt.glb`  
+**Size:** 6.5 MB  
 **Pose:** full body (corpo inteiro visível, sem crop)  
 **Position:** `[0, -5, 0]` (ajustado para centralizar o modelo na composição)  
 **Scale:** `1.2` (ligeiramente maior para impacto visual do "poster")  
