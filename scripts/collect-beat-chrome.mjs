@@ -28,11 +28,11 @@ console.log('--- beat chrome audit (mobile-390) ---');
 const stops = [
   ['0 (opening)', 0],
   ['1.3 (hero)', 1.3],
-  ['2.05 (chapter1/MUDANÇA)', 2.05],
-  ['3.0 (evolution)', 3.0],
-  ['5.0 (chapter2/REVELAÇÃO)', 5.0],
-  ['5.8 (arsenal)', 5.8],
-  ['7.9 (colophon)', 7.9],
+  ['2.5 (chapter1/MUDANÇA)', 2.5],
+  ['3.5 (evolution)', 3.5],
+  ['5.3 (chapter2/REVELAÇÃO)', 5.3],
+  ['6.5 (arsenal)', 6.5],
+  ['9.6 (colophon)', 9.6],
 ];
 for (const [label, mult] of stops) {
   await page.evaluate((m) => window.scrollTo(0, window.innerHeight * m), mult);
@@ -61,7 +61,7 @@ for (const v of VIEWPORTS) {
   await p.waitForTimeout(3000);
 
   for (const [name, mult] of [
-    ['mudanca', 2.05],
+    ['mudanca', 2.25],
     ['revelacao', 5.05],
   ]) {
     await p.evaluate((m) => window.scrollTo(0, window.innerHeight * m), mult);

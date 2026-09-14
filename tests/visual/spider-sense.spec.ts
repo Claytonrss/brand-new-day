@@ -99,7 +99,7 @@ test.describe('Spider-sense', () => {
   });
 
   test('scrolling back UP into a danger beat does not re-fire @smoke', async ({ page }) => {
-    // Regression: chapter2→evolution (0.5625) sits exactly where the
+    // Regression: chapter2→evolution sits exactly where the
     // REVELAÇÃO card covers the viewport — a backward re-entry used to spend
     // a fire behind the card (docs/specs/spider-sense.md §3 direction gate).
     await page.goto('/?debug=1');

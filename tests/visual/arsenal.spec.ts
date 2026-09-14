@@ -15,7 +15,8 @@ test.describe('Arsenal section', () => {
     // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll past hero (100vh) + chapter1 (100vh) + evolution (150vh) + chapter2 (100vh) = 450vh to arsenal
+    // Scroll past hero (140vh) + chapter1 (70vh) + evolution (210vh) +
+    // chapter2 (70vh) = 590vh to arsenal; 6 viewports lands just inside it
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(2000);
 
@@ -48,7 +49,7 @@ test.describe('Arsenal section', () => {
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
+    // Scroll to arsenal (hero + chapter1 + evolution + chapter2 = 590vh)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 
@@ -74,7 +75,7 @@ test.describe('Arsenal section', () => {
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal (past hero + chapter1 + evolution + chapter2 = 450vh)
+    // Scroll to arsenal (hero + chapter1 + evolution + chapter2 = 590vh)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 

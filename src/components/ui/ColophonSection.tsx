@@ -1,6 +1,7 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import { SECTION_SPANS } from '@/components/3d/beat/sections';
 
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
 
@@ -21,7 +22,8 @@ export function ColophonSection() {
   return (
     <section
       aria-labelledby="colophon-title"
-      className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 py-24 sm:px-12"
+      className="relative flex flex-col items-center justify-center overflow-hidden px-6 py-24 sm:px-12"
+      style={{ minHeight: `${SECTION_SPANS.colophon}dvh` }}
     >
       {/* Dissolve: model fades into ink as the section rises into frame. */}
       <div

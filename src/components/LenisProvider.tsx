@@ -10,7 +10,9 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
+      // Fine brake (ADR-024): each wheel notch covers less story. Touch keeps
+      // its own multiplier — any touch change is gated on the S23 device session.
+      wheelMultiplier: 0.8,
       touchMultiplier: 2,
     });
 

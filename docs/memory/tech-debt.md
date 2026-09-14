@@ -102,3 +102,28 @@ quantização + ADR.
 > (20 MB) e `spider-man_brand_new_day-v2-webp1024.glb` (22 MB) foram removidas do
 > repositório por não terem nenhuma referência no código. Se o F4b avançar,
 > recuperáveis do histórico git ou re-geradas a partir do modelo original.
+
+---
+
+## TD-004: Cauda do FullBody e sangria do headline da Evolution
+
+**Aberto em:** 2026-09-13 (revisão visual do ADR-025)
+**Status:** aberto — pré-existente, não introduzido pela re-engrenagem
+
+Observações da revisão visual (desktop 1440) que **não são regressão** do
+ADR-025 — existiam no layout anterior no mesmo ponto da narrativa:
+
+1. **FullBody (cauda do beat, progresso local > ~0.65):** a copy do overlay é
+   ancorada ao rodapé da seção (`FullBodyOverlay` é `absolute`, não sticky) e
+   sai pelo topo antes do beat terminar; o colofon (gradiente ink, ADR-019)
+   cobre o quadro e as pernas do modelo se dissolvem antes do scroll acabar.
+   O re-engrenar ampliou levemente a sobreposição (~18vh no ponto 0.94 de
+   maxScroll). Correção exige decisão de design (pinar o overlay, encurtar
+   seção ou adiantar o fade da copy).
+2. **Evolution (estado pinado):** a primeira linha do headline sangra pela
+   borda superior do viewport — layout idêntico antes/depois da re-engrenagem
+   (o estado capturado é pinado nos dois). Se for indesejado, é ajuste de
+   safe-zone no overlay.
+
+> Os cards de capítulo de 70vh (delta composicional do ADR-025) **passaram**
+> na revisão: a banda lê como title card intencional em 390/430/1440.

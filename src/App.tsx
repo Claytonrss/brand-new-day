@@ -10,6 +10,7 @@ import { Stage } from './components/3d/Stage';
 import { Atmosphere } from './components/3d/Atmosphere';
 import { LightRig } from './components/3d/lighting/LightRig';
 import { BeatProvider } from './components/3d/beat/BeatProvider';
+import { SECTION_SPANS } from './components/3d/beat/sections';
 import { PerfHud } from './components/ui/PerfHud';
 import { EffectsStack } from './components/3d/EffectsStack';
 import { WebShoot } from './components/3d/interaction/WebShoot';
@@ -38,12 +39,14 @@ import { hasWebGL } from './design/webgl';
  * - Canvas is fixed (never unmounts), contains all 3D content
  * - CameraRig drives camera through scroll-driven keyframes
  * - HTML sections define scroll height and contain overlays
- * - Chapter cards (100vh each) act as cinematic transitions between sections
+ * - Chapter cards act as cinematic transitions between sections
  * - ProgressBar shows scroll progress on right edge
  *
- * Layout: Opening (100vh) → Hero (100vh) → Chapter1 (100vh) → Evolution
- *         (150vh) → Chapter2 (100vh) → Arsenal (150vh) → FullBody (100vh) →
- *         Colophon (100vh) = 900vh
+ * Layout — heights come from `SECTION_SPANS` (beat/sections.ts, ADR-024),
+ * which is also the source of `BEAT_TIMELINE`:
+ * Opening (100vh) → Hero (140vh) → Chapter1 (70vh) → Evolution (210vh) →
+ * Chapter2 (70vh) → Arsenal (210vh) → FullBody (130vh) → Colophon (140vh)
+ * = 1070vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -108,29 +111,48 @@ export function App() {
           {/* Opening title card — Beat 0, 100vh, before the model appears */}
           <OpeningTitleCard />
 
-          {/* Hero — 100vh */}
-          <section className="relative h-dvh" aria-label="Hero">
+          {/* Hero — 140vh (SECTION_SPANS) */}
+          <section
+            aria-label="Hero"
+            className="relative"
+            style={{ height: `${SECTION_SPANS.hero}dvh` }}
+          >
             <HeroOverlay />
           </section>
 
           {/* Chapter 1: MUDANÇA — 100vh cinematic transition card */}
           <ChapterCard title="MUDANÇA" subtitle="Capítulo 2" position="before-evolution" />
 
-          {/* Evolution — 150vh scroll-driven */}
-          <section id="evolution-section" className="relative h-[150vh]" aria-label="Evolution">
+          {/* Evolution — 210vh scroll-driven (SECTION_SPANS) */}
+          <section
+            id="evolution-section"
+            aria-label="Evolution"
+            className="relative"
+            style={{ height: `${SECTION_SPANS.evolution}vh` }}
+          >
             <EvolutionOverlay />
           </section>
 
           {/* Chapter 2: REVELAÇÃO — 100vh cinematic transition card */}
           <ChapterCard title="REVELAÇÃO" subtitle="Capítulo 4" position="before-fullbody" />
 
-          {/* Arsenal — 150vh scroll-driven, lateral orbit axis crossing */}
-          <section id="arsenal-section" className="relative h-[150vh]" aria-label="Arsenal">
+          {/* Arsenal — 210vh scroll-driven, lateral orbit axis crossing (SECTION_SPANS) */}
+          <section
+            id="arsenal-section"
+            aria-label="Arsenal"
+            className="relative"
+            style={{ height: `${SECTION_SPANS.arsenal}vh` }}
+          >
             <ArsenalOverlay />
           </section>
 
-          {/* FullBody — 100vh, final reveal */}
-          <section id="fullbody-section" className="relative h-dvh" aria-label="FullBody">
+          {/* FullBody — 130vh, final reveal (SECTION_SPANS) */}
+          <section
+            id="fullbody-section"
+            aria-label="FullBody"
+            className="relative"
+            style={{ height: `${SECTION_SPANS.fullBody}dvh` }}
+          >
             <FullBodyOverlay />
           </section>
 

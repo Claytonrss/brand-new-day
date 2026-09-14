@@ -11,8 +11,8 @@ import { BEAT_TIMELINE, type BeatId } from '@/components/3d/beat/beats';
  *
  * - fires only when the narrative ARRIVES at a danger beat (evolution,
  *   arsenal, fullBody) — never in the hero/opening, never on transition
- *   cards. The first fire happens at 37.5% of the scroll, after the page has
- *   earned it;
+ *   cards. The first fire is evolution's arrival (~a third of the scroll
+ *   after the ADR-024 re-gear), after the page has earned it;
  * - arrival means scrolling FORWARD into the beat (§3 direction gate).
  *   Flipping back into one — chapter2→evolution sits exactly under the
  *   REVELAÇÃO card that covers the viewport — re-arms silently instead of
