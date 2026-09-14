@@ -17,9 +17,16 @@ quadrinhos. Nunca abaixo do horizonte: o rosto nunca é coberto
 - Geometria pura em `src/design/senseArcs.ts` (leque −153°…−27°, raios
   0.32–0.46 da caixa, squiggle cúbica com wiggle alternado); testes cobrem
   leque/cobertura da cabeça e stagger ≤150ms.
-- Âncora: `SenseAnchor` projeta `ANCHORS.head` pela câmera e publica
-  `--sense-x/y` (px de tela) **enquanto o envelope vive** (~600ms por
-  disparo); custo em repouso = uma comparação por frame.
+- Âncora: `SenseAnchor` projeta `ANCHORS.head` **+0.12u em `y`** (topo do
+  crânio — o centro do bone `Head_06` fica no meio do crânio e o halo lia
+  como deslocado; ADR-027) pela câmera e publica `--sense-x/y` (px de tela)
+  **enquanto o envelope vive** (~600ms por disparo); custo em repouso = uma
+  comparação por frame.
+- Tamanho adaptativo (ADR-027): o mesmo frame projeta a coroa (+0.27u) e
+  mede o raio projetado da cabeça ×4 (fator do leque) → `--sense-radius`
+  (px, clamp 80–180). O CSS dimensiona a caixa com
+  `calc(var(--sense-radius) * 2)` — sem breakpoint de tamanho fixo; o halo
+  cresce e encolhe com o zoom da câmera nos beats de perigo.
 - Overlay DOM: `src/components/ui/SpiderSense.tsx` — draw-on de 170ms por
   traço (`pathLength=1` + dash, mesmo idioma do fio do chapter print),
   opacity escrita por rAF direto no elemento; o loop rAF só vive enquanto o

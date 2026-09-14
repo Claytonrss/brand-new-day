@@ -170,20 +170,15 @@ html.lenis body {
 }
 
 /* IDEIA-3D-10 — spider-sense halo (docs/specs/spider-sense.md §1).
-   SenseAnchor publishes --sense-x/y (screen px) while the envelope is
-   alive; the component writes opacity per frame. */
+   SenseAnchor publishes --sense-x/y (screen px) and --sense-radius (halo
+   half-size, camera-adaptive — ADR-027) while the envelope is alive; the
+   component writes opacity per frame. */
 .sense-halo {
   left: var(--sense-x, 50vw);
   top: var(--sense-y, 38vh);
-  width: 230px;
-  height: 230px;
+  width: calc(var(--sense-radius, 130px) * 2);
+  height: calc(var(--sense-radius, 130px) * 2);
   transform: translate(-50%, -50%);
-}
-@media (min-width: 768px) {
-  .sense-halo {
-    width: 300px;
-    height: 300px;
-  }
 }
 
 .sense-squiggle {
