@@ -153,7 +153,7 @@ externo novo aparece no load crítico (analytics carrega lazy/after-event).
 
 ---
 
-## W6 — PR `docs/launch-kit`: distribuição e narrativa (A10+M11+B16, 1 dia)
+## W6 — PR `docs/launch-kit`: distribuição e narrativa (A10+M11+B16, 1 dia) — ✅ executada
 
 1. **`public/robots.txt` + `public/sitemap.xml`** (B16, trivial — só agora faz
    sentido: há algo indexável e linkável).

@@ -13,7 +13,7 @@ A cinematic, scroll-driven 3D experience: one rainy NYC night, told as a single 
 - **A procedural rig instead of animation clips.** The GLB ships without animations, so the character is brought to life at runtime: a 16-joint rig with spring-based landing, breathing keyed to narrative beats, velocity lean and a spider-sense halo anchored to the skull. 66 joints, zero pre-baked keyframes.
 - **One continuous camera.** A Catmull-Rom spline drives the camera through 7 narrative beats, direction changes down 54% versus naive look-at, synced to scroll via GSAP ScrollTrigger + Lenis.
 - **Adaptive quality, three tiers.** Synchronous initial tier (mobile never starts at `high`), idle-gated degradation with hysteresis, shadow throttling (measured 16-draw-call valley), DPR/MSAA ladders and post-processing reserved for the top tier.
-- **AI-augmented engineering.** Built with a delegation-only orchestrator harness: 10 agents with granular command permissions, evidence-gated PRs, 28 ADRs — the specs actually drive the code. See [`opencode.json`](opencode.json) and [`docs/memory/decisions.md`](docs/memory/decisions.md).
+- **AI-augmented engineering.** Built with a delegation-only orchestrator harness: 10 agents with granular command permissions, evidence-gated PRs, 28 ADRs — the specs actually drive the code. Full write-up: [docs/case-study-ai-harness.md](docs/case-study-ai-harness.md) · config: [`opencode.json`](opencode.json) · 30 ADRs: [`docs/memory/decisions.md`](docs/memory/decisions.md).
 
 ## Numbers
 
