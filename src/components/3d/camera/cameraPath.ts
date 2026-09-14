@@ -17,7 +17,6 @@ const DEG = Math.PI / 180;
  * (docs/specs/cinematic-camera-path.md §1).
  */
 const ARC = {
-  /** Control points, including start and end. */
   samples: 4,
   startAzimuth: -32 * DEG,
   endAzimuth: 43 * DEG,

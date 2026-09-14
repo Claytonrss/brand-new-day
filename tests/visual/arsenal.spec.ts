@@ -8,31 +8,26 @@ test.describe('Arsenal section', () => {
 
     await waitForScene(page, 0);
 
-    // Wait for WebGL canvas to load
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll past hero (140vh) + chapter1 (70vh) + evolution (210vh) +
-    // chapter2 (70vh) = 590vh to arsenal; 6 viewports lands just inside it
+    // Scroll to arsenal: opening (100) + hero (140) + chapter1 (70) +
+    // evolution (210) + chapter2 (70) = 590vh to the section top; 6 viewports
+    // lands just inside it
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(2000);
 
-    // Check arsenal title is visible
     const arsenalTitle = page.locator('#arsenal-title');
     await expect(arsenalTitle).toBeVisible();
     await expect(arsenalTitle).toContainText('SEM APOIO.');
     await expect(arsenalTitle).toContainText('SÓ O ESSENCIAL.');
 
-    // Check kicker
     await expect(page.getByText('O que sobrou')).toBeVisible();
 
-    // Check body copy
     await expect(page.getByText('Sem Stark, sem SHIELD')).toBeVisible();
 
-    // Save visual evidence screenshot
     const projectName = testInfo.project.name;
     await page.screenshot({
       path: `test-results/visual/${projectName}-arsenal.png`,
@@ -45,23 +40,19 @@ test.describe('Arsenal section', () => {
 
     await waitForScene(page, 0);
 
-    // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal (hero + chapter1 + evolution + chapter2 = 590vh)
+    // Scroll to arsenal (section top at 590vh; 6 viewports lands inside)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 
-    // Check ARIA label on section
     const arsenalSection = page.locator('[aria-label="Arsenal"]');
     await expect(arsenalSection).toBeVisible();
 
-    // Check aria-labelledby
     const titledSection = page.locator('[aria-labelledby="arsenal-title"]');
     await expect(titledSection).toBeVisible();
 
-    // Check title has correct id
     const title = page.locator('h2#arsenal-title');
     await expect(title).toBeVisible();
   });
@@ -71,19 +62,17 @@ test.describe('Arsenal section', () => {
 
     await waitForScene(page, 0);
 
-    // Wait for canvas
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to arsenal (hero + chapter1 + evolution + chapter2 = 590vh)
+    // Scroll to arsenal (section top at 590vh; 6 viewports lands inside)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 6));
     await page.waitForTimeout(1000);
 
-    // Check that the section container is left-aligned (justify-start)
+    // the left alignment comes from the justify-start class on the container
     const section = page.locator('[aria-labelledby="arsenal-title"]');
     await expect(section).toBeVisible();
 
-    // Verify text content is within viewport bounds
     const box = await section.boundingBox();
     expect(box).not.toBeNull();
     if (box) {

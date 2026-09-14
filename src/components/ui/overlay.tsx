@@ -16,7 +16,6 @@ export function OverlayKicker({ children }: { children: ReactNode }) {
   );
 }
 
-/** Body copy under the headline. */
 export function OverlayBody({ children }: { children: ReactNode }) {
   return (
     <p className="mt-4 font-display text-sm leading-[1.55] text-paper/80 sm:text-base md:text-lg">

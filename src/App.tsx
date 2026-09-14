@@ -66,10 +66,8 @@ export function App() {
       {/* Arrival landing — fires once the Hero enters the viewport (Wave 4a) */}
       <LandingTrigger />
 
-      {/* Mobile gyro permission chip (iOS) — renders only when needed */}
       <GyroPrompt />
 
-      {/* Scroll progress indicator */}
       <ProgressBar />
 
       {/* Spider-sense halo — comic emanata around the head (IDEIA-3D-10) */}
@@ -81,7 +79,6 @@ export function App() {
       {/* Editorial field log on the left spine (IDEIA-AMB-08) */}
       <BeatStamp />
 
-      {/* Cinematic loader — shows during GLB asset loading */}
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
 
       {/* Developer metrics overlay — only with ?debug=1 */}
@@ -106,12 +103,10 @@ export function App() {
           </CanvasContainer>
         </ErrorBoundary>
 
-        {/* Scrollable content overlay */}
         <div className="relative z-10">
-          {/* Opening title card — Beat 0, 100vh, before the model appears */}
+          {/* Opening title card — Beat 0, before the model appears */}
           <OpeningTitleCard />
 
-          {/* Hero — 140vh (SECTION_SPANS) */}
           <section
             aria-label="Hero"
             className="relative"
@@ -120,10 +115,8 @@ export function App() {
             <HeroOverlay />
           </section>
 
-          {/* Chapter 1: MUDANÇA — 100vh cinematic transition card */}
           <ChapterCard title="MUDANÇA" subtitle="Capítulo 2" position="before-evolution" />
 
-          {/* Evolution — 210vh scroll-driven (SECTION_SPANS) */}
           <section
             id="evolution-section"
             aria-label="Evolution"
@@ -136,7 +129,7 @@ export function App() {
           {/* Chapter 2: REVELAÇÃO — 100vh cinematic transition card */}
           <ChapterCard title="REVELAÇÃO" subtitle="Capítulo 4" position="before-fullbody" />
 
-          {/* Arsenal — 210vh scroll-driven, lateral orbit axis crossing (SECTION_SPANS) */}
+          {/* Arsenal — lateral orbit axis crossing */}
           <section
             id="arsenal-section"
             aria-label="Arsenal"
@@ -146,7 +139,6 @@ export function App() {
             <ArsenalOverlay />
           </section>
 
-          {/* FullBody — 130vh, final reveal (SECTION_SPANS) */}
           <section
             id="fullbody-section"
             aria-label="FullBody"
@@ -156,7 +148,6 @@ export function App() {
             <FullBodyOverlay />
           </section>
 
-          {/* Colophon — 100vh, editorial outro with authorship + CTA */}
           <ColophonSection />
         </div>
       </main>

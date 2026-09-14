@@ -37,7 +37,6 @@ export function rand(seed: number): number {
   return value - Math.floor(value);
 }
 
-/** Next blink time given the current time and a seed. */
 export function nextBlinkAt(now: number, seed: number): number {
   return now + BLINK_INTERVAL.min + rand(seed) * (BLINK_INTERVAL.max - BLINK_INTERVAL.min);
 }

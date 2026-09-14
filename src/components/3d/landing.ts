@@ -15,9 +15,7 @@ import type { BoneRole } from './rig/rigBones';
  * be called exactly once per frame (the rig does it).
  */
 
-/** Height where the model is held before the landing fires (world units). */
 export const LANDING_DROP = 0.6;
-/** Spring angular frequency — "k ≈ 9" from the plan. */
 export const LANDING_STIFFNESS = 9;
 /** Damping ratio — 0.7 gives the plan's 4–6% overshoot (≈4.6%). */
 export const LANDING_DAMPING = 0.7;
@@ -27,16 +25,12 @@ export const LANDING_FLEX_HIPS = 0.105;
 export const LANDING_FLEX_KNEE = 0.14;
 /** Flexion decay rate after the settle (1/s) — gone in ~1s. */
 export const LANDING_FLEX_DECAY = 3;
-/** Camera vertical kick at impact (world units, dips down). */
 export const LANDING_KICK = 0.08;
-/** Camera FOV punch at impact (degrees). */
 export const LANDING_FOV_PUNCH = -2;
 /** Fall speed that saturates the kick (ω·DROP·0.75 ≈ 4). */
 export const LANDING_KICK_NORMALIZER = 4;
-/** Impact/settle thresholds (world units and units/s). */
 export const LANDING_SETTLE_EPS = 0.02;
 
-/** Additive pose offsets applied while the landing flex is active. */
 export const LANDING_POSE: Partial<Record<BoneRole, readonly [number, number, number]>> = {
   hips: [LANDING_FLEX_HIPS, 0, 0],
   upLegL: [LANDING_FLEX_KNEE, 0, 0],
@@ -56,7 +50,6 @@ export const landing = {
 let settledFor: number | null = null;
 
 /**
- * Arms the landing: the spring is released and the model starts to fall.
  * Idempotent — the landing happens once per session (callers gate reduced
  * motion; this module stays animation-only).
  */
@@ -78,14 +71,12 @@ export function landingSnap(): void {
   spring.set(0);
 }
 
-/** Current group Y offset (world units) — held at DROP until fired. */
 export function landingOffset(): number {
   return landing.fired ? spring.value : LANDING_DROP;
 }
 
 /**
- * Advance the landing state by `delta` seconds (call once per frame from the
- * rig). Before the fire it is a no-op.
+ * Call once per frame from the rig. Before the fire it is a no-op.
  */
 export function landingStep(delta: number): void {
   if (!landing.fired) return;

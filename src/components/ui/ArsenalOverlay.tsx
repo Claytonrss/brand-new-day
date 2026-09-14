@@ -151,14 +151,12 @@ export function ArsenalOverlay() {
         </OverlayBody>
       </section>
 
-      {/* Technical HUD — fixed layer, driven by Arsenal scroll progress */}
       <div
         ref={hudRef}
         data-testid="arsenal-hud"
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-20 opacity-0"
       >
-        {/* Desktop: hairline call-outs in the margins */}
         <div className="parallax-mid relative hidden h-full w-full md:block">
           <svg
             className="absolute inset-0 h-full w-full"
@@ -193,7 +191,6 @@ export function ArsenalOverlay() {
           </span>
         </div>
 
-        {/* Mobile: compact bottom legend + markers */}
         <div className="parallax-far absolute inset-x-0 bottom-0 md:hidden">
           <div className="beat-accent-border-soft mx-auto flex max-w-[82vw] flex-col gap-1.5 border-t pt-4 pb-4">
             {HUD_LABELS.map((label, index) => (

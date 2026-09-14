@@ -39,7 +39,6 @@ describe('spiderSenseStep trigger discipline', () => {
     for (const beat of ['evolution', 'arsenal', 'fullBody'] as const) {
       expect(spiderSenseStep(1 / 60, beat, 0.4)).toBe(1);
       expect(spiderSense.count).toBeGreaterThan(0);
-      // let it die before the next entry
       decay();
     }
     expect(spiderSense.count).toBe(3);

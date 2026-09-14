@@ -45,7 +45,6 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
     if (prefersReducedMotion || !cardRef.current || !titleRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Card entrance — scale + fade
       gsap.from(cardRef.current, {
         opacity: 0,
         scale: 0.9,
@@ -59,7 +58,6 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
         },
       });
 
-      // Title characters stagger animation
       const chars = titleRef.current!.querySelectorAll('.char');
       gsap.from(chars, {
         opacity: 0,
@@ -74,7 +72,6 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
         },
       });
 
-      // Subtitle fade in with delay
       if (subtitleRef.current) {
         gsap.from(subtitleRef.current, {
           opacity: 0,
@@ -112,7 +109,6 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
-  // Split title into individual characters for stagger animation
   const titleChars = <SplitChars text={title} />;
 
   return (

@@ -12,7 +12,6 @@ export class Spring {
 
   constructor(
     initial = 0,
-    /** Angular frequency — higher is snappier. */
     private readonly stiffness = 12,
     /** 1 = critically damped (no overshoot). */
     private readonly damping = 1,
@@ -22,8 +21,6 @@ export class Spring {
   }
 
   /**
-   * Advance the spring.
-   *
    * `delta` is clamped to 1/10 s: enough to keep the integrator stable for the
    * stiffness used here (semi-implicit Euler needs dt < 2/ω), while still
    * letting the pose settle on very slow devices instead of crawling.

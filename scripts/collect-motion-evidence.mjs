@@ -40,7 +40,6 @@ for (const viewport of VIEWPORTS) {
   const page = await context.newPage();
   await page.goto(`${BASE_URL}/?debug=1`, { waitUntil: 'load' });
 
-  // wait for the cinematic loader to finish
   await page
     .getByRole('progressbar', { name: 'Carregando experiência 3D' })
     .waitFor({ state: 'hidden', timeout: 90_000 })

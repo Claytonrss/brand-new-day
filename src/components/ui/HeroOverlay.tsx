@@ -5,7 +5,6 @@ import { OverlayBody, OverlayKicker } from './overlay';
 export function HeroOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex min-h-dvh flex-col justify-between p-6 sm:p-12 md:p-16">
-      {/* Top Header / Metadata */}
       <header className="parallax-mid flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span

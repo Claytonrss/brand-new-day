@@ -10,7 +10,6 @@
  */
 
 export const MOTION = {
-  /** Durations (ms) */
   duration: {
     /** Button hover, small UI feedback */
     micro: 150,
@@ -22,15 +21,13 @@ export const MOTION = {
     slow: 1200,
   },
 
-  /** Easing functions (CSS cubic-bezier) */
   ease: {
-    /** Decelerate for elements entering the screen */
+    /** For elements entering the screen */
     decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',
     /** Premium easing for cinematic moments */
     premium: 'cubic-bezier(0.16, 1, 0.3, 1)',
   },
 
-  /** Stagger delays (ms) */
   stagger: {
     /** Standard stagger for lists */
     base: 60,

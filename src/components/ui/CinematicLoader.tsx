@@ -143,7 +143,6 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
             }}
           />
         </g>
-        {/* Signal rim on top of the fill — the "LED" edge. */}
         <g
           fill="none"
           stroke="#c23b34"
@@ -175,7 +174,6 @@ export function CinematicLoader({ onLoaded }: CinematicLoaderProps) {
         </p>
       </div>
 
-      {/* Minimal readout — the reveal is the progress bar. */}
       <p className="mt-6 font-mono text-xs tabular-nums text-dim">{Math.round(progress)}%</p>
     </div>
   );

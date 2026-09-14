@@ -25,7 +25,6 @@ export function ColophonSection() {
       className="relative flex flex-col items-center justify-center overflow-hidden px-6 py-24 sm:px-12"
       style={{ minHeight: `${SECTION_SPANS.colophon}dvh` }}
     >
-      {/* Dissolve: model fades into ink as the section rises into frame. */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
