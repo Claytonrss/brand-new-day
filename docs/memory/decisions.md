@@ -1138,3 +1138,79 @@ contratos cross-file).
   ~300–380 caiu na inspeção direta: grande parte do que o inventário classificou
   como óbvio carregava unidade/semântica/porquê. Risco de conflito trivial de
   comentários em merges paralelos.
+
+## ADR-027: Halo do spider-sense ancorado no topo do crânio e adaptativo à câmera
+
+**Data:** 2026-09-14
+**Status:** ✅ Aprovado
+
+### Contexto
+
+O halo do spider-sense lia como deslocado em relação à cabeça — sobretudo no
+zoom dos beats de perigo. Duas causas independentes (BUG-PLAN-2026-09-13 B1):
+(1) `SenseAnchor` projetava o centro do bone `mixamorig:Head_06`, que fica no
+**meio** do crânio, enquanto os "emanata" nascem do **topo** da cabeça; e
+(2) a caixa do halo era fixa em CSS (230px / 300px no breakpoint `md`), então
+quando a câmera chega perto a cabeça cresce na tela e o halo fica pequeno e
+desproporcional — tamanho não é função da distância da câmera.
+
+### Decisão
+
+1. Âncora deslocada: `SenseAnchor` soma **+0.12u world-space em `y`** ao
+   `ANCHORS.head` antes de projetar (topo do crânio; o bone fica ~12cm abaixo
+   da coroa na escala do modelo).
+2. Raio por projeção: no mesmo frame, um segundo ponto (coroa, +0.27u) é
+   projetado e a distância em px até a âncora ×4 (fator do leque dos
+   emanata, raios 0.32–0.46 da caixa) define `--sense-radius`, clamp
+   **80–180px**. O CSS dimensiona a caixa com
+   `calc(var(--sense-radius) * 2)`; o breakpoint de tamanho fixo some.
+3. Custo inalterado: as duas projeções e três escritas de CSS var acontecem
+   apenas enquanto o envelope vive (~600ms por disparo).
+
+### Consequências
+
+- ✅ Halo centrado no topo da cabeça e proporcional ao zoom em todos os
+  viewports; nada muda na disciplina de gatilho (ADR-024).
+- ✅ Contrato cross-file novo: `--sense-radius` publicado por `SenseAnchor`,
+  consumido por `.sense-halo` (`index.css`), documentado na spec §1.
+- ⚠️ Os magic numbers (0.12u, 0.27u, ×4, clamp 80–180) são calibração visual
+  do modelo atual — revisitá-los se o asset ou a escala da cena mudarem.
+
+## ADR-028: Estado indeterminado (`null`) em `arsenalReveal` contra a race de canvas
+
+**Data:** 2026-09-14
+**Status:** ✅ Aprovado
+
+### Contexto
+
+O HUD técnico do Arsenal às vezes aparecia só de rolar, sem clique, em perfis
+gesture-capable (BUG-PLAN-2026-09-13 B2). Race: `arsenalReveal.gestureCapable`
+nascia `false` ("perfil sem gesto") e só era publicado como `true` pelo
+`useEffect` do `WebShootHint` **depois** da montagem do canvas. Durante o load
+do GLB (1–3s), o `ArsenalOverlay` lia `false` e tomava o caminho de reveal por
+scroll; quando o gate chegava, um `opacity > 0` já podia ter sido escrito.
+Um rótulo booleano não distingue "sem gesto" de "ainda não sei".
+
+### Decisão
+
+1. `gestureCapable: boolean | null` — inicial **`null`** (indeterminado);
+   `WebShootHint` publica `true`/`false` no mount (e `false` no unmount),
+   como já fazia.
+2. `ArsenalOverlay.apply()` trata `null` como "HUD permanece em 0": nem o
+   envelope por scroll (0.42–0.6) nem o auto-reveal (≥ 0.8) rodam até o gate
+   existir. Perfis `reduced-motion`/tier `low` são intocados — o caminho
+   scroll-driven deles continua correto durante e após o load.
+3. Afrodade explícita: `ArsenalClickHint` (DOM) — label "clique no anel ·"
+   visível apenas com `data-beat === 'arsenal'`, `gestureCapable === true` e
+   HUD não revelado; some no mesmo tap que dispara a teia. O anel 3D sozinho
+   não era affordance suficiente em mobile.
+
+### Consequências
+
+- ✅ Perfis capáveis não veem o HUD antes do gesto; quem não descobre o
+  gesto continua atendido pelo auto-reveal em 0.8.
+- ⚠️ Durante a janela `null` (só durante o load do canvas) o auto-reveal
+  fica suspenso — aceito: a publicação ocorre imediatamente após o mount e
+  o próximo `onUpdate` do ScrollTrigger resolve o estado.
+- ⚠️ Consumidores novos de `gestureCapable` precisam lidar com os três
+  estados (`null`/`false`/`true`) — o tipo obriga.
