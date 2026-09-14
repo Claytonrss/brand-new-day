@@ -152,7 +152,7 @@ test.describe('Arrival landing', () => {
     await page.goto(`/${RIG}`);
     await waitForScene(page);
 
-    // Hero section = 100vh–200vh: the trigger fires as its top touches the
+    // Hero section = 100vh–240vh: the trigger fires as its top touches the
     // viewport bottom (first pixel of scroll past the opening card).
     await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.2));
     await page.waitForTimeout(1500);

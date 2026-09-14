@@ -15,7 +15,8 @@ test.describe('Evolution section', () => {
     // Wait for model to settle
     await page.waitForTimeout(3000);
 
-    // Scroll to evolution section (past hero 100vh + chapter1 card 100vh = 200vh)
+    // Scroll to evolution (hero 140vh + chapter1 70vh → section starts at
+    // 310vh; 3.5 viewports lands just inside it)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3.5));
     await page.waitForTimeout(2000);
 
@@ -44,7 +45,7 @@ test.describe('Evolution section', () => {
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    // Scroll to evolution (past hero 100vh + chapter1 card 100vh)
+    // Scroll to evolution (hero 140vh + chapter1 70vh → section starts at 310vh)
     await page.evaluate(() => window.scrollBy(0, window.innerHeight * 3.5));
     await page.waitForTimeout(1000);
 

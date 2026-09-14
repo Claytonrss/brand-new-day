@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
 import { MOTION } from '@/design/motion';
+import { SECTION_SPANS } from '@/components/3d/beat/sections';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { SplitChars } from './SplitChars';
 
@@ -10,13 +11,24 @@ interface ChapterCardProps {
   position: 'before-evolution' | 'before-fullbody';
 }
 
+/** Card height follows its section's span in the scroll-gearing table. */
+const SPAN_BY_POSITION = {
+  'before-evolution': SECTION_SPANS.chapter1,
+  'before-fullbody': SECTION_SPANS.chapter2,
+} as const;
+
 /**
- * ChapterCard — cinematic full-screen chapter transition card.
+ * ChapterCard — cinematic chapter transition card.
  *
  * Sits between 3D sections as a solid bg-ink break. The camera repositions
  * behind the card during these scroll sections, creating a "chapter change"
  * effect. Title characters stagger in with premium easing; subtitle fades
  * with a delay.
+ *
+ * Height comes from `SECTION_SPANS` (ADR-024): passage beats are geared
+ * shorter than a full viewport so the journey's scroll is spent on the 3D
+ * scenes; the card crosses as an ink band with the camera travel visible
+ * around it.
  *
  * Respects `prefers-reduced-motion` — all elements visible immediately.
  *
@@ -106,7 +118,8 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
   return (
     <div
       ref={cardRef}
-      className="relative flex h-dvh items-center justify-center bg-ink"
+      className="relative flex items-center justify-center bg-ink"
+      style={{ height: `${SPAN_BY_POSITION[position]}dvh` }}
       data-chapter={position}
     >
       {/* Print layers (docs/specs/chapter-print.md) — static trama + strand */}

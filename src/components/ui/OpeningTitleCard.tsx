@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { MOTION } from '@/design/motion';
+import { SECTION_SPANS } from '@/components/3d/beat/sections';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /**
@@ -63,7 +64,8 @@ export function OpeningTitleCard() {
   return (
     <div
       ref={cardRef}
-      className="relative flex h-dvh flex-col items-center justify-center overflow-hidden bg-ink px-6"
+      className="relative flex flex-col items-center justify-center overflow-hidden bg-ink px-6"
+      style={{ height: `${SECTION_SPANS.opening}dvh` }}
       data-opening="title-card"
     >
       {/* Suit weave — IDEIA-AMB-07: the hero's material under the title card. */}

@@ -14,6 +14,22 @@ function readInteraction(page: import('@playwright/test').Page) {
   return page.evaluate(() => window.__interaction ?? null);
 }
 
+/**
+ * Scroll so the Arsenal section sits at internal progress `p` (0 = its top at
+ * the viewport top, 1 = fully scrolled past). Derived from the live bounding
+ * box instead of global fractions, so re-gearing the page (ADR-024) never
+ * invalidates these thresholds.
+ */
+async function scrollArsenalTo(page: import('@playwright/test').Page, p: number) {
+  await page.evaluate((progress) => {
+    const section = document.querySelector<HTMLElement>('#arsenal-section');
+    if (!section) return;
+    const top = section.getBoundingClientRect().top + window.scrollY;
+    const max = document.body.scrollHeight - window.innerHeight;
+    window.scrollTo(0, Math.min(top + section.offsetHeight * progress, max));
+  }, p);
+}
+
 test.describe('Model interaction', () => {
   test('drag orbits the model and springs back on release', async ({ page }) => {
     test.slow();
@@ -68,11 +84,10 @@ test.describe('Model interaction', () => {
     await page.goto('/?debug=1');
     await waitForScene(page);
 
-    // 0.75 of the scroll ≈ local progress 0.36 inside Arsenal — past the old
-    // scroll envelope (0.42 starts later, so scroll alone must NOT show it).
-    await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.75),
-    );
+    // Local progress 0.36 inside Arsenal — past the narrative fade envelope
+    // (0.28+) but before the scroll reveal starts (0.42), so scroll alone
+    // must NOT show the HUD.
+    await scrollArsenalTo(page, 0.36);
     await page.waitForTimeout(3000);
 
     const hud = page.getByTestId('arsenal-hud');
@@ -97,10 +112,8 @@ test.describe('Model interaction', () => {
     await page.goto('/?debug=1');
     await waitForScene(page);
 
-    // ≈ local progress 0.88 — past AUTO_REVEAL_PROGRESS (0.8), no tap at all.
-    await page.evaluate(() =>
-      window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.84),
-    );
+    // Local progress 0.88 — past AUTO_REVEAL_PROGRESS (0.8), no tap at all.
+    await scrollArsenalTo(page, 0.88);
     await page.waitForTimeout(1200);
 
     await expect(page.getByTestId('arsenal-hud')).toHaveCSS('opacity', '1');

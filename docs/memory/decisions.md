@@ -1011,3 +1011,77 @@ passa a instância como argumento, mantendo `recordVelocity` truthy.
   releitura de conteúdo já anunciado na descida.
 - ✅ Testes: 3 casos unitários novos (subindo, velocity 0, re-arm para
   frente) + 1 visual `@smoke` de regressão (mobile-390 + desktop-1440).
+
+## ADR-025: Re-engrenagem do scroll (pacing por distância, sem hijack)
+
+**Data:** 2026-09-13
+**Status:** ✅ Aprovado (fase 1 do plano de pacing; snap magnético/nav por
+capítulos ficam como fase 2 potencial)
+
+### Contexto
+
+O relato de uso era "o scroll passa rápido demais para navegar o site". Hoje
+o pacing é dado pelas alturas de seção (900vh de documento, 800vh de scroll)
+somadas ao damping do Lenis (`duration: 1.2`, ADR-005). Duas propostas foram
+avaliadas: (1) travar uma seção inteira por gesto (fullpage/snap de hijack) e
+(2) "forçar um scroll mais lento". A (1) colide com a arquitetura: o site é um
+**scrub contínuo** — um único ScrollTrigger master em `document.body`
+(ADR-008) alimenta câmera/luz/rig por frações, Evolution e Arsenal têm
+coreografia **interna** (fade da narrativa 0.28–0.44, HUD 0.42–0.6, auto-reveal
+0.8 do progresso local) e o ADR-014 já removeu "paradas" de easing de
+propósito. Hijack também briga com momentum touch e com a suíte (jumps secos
+`window.scrollTo` + settle por timeout; o spec de reduced-motion compara
+screenshots byte a byte). Frear mais o Lenis (aumentando `duration`) não dá
+tempo de leitura — só adiciona atraso elástico entre gesto e resposta.
+
+### Decisão
+
+**Re-engrenar a distância**: mesma rotação de input avança menos história.
+As alturas passam a viver numa **tabela única** —
+`src/components/3d/beat/sections.ts` (`SECTION_SPANS`) — da qual `App.tsx`
+dimensiona as seções e `beats.ts` **deriva** `BEAT_TIMELINE` (fim da
+duplicação manual de frações entre layout e narrative). Distribuição:
+Opening 100 (contrato do landing, intocado) · Hero 140 · Chapter1 70 ·
+Evolution 210 · Chapter2 70 · Arsenal 210 · FullBody 130 · Colophon 140 =
+**1070vh de documento / 970vh de scroll** (+21% de história; os beats de
+passagem caem 30%). Complemento de freio fino: `wheelMultiplier: 1 → 0.8` no
+Lenis (só roda de desktop; touch segue intocado — qualquer mudança de touch
+fica data-gated na sessão S23, FALHA-10). `beatLocalProgress`/consumidores
+não mudam: as frações novas são ~hero 0–0.247 · chapter1 –0.320 · evolution
+–0.536 · chapter2 –0.608 · arsenal –0.825 · fullBody –0.959 · colophon –1.0.
+
+### Alternativas Consideradas
+
+1. **Fullpage/snap de hijack (uma seção por gesto)** — rejeitada: comprime a
+   coreografia interna de Evolution/Arsenal ou exige scroll interno;
+   reintroduz paradas que o ADR-014 removeu; hard cut (3D-03) já havia sido
+   rejeitado por quebrar a assinatura contínua; hijack é anti-pattern de
+   acessibilidade e instável em mobile com WebGL; quebraria o contrato
+   dry-scroll da suíte visual.
+2. **`snap` nativo do ScrollTrigger (magnético direcional)** — adiado para
+   fase 2: dá "aterrissagem" por capítulo sem hijack, mas a integração
+   snap×Lenis exige aterrisar via `lenis.scrollTo` (o snap nativo escreve
+   scrollTop por fora), gates (reduced-motion off, escape hatch e2e) e
+   validação em device.
+3. **Aumentar `duration` do Lenis** — rejeitado como resposta ao pacing:
+   delay percebido, não tempo de leitura.
+4. **Nav por capítulos (dots + teclado)** — complemento de fase 2, não
+   substitui a re-engrenagem.
+
+### Consequências
+
+- ✅ +21% de scroll para a mesma história; leitura de Hero/Evolution/Arsenal/
+  FullBody ~40% mais longa; cards de transição cruzam mais rápido.
+- ✅ Fonte única de verdade: re-engrenar de novo = editar `SECTION_SPANS`;
+  `BEAT_TIMELINE`, câmera, luzes e overlays acompanham por construção.
+  O teste unitário da timeline também deriva das spans.
+- ✅ Spec de interação do Arsenal refatorado para derivar o scroll do
+  bounding box de `#arsenal-section` (robusto a qualquer re-engrenagem
+  futura).
+- ⚠️ `getVelocity()` normalizado por viewport sobe por gesto (mais px
+  percorridos) — FOV punch/dolly lag/lean disparam com mais facilidade.
+  Observar na sessão S23; ajuste de threshold é data-gated.
+- ⚠️ Frações de maxScroll mudaram de significado: stops dos scripts de
+  evidence (`collect-beat-chrome`, `collect-micro-craft`) recalibrados em
+  múltiplos de viewport; specs que usam frações conferidos contra a nova
+  timeline.

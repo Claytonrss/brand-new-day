@@ -92,7 +92,7 @@ for (const v of VIEWPORTS) {
   await p.waitForTimeout(3000);
 
   await p.evaluate(() =>
-    window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.78),
+    window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) * 0.72),
   );
   await p.waitForTimeout(1500);
   await p.screenshot({ path: `${OUT}/${v.name}-arsenal.png`, timeout: 60_000 });

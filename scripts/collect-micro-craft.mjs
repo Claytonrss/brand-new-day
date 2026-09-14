@@ -29,12 +29,12 @@ await page.waitForTimeout(3000);
 console.log('--- beat stamp audit (mobile-390) ---');
 const stops = [
   ['0 (hero)', 0],
-  ['2.05 (chapter1)', 2.05],
-  ['3.0 (evolution)', 3.0],
-  ['5.0 (chapter2)', 5.0],
-  ['5.8 (arsenal)', 5.8],
-  ['6.9 (fullBody)', 6.9],
-  ['7.9 (colophon)', 7.9],
+  ['2.5 (chapter1)', 2.5],
+  ['3.5 (evolution)', 3.5],
+  ['5.3 (chapter2)', 5.3],
+  ['6.5 (arsenal)', 6.5],
+  ['8.2 (fullBody)', 8.2],
+  ['9.6 (colophon)', 9.6],
 ];
 for (const [label, mult] of stops) {
   await page.evaluate((m) => window.scrollTo(0, window.innerHeight * m), mult);

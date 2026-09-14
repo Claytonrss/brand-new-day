@@ -20,7 +20,7 @@ test.describe('DOM micro craft', () => {
     await expect(stamp).toHaveAttribute('aria-hidden', 'true');
     await expect(stamp).toContainText('04:37');
 
-    // Arsenal (04:52) — 0.72 * scrollHeight = 648vh of 800vh max scroll ≈ 0.81
+    // Arsenal (04:52) — 0.72 * scrollHeight ≈ 770vh of 970vh max scroll ≈ 0.79
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight * 0.72));
     await page.waitForTimeout(1500);
     await expect(stamp).toContainText('04:52');

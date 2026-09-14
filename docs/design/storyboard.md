@@ -64,5 +64,7 @@ e só no final recua para o corpo inteiro — a revelação é o pagamento do sc
 - O texto é tratado como parte da composição — posição, escala e alinhamento
   definidos por seção, nunca uma camada genérica sobre o Canvas.
 - Nenhuma seção pode ser variação de enquadramento de outra.
-- Alturas de scroll: Hero ~100vh; Evolution ~150vh; Arsenal ~150vh;
-  FullBody ~100–120vh.
+- Alturas de scroll (ADR-025 — fonte da verdade:
+  `src/components/3d/beat/sections.ts`): Opening 100vh; Hero 140vh;
+  Chapter cards 70vh; Evolution 210vh; Arsenal 210vh; FullBody 130vh;
+  Colophon 140vh (1070vh de documento / 970vh de scroll).

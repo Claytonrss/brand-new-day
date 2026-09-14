@@ -1,17 +1,18 @@
 /**
  * Beat timeline — single source of truth for narrative state.
  *
- * Ranges are fractions of the **maximum scroll** (total height − viewport), so
- * they line up with the section offsets in `src/App.tsx` (900vh page = 800vh of
- * scroll). See `beatAt`/`beatLocalProgress`.
+ * Ranges are fractions of the **maximum scroll** (total height − viewport) and
+ * are DERIVED from the section heights in `sections.ts`, so they always line
+ * up with the layout in `src/App.tsx` (1070vh page = 970vh of scroll).
+ * See `beatAt`/`beatLocalProgress`.
  *
- * - Opening+ Hero 000–200vh → 0.0000–0.2500 (title card shares the Hero camera)
- * - Chapter1       200–300vh → 0.2500–0.3750
- * - Evolution      300–450vh → 0.3750–0.5625
- * - Chapter2       450–550vh → 0.5625–0.6875
- * - Arsenal        550–688vh → 0.6875–0.8600
- * - FullBody       688–760vh → 0.8600–0.9500
- * - Colophon       760–800vh → 0.9500–1.0000
+ * - Opening+ Hero 000–240vh → 0.0000–0.2474 (title card shares the Hero camera)
+ * - Chapter1       240–310vh → 0.2474–0.3196
+ * - Evolution      310–520vh → 0.3196–0.5361
+ * - Chapter2       520–590vh → 0.5361–0.6082
+ * - Arsenal        590–800vh → 0.6082–0.8247
+ * - FullBody       800–930vh → 0.8247–0.9588
+ * - Colophon       930–970vh → 0.9588–1.0000
  *
  * The Opening title card (P1a.2) is a typographic beat with no 3D of its own;
  * it reuses the static `hero` camera keyframe, so the beat id stays `hero`.
@@ -22,7 +23,10 @@
  * camera stay in sync by construction.
  *
  * @see docs/specs/headroom-lighting.md §7
+ * @see docs/memory/decisions.md (ADR-024)
  */
+import { MAX_SCROLL_VH, SECTION_SPANS, type SectionId } from './sections';
+
 export type BeatId =
   'hero' | 'chapter1' | 'evolution' | 'chapter2' | 'arsenal' | 'fullBody' | 'colophon';
 
@@ -32,15 +36,33 @@ export interface Beat {
   scrollEnd: number;
 }
 
-export const BEAT_TIMELINE: readonly Beat[] = [
-  { id: 'hero', scrollStart: 0, scrollEnd: 0.25 },
-  { id: 'chapter1', scrollStart: 0.25, scrollEnd: 0.375 },
-  { id: 'evolution', scrollStart: 0.375, scrollEnd: 0.5625 },
-  { id: 'chapter2', scrollStart: 0.5625, scrollEnd: 0.6875 },
-  { id: 'arsenal', scrollStart: 0.6875, scrollEnd: 0.86 },
-  { id: 'fullBody', scrollStart: 0.86, scrollEnd: 0.95 },
-  { id: 'colophon', scrollStart: 0.95, scrollEnd: 1.0 },
+/** Sections each beat spans, in document order — `hero` covers the opening card. */
+const BEAT_SECTIONS: readonly { id: BeatId; sections: readonly SectionId[] }[] = [
+  { id: 'hero', sections: ['opening', 'hero'] },
+  { id: 'chapter1', sections: ['chapter1'] },
+  { id: 'evolution', sections: ['evolution'] },
+  { id: 'chapter2', sections: ['chapter2'] },
+  { id: 'arsenal', sections: ['arsenal'] },
+  { id: 'fullBody', sections: ['fullBody'] },
+  { id: 'colophon', sections: ['colophon'] },
 ] as const;
+
+/**
+ * Beat boundaries as fractions of the maximum scroll, accumulated from
+ * `SECTION_SPANS` so camera, lighting and the narrative can never drift from
+ * the layout.
+ */
+export const BEAT_TIMELINE: readonly Beat[] = (() => {
+  let cursor = 0;
+  return BEAT_SECTIONS.map(({ id, sections }) => {
+    const scrollStart = cursor / MAX_SCROLL_VH;
+    for (const section of sections) cursor += SECTION_SPANS[section];
+    // The last beat ends at maxScroll, not at the document's bottom edge —
+    // the final viewport of the last section is in view, not scrolled past.
+    const scrollEnd = Math.min(cursor, MAX_SCROLL_VH) / MAX_SCROLL_VH;
+    return { id, scrollStart, scrollEnd };
+  });
+})();
 
 /** Resolve the beat that contains a given global scroll progress. */
 export function beatAt(progress: number): Beat {

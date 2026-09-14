@@ -1,6 +1,6 @@
 # STATE.md — spiderman-landing
 
-## Estado Atual (2026-09-12)
+## Estado Atual (2026-09-13)
 
 **Fase:** Pareto Impact Plan **executado** (Waves 1–5, PRs #32–#37 mergeados).
 Restante: **sessão de device no S23** (runbook:
@@ -66,6 +66,23 @@ chapter-print}.md`.
   fullBody 0.14 Hz ×1.3). Zero draw calls/lights novos. Specs:
   `docs/specs/spider-sense.md`.
 
+### Re-engrenagem do scroll (2026-09-13)
+
+- **PR #54 — fix spider-sense (`fix/spider-sense-covered-refire`):** portão
+  de direção no gatilho (chegada `velocity > 0` + ordem na `BEAT_TIMELINE`)
+  — zero disparos encobertos pelo card REVELAÇÃO. ADR-024.
+- **Re-engrenagem do pacing (`feat/scroll-regearing`):** alturas de seção
+  movidas para tabela única (`src/components/3d/beat/sections.ts`,
+  `SECTION_SPANS`) e `BEAT_TIMELINE` **derivado** delas; distribuição nova:
+  Opening 100 · Hero 140 · Chapter1 70 · Evolution 210 · Chapter2 70 ·
+  Arsenal 210 · FullBody 130 · Colophon 140 = **1070vh / 970vh de scroll**
+  (+21% de história, cards de passagem −30%). Freio fino do Lenis no desktop
+  (`wheelMultiplier: 0.8`; touch intocado, data-gated S23). Fullpage snap
+  rejeitado (colide com scrub contínuo ADR-008/014 e com a suíte);
+  snap magnético + nav por capítulos quedam como fase 2 potencial.
+  Spec de interação do Arsenal agora deriva do bounding box da seção.
+  ADR-025.
+
 ### Pendências consolidadas (detalhe em `PROGRESS.md`)
 
 - **Sessão S23 (única pendência de execução):** Wave 0 (T0.1–T0.5),
@@ -76,8 +93,9 @@ chapter-print}.md`.
 
 ### Implementado (acumulado)
 
-- 8 seções / 900vh: Opening card, Hero, MUDANÇA, Evolution, REVELAÇÃO,
-  Arsenal, FullBody, Colofon — com landing, lean, beat chrome e print.
+- 8 seções / 1070vh (ADR-025, `SECTION_SPANS`): Opening card, Hero, MUDANÇA,
+  Evolution, REVELAÇÃO, Arsenal, FullBody, Colofon — com landing, lean, beat
+  chrome e print.
 - Câmera Catmull-Rom + handheld + FOV punch/dolly lag + pointer parallax.
 - Rig procedural 16 joints (respiração, sway, poses por beat, head-tracking,
   piscada por obturador) + interação drag/gyro/teia.
@@ -146,10 +164,12 @@ chapter-print}.md`.
 - ADR-021: HDR self-hosted + fontes locais (loader determinístico)
 - ADR-022: Política de tier inicial síncrona + idle-gate de troca
 - ADR-023: Shadow throttle no tier `medium`
+- ADR-024: Portão de direção no gatilho do spider-sense
+- ADR-025: Re-engrenagem do scroll (pacing por distância, sem hijack)
 
 ## Métricas
 
-- **PRs:** 41 (todos merged) · **Unit tests:** 165 (22 arquivos) ·
+- **PRs:** 54 (todos merged) · **Unit tests:** 168 (22 arquivos) ·
   **Visual:** 14 specs (gate de PR: 9 `@smoke` no mobile-390; deep suite na
   `main`) · **Hooks:** husky + commitlint + lint-staged
 - **Rubrica visual:** 4,5/5,0 — autoatribuída por PR contra evidências;
@@ -159,5 +179,5 @@ chapter-print}.md`.
 - **GLB:** ≈ 23,5 MB (geometria não comprimida — F4b, budget ≤ 15 MB, ligado
   ao gatilho FALHA-14)
 - **Requests externos no load:** 0 (HDR + fontes locais)
-- **Total page height:** 900vh (opening + hero + 2 cards + evolution +
-  arsenal + fullbody + colofon)
+- **Total page height:** 1070vh (ADR-025 — opening + hero + 2 cards +
+  evolution + arsenal + fullbody + colofon; 970vh de scroll)
