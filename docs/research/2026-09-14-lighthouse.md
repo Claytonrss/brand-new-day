@@ -43,3 +43,29 @@ npx lighthouse@latest https://brand-new-day-fan.vercel.app --preset=desktop \
 
 **Ação ligada:** README publica estes números (C3); A6/A7 seguem no roadmap
 como os alvos diretos para subir o mobile/desktop performance.
+
+---
+
+## Re-run pós-TD-003 — meshopt (2026-09-14, PR #61)
+
+Mesmo comando, deploy já servindo o `spider-man_brand_new_day-v3-meshopt.glb`
+(23,5 → **6,5 MB**, quantização + EXT_meshopt_compression):
+
+| Categoria      | Mobile (throttled) | Desktop         |
+| -------------- | ------------------ | --------------- |
+| Performance    | **43** (era 29)    | **94** (era 83) |
+| Accessibility  | 96                 | 96              |
+| Best Practices | 100                | 100             |
+| SEO            | 100                | 100             |
+
+**Vitals:** mobile TBT **7.360 ms → 780 ms** (−9,4×); desktop LCP **0,6 s**.
+O LCP mobile simulado (38,4 s) é o download do GLB sob slow-4G simulado —
+o loader da peça mostra progresso real durante essa janela; TBT desabando
+mostra o main-thread liberado pelo meshopt (decode em vez de parse de
+geometria crua).
+
+**Leitura:** o ganho de score veio do main-thread (TBT); o próximo alvo
+de mobile é o peso em rede — KTX2 nas texturas (fase 2 do plano TD-003) e
+code-splitting do JS (A6, 460 kB gzip) são os restantes. Accessibility 96
+segue na espera do contraste (achado 5.12, onda W3 do
+`post-launch-polish-plan.md`).

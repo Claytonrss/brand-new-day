@@ -11,6 +11,8 @@
 > **Revisão 2026-09-14 (meta-auditoria):** segunda passada de revisão sobre este documento. Acrescentou a dimensão que faltava — **5.11 Compatibilidade real de browsers** (ponto cego: 100% da suíte e evidências rodam Chromium) — e promoveu a acessibilidade a dimensão própria (**5.12**); registrou o processo de release em 5.8, desambiguou a numeração dos itens (C/A/M/B), acrescentou o item M15 e o bloco **Overkill** ao roadmap. Nota geral (6,5) e recomendação (divulgar após C1–C4) permanecem inalteradas.
 >
 > **Atualização 2026-09-14 (execução):** o plano `docs/plans/launch-readiness-plan.md` foi executado. **C2** fechado no PR #58 (LICENSE MIT + NOTICE + CC-BY estrita + disclaimer), **C1** no PR #59 (OG/favicon/metas — validado em produção) e **C3** no PR-3 `docs/readme-showcase` (README showcase EN-first + GIF + Lighthouse publicado em `docs/research/2026-09-14-lighthouse.md` + homepage/description do repo corrigidos). Resta **C4** (claim de performance), que aguarda a sessão de device do Bloco A — ou o fallback de copy do plano.
+>
+> **Atualização 2026-09-14 (pós-TD-003):** **A7 fechado** no PR #61 (GLB 23,5 → 6,5 MB, ADR-029) e segunda onda iniciada via `docs/plans/post-launch-polish-plan.md` — números públicos ressincronizados (Lighthouse: mobile 43 / desktop 94; TBT −9,4×), colofon atualizado para "6,5 MB de GLB".
 
 ---
 
@@ -162,7 +164,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
    - _Fazer:_ `manualChunks` separando `three`/`@react-three`/`gsap` (cache longo de vendor) e/ou `build.rollupOptions.output`; avaliar `React.lazy` para o canvas (o `StaticFallback` já é o caminho sem WebGL).
    - _Efeito esperado:_ TTI menor e cache hit de vendor entre visitas; o warning do Vite some do log que um tech lead vai rodar.
 
-7. **A7 · GLB de 22,4 MB sem compressão de geometria.**
+7. ~~**A7 · GLB de 22,4 MB sem compressão de geometria.**~~ **✅ RESOLVIDO (2026-09-14, PR #61):** meshopt + quantização via glTF-Transform — 23,5 → **6,5 MB** (bem abaixo do budget ≤ 15 MB), ADR-029; loader meshopt-ready não precisou de mudança de código. Re-run Lighthouse pós-compressão: TBT mobile −9,4× (7.360 → 780 ms), desktop perf 83 → 94 (`docs/research/2026-09-14-lighthouse.md`).
    - _Evidência:_ `ls -la public/models/`; `docs/STATE.md:189-190` (F4b previsto, ≤ 15 MB, não executado); KTX2 configurado só para texturas (`gltfKtx2Loader.ts`).
    - _Fazer:_ executar F4b (meshopt ou Draco; meshopt tem melhor decode em mobile) + servir com compressão; medir antes/depois.
    - _Efeito esperado:_ corte de 30–50% no maior asset; loader visível por menos tempo em 4G — diretamente ligado ao "wow nos primeiros segundos".
@@ -219,7 +221,7 @@ _(Promovida de "ponto forte" dentro de 5.5 a dimensão própria na revisão — 
 | 4     | Sessão S23 (Bloco A) + FALHA-02 **ou** suavizar claim (C4, A8)                                                                          | 1 sessão de device | Copy verdadeiro + mobile liso                                                     |
 | 5     | Lighthouse no deploy ao vivo + publicar números (A9)                                                                                    | 1 h                | Performance deixa de ser alegação                                                 |
 | 6     | Code-splitting vendor (A6)                                                                                                              | 1–2 h              | Bundle limpo                                                                      |
-| 7     | Compressão GLB meshopt ≤ 15 MB (A7)                                                                                                     | 2–4 h              | Primeira visita em 4G                                                             |
+| ~~7~~ | ~~Compressão GLB meshopt ≤ 15 MB (A7)~~                                                                                                 | —                  | ✅ **FEITO** — PR #61 (23,5 → 6,5 MB, ADR-029)                                    |
 | 8     | Headers de segurança via `vercel.json` (M12)                                                                                            | 30 min             | Polish técnico                                                                    |
 | 9     | Case study do harness de IA (M11)                                                                                                       | 2–3 h              | Diferencial narrativo                                                             |
 | 10    | Passada manual Safari macOS + iPhone real (de carona no TD-002) + `webkit` opcional no smoke (M15)                                      | 1–2 h              | Fecha o ponto cego do browser nº 1 (5.11)                                         |
