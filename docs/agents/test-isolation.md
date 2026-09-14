@@ -37,9 +37,13 @@ Tudo honra `PORT` (default 5173) — ver §10.
 > Antes de qualquer comando que toque a 5173, confirme que o código servido vem
 > **do mesmo checkout em que você está rodando**.
 
-Pre-flight (barato, 2 segundos):
+Pre-flight (barato, 2 segundos) — automatizado por **`pnpm env:doctor`** (ver §11),
+que sai com exit 1 quando algo bloqueia:
 
 ```bash
+pnpm env:doctor
+
+# Fallback manual:
 # 1) A porta está ocupada?
 lsof -nP -iTCP:5173 -sTCP:LISTEN
 
@@ -92,11 +96,15 @@ Se aparecer algum destes, **checar a 5173 vem antes de debugar código**:
 
 ## 7. Limpeza (higiene de fim de tarefa)
 
-- Mate os servers `dev`/`preview` **que você subiu**.
+- Rode **`pnpm env:teardown`**: para o server `dev`/`preview` **deste** checkout —
+  só avança sobre processos cujo cwd é deste checkout (ver §11).
+  `pnpm env:teardown --force` inclui órfãos de playwright/chromium deste checkout;
+  `--clean` remove `dist/`, `test-results/` e `playwright-report/` (o `.env`
+  fica — é a identidade de porta, §10).
 - Remova worktrees de rascunho (`git worktree remove <path>`); mantenha a da
   branch em andamento.
-- Deixe o `5173` livre por padrão: o estado "nenhum server rodando" é o único
-  que garante que o próximo agent testa o próprio código.
+- Deixe a porta do checkout livre por padrão: o estado "nenhum server rodando"
+  é o único que garante que o próximo agent testa o próprio código.
 
 ## 8. CI
 
@@ -190,3 +198,43 @@ checkout.
 - Pre-flight vira "checar **a sua** porta": `lsof -nP -iTCP:5200 -sTCP:LISTEN`.
 - A regra de contaminação (§3/§6) continua valendo **para a porta que você
   usar** — portas diferentes só isolam se forem realmente únicas.
+
+## 11. Automatização: `pnpm env:doctor` e `pnpm env:teardown`
+
+As checagens manuais deste runbook (§3 pre-flight, §7 limpeza, §9.2
+capacidade/órfãos) viraram scripts executáveis (2026-09-14, inspirados no ciclo
+`init`/`check`/`down` de templates de bootstrap para agentes): a checagem deixa
+de ser prosa que o agent interpreta e vira um **gate com exit code**.
+
+> **Atenção ao nome:** é `pnpm env:doctor`, **não** `pnpm doctor` — `doctor` é
+> comando embutido do pnpm e roda silenciosamente no lugar do nosso script.
+
+| Comando                     | O que faz                                                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm env:doctor`           | Diagnóstico read-only: dono da porta + cwd, health HTTP, suíte Playwright ativa **na máquina**, Chromium órfão, load vs núcleos. Exit 1 = bloqueado.                 |
+| `pnpm env:doctor --fix`     | Repara **este** checkout: mata server degradado e órfãos seus e, se a porta estiver livre, sobe um dev server com health check (`test-results/logs/dev-server.log`). |
+| `pnpm env:teardown`         | Stop gracioso: mata só o processo da porta cujo cwd é deste checkout. De outro checkout → reporta e **não toca** (§3).                                               |
+| `pnpm env:teardown --force` | + órfãos de playwright/chromium **escopados por cwd** deste checkout.                                                                                                |
+| `pnpm env:teardown --clean` | + remove `dist/`, `test-results/`, `playwright-report/`. `.env` preservado (identidade de porta, §10).                                                               |
+
+Gates automáticos: `pnpm test:smoke`, `pnpm test:visual` e
+`pnpm evidence:visual` rodam o `doctor` antes de abrir qualquer browser e
+abortam com a razão se bloqueado. Fluxo típico de evidência:
+
+```bash
+pnpm env:doctor --fix     # garante server deste checkout saudável na porta do .env
+pnpm evidence:visual  # fotografa (só roda se o doctor passou)
+pnpm env:teardown         # higiene de fim de tarefa (§7)
+```
+
+Invariantes que os scripts preservam (não podem regredir):
+
+1. **Nunca matam processo de outro checkout** — classificam pelo cwd
+   (`lsof -p <PID> -d cwd`); sem dono identificável, tratam como alheio.
+2. **`doctor --fix` não repara nada enquanto há suíte ativa na máquina** —
+   suíte rodando é bloqueio (§9.1, "aguarde"), não alvo de repair.
+3. **A porta vem do `.env`** (§10) — mesmo contrato de `pnpm dev` e suítes.
+4. Exit 1 do `doctor` significa: **não rode** Playwright/evidência agora.
+
+Os comandos manuais das seções acima continuam valendo como fallback (CI
+minimalista ou debug do próprio doctor).
