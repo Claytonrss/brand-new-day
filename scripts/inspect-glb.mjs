@@ -68,7 +68,6 @@ if (json.asset) {
   console.log('');
 }
 
-// Images / textures detail
 if (Array.isArray(json.images) && json.images.length) {
   console.log('## Images');
   json.images.forEach((img, i) => {
@@ -79,7 +78,6 @@ if (Array.isArray(json.images) && json.images.length) {
   console.log('');
 }
 
-// Materials
 if (Array.isArray(json.materials) && json.materials.length) {
   console.log('## Materials');
   json.materials.forEach((m, i) => {
@@ -97,7 +95,6 @@ if (Array.isArray(json.materials) && json.materials.length) {
   console.log('');
 }
 
-// Skins / bones
 if (Array.isArray(json.skins) && json.skins.length) {
   console.log('## Skins / Bones');
   json.skins.forEach((skin, i) => {
@@ -113,7 +110,6 @@ if (Array.isArray(json.skins) && json.skins.length) {
   console.log('');
 }
 
-// Animations
 if (Array.isArray(json.animations) && json.animations.length) {
   console.log('## Animations');
   json.animations.forEach((a, i) => {
@@ -135,7 +131,6 @@ if (Array.isArray(json.meshes) && json.meshes.length) {
   console.log('');
 }
 
-// Global bounding box
 let globalMin = [Infinity, Infinity, Infinity];
 let globalMax = [-Infinity, -Infinity, -Infinity];
 if (Array.isArray(json.meshes)) {
@@ -160,7 +155,6 @@ if (globalMin[0] !== Infinity) {
   console.log('');
 }
 
-// Node tree summary (top-level)
 if (Array.isArray(json.scenes) && json.scenes.length && Array.isArray(json.nodes)) {
   console.log('## Scene graph (top-level nodes)');
   const roots = json.scenes[0].nodes ?? [];
@@ -176,7 +170,6 @@ if (Array.isArray(json.scenes) && json.scenes.length && Array.isArray(json.nodes
   console.log('');
 }
 
-// Warnings
 console.log('## Warnings');
 let warned = false;
 const jsonStr = JSON.stringify(json);
