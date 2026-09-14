@@ -38,7 +38,7 @@ pnpm test:smoke       # Playwright PR gate (@smoke, mobile-390)
 pnpm inspect:glb      # GLB asset metadata
 ```
 
-Requires Node.js ≥ 22 and pnpm 9. Full workflow and contribution rules: [AGENTS.md](AGENTS.md). No analytics, no cookies, no external requests at load (fonts and HDR are self-hosted).
+Requires Node.js ≥ 22 and pnpm 9. Full workflow and contribution rules: [AGENTS.md](AGENTS.md). Cookie-free Vercel Analytics + Speed Insights (no cookies, no banners), anonymous WebGL-failure beacon. No external requests at load (fonts and HDR are self-hosted).
 
 ## Licenses & credits
 
@@ -59,6 +59,6 @@ Uma experiência 3D guiada por scroll: uma noite chuvosa em NYC, contada como um
 
 **Números:** 44–46 draw calls · 168 testes unitários + 14 specs visuais · Lighthouse 43/94 (mobile/desktop) · GLB de 6,5 MB (meshopt) · entry de 85 kB gzip + vendor 3D cacheável. Métricas em device (S23) em coleta — `?debug=1` expõe o HUD de performance.
 
-**Setup:** `pnpm install` · `pnpm dev` · `pnpm verify` — detalhes na seção em inglês e em [AGENTS.md](AGENTS.md). Sem analytics, sem cookies.
+**Setup:** `pnpm install` · `pnpm dev` · `pnpm verify` — detalhes na seção em inglês e em [AGENTS.md](AGENTS.md). Analytics sem cookies (Vercel), sem banner — falhas de WebGL reportadas de forma anônima.
 
 **Créditos:** código MIT ([LICENSE](LICENSE)) · modelo por Eskze, CC BY 4.0 · fontes SIL OFL 1.1 · **projeto fan-made não oficial, sem afiliação ou endosso da Marvel/Sony/Disney** ([NOTICE.md](NOTICE.md))
