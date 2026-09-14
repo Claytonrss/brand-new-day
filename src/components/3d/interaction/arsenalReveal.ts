@@ -13,19 +13,21 @@
  * `gestureCapable` mirrors the hint's own gate (`!reduceMotion && tier !==
  * 'low'`), published by `WebShootHint` — the only place where the quality
  * tier is known, since `QualityContext` is provided inside the canvas only.
- * Consumers outside (the DOM overlay) fall back to the scroll-driven reveal
- * when it is false.
+ * It starts as `null` (ADR-028): until the canvas mounts and publishes, the
+ * gate is INDETERMINATE — consumers must not read `null` as `false` (the
+ * scroll-driven reveal path), or the HUD shows during the GLB load and the
+ * gesture gate arrives too late to un-reveal it.
  */
 export interface ArsenalRevealState {
   /** True once the HUD has been revealed this session — first reveal wins. */
   revealed: boolean;
-  /** True when the visitor can see the ring and fire the shot. */
-  gestureCapable: boolean;
+  /** Gate publisher state: `null` = canvas not mounted yet; else the gate. */
+  gestureCapable: boolean | null;
 }
 
 const state: ArsenalRevealState = {
   revealed: false,
-  gestureCapable: false,
+  gestureCapable: null,
 };
 
 const listeners = new Set<() => void>();
@@ -59,7 +61,7 @@ export const arsenalReveal = {
     return state.revealed;
   },
 
-  get gestureCapable(): boolean {
+  get gestureCapable(): boolean | null {
     return state.gestureCapable;
   },
 };

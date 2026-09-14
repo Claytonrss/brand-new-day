@@ -26,24 +26,31 @@ intencional: a revelação já aconteceu; agora é a assinatura.
   espaço vazio e menos luz — o descanso que faz a assinatura ler como
   intencional.
 
-**Copy proposta (tom: sóbrio, autoral, técnico; pt-BR; curto):**
+**Copy aceita (2026-09-14, BUG-PLAN B3 — tom: sóbrio, autoral, técnico; pt-BR):**
 
-- Kicker: `Colofon`
+- Kicker: `Portfólio — Clayton R.` (a assinatura lê sem scroll extra na seção)
 - Título: `Feito à mão.`
-- Corpo:
-  > Uma cena interativa construída com React Three Fiber, GSAP e um modelo de
-  > 66 joints sem um único clipe de animação — todo o movimento é procedural.
-- Linha de stack (mono, pequena):
+- Corpo §1 (o argumento do craft):
+  > Um personagem icônico como pretexto para resolver problemas verdadeiros:
+  > rig procedural sem clipes, câmera scroll-driven com Catmull-Rom e
+  > degradação adaptativa por tier de hardware.
+- Corpo §2 (o movimento como tese):
+  > 66 joints, zero animações pré-gravadas. Todo o movimento é gerado em
+  > runtime — a página inteira é um argumento em código.
+- Desafios técnicos (lista mono, `11px`, `dim/70`, bullet `·`):
+  - Rig procedural com molas, respiração e spider-sense em runtime
+  - Câmera Catmull-Rom sincronizada com 7 beats de narrativa
+  - Três tiers de performance sem corte visual brusco
+  - 23 MB de GLB · 66 joints · zero janks em mobile mid-range
+- Linha de stack (mono, pequena; inalterada):
   `React 19 · Three.js · GSAP ScrollTrigger · Lenis · WebGL`
 - Atribuição (obrigatória, visível sem hover):
   > Modelo 3D por Eskze · CC BY 4.0
   > ("Eskze" linkado à página do modelo no Sketchfab; "CC BY 4.0" linkado ao legal code da licença)
-- CTA (um, não três):
-  > `ver o código →` (link para o repositório)
-
-> O CTA é único de propósito. Um portfólio forte manda para um lugar. Se houver
-> um segundo destino (ex.: "outros projetos"), ele entra como link secundário
-> mono, nunca com o mesmo peso do primário.
+- CTAs (dois pesos; a regra antiga do "CTA único" evolui: o segundo destino
+  existe, mas nunca com o peso do primário):
+  - Primário: `ver o código →` (repositório, `signal` + `.magnetic-cta`)
+  - Secundário: `Clayton no LinkedIn →` (LinkedIn, `dim`, sublinhado discreto)
 
 **Narrativa:** encerra o arco (Hero → Evolution → Arsenal → FullBody) com a
 voz do autor. O herói sai de cena; quem fica é quem construiu a cena.

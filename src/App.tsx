@@ -27,6 +27,7 @@ import { GyroPrompt } from './components/ui/GyroPrompt';
 import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
 import { SpiderSense } from './components/ui/SpiderSense';
+import { ArsenalClickHint } from './components/ui/ArsenalClickHint';
 import { SenseAnchor } from './components/3d/SenseAnchor';
 import { VelocityType } from './components/ui/VelocityType';
 import { BeatStamp } from './components/ui/BeatStamp';
@@ -72,6 +73,9 @@ export function App() {
 
       {/* Spider-sense halo — comic emanata around the head (IDEIA-3D-10) */}
       <SpiderSense />
+
+      {/* Arsenal click affordance — DOM label next to the breathing ring */}
+      <ArsenalClickHint />
 
       {/* Headline weight follows scroll velocity (IDEIA-PAG-01) */}
       <VelocityType />

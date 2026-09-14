@@ -93,6 +93,11 @@ test.describe('Model interaction', () => {
     const hud = page.getByTestId('arsenal-hud');
     await expect(hud).toHaveCSS('opacity', '0');
 
+    // Gesture-gated profile: the DOM affordance states the action while the
+    // HUD waits for the tap (ADR-028 keeps the HUD itself at 0 until then).
+    const hint = page.getByTestId('arsenal-click-hint');
+    await expect(hint).toBeVisible();
+
     const before = await readInteraction(page);
     const size = page.viewportSize() ?? { width: 1440, height: 900 };
     await page.mouse.click(size.width * 0.5, size.height * 0.5);
@@ -101,6 +106,7 @@ test.describe('Model interaction', () => {
 
     expect(after?.shotId ?? 0).toBeGreaterThan(before?.shotId ?? 0);
     expect(after?.arsenalHudRevealed).toBe(true);
+    await expect(hint).toHaveCount(0); // revealed → affordance leaves with it
     await expect(hud).toHaveCSS('opacity', '1');
     // The label exists twice (desktop hairline + mobile legend, one hidden
     // per viewport); whichever is on screen must be visible.

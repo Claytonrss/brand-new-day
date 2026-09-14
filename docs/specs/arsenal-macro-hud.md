@@ -75,9 +75,16 @@ Reference: `docs/design/composition-rules.md` (Arsenal: pulso é o foco).
 - **Perfis capazes** (`!prefers-reduced-motion && tier ≠ low`): o HUD só se
   revela no **primeiro tap do Beat 3** — o mesmo gesto que dispara a teia —
   com fade de 700ms; o anel respirando no pulso (`WebShootHint`) é a
-  affordance. Sem tap, **auto-reveal** em progresso local ≥ 0.8 da seção.
-  Revelado, permanece visível enquanto a seção estiver ativa e some quando
-  ela sai (`onLeave`/`onLeaveBack`), como antes.
+  affordance, reforçada pelo label DOM `ArsenalClickHint`
+  ("clique no anel ·", `text-signal/50`, pulse — `motion-reduce` desliga o
+  pulse), visível só no beat Arsenal enquanto `gestureCapable === true` e o
+  HUD não foi revelado. Sem tap, **auto-reveal** em progresso local ≥ 0.8 da
+  seção. Revelado, permanece visível enquanto a seção estiver ativa e some
+  quando ela sai (`onLeave`/`onLeaveBack`), como antes.
+- **Race de inicialização (ADR-028):** `arsenalReveal.gestureCapable` nasce
+  `null` (indeterminado) até o canvas publicar o gate; com `null`, o scrub
+  mantém o HUD em `0` — nem reveal por scroll nem auto-reveal rodam, e um HUD
+  escrito durante o load do GLB não sobrevive à chegada do gate.
 - **`prefers-reduced-motion` / tier `low`:** reveal por scroll como antes
   (snap no macro em progresso > 0.5 / envelope 0.42–0.6).
 - A copy narrativa continua recedendo por scroll (0.28–0.44), independente do
