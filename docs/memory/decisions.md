@@ -1295,3 +1295,30 @@ do Lighthouse (a11y 96) · **Onda:** W3 do `post-launch-polish-plan.md`
 - `AGENTS.md` e `design-bible.md` sincronizados com o novo hex.
 - Lighthouse `color-contrast` deve sair da lista de deduções (a11y 96 → 100
   esperado; medido no PR).
+
+## ADR-031: Claim "zero janks" substituído por fato verificável (C4)
+
+**Data:** 2026-09-14 · **Contexto:** C4 da auditoria — sessão de device S23
+ainda não realizada; "zero janks em mobile mid-range" era a única afirmação
+da página falsificável sem medição em mãos · **Onda:** PR-A do
+`pareto-closing-plan.md`
+
+### Decisão
+
+O 4º argumento do colofon passa de
+`6,5 MB de GLB · 66 joints · zero janks em mobile mid-range` para
+`6,5 MB de GLB · 66 joints · zero requests externos no load`.
+
+- **Por que "zero requests externos":** fato verificável por qualquer um via
+  aba Network (ADR-021 — fontes + HDR locais; RUM da Vercel é same-origin
+  `/_vercel/*`), sem redundância com o 3º argumento (tiers).
+- **"Zero janks" pode voltar — mais forte:** se a sessão S23 (Bloco A)
+  sustentar o claim, a linha é restaurada **com número**
+  ("zero janks medidos: X fps"), o que argumenta melhor que a versão atual.
+- **"Três tiers de performance adaptativa"** (fallback do plano) foi
+  descartado: redundante com o 3º argumento da mesma lista.
+
+### Consequências
+
+- A página fica sem nenhuma afirmação não-evidenciável; FALHA-02 segue
+  data-gated no Bloco A (threshold só entra com número).

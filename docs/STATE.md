@@ -181,10 +181,12 @@ chapter-print}.md`.
 - ADR-027: Halo do spider-sense ancorado no topo do crânio e adaptativo à câmera
 - ADR-028: Estado indeterminado (`null`) em `arsenalReveal` contra a race de canvas
 - ADR-029: GLB comprimido com meshopt + quantização (TD-003/F4b) e entrega via edge da Vercel
+- ADR-030: Token `dim` elevado para contraste AA (a11y 100) e fim de opacidade em texto
+- ADR-031: Claim "zero janks" substituído por fato verificável (C4 — volta com número após o Bloco A)
 
 ## Métricas
 
-- **PRs:** 54 (todos merged) · **Unit tests:** 168 (22 arquivos) ·
+- **PRs:** 69 (todos merged) · **Unit tests:** 168 (22 arquivos) ·
   **Visual:** 14 specs (gate de PR: 9 `@smoke` no mobile-390; deep suite na
   `main`) · **Hooks:** husky + commitlint + lint-staged
 - **Rubrica visual:** 4,5/5,0 — autoatribuída por PR contra evidências;
@@ -193,6 +195,18 @@ chapter-print}.md`.
   sombra** (throttle, vale de 16) · 11–13 (low)
 - **GLB:** 6,5 MB (meshopt + quantização, ADR-029 — TD-003/F4b fechado;
   budget ≤ 15 MB atendido; original 23,5 MB no histórico git)
+- **Bundle:** entry 265 kB (85 kB gzip) + `vendor-3d` 1.175 kB (327 gzip,
+  cacheável) + `vendor-motion` 132 kB (49 gzip) — code-splitting A6
+- **Lighthouse (deploy de produção, 2026-09-14):** perf 43 mobile / 94
+  desktop · a11y **100** (ADR-030) · best-practices 100 · SEO 100 ·
+  TBT mobile 780 ms (−9,4× pós-meshopt) — detalhes e método em
+  `docs/research/2026-09-14-lighthouse.md`
+- **Social preview:** og.jpg 1200×630 + favicon de lentes + metas OG/Twitter
+  (C1) · **Headers:** CSP/nosniff/XFO/Permissions-Policy via `vercel.json`
+  (M12) · **Observabilidade:** Vercel Analytics + Speed Insights (cookie-free)
+  - beacon `webgl_unavailable` → `api/log.ts` (A11)
+- **Claim do colofon:** 'zero janks' suspenso por ADR-031 até medição em
+  device (Bloco A); substituído por 'zero requests externos no load'
 - **Requests externos no load:** 0 (HDR + fontes locais)
 - **Total page height:** 1070vh (ADR-025 — opening + hero + 2 cards +
   evolution + arsenal + fullbody + colofon; 970vh de scroll)
