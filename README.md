@@ -1,73 +1,64 @@
-# Spider-Man: Brand New Day — 3D Portfolio Experience
+# Spider-Man: Brand New Day — a cinematic 3D landing
 
-Uma experiência web 3D cinematográfica construída para demonstrar direção de arte moderna, engenharia WebGL e frontend de alta performance.
+**→ [Live demo](https://brand-new-day-fan.vercel.app/)** · React Three Fiber + GSAP ScrollTrigger · portfolio piece by **Clayton Rafael**
 
-> **Visual & Technical Showcase**  
-> Inspirado na atmosfera urbana e isolada de Peter Parker pós-No Way Home, integrando o modelo 3D do Spider-Man a uma narrativa interativa guiada por scroll.
+![Demo loop — scroll from the hero into the Arsenal](docs/assets/demo-loop.gif)
 
----
+## What you're looking at
 
-## 🛠️ Tech Stack
+A cinematic, scroll-driven 3D experience: one rainy NYC night, told as a single continuous camera move. Everything on screen is authored code — no baked animation files, no UI kit. It is a fan-made, non-commercial showcase of frontend craft.
 
-| Camada             | Tecnologia                                                   |
-| ------------------ | ------------------------------------------------------------ |
-| Framework          | Vite 8 + React 19 + TypeScript 5.9                           |
-| Estilo             | Tailwind CSS v4                                              |
-| 3D Engine          | Three.js + `@react-three/fiber` v9 + `@react-three/drei` v10 |
-| Efeitos Visuais    | `@react-three/postprocessing` v3                             |
-| Animações & Scroll | GSAP ScrollTrigger                                           |
-| Testes             | Vitest (Unit) + Playwright (Visual Regression)               |
-| Package Manager    | `pnpm` (v9+)                                                 |
+## Case study
 
----
+- **A procedural rig instead of animation clips.** The GLB ships without animations, so the character is brought to life at runtime: a 16-joint rig with spring-based landing, breathing keyed to narrative beats, velocity lean and a spider-sense halo anchored to the skull. 66 joints, zero pre-baked keyframes.
+- **One continuous camera.** A Catmull-Rom spline drives the camera through 7 narrative beats, direction changes down 54% versus naive look-at, synced to scroll via GSAP ScrollTrigger + Lenis.
+- **Adaptive quality, three tiers.** Synchronous initial tier (mobile never starts at `high`), idle-gated degradation with hysteresis, shadow throttling (measured 16-draw-call valley), DPR/MSAA ladders and post-processing reserved for the top tier.
+- **AI-augmented engineering.** Built with a delegation-only orchestrator harness: 10 agents with granular command permissions, evidence-gated PRs, 28 ADRs — the specs actually drive the code. See [`opencode.json`](opencode.json) and [`docs/memory/decisions.md`](docs/memory/decisions.md).
 
-## 🚀 Comandos
+## Numbers
+
+| Metric                   | Value                                                                    |
+| ------------------------ | ------------------------------------------------------------------------ |
+| Draw calls/frame         | 44–46 (`high` tier)                                                      |
+| Tests                    | 168 unit (Vitest) + 14 visual specs (Playwright)                         |
+| Lighthouse (live deploy) | Perf **29 mobile / 83 desktop** · A11y 96 · Best practices 100 · SEO 100 |
+| Bundle                   | 1,573 kB (460 kB gzip, single chunk — code-splitting queued)             |
+| Model                    | 22.4 MB GLB (meshopt compression queued)                                 |
+
+The mobile performance score is the honest number for a 22 MB GLB under CPU throttling — Lighthouse's simulated mobile device is far below the real-world targets; the adaptive tier system exists exactly for that gap, and on-device numbers (Samsung S23 session) are being collected. Want the receipts? `?debug=1` exposes a live perf HUD (`window.__perf`), and every PR ships real logs from `pnpm verify` + `pnpm test:smoke`.
+
+## Setup
 
 ```bash
-pnpm dev              # Iniciar servidor de desenvolvimento
-pnpm build            # Build de produção (TypeScript + Vite)
-pnpm verify           # Rodar todos os gates de qualidade (lint + typecheck + test + build)
-pnpm test             # Testes unitários com Vitest
-pnpm test:smoke       # Gate de PR Playwright (@smoke, mobile-390)
-pnpm test:visual      # Suíte visual completa com Playwright
-pnpm inspect:glb      # Inspeção de metadados do modelo GLB
+pnpm install
+pnpm dev              # dev server
+pnpm build            # production build (TypeScript + Vite)
+pnpm verify           # all quality gates (lint + typecheck + test + build)
+pnpm test:smoke       # Playwright PR gate (@smoke, mobile-390)
+pnpm inspect:glb      # GLB asset metadata
 ```
 
-A lista completa de comandos e o workflow de contribuição estão em
-[AGENTS.md](AGENTS.md).
+Requires Node.js ≥ 22 and pnpm 9. Full workflow and contribution rules: [AGENTS.md](AGENTS.md). No analytics, no cookies, no external requests at load (fonts and HDR are self-hosted).
+
+## Licenses & credits
+
+- **Code:** MIT — see [LICENSE](LICENSE)
+- **3D model:** "Spider-Man Brand New Day" by Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda)), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), converted and optimized from the original — full attribution visible in the app
+- **Fonts:** Space Grotesk and JetBrains Mono ([SIL OFL 1.1](public/fonts/OFL.txt))
+- **Disclaimer:** unofficial fan-made, non-commercial project — not affiliated with or endorsed by Marvel/Sony/Disney. Full third-party list: [NOTICE.md](NOTICE.md)
 
 ---
 
-## 🎨 Palette & Design Tokens
+## (PT-BR) Uma landing 3D cinematográfica
 
-- `ink` (`#0a0a0c`) — Fundo principal profundo
-- `concrete` (`#141417`) — Superfícies e cards
-- `steel` (`#2c3b4c`) — Detalhes secundários e iluminação fria
-- `oxide` (`#7a1f24`) — Accent de iluminação rim light
-- `signal` (`#c23b34`) — Accent máximo de destaque
-- `paper` (`#e9e5da`) — Texto e tipografia principal
-- `dim` (`#6b6a63`) — Texto secundário
+**→ [Demo ao vivo](https://brand-new-day-fan.vercel.app/)**
 
-> Fonte única dos tokens: `src/index.css` (`@theme`) · direção visual
-> vinculante: [docs/design/design-bible.md](docs/design/design-bible.md)
+Uma experiência 3D guiada por scroll: uma noite chuvosa em NYC, contada como um único movimento contínuo de câmera. Tudo na tela é código autoral — sem animações pré-gravadas, sem kit de UI. Projeto fan-made, sem fins comerciais, para demonstrar craft de frontend.
 
----
+**Destaques técnicos:** rig procedural de 16 joints (respiração, lean por velocidade, spider-sense) no lugar de clipes; câmera Catmull-Rom contínua por 7 beats; três tiers adaptativos de qualidade com degradação idle-gated; construído com um harness de agentes de IA delegation-only com gates de evidência (detalhes acima, em inglês).
 
-## 📚 Documentação
+**Números:** 44–46 draw calls · 168 testes unitários + 14 specs visuais · Lighthouse 29/83 (mobile/desktop) · GLB de 22,4 MB · bundle de 460 kB gzip. Métricas em device (S23) em coleta — `?debug=1` expõe o HUD de performance.
 
-| Documento                                                  | Conteúdo                              |
-| ---------------------------------------------------------- | ------------------------------------- |
-| [AGENTS.md](AGENTS.md)                                     | workflow, comandos e regras de PR     |
-| [PROGRESS.md](PROGRESS.md)                                 | checklist de fechamento (o que falta) |
-| [docs/STATE.md](docs/STATE.md)                             | estado atual, ADRs e métricas         |
-| [docs/design/design-bible.md](docs/design/design-bible.md) | direção visual vinculante             |
-| [docs/specs/README.md](docs/specs/README.md)               | índice de Scene Specs                 |
+**Setup:** `pnpm install` · `pnpm dev` · `pnpm verify` — detalhes na seção em inglês e em [AGENTS.md](AGENTS.md). Sem analytics, sem cookies.
 
----
-
-## 📜 Créditos e Licenças
-
-- **Código:** MIT — ver [LICENSE](LICENSE)
-- **Modelo 3D:** "Spider-Man Brand New Day" por Eskze ([Sketchfab](https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda)), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), convertido e otimizado a partir do original — atribuição completa visível na aplicação
-- **Fontes:** Space Grotesk e JetBrains Mono ([SIL OFL 1.1](public/fonts/OFL.txt))
-- **Disclaimer:** projeto fan-made, sem fins comerciais — sem afiliação ou endosso da Marvel/Sony/Disney. Lista completa de assets de terceiros: [NOTICE.md](NOTICE.md)
+**Créditos:** código MIT ([LICENSE](LICENSE)) · modelo por Eskze, CC BY 4.0 · fontes SIL OFL 1.1 · **projeto fan-made não oficial, sem afiliação ou endosso da Marvel/Sony/Disney** ([NOTICE.md](NOTICE.md))
