@@ -45,13 +45,20 @@ Sem rig facial, a alerta é corporal — três camadas somadas sobre o envelope:
 
 ## §3 — Disciplina de gatilho
 
-- Dispara **só na entrada** dos três beats de perigo — `evolution`,
+- Dispara **só na chegada** aos três beats de perigo — `evolution`,
   `arsenal`, `fullBody`. Nunca no Hero/Opening/cards/colofon; nunca no mount.
   Primeira ocorrência possível: **37.5% do scroll** (entrada do Evolution).
-- Uma vez por entrada: sair e voltar re-arma naturalmente (comparação de
-  beat); o **contador travado** (`count`) publica `__rig.senseCount` para
-  evidência — sobrevive ao decay (sob SwiftShader o desktop roda a ~5fps e a
-  janela visual do envelope fecha antes de um poll externo).
+- **Portão de direção (fix 2026-09-13):** "chegada" é entrar **rolando para
+  frente** — `velocity > 0` (`beatRuntime`) **e** beat alvo depois do beat
+  anterior na timeline. Re-entrada subindo (`chapter2 → evolution`) cai
+  exatamente sob o card que cobre a viewport e ficaria encoberta; virada de
+  beat com velocity 0 é jitter de refresh (layout), não intenção de leitura —
+  ambas re-armam em silêncio. Sair e **voltar rolando para baixo** re-dispara
+  naturalmente.
+- Uma vez por chegada: o **contador travado** (`count`) publica
+  `__rig.senseCount` para evidência — sobrevive ao decay (sob SwiftShader o
+  desktop roda a ~5fps e a janela visual do envelope fecha antes de um poll
+  externo).
 - Envelope: decay exponencial k=4.6 — vida legível (~500ms acima de 0.1),
   zero duro quando < 0.01.
 
@@ -72,12 +79,14 @@ Zero draw calls novos, zero lights, zero post-processing. O halo é DOM
 
 - Unit: `tests/unit/spiderSense.test.ts` (disciplina de gatilho — inclui
   "não dispara em card/colofon/hero", primeira chance = entrada do
-  Evolution; envelope; tick alternante), `tests/unit/breath.test.ts`
+  Evolution, **re-entrada subindo e velocity 0 não disparam**, re-arm
+  somente para frente; envelope; tick alternante), `tests/unit/breath.test.ts`
   (limites, sem salto, fullBody mais lento, catch sob sense),
   `tests/unit/senseArcs.test.ts` (leque superior, raios, stagger, path).
 - Visual: `tests/visual/spider-sense.spec.ts` — não dispara em
   hero/card (`@smoke`), dispara na entrada do Evolution com halo ancorado,
-  não re-dispara ao voltar para card. Asserções no latch (`senseCount`).
+  não re-dispara ao voltar para card, **não re-dispara subindo de volta ao
+  Evolution** (`@smoke`). Asserções no latch (`senseCount`).
 - Evidências: `node scripts/collect-spider-sense.mjs` →
   `docs/evidence/spider-sense/` (latch por parada, halo aceso, viewports
   390/430/1440).

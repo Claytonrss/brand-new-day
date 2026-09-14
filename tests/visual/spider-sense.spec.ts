@@ -97,4 +97,30 @@ test.describe('Spider-sense', () => {
     await page.waitForTimeout(1200);
     expect((await readState(page)).senseCount).toBe(1);
   });
+
+  test('scrolling back UP into a danger beat does not re-fire @smoke', async ({ page }) => {
+    // Regression: chapter2→evolution (0.5625) sits exactly where the
+    // REVELAÇÃO card covers the viewport — a backward re-entry used to spend
+    // a fire behind the card (docs/specs/spider-sense.md §3 direction gate).
+    await page.goto('/?debug=1');
+    await waitForScene(page);
+    expect((await readState(page)).senseCount).toBe(0);
+
+    // forward entry into evolution — the one legitimate fire
+    await scrollToProgress(page, 0.45);
+    let fired = -1;
+    for (let i = 0; i < 15 && fired < 1; i++) {
+      fired = (await readState(page)).senseCount;
+      if (fired < 1) await page.waitForTimeout(200);
+    }
+    expect(fired).toBe(1);
+
+    // down into chapter2, then back up across the card-covered boundary
+    await scrollToProgress(page, 0.6);
+    await page.waitForTimeout(600);
+    await scrollToProgress(page, 0.45);
+    await page.waitForTimeout(1200);
+    expect((await readState(page)).senseCount).toBe(1);
+    expect((await readState(page)).sense).toBe(0);
+  });
 });
