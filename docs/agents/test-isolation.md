@@ -62,13 +62,17 @@ Decisão:
 
 ## 4. Worktrees: isolamento de código
 
-1. Crie a worktree a partir da main: `git worktree add -b <branch> <caminho> origin/main`.
+1. Crie a worktree **dentro do próprio projeto**, em `.worktrees/<slug>/`:
+   `git worktree add -b <branch> .worktrees/<slug> origin/main` (a partir do
+   checkout principal). O diretório é dot-dir + gitignore (`.worktrees/`) — o
+   status do checkout principal fica limpo e as ferramentas não vasculham a
+   worktree. Nada de pastas irmãs do diretório de projetos.
 2. Rode **`pnpm bootstrap`** dentro da worktree — instala dependências, cria o
    `.env` com a porta isolada da worktree (§10) e abre o VS Code na pasta.
 3. Todos os comandos (`verify`, `test:smoke`, evidências) rodam **a partir da
    worktree** — nunca de outro checkout "por conveniência".
-4. `git worktree list` mostra worktrees esquecidas; `git worktree remove <caminho>`
-   limpa as de rascunho.
+4. `git worktree list` mostra worktrees esquecidas; `git worktree remove
+.worktrees/<slug>` limpa as de rascunho.
 
 ## 5. O que pode rodar em paralelo
 

@@ -147,7 +147,10 @@ O Playwright local reusa **qualquer** server que responda na porta **5173**
 servido lá — de **qualquer checkout**. Um dev server de outro worktree contamina
 a suíte silenciosamente. Regras:
 
-1. **Worktree própria por tarefa**, criada de `origin/main`. Rode **`pnpm
+1. **Worktree própria por tarefa**, criada de `origin/main` **dentro do
+   próprio projeto**: `git worktree add -b <branch> .worktrees/<slug>
+origin/main` (dot-dir gitignore — status do checkout principal fica limpo;
+   nada de pastas irmãs do diretório de projetos). Rode **`pnpm
 bootstrap`** dentro dela — instala deps, cria o `.env` com a porta isolada
    da worktree e abre o VS Code na pasta; todos os comandos rodam a partir da
    worktree.
