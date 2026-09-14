@@ -45,7 +45,7 @@ e só no final recua para o corpo inteiro — a revelação é o pagamento do sc
 - Kicker: `31 de julho`
 - Título: `Um homem\nsem nome.\nUma cidade\nsem escolha.`
 - Corpo: `SPIDER-MAN: BRAND NEW DAY chega aos cinemas em 31 de julho de 2026.`
-- Atribuição: `Modelo 3D por Eskze · CC BY 4.0` — "Eskze" linkado ao modelo (https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda) e "CC BY 4.0" linkado à licença (https://creativecommons.org/licenses/by/4.0/)
+- Atribuição: `Modelo 3D "Spider-Man Brand New Day" · © Eskze · CC BY 4.0 · convertido e otimizado a partir do original` — "Eskze" linkado ao modelo (https://sketchfab.com/3d-models/spider-man-brand-new-day-ff9df30377094808ba9df7c82cb09cda) e "CC BY 4.0" linkado à licença (https://creativecommons.org/licenses/by/4.0/)
 
 > **Nota (ADR-017):** a implementação usava "UM HERÓI QUALQUER." divergente da
 > copy fechada abaixo. A decisão é **voltar ao storyboard** e incluir a data —

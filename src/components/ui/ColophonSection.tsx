@@ -106,9 +106,12 @@ export function ColophonSection() {
         </div>
       </div>
 
-      {/* CC-BY Attribution — required, visible without hover */}
-      <footer className="absolute bottom-6 left-1/2 z-10 w-full max-w-[92vw] -translate-x-1/2 px-6 text-center font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
+      {/* CC-BY Attribution + fan-work disclaimer — required, visible without hover */}
+      <footer className="absolute bottom-6 left-1/2 z-10 w-full max-w-[92vw] -translate-x-1/2 space-y-1 px-6 text-center font-mono text-[10px] uppercase tracking-[0.15em] text-dim/60">
         <ModelAttribution />
+        <p>
+          Projeto fan-made, sem fins comerciais — sem afiliação ou endosso da Marvel/Sony/Disney.
+        </p>
       </footer>
     </section>
   );
