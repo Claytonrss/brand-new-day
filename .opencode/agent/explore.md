@@ -11,8 +11,7 @@ Leia primeiro:
 
 - `AGENTS.md`
 - `docs/design/` — Design Bible, storyboard, composition rules
-- Specs ativas em `docs/specs/`
-- `docs/plans/archive/harness-bootstrap-plan.md` para contexto geral
+- Specs ativas em `docs/specs/` (índice com status: `docs/specs/README.md`)
 
 Entregue:
 

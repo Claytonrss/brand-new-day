@@ -4,7 +4,7 @@
 
 **Section:** Opening → Hero (transição)  
 **Branch:** `feat/arrival-landing`  
-**Plan:** `docs/plans/archive/pareto-impact-plan.md` §Wave 4, PR 4a (IDEIA-3D-01)  
+**Plan:** `pareto-impact-plan.md` §Wave 4, PR 4a (IDEIA-3D-01)  
 **Date:** 2026-09-12
 
 ## 2. Visual Goal

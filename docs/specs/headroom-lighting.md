@@ -2,7 +2,7 @@
 
 > **Status:** ✅ implementado — 3D Motion Upgrade (PRs #17–#29)
 > **Branch:** `perf/headroom-lighting`
-> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave F
+> **Plano de origem:** `3d-motion-upgrade-plan.md` §4 Wave F
 > **Data:** 2026-09-09
 
 ## 1. Context

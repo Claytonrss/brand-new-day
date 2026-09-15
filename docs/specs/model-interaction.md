@@ -2,7 +2,7 @@
 
 > **Status:** implementado
 > **Branch:** `feat/atmosphere-depth` (mesma branch da Wave E, a pedido)
-> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave D
+> **Plano de origem:** `3d-motion-upgrade-plan.md` §4 Wave D
 > **Data:** 2026-09-09
 
 ## 1. Context

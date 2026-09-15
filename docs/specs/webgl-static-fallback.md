@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** transversal (toda a página quando WebGL falha)
-**Wave:** P3.2 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
+**Wave:** P3.2 (plano: `portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 

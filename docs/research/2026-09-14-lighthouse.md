@@ -1,6 +1,7 @@
 # Lighthouse — deploy de produção (2026-09-14)
 
-Fechamento do item **A9** da auditoria (`docs/plans/archive/AUDIT-PORTFOLIO-2026-09-14.md`): as
+Fechamento do item **A9** da auditoria de portfólio (arquivo no git
+history): as
 métricas públicas de performance, até hoje inexistentes, medidas contra o
 deploy ao vivo <https://brand-new-day-fan.vercel.app/> (após PRs #58/#59 —
 licensing + social preview).
@@ -67,8 +68,8 @@ geometria crua).
 **Leitura:** o ganho de score veio do main-thread (TBT); o próximo alvo
 de mobile é o peso em rede — KTX2 nas texturas (fase 2 do plano TD-003) e
 code-splitting do JS (A6, 460 kB gzip) são os restantes. Accessibility 96
-segue na espera do contraste (achado 5.12, onda W3 do
-`docs/plans/archive/post-launch-polish-plan.md`).
+segue na espera do contraste (achado 5.12, onda W3 do pós-lançamento,
+PRs #64/#67).
 
 ---
 

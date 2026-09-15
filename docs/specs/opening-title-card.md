@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** novo — antes do Hero (entre o preloader e a primeira dobra 3D)
-**Wave:** P1a.2 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
+**Wave:** P1a.2 (plano: `portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 

@@ -39,14 +39,12 @@ contrato de processo é `docs/workflow/spec-driven-contract.md`.
 | `arsenal-web-shooters.md`   | Web shooters (eixo/órbita)         | Refinada pelo macro HUD (P2a) e P3.1        |
 | `fullbody-living-poster.md` | FullBody como pôster vivo          | Copy final: storyboard + ADR-017            |
 
-## Superseded / histórico
+## Superseded / histórico (deletadas — texto no git history)
 
-| Spec                             | Motivo                                                    |
-| -------------------------------- | --------------------------------------------------------- |
-| `archive/hero-mouse-tracking.md` | Substituído pelo head-tracking do rig procedural (Wave A) |
+| Spec                     | Motivo                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------- |
+| `hero-mouse-tracking.md` | Substituído pelo head-tracking do rig procedural (`procedural-rig-motion.md`, Wave A) |
+| `wave-g-verification.md` | Registro de verificação — os gates vivem em `tests/visual/*`                          |
 
-## Arquivadas
-
-| Spec                             | Motivo                                                  |
-| -------------------------------- | ------------------------------------------------------- |
-| `archive/wave-g-verification.md` | Registro histórico — os gates vivem em `tests/visual/*` |
+> Planos de origem citados nos headers das specs (ex.: `3d-motion-upgrade-plan.md`)
+> também vivem no **git history**.

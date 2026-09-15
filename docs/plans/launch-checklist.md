@@ -1,7 +1,7 @@
 # Launch checklist — kit de divulgação
 
 > **Data:** 2026-09-14 · **Fonte:** A10 da auditoria + onda W6 do
-> `docs/plans/archive/post-launch-polish-plan.md`. Tudo abaixo é **ação do
+> pós-lançamento (PRs #62–#69). Tudo abaixo é **ação do
 > dono** — os artefatos estão prontos para colar. Ordem = funil: repo em
 > forma → perfil → post.
 
