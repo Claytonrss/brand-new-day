@@ -28,7 +28,7 @@ Antes de implementar a experiência final, inspecionar o asset
 
 Decisões de otimização (nomes de arquivo explícitos,
 ex: `spider-man_brand_new_day.optimized.glb`) e documentação no
-`docs/design/look-dev-report.md` ou ADR.
+`docs/design/archive/look-dev-report.md` ou ADR.
 
 ## Ordem de degradação (se pesado em mobile)
 

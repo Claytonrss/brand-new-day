@@ -2,6 +2,10 @@
 
 > Rubrica objetiva para reduzir subjetividade na aprovação estética. Cada item
 > recebe nota de 1 a 5. A tabela preenchida entra no relatório de verify e no PR.
+>
+> **Sobre evidências:** os caminhos `docs/evidence/*` citados abaixo são
+> **locais** (o diretório é gitignored — ~187 MB); em clone fresco, gere com
+> `pnpm evidence:visual` / `scripts/collect-*.mjs`.
 
 > **Nota de evidência (2026-09-10):** a nota 5.0/5.0 registrada nas waves 1–4
 > foi **autoatribuída, sem evidência humana** — a captura real em

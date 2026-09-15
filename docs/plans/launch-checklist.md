@@ -1,17 +1,19 @@
 # Launch checklist — kit de divulgação
 
 > **Data:** 2026-09-14 · **Fonte:** A10 da auditoria + onda W6 do
-> `post-launch-polish-plan.md`. Tudo abaixo é **ação do dono** — os artefatos
-> estão prontos para colar. Ordem = funil: repo em forma → perfil → post.
+> `docs/plans/archive/post-launch-polish-plan.md`. Tudo abaixo é **ação do
+> dono** — os artefatos estão prontos para colar. Ordem = funil: repo em
+> forma → perfil → post.
 
 ## Pré-requisitos (marcar antes do post)
 
-- [ ] Mergear a cadeia #62 → #63 → #64 → #68 → este PR (ordem; o GitHub
-      retargeta as bases conforme cada merge) e #65 (independente).
+- [x] Mergear a cadeia de lançamento (#62–#69) — concluído (todos merged;
+      resumo no arquivo de planos concluídos do `PROGRESS.md`).
 - [ ] Resolver o billing do GitHub Actions (Settings → Billing & plans) — o CI
       está sem rodar desde o #59.
-- [ ] Sessão de device S23 (Bloco A) → fechar C4: ou o "zero janks" fica
-      sustentado por medição, ou sai do colofon (`ColophonSection.tsx:14`).
+- [ ] Sessão de device S23 (Bloco A): o "zero janks" já saiu do colofon
+      preventivamente (ADR-031); com a medição em mãos, o claim volta
+      **com número** ou fica suave para sempre (`ColophonSection.tsx`).
 - [ ] Passada Safari/iPhone (M15, de carona no TD-002) — uma tarde.
 - [ ] Tornar o repo **público** (Settings → General → Danger Zone).
 - [ ] Habilitar Web Analytics no dashboard Vercel (toggle; dados do W5).

@@ -1,9 +1,11 @@
 # STATE.md — spiderman-landing
 
-## Estado Atual (2026-09-13)
+## Estado Atual (2026-09-14)
 
-**Fase:** Pareto Impact Plan **executado** (Waves 1–5, PRs #32–#37 mergeados).
-Restante: **sessão de device no S23** (runbook:
+**Fase:** lançamento **concluído** — Pareto Impact (PRs #32–#38), UX polish
+(#39–#57), Launch Readiness (#58–#60), TD-003 meshopt (#61), Post-Launch
+Wave (#62–#69) e pareto de fechamento (#70–#72) mergeados; projeto no ar em
+produção. Restante: **sessão de device no S23** (runbook:
 `docs/plans/wave0-s23-runbook.md`), calibrações dependentes de device e
 itens data-gated — ver `PROGRESS.md` (checklist de fechamento).
 
@@ -53,7 +55,7 @@ chapter-print}.md`.
   commitado: drag-orbit hover-only (touch mantém gyro + tap) com teste
   touch corrigido (contexto mobile+touch) e glow do loader na raiz do SVG.
   Spec: `docs/specs/dom-micro-craft.md`.
-- **PR #41 — Spider-sense + respiração (`feat/spider-sense`):** v2
+- **PR #44 — Spider-sense + respiração (`feat/spider-sense`):** v2
   (redesenhada após observação em device — a v1, flash de rim ×3 em toda
   fronteira, lia como brilho ambiente). Agora com iconografia própria:
   **halo de 6 traços ondulados** hairline desenhando-se ao redor da cabeça
@@ -93,14 +95,31 @@ chapter-print}.md`.
   (removidos/aparados) e 6 contas de scroll corrigidas em src/tests/scripts,
   constraints FALHA/IDEIA/spec/contrato preservados. ADR-026.
 
+### Lançamento e pós-lançamento (2026-09-14)
+
+- **Launch Readiness (PRs #58–#60):** LICENSE MIT + NOTICE + CC-BY estrita +
+  disclaimer (#58) · OG/favicon/metas validados em produção (#59) · README
+  showcase EN-first + GIF + Lighthouse publicado (#60).
+- **TD-003 meshopt (PR #61):** GLB 23,5 → 6,5 MB (quantização +
+  EXT_meshopt_compression, ADR-029), entrega via edge da Vercel.
+- **Post-Launch Wave (PRs #62–#69):** números ressincronizados (#62/#66) ·
+  vendor chunks — entry 1.573 → 265 kB (#63) · contraste AA + a11y 100
+  (ADR-030, #64/#67) · headers CSP/nosniff/XFO/Permissions-Policy (#65) ·
+  Vercel Analytics + beacon WebGL `/api/log` (#68) · robots/sitemap + case
+  study do harness + launch checklist (#69).
+- **Pareto de fechamento (PRs #70–#72):** claim "zero janks" substituído por
+  fato verificável (ADR-031, #70) · consolidação da auditoria (#71) ·
+  `env:doctor`/`env:teardown` como gates executáveis + worktrees aninhadas
+  no repo (#72).
+
 ### Pendências consolidadas (detalhe em `PROGRESS.md`)
 
 - **Sessão S23 (única pendência de execução):** Wave 0 (T0.1–T0.5),
   aceites das Waves 1–3 em device, T4.6 (lean × punch × lag), TD-002
   (gyro iOS), aprovação estética humana (Fase 7.3).
 - **Data-gated:** FALHA-02 (threshold medium→low), FALHA-10 (syncTouch),
-  FALHA-03 (variante segura), micro-polish. ~~F4b (GLB ≤ 15 MB)~~ — fechado
-  (ADR-029).
+  FALHA-03 (variante segura), micro-polish. (F4b — GLB ≤ 15 MB — fechado:
+  ADR-029.)
 
 ### Implementado (acumulado)
 
@@ -126,29 +145,34 @@ chapter-print}.md`.
 - **Pendente:** aprovação estética humana (Fase 7.3) — as notas são
   autoatribuídas contra screenshots; o aceite final é do stakeholder.
 
-### PRs Merged
+### PRs Merged (72 — todos merged)
 
-- PR #1–#16: bootstrap, Look Dev, seções, Waves 1–4, docs sync, fallback pós.
-- PR #17–#29: 3D Motion Upgrade (Waves F/B/A/C/E/D, P0 calibração, Wave G).
-- PR #30: CI (GitHub Actions) · PR #31: Portfolio Impact P0–P3.2.
-- PR #32: Wave 1 — tier síncrono + idle-gate + ProgressBar rAF + gate do
-  tiro + smoke tier.
-- PR #33: Wave 2 — shadow throttle.
-- PR #34: Wave 3 — loader determinístico (HDR + fontes) + isTap.
-- PR #35: Wave 4a — a chegada (+ isTap tests perdidos do #34).
-- PR #36: Wave 4b — velocity lean.
-- PR #37: Wave 5 — beat chrome + chapter print.
-- PR #38: pareto closeout (STATE sync + PROGRESS reestruturado).
-- PR #39: auditoria de docs (arquivamento de planos, backlog, statuses).
-- PR #40: DOM micro-craft · PR #41: spider-sense + respiração por beat.
+| Faixa   | Programa                                                                                                                                                                                                 |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1–#16  | Bootstrap, Look Dev, seções, Premium Waves 1–4, docs sync, fallback pós                                                                                                                                  |
+| #17–#29 | 3D Motion Upgrade (Waves F/B/A/C/E/D, P0 calibração, Wave G)                                                                                                                                             |
+| #30–#31 | CI (GitHub Actions) · Portfolio Impact P0–P3.2                                                                                                                                                           |
+| #32–#38 | Pareto Impact Plan (Waves 1–5) + closeout de docs (STATE sync, PROGRESS reestruturado)                                                                                                                   |
+| #39–#44 | Consolidação de docs · DOM micro-craft (#40) · attribution copy (#41) · arsenal click-reveal (#42) · spider-sense + respiração (#44)                                                                     |
+| #45–#53 | Env/hygiene: dev port por checkout (#45/#53) · setup env+VS Code (#46) · refactors dead-code/primitives/structure (#47–#49) · consolidação v2 + runbook de isolamento (#43/#50/#52) · repo hygiene (#51) |
+| #54–#57 | Spider-sense refire fix (#54) · scroll regearing (ADR-025, #55) · lint/comment hygiene (ADR-026, #56) · UX polish (ADR-027/028, #57)                                                                     |
+| #58–#60 | Launch Readiness (C2 licensing · C1 social preview · C3 README showcase)                                                                                                                                 |
+| #61     | TD-003 meshopt — GLB 6,5 MB (ADR-029)                                                                                                                                                                    |
+| #62–#69 | Post-Launch Wave (números · vendor chunks · contraste AA · headers · RUM/beacon · robots/sitemap · case study)                                                                                           |
+| #70–#72 | Pareto de fechamento (ADR-031 · consolidação da auditoria · env:doctor/teardown)                                                                                                                         |
+
+> Detalhe por entrega: tabela "Arquivo — planos concluídos" no `PROGRESS.md`
+> e o git history.
 
 ## Próximos Passos (fila priorizada)
 
 0. **Sessão de device no S23** — runbook `docs/plans/wave0-s23-runbook.md`:
-   Wave 0 (T0.1–T0.5), aceites Waves 1–3, T4.6, TD-002, aprovação humana.
-1. **Data-gated (decidir com os números):** FALHA-02 · FALHA-10 · F4b ·
+   Wave 0 (T0.1–T0.5), aceites Waves 1–3, T4.6, TD-002, aprovação humana;
+   de carona, **M15** — passada Safari/iPhone (mesma tarde).
+1. **Data-gated (decidir com os números):** FALHA-02 · FALHA-10 ·
    FALHA-03 variante segura · fila micro-polish.
-2. **Nada mais planejado** — novos itens entram como plano novo.
+2. **Publicação** seguindo `docs/plans/launch-checklist.md` (A10).
+3. **Nada mais planejado** — novos itens entram como plano novo.
 
 ## Decisões Arquiteturais (ADRs)
 
@@ -186,7 +210,7 @@ chapter-print}.md`.
 
 ## Métricas
 
-- **PRs:** 69 (todos merged) · **Unit tests:** 168 (22 arquivos) ·
+- **PRs:** 72 (todos merged) · **Unit tests:** 168 (22 arquivos) ·
   **Visual:** 14 specs (gate de PR: 9 `@smoke` no mobile-390; deep suite na
   `main`) · **Hooks:** husky + commitlint + lint-staged
 - **Rubrica visual:** 4,5/5,0 — autoatribuída por PR contra evidências;

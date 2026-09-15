@@ -8,25 +8,37 @@ Resumo objetivo das alterações realizadas neste PR.
 
 ## 📸 Evidências Visuais
 
-> Gerar com `pnpm evidence:visual` (390/430/1440) e copiar para
-> `docs/evidence/<slug>/`. Evidência específica da wave (vídeo, auditoria
-> de requests, vale de calls…) entra além dos screenshots de paridade.
+> Gerar com `pnpm evidence:visual` (390/430/1440) e **anexar no corpo deste
+> PR**. `docs/evidence/` é local-only (gitignored) — o PR é o veículo da
+> evidência. Evidência específica da wave (vídeo, auditoria de requests, vale
+> de calls…) entra além dos screenshots de paridade.
 
-- **Mobile 390px:** `docs/evidence/<slug>/390-hero.png`
-- **Mobile 430px:** `docs/evidence/<slug>/430-hero.png`
-- **Desktop 1440px:** `docs/evidence/<slug>/1440-hero.png`
+- **Mobile 390px:** `390-hero.png`
+- **Mobile 430px:** `430-hero.png`
+- **Desktop 1440px:** `1440-hero.png`
 
 ---
 
-## 🎨 Rubrica Visual (Notas de 1 a 5)
+## 🎨 Rubrica Visual (1–5, pesos de `docs/design/visual-rubric.md`)
 
-| Critério                    | Nota    | Observações                                    |
-| --------------------------- | ------- | ---------------------------------------------- |
-| Primeira Dobra (Hero)       | **5/5** | Presença cinematográfica forte                 |
-| Composição Mobile           | **5/5** | Texto respeita área segura sem cobrir o rosto  |
-| Composição Desktop          | **5/5** | Espaço negativo bem aproveitado                |
-| Tratamento de Luz/Contraste | **5/5** | Rim light tom oxide `#7a1f24` destaca silhueta |
-| Integração Texto/Personagem | **5/5** | Leitura limpa e harmônica com a paleta         |
+> Preencher **todos os 10 critérios** da rubrica viva (fonte única:
+> `docs/design/visual-rubric.md` — escala, pesos e regras de bloqueio).
+> Bloqueantes (primeira dobra, composição mobile, integração
+> texto/personagem) < 4 → PR não abre.
+
+| Critério                           | Peso | Nota | Evidência (screenshot/spec) |
+| ---------------------------------- | ---: | ---: | --------------------------- |
+| Primeira dobra / impacto imediato  |    3 |      |                             |
+| Composição mobile                  |    3 |      |                             |
+| Integração texto + personagem      |    3 |      |                             |
+| Iluminação e silhueta              |    2 |      |                             |
+| Tipografia e hierarquia            |    2 |      |                             |
+| Ritmo de scroll e câmera           |    2 |      |                             |
+| Sensação cinematográfica/editorial |    2 |      |                             |
+| Originalidade de portfólio         |    2 |      |                             |
+| Performance percebida mobile       |    3 |      |                             |
+| Motion reduzida ainda bonita       |    1 |      |                             |
+| **Média ponderada**                |      |      | **≥ 4 obrigatório**         |
 
 ---
 
