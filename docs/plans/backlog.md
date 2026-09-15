@@ -1,16 +1,16 @@
-# Backlog — ideias mineradas (2026-09-12)
+# Backlog — ideias não implementadas e catálogo de IDs
 
-> Curadoria da varredura de docs: ideias do brainstorm
-> (`docs/research/2026-09-12-brainstorm.md`) e de planos executados que
-> **ficaram para trás**. Todas foram **verificadas contra o código em
-> 2026-09-12** — nenhuma existe hoje. Origem e restrições de design no
-> brainstorm original (checado contra `design-bible.md`).
+> Consolidação canônica da varredura de 2026-09-12 (brainstorm original no
+> git history) + planos executados que **ficaram para trás**. Ideias
+> **verificadas contra o código** — nenhuma existe hoje. Restrições de
+> design: `docs/design/design-bible.md` (proibições) e
+> `docs/design/composition-rules.md`.
 
 ## Quick wins (simples, sem dependência nova)
 
 > Os sete quick wins originais foram **todos executados** — ver "Já
-> absorvidos" abaixo (PRs #40 e #41). O que resta aqui são os médios e
-> grandes.
+> absorvidos" abaixo (PRs #40, #41 e #44). O que resta aqui são os médios
+> e grandes.
 
 | ID           | Ideia                                                                                              | Ganho                                          | Notas                                                           |
 | ------------ | -------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------- |
@@ -26,21 +26,22 @@
 
 ## Grandes / com dependências (decidir conscientemente)
 
-| ID          | Ideia                                 | Por que está aqui                                                                         |
-| ----------- | ------------------------------------- | ----------------------------------------------------------------------------------------- |
-| IDEIA-3D-08 | **Wrist-cam PiP** no macro do Arsenal | scissor render de outra câmera — custo de engenharia e risco de performance no mobile     |
-| AMB-06      | **Áudio diegético opcional**          | exige licenciar assets + política de autoplay/opt-in; projeto separado                    |
-| AMB-02/03   | **Skyline + janelas acesas**          | rejeitado na 2ª revisão do Pareto (risco contra "o personagem é o primeiro sinal visual") |
+| ID              | Ideia                                 | Por que está aqui                                                                         |
+| --------------- | ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| IDEIA-3D-08     | **Wrist-cam PiP** no macro do Arsenal | scissor render de outra câmera — custo de engenharia e risco de performance no mobile     |
+| IDEIA-AMB-06    | **Áudio diegético opcional**          | exige licenciar assets + política de autoplay/opt-in; projeto separado                    |
+| IDEIA-AMB-02/03 | **Skyline + janelas acesas**          | rejeitado na 2ª revisão do Pareto (risco contra "o personagem é o primeiro sinal visual") |
 
 ## Já absorvidos (não refazer)
 
-- **Quick wins (PRs #40–#41, 2026-09-13):**
+- **Quick wins (PRs #40, #41 e #44, 2026-09-13):**
   - PAG-01 tipografia reativa, AMB-08 carimbo por beat, PAG-06 CTA
     magnético, AMB-07 trama do traje — PR #40 (`feat/dom-micro-craft`),
     spec `docs/specs/dom-micro-craft.md`.
-  - 3D-10 spider-sense (rim 3× + tick de cabeça alternante nos boundaries),
-    3D-09 respiração por beat (presa no hero, funda no fullBody) — PR
-    #41 (`feat/spider-sense`), spec `docs/specs/spider-sense.md`.
+  - 3D-10 spider-sense (halo de traços + expressão de alerta nos
+    boundaries), 3D-09 respiração por beat (presa no hero, funda no
+    fullBody) — PR #44 (`feat/spider-sense`), spec
+    `docs/specs/spider-sense.md`.
   - PAG-09 (progress bar como fio de teia) ficou de fora de propósito:
     mexeria na ProgressBar recém-otimizada (Wave 1) — reavaliar pós
     sessão de device.
@@ -51,8 +52,46 @@
   misregistration); o clip-path diagonal não foi aplicado (avaliar se ainda
   soma sobre o print atual).
 
-## Condicionais (ver `PROGRESS.md` Bloco C)
+## Condicionais (data-gated — ver `PROGRESS.md` Bloco A/C)
 
-- FALHA-02 (threshold mobile), FALHA-10 (syncTouch), F4b (GLB ≤ 15 MB),
-  FALHA-03 (render gating variante segura) — todos esperam os números da
-  sessão de device no S23.
+Esperam os números da sessão de device no S23:
+
+- **FALHA-02** — zona morta de adaptação: 35–45 fps no mobile não degrada
+  (threshold medium→low só abaixo de 30 fps). Fix condicionado: threshold
+  mobile-only < ~40 fps, só se o T0.5 mostrar o medium na faixa 35–44.
+- **FALHA-10** — scroll touch sem suavização (`syncTouch` do Lenis off):
+  parte do "feel" pode ser input, não FPS. Testar `syncTouch: true` no S23
+  só se fps ≥ 55 com queixa de feel persistente (trade-off: latência).
+- **FALHA-03** — canvas renderiza a custo total sob cobertura parcial de
+  cards (~50% em fling; reclassificado como não prioritário após
+  challenge). Variante segura (pause só em repouso + resume em
+  `touchstart`/`wheel`) só se térmica/bateria dói na sessão.
+- ~~**F4b** (GLB ≤ 15 MB)~~ — fechado antecipadamente (PR #61, ADR-029:
+  23,5 → 6,5 MB meshopt).
+
+## Catálogo de IDs (citados em comentários de código)
+
+Fonte canônica das referências `FALHA-*`/`IDEIA-*` em `src/`, `tests/` e
+`scripts/`:
+
+| ID       | Status | Resumo                                                                                                   |
+| -------- | ------ | -------------------------------------------------------------------------------------------------------- |
+| FALHA-01 | ✅     | tier inicial mobile nascia em `high` — corrigido pelo tier síncrono (PR #32, ADR-022)                    |
+| FALHA-02 | ⏳     | zona morta 35–45 fps — condicionado à sessão S23 (acima)                                                 |
+| FALHA-03 | ⏳     | render sob cobertura — variante segura condicionada (acima)                                              |
+| FALHA-04 | ✅     | shadow map por frame — shadow throttle (PR #33, ADR-023)                                                 |
+| FALHA-05 | ✅     | ProgressBar com setState por scroll + `height` — rAF + `scaleY` (PR #32)                                 |
+| FALHA-06 | ✅     | `will-change` permanente em centenas de spans — removido (PR #32)                                        |
+| FALHA-07 | 🟡     | alocações por frame (GC churn) — parcialmente endereçado em drive-bys (Wave 1); sem verificação dedicada |
+| FALHA-08 | ✅     | HDR de CDN externa — self-host (PR #34, ADR-021)                                                         |
+| FALHA-09 | ✅     | troca de tier com "pop" instantâneo — só em scroll idle (PR #32, ADR-022)                                |
+| FALHA-10 | ⏳     | `syncTouch` do Lenis — condicionado à sessão S23 (acima)                                                 |
+| FALHA-11 | ✅     | janela inicial a dpr 2 antes do adapter — absorvida pelo tier síncrono                                   |
+| FALHA-12 | ✅     | gate do tiro (`high`) dessincronizado do hint — alinhado (PR #32/#34)                                    |
+| FALHA-13 | ✅     | tap disparava tiro E drag — `isTap` no `pointerup` (PR #34)                                              |
+| FALHA-14 | ✅     | variantes GLB leves sem uso — superado pelo meshopt único (PR #61, ADR-029)                              |
+| FALHA-15 | 🟡     | `gsap.ticker.remove` com arrow nova (vaza em HMR/testes; inócuo em produção)                             |
+| FALHA-16 | 🟡     | rest pose lida em render como valor (frágil a refactor; verificar antes de mexer)                        |
+
+🟡 = latente/parcial, sem ação planejada. Os `IDEIA-*` citados em código
+(PAG-01, PAG-06, 3D-09, 3D-10, AMB-07, AMB-08) estão em "Já absorvidos".
