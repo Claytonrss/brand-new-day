@@ -2,7 +2,7 @@
 
 > **Status:** ✅ implementado — 3D Motion Upgrade (PRs #17–#29)
 > **Branch:** `feat/procedural-rig-motion`
-> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave A
+> **Plano de origem:** `3d-motion-upgrade-plan.md` §4 Wave A
 > **Data:** 2026-09-09
 
 ## 1. Context

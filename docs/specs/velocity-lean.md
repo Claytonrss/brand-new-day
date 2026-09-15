@@ -4,7 +4,7 @@
 
 **Section:** página inteira (acoplada à velocidade, sem beat fixo)  
 **Branch:** `feat/velocity-lean`  
-**Plan:** `docs/plans/archive/pareto-impact-plan.md` §Wave 4, PR 4b (IDEIA-3D-04)  
+**Plan:** `pareto-impact-plan.md` §Wave 4, PR 4b (IDEIA-3D-04)  
 **Date:** 2026-09-12
 
 ## 2. Visual Goal

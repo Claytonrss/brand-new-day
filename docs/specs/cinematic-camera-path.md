@@ -2,7 +2,7 @@
 
 > **Status:** ✅ implementado — 3D Motion Upgrade (PRs #17–#29)
 > **Branch:** `feat/cinematic-camera-path`
-> **Plano de origem:** `docs/plans/archive/3d-motion-upgrade-plan.md` §4 Wave B
+> **Plano de origem:** `3d-motion-upgrade-plan.md` §4 Wave B
 > **Data:** 2026-09-09
 
 ## 1. Context
@@ -192,9 +192,9 @@ custo desprezível (~2 chamadas, nenhuma alocação: vetores reutilizados via
       O teste exige redução ≥ 30% do pico e p95 ≤ 25°.
 
       O pico restante (62°) é de *staging*, não de código: a câmera precisa
-                  recuar do close-up do peito para alcançar o punho, então há uma reversão
-                  real no fim do Beat 2. O ponto de overshoot (`OVERSHOOT`) distribui essa
-                  reversão ao longo do scroll em vez de deixá-la acontecer parada.
+                      recuar do close-up do peito para alcançar o punho, então há uma reversão
+                      real no fim do Beat 2. O ponto de overshoot (`OVERSHOOT`) distribui essa
+                      reversão ao longo do scroll em vez de deixá-la acontecer parada.
 
 - [ ] **Métrica de órbita:** variação de azimute no Beat 3 ≥ 60°
       (baseline medido: 0,2°).

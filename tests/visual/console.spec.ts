@@ -9,7 +9,6 @@ import { waitForScene } from './support';
  * Known-benign noise (three.js deprecations and headless GPU driver messages)
  * is filtered explicitly; anything else fails the gate.
  *
- * @see docs/specs/wave-g-verification.md
  */
 const IGNORED = [
   /THREE\.Clock: This module has been deprecated/,

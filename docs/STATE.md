@@ -9,7 +9,7 @@ produção. Restante: **sessão de device no S23** (runbook:
 `docs/plans/wave0-s23-runbook.md`), calibrações dependentes de device e
 itens data-gated — ver `PROGRESS.md` (checklist de fechamento).
 
-### Pareto Impact Plan (`docs/plans/archive/pareto-impact-plan.md`)
+### Pareto Impact Plan (`pareto-impact-plan.md`, git history)
 
 - **Wave 1 — PERF-A (PR #32):** tier inicial síncrono (`detectInitialTier`)
   — mobile inicia em `medium`, nunca `high` (FALHA-01); trocas de tier só em

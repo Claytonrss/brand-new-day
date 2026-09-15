@@ -21,13 +21,14 @@
 
 ## Históricos (Fases 3.1/3.2 — valor de registro, em `archive/`)
 
-| Arquivo                         | Conteúdo                                                                       |
-| ------------------------------- | ------------------------------------------------------------------------------ |
-| `archive/reference-survey.md`   | síntese das referências visuais avaliadas na fundação                          |
-| `archive/look-dev-plan.md`      | processo das 3 rodadas de Look Dev (v3 = aceite humano, ver PROGRESS Bloco A)  |
-| `archive/look-dev-report.md`    | relatório do Look Dev v1 (2026-09-05)                                          |
-| `archive/3d-model-treatment.md` | diretrizes de material/luz/pós que originaram `curateMaterials`                |
-| `archive/real-device-check.md`  | checklist de device — consolidado no runbook `docs/plans/wave0-s23-runbook.md` |
+| Arquivo                         | Conteúdo                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| `archive/reference-survey.md`   | síntese das referências visuais avaliadas na fundação                         |
+| `archive/look-dev-plan.md`      | processo das 3 rodadas de Look Dev (v3 = aceite humano, ver PROGRESS Bloco A) |
+| `archive/look-dev-report.md`    | relatório do Look Dev v1 (2026-09-05)                                         |
+| `archive/3d-model-treatment.md` | diretrizes de material/luz/pós que originaram `curateMaterials`               |
 
-> Planos executados vivem em `docs/plans/archive/`; o estado corrente é
+> Deletado com conteúdo consolidado: `archive/real-device-check.md` (virou o
+> runbook `docs/plans/wave0-s23-runbook.md`). Planos executados não são mais
+> arquivos no repo — texto integral no git history; o estado corrente é
 > `docs/STATE.md` e o checklist em `PROGRESS.md`.

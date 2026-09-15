@@ -3,7 +3,7 @@
 ## 1. Context
 
 **Section:** preloader (antes do Hero)
-**Wave:** P1a.1 (plano: `docs/plans/archive/portfolio-impact-plan.md`)
+**Wave:** P1a.1 (plano: `portfolio-impact-plan.md`)
 **Author:** @plan
 **Date:** 2026-09-10
 

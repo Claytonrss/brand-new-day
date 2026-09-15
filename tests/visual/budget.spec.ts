@@ -12,7 +12,6 @@ import { waitForScene } from './support';
  *
  *     PERF_FPS_ASSERT=1 pnpm test:visual tests/visual/budget.spec.ts
  *
- * @see docs/specs/wave-g-verification.md
  */
 const DRAW_CALL_BUDGET = 48;
 const PROGRAM_BUDGET = 24;

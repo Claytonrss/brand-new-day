@@ -6,7 +6,6 @@ import { waitForScene } from './support';
  * CC-BY 4.0 attribution — required to be visible without hover, in every
  * section that shows the model, with a reachable link to the author.
  *
- * @see docs/specs/wave-g-verification.md
  */
 const ATTRIBUTION = /CC BY 4\.0/i;
 const AUTHOR = 'Eskze';

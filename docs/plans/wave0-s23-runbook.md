@@ -1,7 +1,7 @@
 # Wave 0 — Runbook de baseline no Samsung Galaxy S23
 
-> Plano: `docs/plans/archive/pareto-impact-plan.md` §Wave 0 · **sem PR** — a saída
-> são números "antes" que entram no corpo do PR da Wave 1
+> Plano de origem: `pareto-impact-plan.md` (git history) §Wave 0 · **sem
+> PR** — a saída são números "antes" que entram no corpo do PR da Wave 1
 > (`fix/mobile-tier-policy`) e decidem FALHA-02 / FALHA-10 / FALHA-14.
 >
 > **Medir contra `main` (pré-fix, `3bd324a`)** — este é o baseline. A

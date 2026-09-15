@@ -113,8 +113,8 @@ inventário em `scripts/README.md`.
 - `docs/STATE.md` — estado narrativo atual (entregas, ADRs resumidos, métricas)
 - `docs/memory/decisions.md` — ADRs completos
 - `docs/memory/tech-debt.md` — débitos aceitos
-- `docs/plans/backlog.md` — fila de ideias não implementadas
-- Planos concluídos: `docs/plans/archive/` (referência histórica indexada)
+- `docs/plans/backlog.md` — fila de ideias não implementadas + catálogo de IDs `FALHA-*`/`IDEIA-*`
+- Planos concluídos: removidos do repo — texto integral no **git history**; resumo vivo na tabela de arquivo do `PROGRESS.md`
 
 ## 10. Isolamento de Ambiente para Testes (obrigatório)
 
