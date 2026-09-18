@@ -1,4 +1,5 @@
 ---
+name: test-writer
 description: Writes unit tests, Playwright visual tests, and improves coverage.
 mode: subagent
 model: opencode-go/deepseek-v4-flash

@@ -1,4 +1,5 @@
 ---
+name: security-audit
 description: Security auditor - reviews asset licensing, secrets, external links.
 mode: subagent
 model: opencode-go/deepseek-v4-flash

@@ -1,4 +1,5 @@
 ---
+name: git
 description: Git operations - commits, pushes, creates PRs with Conventional Commits.
 mode: subagent
 model: opencode-go/deepseek-v4-flash

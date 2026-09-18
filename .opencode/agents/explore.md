@@ -1,4 +1,5 @@
 ---
+name: explore
 description: Read-only codebase explorer - maps specs, docs and code patterns.
 mode: subagent
 model: opencode-go/deepseek-v4-flash

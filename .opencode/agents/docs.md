@@ -1,4 +1,5 @@
 ---
+name: docs
 description: Documentation agent - updates project docs, specs, STATE, memory files.
 mode: subagent
 model: opencode-go/deepseek-v4-flash

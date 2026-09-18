@@ -1322,3 +1322,44 @@ O 4º argumento do colofon passa de
 
 - A página fica sem nenhuma afirmação não-evidenciável; FALHA-02 segue
   data-gated no Bloco A (threshold só entra com número).
+
+## ADR-032: Harness de agente versionado — skills `.agents/`, agentes OpenCode no caminho canônico e MCP Context7
+
+**Data:** 2026-09-18 · **Contexto:** `harness-score` em 74/108 (L1) com
+Skills & Commands e Hooks zerados; workflows repetidos (evidência de PR,
+isolamento de testes, contrato spec-driven) viviam apenas em prosa;
+subagentes OpenCode em `.opencode/agent/` (singular), fora do caminho canônico
+documentado `.opencode/agents/`; nenhum servidor MCP configurado.
+
+### Decisão
+
+- **Skills do projeto em `.agents/skills/`** (`pr-evidence`, `test-isolation`,
+  `spec-driven`) — caminho tool-agnostic (lido pelo ZCode e pelo scanner),
+  empacotando procedimentos que já eram vinculantes em docs.
+- **Entry points intencionais em `.agents/workflows/`** (`pr-evidence.md`,
+  `test-isolation.md`) como checklists disparáveis sob demanda.
+- **Scoped rules em `.agents/rules/`** (`three-r3f.md`, `tests-playwright.md`)
+  — não-negociáveis por área com ativação por globs; a ativar skills/MCP o
+  scanner passou a detectar Claude Code/OpenCode/Antigravity e a exigir CTX-03
+  a CTX-06.
+- **`.opencode/agent/` → `.opencode/agents/`** + `name:` explícito no
+  frontmatter dos 10 agentes (alinhamento com o caminho documentado do
+  OpenCode; o `opencode.json` inline permanece a fonte de config).
+- **MCP Context7** (docs atualizadas de R3F v9/drei v10/Tailwind v4/Vite 8)
+  em três configs, cada uma com consumidor real: `.mcp.json`
+  (compat Claude Code/Codex), `.agents/mcp.json` (fallback do ZCode —
+  `.zcode/` é gitignored) e chave `mcp` do `opencode.json`. Keyless (rate
+  limit gratuito); nenhuma credencial commitada.
+- **Critérios EARS + checks pareados com prova** incorporados ao
+  `docs/workflow/spec-driven-contract.md` (§2.1, §2.3, §3) — inspirados na
+  skill externa `tlc-spec-lean`, avaliada e rejeitada como instalação por
+  duplicar o contrato existente (segunda fonte de verdade + dependência de
+  Python).
+
+### Consequências
+
+- harness-score 74 → 94/108, maturidade L2; skills viram a camada executável
+  e os docs continuam a fonte única.- Mudança de servidor MCP exige tocar 3 configs (custo aceito do multi-tool;
+  consolidável se um formato vencer).
+- Hooks (HKS, +14 pts) ficaram para PR próprio: `.claude/settings.json` não
+  pertence ao stack atual e merece revisão separada.

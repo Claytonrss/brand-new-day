@@ -1,4 +1,5 @@
 ---
+name: plan
 description: Architecture planner - creates detailed implementation plans and Scene Specs.
 mode: subagent
 model: opencode-go/glm-5.2
