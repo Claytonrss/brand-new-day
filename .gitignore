@@ -27,7 +27,10 @@ coverage/
 
 # Logs
 *.log
-.zcode/
+
+# ZCode: artefatos de sessão (plans/) ficam fora; subagentes versionados (ADR-034)
+.zcode/*
+!.zcode/agents/
 
 # Evidências visuais/vídeo ficam fora do git (187 MB) — manter cópia local
 docs/evidence/

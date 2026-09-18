@@ -1363,3 +1363,43 @@ documentado `.opencode/agents/`; nenhum servidor MCP configurado.
   consolidável se um formato vencer).
 - Hooks (HKS, +14 pts) ficaram para PR próprio: `.claude/settings.json` não
   pertence ao stack atual e merece revisão separada.
+
+## ADR-034: Frota de subagentes portada para o ZCode (`.zcode/agents/`)
+
+**Data:** 2026-09-18 · **Contexto:** OpenCode saiu do stack de trabalho; os 10
+subagentes viviam em `.opencode/agents/` com config inline no `opencode.json`
+(modelos e permissões por comando). O ZCode lê subagentes de
+`.zcode/agents/**/*.md` (workspace, recursivo) — caminho até então ignorado
+pelo `.gitignore`.
+
+### Decisão
+
+- **9 agentes portados** para `.zcode/agents/` (explore-repo, plan,
+  implement-frontend, implement-general, test-writer, verify, security-audit,
+  git, docs) com frontmatter nativo do ZCode: `name`, `description`,
+  `tools` (restrição por ferramenta, não por comando), `skills:` amarrando os
+  agentes às skills do ADR-032 (verify→pr-evidence/test-isolation etc.) e
+  `injectAgentsMd: true` para contexto do projeto.
+- **`orchestrator` não foi portado:** no ZCode o agente principal é o
+  orquestrador (subagente não delega) — a função já existe nativamente.
+- **Sem `model:` nos arquivos:** o usuário tem 2 modelos (GLM-5.3 e
+  GLM-5.3-Flash); IDs de entitlement não são estáveis para hardcode. Agentes
+  herdam o modelo da sessão; override por agente fica no Settings →
+  Subagents (grava o ID correto).
+- **`.gitignore`**: `.zcode/*` + `!.zcode/agents/` — plans/ de sessão
+  continuam fora, a frota fica versionada.
+- Prompts atualizados: referências a arquivos removidos (`docs/STATE.md`,
+  `docs/specs/`, `harness-bootstrap-plan.md`) substituídas por paths vivos;
+  plan/verify ganham EARS + proof-backed checks (ADR-032).
+
+### Consequências
+
+- Permissões deixam de ser por comando bash (opencode) e passam a ser por
+  ferramenta + disciplina de prompt; o gate determinístico equivalente é o
+  hook `guard-shell` (ADR-033) sob Claude Code, e no ZCode o modo de
+  permissão da sessão.
+- `.opencode/` permanece no repo (inerte, mantém AGT-01 do harness-score);
+  remoção é decisão futura — remover custa 5 pts de score e deve vir com
+  substituição do caminho canônico.
+- Descoberta de user scope (`~/.zcode/agents/`) só existe no runtime desktop;
+  a frota versionada no workspace funciona em qualquer runtime.
