@@ -12,16 +12,21 @@ const LINK_CLASS =
  * without hover. Typography (mono, 10px, uppercase, dim) is inherited from the
  * wrapping footer; pass `className` only when the site owns the type itself.
  *
+ * Responsive length: below `md` the title and modification note collapse
+ * visually (kept for screen readers) so the credit fits one line as fixed
+ * chrome; creator, source link and license stay always visible.
+ *
  * The link accessible names ("Eskze", "CC BY 4.0") are contract —
  * tests/visual/credits.spec.ts matches them by exact name.
  *
- * @see docs/specs/colophon-outro.md
+ * @see docs/specs/first-frame-legibility.md §11 (criterion 2)
  * @see NOTICE.md
  */
 export function ModelAttribution({ className = '' }: { className?: string }) {
   return (
     <p className={className}>
-      Modelo 3D "Spider-Man Brand New Day" · ©{' '}
+      <span className="max-md:hidden">Modelo 3D "Spider-Man Brand New Day" · © </span>
+      <span className="md:hidden">© </span>
       <a href={MODEL_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
         Eskze
       </a>
@@ -29,7 +34,7 @@ export function ModelAttribution({ className = '' }: { className?: string }) {
       <a href={LICENSE_URL} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
         CC BY 4.0
       </a>
-      {' · convertido e otimizado a partir do original'}
+      <span className="max-md:hidden">{' · convertido e otimizado a partir do original'}</span>
     </p>
   );
 }

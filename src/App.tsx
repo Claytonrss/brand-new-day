@@ -28,6 +28,7 @@ import { StaticFallback } from './components/ui/StaticFallback';
 import { ProgressBar } from './components/ui/ProgressBar';
 import { SpiderSense } from './components/ui/SpiderSense';
 import { ArsenalClickHint } from './components/ui/ArsenalClickHint';
+import { AttributionBadge } from './components/ui/AttributionBadge';
 import { SenseAnchor } from './components/3d/SenseAnchor';
 import { VelocityType } from './components/ui/VelocityType';
 import { BeatStamp } from './components/ui/BeatStamp';
@@ -46,8 +47,8 @@ import { hasWebGL } from './design/webgl';
  * Layout — heights come from `SECTION_SPANS` (beat/sections.ts, ADR-024),
  * which is also the source of `BEAT_TIMELINE`:
  * Opening (100vh) → Hero (140vh) → Chapter1 (70vh) → Evolution (210vh) →
- * Chapter2 (70vh) → Arsenal (210vh) → FullBody (130vh) → Colophon (140vh)
- * = 1070vh
+ * Chapter2 (70vh) → Arsenal (210vh) → FullBody (130vh) → Colophon (115vh)
+ * = 1045vh
  *
  * @see docs/specs/evolution-chest-symbol.md
  * @see docs/design/storyboard.md
@@ -83,12 +84,19 @@ export function App() {
       {/* Editorial field log on the left spine (IDEIA-AMB-08) */}
       <BeatStamp />
 
+      {/* CC-BY attribution as fixed chrome — one channel, never over the render */}
+      <AttributionBadge />
+
       {!loaded && <CinematicLoader onLoaded={() => setLoaded(true)} />}
 
       {/* Developer metrics overlay — only with ?debug=1 */}
       <PerfHud />
 
-      <main className="relative w-full overflow-x-hidden bg-ink text-paper">
+      {/* NO overflow-x-hidden here: it would turn <main> into a scroll
+          container that never scrolls and silently kill every `sticky`
+          overlay (Evolution/Arsenal/FullBody holds). Horizontal clipping is
+          the body's job — its rule propagates to the viewport. */}
+      <main className="relative w-full bg-ink text-paper">
         {/* 3D R3F Canvas Layer — fixed, never unmounts */}
         <ErrorBoundary
           fallback={null}
