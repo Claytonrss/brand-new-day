@@ -9,8 +9,8 @@
  * the narrative stay in sync by construction.
  *
  * Layout: Opening (100) → Hero (140) → Chapter1 (70) → Evolution (210) →
- *         Chapter2 (70) → Arsenal (210) → FullBody (130) → Colophon (140)
- *         = 1070vh of document, 970vh of scroll.
+ *         Chapter2 (70) → Arsenal (210) → FullBody (130) → Colophon (115)
+ *         = 1045vh of document, 945vh of scroll.
  *
  * Units follow each section's pre-existing behavior: full-viewport sections
  * use `dvh` (mobile URL-bar aware), the two scroll-driven sections keep `vh`.
@@ -34,7 +34,9 @@ export const SECTION_SPANS: Record<SectionId, number> = {
   chapter2: 70,
   arsenal: 210,
   fullBody: 130,
-  colophon: 140,
+  // 115 (was 140): the colophon is a closing block, not a breathing room —
+  // the last viewport had ~40% dead space (first-frame-legibility wave).
+  colophon: 115,
 };
 
 /** Total document height, in vh. */

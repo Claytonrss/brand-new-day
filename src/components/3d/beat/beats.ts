@@ -3,16 +3,16 @@
  *
  * Ranges are fractions of the **maximum scroll** (total height − viewport) and
  * are DERIVED from the section heights in `sections.ts`, so they always line
- * up with the layout in `src/App.tsx` (1070vh page = 970vh of scroll).
+ * up with the layout in `src/App.tsx` (1045vh page = 945vh of scroll).
  * See `beatAt`/`beatLocalProgress`.
  *
- * - Opening+ Hero 000–240vh → 0.0000–0.2474 (title card shares the Hero camera)
- * - Chapter1       240–310vh → 0.2474–0.3196
- * - Evolution      310–520vh → 0.3196–0.5361
- * - Chapter2       520–590vh → 0.5361–0.6082
- * - Arsenal        590–800vh → 0.6082–0.8247
- * - FullBody       800–930vh → 0.8247–0.9588
- * - Colophon       930–970vh → 0.9588–1.0000
+ * - Opening+ Hero 000–240vh → 0.0000–0.2540 (title card shares the Hero camera)
+ * - Chapter1       240–310vh → 0.2540–0.3280
+ * - Evolution      310–520vh → 0.3280–0.5503
+ * - Chapter2       520–590vh → 0.5503–0.6243
+ * - Arsenal        590–800vh → 0.6243–0.8466
+ * - FullBody       800–930vh → 0.8466–0.9841
+ * - Colophon       930–945vh → 0.9841–1.0000
  *
  * The Opening title card (P1a.2) is a typographic beat with no 3D of its own;
  * it reuses the static `hero` camera keyframe, so the beat id stays `hero`.

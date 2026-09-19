@@ -12,6 +12,14 @@ function topOf(id: keyof typeof SECTION_SPANS): number {
 }
 
 describe('beat timeline', () => {
+  it('gears the document to the contracted 1045vh (ADR-024 + ADR-035)', () => {
+    // Hard total: the scroll gearing contract is 1045vh of document / 945vh of
+    // scroll after the colophon re-span (140 → 115). A re-gear must update
+    // this contract deliberately, not silently.
+    expect(Object.values(SECTION_SPANS).reduce((sum, vh) => sum + vh, 0)).toBe(1045);
+    expect(MAX_SCROLL_VH).toBe(945);
+  });
+
   it('covers the whole scroll without gaps', () => {
     expect(BEAT_TIMELINE[0].scrollStart).toBe(0);
     expect(BEAT_TIMELINE[BEAT_TIMELINE.length - 1].scrollEnd).toBe(1);
