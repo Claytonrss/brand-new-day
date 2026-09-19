@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
-import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
@@ -28,7 +27,7 @@ const AUTO_REVEAL_PROGRESS = 0.8;
  * Text aligned left, never covers the launcher/wrist (P0.1). As the camera
  * pushes into the web-shooter (macro, P2a), the narrative copy recedes and a
  * thin engineering HUD takes over: call-out hairlines on desktop, a bottom
- * legend on mobile. The CC-BY attribution stays visible the whole time.
+ * legend on mobile. CC-BY attribution is fixed chrome (`AttributionBadge`).
  *
  * The HUD is a fixed layer (the canvas is fixed too); a single ScrollTrigger on
  * the Arsenal section drives both opacities from its progress, so it never
@@ -220,11 +219,6 @@ export function ArsenalOverlay() {
           </div>
         </div>
       </div>
-
-      {/* CC-BY attribution — never fades, never hidden by the macro transition */}
-      <footer className="absolute bottom-6 left-6 right-6 z-10 font-mono text-[10px] uppercase tracking-[0.15em] text-dim sm:bottom-10 sm:left-12 md:left-16">
-        <ModelAttribution />
-      </footer>
     </div>
   );
 }
