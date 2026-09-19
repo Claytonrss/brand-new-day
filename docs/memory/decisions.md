@@ -1358,11 +1358,41 @@ documentado `.opencode/agents/`; nenhum servidor MCP configurado.
 
 ### Consequências
 
-- harness-score 74 → 94/108, maturidade L2; skills viram a camada executável
-  e os docs continuam a fonte única.- Mudança de servidor MCP exige tocar 3 configs (custo aceito do multi-tool;
+- harness-score 74 → 94/108 (L3) nesta decisão; skills viram a camada
+  executável e os docs continuam a fonte única.
+- Mudança de servidor MCP exige tocar 3 configs (custo aceito do multi-tool;
   consolidável se um formato vencer).
-- Hooks (HKS, +14 pts) ficaram para PR próprio: `.claude/settings.json` não
-  pertence ao stack atual e merece revisão separada.
+- Hooks (HKS, +14 pts) entraram no mesmo delivery via ADR-033, apesar do
+  formato ser de ferramenta fora do stack atual.
+
+## ADR-033: Hooks de guardrail no formato Claude Code (gate + feedback)
+
+**Data:** 2026-09-18 · **Contexto:** dimensão Hooks do harness-score em 0/14;
+os limites de ação (AGENTS.md §11) eram prosa — nenhum mecanismo determinístico
+os executava. Complementa o ADR-032 no mesmo delivery (planejado como PR
+separado por tocar formato de ferramenta fora do stack; combinado a pedido do
+mantenedor).
+
+### Decisão
+
+- `.claude/settings.json` com dois hooks, scripts commitados em
+  `scripts/hooks/` (nenhuma dependência nova):
+  - **PreToolUse (Bash)** → `guard-shell.mjs`: espelho do §11 — bloqueia
+    `rm -rf`, `git push --force/-f` (exceto `--force-with-lease`),
+    `git reset --hard`, install/add de dependência (pnpm/npm/yarn/bun) e
+    escrita via redirect em configs de agente. Exit 2 = deny; payload
+    inválido = fail-open (não trava o loop do agente).
+  - **PostToolUse (Edit|Write|MultiEdit)** → `format-edited.mjs`: prettier no
+    arquivo editado (mesma config do lint-staged); nunca bloqueia.
+- Guard é heurístico (split por `&&/||/;/|` + parser de flags para `rm`), não
+  um parser shell completo.
+
+### Consequências
+
+- HKS 14/14; combinado com o ADR-032 o score chega a 108/108.
+- Hooks ativos sob Claude Code; para ZCode a proteção equivalente é client-side
+  (`.zcode/` é gitignored — não versionável aqui).
+- Falso-positivo aceitável para um gate: `echo "rm -rf"` é bloqueado.
 
 ## ADR-034: Frota de subagentes portada para o ZCode (`.zcode/agents/`)
 
