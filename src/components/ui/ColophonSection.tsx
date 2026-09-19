@@ -41,8 +41,11 @@ export function ColophonSection() {
         aria-hidden="true"
         className="absolute inset-0"
         style={{
+          // Dissolve point pushed down (28%→40%) so the FullBody silhouette
+          // stays readable longer before the fog claims it — the old ramp
+          // cropped the legs mid-thigh on mobile (first-frame-legibility).
           background:
-            'linear-gradient(to bottom, rgba(10,10,12,0.15) 0%, rgba(10,10,12,0.82) 12%, rgba(10,10,12,0.98) 28%, #0a0a0c 45%)',
+            'linear-gradient(to bottom, rgba(10,10,12,0.15) 0%, rgba(10,10,12,0.82) 18%, rgba(10,10,12,0.98) 40%, #0a0a0c 60%)',
         }}
       />
 

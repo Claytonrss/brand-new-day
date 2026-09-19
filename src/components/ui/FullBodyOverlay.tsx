@@ -1,4 +1,3 @@
-import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
 import { MOTION } from '@/design/motion';
@@ -10,7 +9,8 @@ import { MOTION } from '@/design/motion';
  * `docs/design/storyboard.md` (ADR-017): title in four short blocks, the
  * premiere date as the kicker and body.
  * Text centered per composition-rules.md (FullBody: centralizado), anchored to
- * the bottom so the four-line title never crosses the chest symbol.
+ * the bottom third with a legibility scrim so the title never crosses the
+ * chest symbol (first-frame-legibility wave, criterion 3).
  *
  * @see docs/design/composition-rules.md (§FullBody)
  * @see docs/design/storyboard.md
@@ -18,10 +18,15 @@ import { MOTION } from '@/design/motion';
  */
 export function FullBodyOverlay() {
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 flex min-h-dvh flex-col items-center justify-end pb-10 pt-6 sm:p-12 md:p-16">
+    <div className="sticky top-0 z-10 flex h-dvh flex-col items-center justify-end p-6 pb-14 sm:p-12 sm:pb-10 md:p-16">
+      {/* Legibility scrim — the title zone stays readable over the legs. */}
+      <div
+        aria-hidden="true"
+        className="scrim-b pointer-events-none absolute inset-x-0 bottom-0 h-[46%]"
+      />
       <section
         aria-labelledby="fullbody-title"
-        className="flex max-w-[82vw] flex-col items-center text-center md:max-w-[480px] lg:max-w-[560px]"
+        className="relative flex max-w-[82vw] flex-col items-center text-center md:max-w-[480px] lg:max-w-[560px]"
       >
         <OverlayKicker>31 de julho</OverlayKicker>
         <SplitTextHeadline
@@ -35,11 +40,6 @@ export function FullBodyOverlay() {
           SPIDER-MAN: BRAND NEW DAY chega aos cinemas em 31 de julho de 2026.
         </OverlayBody>
       </section>
-
-      {/* CC-BY Attribution */}
-      <footer className="mt-6 font-mono text-center text-[10px] uppercase tracking-[0.15em] text-dim sm:mt-12">
-        <ModelAttribution />
-      </footer>
     </div>
   );
 }

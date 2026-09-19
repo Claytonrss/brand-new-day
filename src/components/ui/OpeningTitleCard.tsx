@@ -10,16 +10,25 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
  *
  * A ~100vh typographic trailer card that sits between the preloader and the
  * Hero. It carries no 3D of its own: the camera already holds the static Hero
- * keyframe behind a solid `ink` card, so the first 3D frame (the mask) lands
- * only after this silence. Scrolling lifts the copy out and "hands over" to the
- * Hero.
+ * keyframe behind the card, and a vertical ink gradient keeps the title zone
+ * opaque while letting the lower frame go translucent — the mask ghosts into
+ * the first fold, so the page opens on presence, not on an empty card
+ * (Design Bible, promessa da primeira dobra; criterion 1). The landing spring
+ * keeps the model held high until the Hero enters (`LandingTrigger`, intact).
+ * Scrolling lifts the copy out and "hands over" to the Hero.
  *
  * The title reuses `SplitTextHeadline`, which triggers on mount (the card is at
  * the top of the page, already inside the scroll trigger's range).
  *
  * @see docs/specs/opening-title-card.md
+ * @see docs/specs/first-frame-legibility.md §11
  * @see docs/design/design-bible.md
  */
+
+/** Title zone stays opaque; the frame's lower third lets the mask through. */
+const CARD_GRADIENT =
+  'linear-gradient(to bottom, rgba(10,10,12,0.96) 0%, rgba(10,10,12,0.94) 55%, rgba(10,10,12,0.8) 76%, rgba(10,10,12,0.55) 100%)';
+
 export function OpeningTitleCard() {
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -64,8 +73,8 @@ export function OpeningTitleCard() {
   return (
     <div
       ref={cardRef}
-      className="relative flex flex-col items-center justify-center overflow-hidden bg-ink px-6"
-      style={{ height: `${SECTION_SPANS.opening}dvh` }}
+      className="relative flex flex-col items-center justify-center overflow-hidden px-6"
+      style={{ height: `${SECTION_SPANS.opening}dvh`, background: CARD_GRADIENT }}
       data-opening="title-card"
     >
       {/* Suit weave — IDEIA-AMB-07: the hero's material under the title card. */}

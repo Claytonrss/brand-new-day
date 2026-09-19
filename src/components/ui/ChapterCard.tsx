@@ -18,12 +18,20 @@ const SPAN_BY_POSITION = {
 } as const;
 
 /**
+ * Opaque core to hide the camera repositioning; the top/bottom ~16% dissolve
+ * so the card never meets the scene as a hard horizontal line — the character
+ * emerges from black, never sits "colado" on a flat edge (Design Bible).
+ */
+const CARD_GRADIENT =
+  'linear-gradient(to bottom, rgba(10,10,12,0) 0%, #0a0a0c 16%, #0a0a0c 84%, rgba(10,10,12,0) 100%)';
+
+/**
  * ChapterCard — cinematic chapter transition card.
  *
- * Sits between 3D sections as a solid bg-ink break. The camera repositions
- * behind the card during these scroll sections, creating a "chapter change"
- * effect. Title characters stagger in with premium easing; subtitle fades
- * with a delay.
+ * Sits between 3D sections as an ink band with gradient edges. The camera
+ * repositions behind the opaque core during these scroll sections, creating a
+ * "chapter change" effect. Title characters stagger in with premium easing;
+ * subtitle fades with a delay.
  *
  * Height comes from `SECTION_SPANS` (ADR-024): passage beats are geared
  * shorter than a full viewport so the journey's scroll is spent on the 3D
@@ -114,8 +122,8 @@ export function ChapterCard({ title, subtitle, position }: ChapterCardProps) {
   return (
     <div
       ref={cardRef}
-      className="relative flex items-center justify-center bg-ink"
-      style={{ height: `${SPAN_BY_POSITION[position]}dvh` }}
+      className="relative flex items-center justify-center"
+      style={{ height: `${SPAN_BY_POSITION[position]}dvh`, background: CARD_GRADIENT }}
       data-chapter={position}
     >
       {/* Print layers (docs/specs/chapter-print.md) — static trama + strand */}

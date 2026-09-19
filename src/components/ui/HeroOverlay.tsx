@@ -1,10 +1,15 @@
-import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
 
 export function HeroOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex min-h-dvh flex-col justify-between p-6 sm:p-12 md:p-16">
+      {/* Legibility scrim — the copy stays readable where the mask's chest
+          rises under it (first-frame-legibility wave, criterion 3). */}
+      <div
+        aria-hidden="true"
+        className="scrim-b pointer-events-none absolute inset-x-0 bottom-0 h-[38%]"
+      />
       <header className="parallax-mid flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span
@@ -35,11 +40,6 @@ export function HeroOverlay() {
           em cima, sozinho, sob a máscara.
         </OverlayBody>
       </section>
-
-      {/* CC-BY Attribution Footer */}
-      <footer className="pointer-events-auto mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-dim sm:mt-12">
-        <ModelAttribution />
-      </footer>
     </div>
   );
 }

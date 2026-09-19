@@ -21,6 +21,24 @@ html {
   background: var(--color-ink);
   color: var(--color-paper);
   font-family: var(--font-display);
+  /* Cinematic frame illusion — the native scrollbar reads as a chrome glitch
+     over the render; thin + token-colored keeps affordance without the glare
+     (first-frame-legibility wave, criterion 7). */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-steel) var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel);
+  border-radius: 4px;
 }
 
 body {
@@ -39,6 +57,29 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-signal);
   outline-offset: 2px;
+}
+
+/* --- Legibility scrims (first-frame-legibility) --- */
+
+/* Functional edge scrims behind section copy — the only gradients allowed by
+   the Design Bible are legibility, not decoration. Ink fades from the text
+   side so paper/dim type never sits raw on the suit. */
+.scrim-b {
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--color-ink) 82%, transparent) 55%,
+    var(--color-ink)
+  );
+}
+
+.scrim-r {
+  background-image: linear-gradient(
+    to left,
+    var(--color-ink),
+    color-mix(in srgb, var(--color-ink) 82%, transparent) 45%,
+    transparent
+  );
 }
 
 /* --- Beat chrome (docs/specs/beat-chrome.md) — exhaustive accent consumers --- */
