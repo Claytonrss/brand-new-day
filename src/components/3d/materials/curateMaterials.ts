@@ -35,6 +35,14 @@ export interface CuratedMaterials {
   names: string[];
 }
 
+export interface CurateOptions {
+  /** Renderer's max anisotropy — sharpens KTX2 texture reads at grazing angles. */
+  maxAnisotropy?: number;
+}
+
+/** Close-up moiré ceiling: 8 kills the shimmer without softening the weave. */
+const ANISOTROPY_CAP = 8;
+
 /**
  * Curate every material of the loaded model: physical intent (roughness,
  * metalness, emissive) plus the authorial shader layer (Wave C).
@@ -43,9 +51,25 @@ export interface CuratedMaterials {
  *
  * @see docs/specs/authorial-shaders-fx.md §4
  */
-export function curateMaterials(root: THREE.Object3D): CuratedMaterials {
+export function curateMaterials(
+  root: THREE.Object3D,
+  options: CurateOptions = {},
+): CuratedMaterials {
   // `?fx=off` keeps the Wave B look — physical intent only, no shader layer.
   const patch = FX_MODE !== 'off';
+  const anisotropy = options.maxAnisotropy
+    ? Math.min(ANISOTROPY_CAP, options.maxAnisotropy)
+    : undefined;
+
+  const applyAnisotropy = (material: THREE.MeshStandardMaterial | THREE.MeshPhysicalMaterial) => {
+    if (anisotropy === undefined) return;
+    for (const value of Object.values(material)) {
+      if (value instanceof THREE.Texture && value.anisotropy < anisotropy) {
+        value.anisotropy = anisotropy;
+        value.needsUpdate = true;
+      }
+    }
+  };
 
   const names: string[] = [];
   let patched = 0;
@@ -73,6 +97,8 @@ export function curateMaterials(root: THREE.Object3D): CuratedMaterials {
       const name = material.name ?? '';
       const intent = intentFor(name);
       const isMetal = material.metalness > 0.5;
+
+      applyAnisotropy(material);
 
       switch (intent) {
         case 'lens':

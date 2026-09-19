@@ -77,7 +77,7 @@ export function ProgressBar() {
   const transitionDuration = prefersReducedMotion ? 0 : MOTION.duration.micro;
 
   return (
-    <div className="fixed right-0 top-0 z-50 h-screen w-1 bg-concrete/20">
+    <div className="fixed right-0 top-0 z-50 h-screen w-0.5 bg-concrete/20">
       <div
         ref={fillRef}
         className="h-full w-full origin-top bg-signal"

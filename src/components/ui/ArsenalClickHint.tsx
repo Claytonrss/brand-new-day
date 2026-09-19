@@ -48,7 +48,7 @@ export function ArsenalClickHint() {
       data-testid="arsenal-click-hint"
       className="pointer-events-none fixed bottom-20 left-1/2 z-20 -translate-x-1/2"
     >
-      <span className="animate-pulse font-mono text-[10px] uppercase tracking-[0.25em] text-signal/50 motion-reduce:animate-none">
+      <span className="animate-pulse font-mono text-[10px] uppercase tracking-[0.25em] text-signal motion-reduce:animate-none [text-shadow:0_1px_10px_rgba(10,10,12,0.9)]">
         clique no anel ·
       </span>
     </div>

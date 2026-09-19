@@ -65,10 +65,11 @@ export function SpiderManModel({
   // (rest.size === 0) until some unrelated re-render happened to occur.
   const [rest, setRest] = useState<Map<BoneRole, RestPose>>(() => new Map());
 
-  // Material curation — physical intent + authorial shader layer (Wave C)
+  // Material curation — physical intent + authorial shader layer (Wave C);
+  // anisotropy caps the close-up shimmer on the KTX2 suit textures.
   useEffect(() => {
-    curateMaterials(scene);
-  }, [scene]);
+    curateMaterials(scene, { maxAnisotropy: gl.capabilities.getMaxAnisotropy() });
+  }, [scene, gl]);
 
   // Capture the authored pose before any layer touches it
   useEffect(() => {
