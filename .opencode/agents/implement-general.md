@@ -1,4 +1,5 @@
 ---
+name: implement-general
 description: General implementation - scripts, CI, configs, asset pipeline, tooling.
 mode: subagent
 model: opencode-go/minimax-m3

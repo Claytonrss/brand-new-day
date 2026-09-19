@@ -1,4 +1,5 @@
 ---
+name: orchestrator
 description: Delegation-only orchestrator - routes work to agents, enforces phase order and hard stops.
 mode: primary
 model: opencode-go/deepseek-v4-flash

@@ -34,6 +34,12 @@ A Scene Spec MUST contain:
 
 **Template:** Use `docs/templates/scene-spec.md` (create if missing).
 
+**Acceptance criteria (EARS):** every Scene Spec ends with an acceptance
+section written as EARS clauses — "When `<trigger>`, the system shall
+`<observable response>`" — with no ambiguous language. Each criterion is
+paired with a **proof**: a test, command, or capture that demonstrates it. A
+criterion without a proof is not a criterion.
+
 ### 2.2 Implement (Development Phase)
 
 **Owner:** `@implement` agent  
@@ -66,6 +72,9 @@ Additionally:
   (fonte única: `playwright.config.ts`); a cobertura de 430×932 entra pelas
   evidências (`pnpm evidence:visual` fotografa 390/430/1440)
 - ✅ No visual regressions (compare against baseline screenshots)
+- ✅ Every EARS criterion from the Scene Spec receives a PASS/FAIL verdict
+  **with its proof attached** (executed test/command log or screenshot) — a
+  verdict without proof does not count
 
 ### 2.4 Security Audit (Conditional)
 
@@ -111,6 +120,7 @@ A Scene Spec is considered "ready for implementation" when:
 | **Clarity**       | No ambiguous language ("maybe", "perhaps", "could")               |
 | **Traceability**  | Every visual decision references design-bible.md or storyboard.md |
 | **Testability**   | Stop conditions are measurable (e.g., "FPS ≥ 55 on iPhone 12")    |
+| **Proof-backed**  | Every acceptance criterion cites a test, command, or capture      |
 | **Accessibility** | ARIA labels and keyboard navigation explicitly defined            |
 
 ## 4. Stop Conditions

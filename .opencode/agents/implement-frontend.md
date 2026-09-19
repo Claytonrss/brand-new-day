@@ -1,4 +1,5 @@
 ---
+name: implement-frontend
 description: Implements React/R3F frontend - scenes, components, camera rig, post-processing.
 mode: subagent
 model: opencode-go/qwen3.7-plus

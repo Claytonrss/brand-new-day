@@ -1322,3 +1322,114 @@ O 4º argumento do colofon passa de
 
 - A página fica sem nenhuma afirmação não-evidenciável; FALHA-02 segue
   data-gated no Bloco A (threshold só entra com número).
+
+## ADR-032: Harness de agente versionado — skills `.agents/`, agentes OpenCode no caminho canônico e MCP Context7
+
+**Data:** 2026-09-18 · **Contexto:** `harness-score` em 74/108 (L1) com
+Skills & Commands e Hooks zerados; workflows repetidos (evidência de PR,
+isolamento de testes, contrato spec-driven) viviam apenas em prosa;
+subagentes OpenCode em `.opencode/agent/` (singular), fora do caminho canônico
+documentado `.opencode/agents/`; nenhum servidor MCP configurado.
+
+### Decisão
+
+- **Skills do projeto em `.agents/skills/`** (`pr-evidence`, `test-isolation`,
+  `spec-driven`) — caminho tool-agnostic (lido pelo ZCode e pelo scanner),
+  empacotando procedimentos que já eram vinculantes em docs.
+- **Entry points intencionais em `.agents/workflows/`** (`pr-evidence.md`,
+  `test-isolation.md`) como checklists disparáveis sob demanda.
+- **Scoped rules em `.agents/rules/`** (`three-r3f.md`, `tests-playwright.md`)
+  — não-negociáveis por área com ativação por globs; a ativar skills/MCP o
+  scanner passou a detectar Claude Code/OpenCode/Antigravity e a exigir CTX-03
+  a CTX-06.
+- **`.opencode/agent/` → `.opencode/agents/`** + `name:` explícito no
+  frontmatter dos 10 agentes (alinhamento com o caminho documentado do
+  OpenCode; o `opencode.json` inline permanece a fonte de config).
+- **MCP Context7** (docs atualizadas de R3F v9/drei v10/Tailwind v4/Vite 8)
+  em três configs, cada uma com consumidor real: `.mcp.json`
+  (compat Claude Code/Codex), `.agents/mcp.json` (fallback do ZCode —
+  `.zcode/` é gitignored) e chave `mcp` do `opencode.json`. Keyless (rate
+  limit gratuito); nenhuma credencial commitada.
+- **Critérios EARS + checks pareados com prova** incorporados ao
+  `docs/workflow/spec-driven-contract.md` (§2.1, §2.3, §3) — inspirados na
+  skill externa `tlc-spec-lean`, avaliada e rejeitada como instalação por
+  duplicar o contrato existente (segunda fonte de verdade + dependência de
+  Python).
+
+### Consequências
+
+- harness-score 74 → 94/108 (L3) nesta decisão; skills viram a camada
+  executável e os docs continuam a fonte única.
+- Mudança de servidor MCP exige tocar 3 configs (custo aceito do multi-tool;
+  consolidável se um formato vencer).
+- Hooks (HKS, +14 pts) entraram no mesmo delivery via ADR-033, apesar do
+  formato ser de ferramenta fora do stack atual.
+
+## ADR-033: Hooks de guardrail no formato Claude Code (gate + feedback)
+
+**Data:** 2026-09-18 · **Contexto:** dimensão Hooks do harness-score em 0/14;
+os limites de ação (AGENTS.md §11) eram prosa — nenhum mecanismo determinístico
+os executava. Complementa o ADR-032 no mesmo delivery (planejado como PR
+separado por tocar formato de ferramenta fora do stack; combinado a pedido do
+mantenedor).
+
+### Decisão
+
+- `.claude/settings.json` com dois hooks, scripts commitados em
+  `scripts/hooks/` (nenhuma dependência nova):
+  - **PreToolUse (Bash)** → `guard-shell.mjs`: espelho do §11 — bloqueia
+    `rm -rf`, `git push --force/-f` (exceto `--force-with-lease`),
+    `git reset --hard`, install/add de dependência (pnpm/npm/yarn/bun) e
+    escrita via redirect em configs de agente. Exit 2 = deny; payload
+    inválido = fail-open (não trava o loop do agente).
+  - **PostToolUse (Edit|Write|MultiEdit)** → `format-edited.mjs`: prettier no
+    arquivo editado (mesma config do lint-staged); nunca bloqueia.
+- Guard é heurístico (split por `&&/||/;/|` + parser de flags para `rm`), não
+  um parser shell completo.
+
+### Consequências
+
+- HKS 14/14; combinado com o ADR-032 o score chega a 108/108.
+- Hooks ativos sob Claude Code; para ZCode a proteção equivalente é client-side
+  (`.zcode/` é gitignored — não versionável aqui).
+- Falso-positivo aceitável para um gate: `echo "rm -rf"` é bloqueado.
+
+## ADR-034: Frota de subagentes portada para o ZCode (`.zcode/agents/`)
+
+**Data:** 2026-09-18 · **Contexto:** OpenCode saiu do stack de trabalho; os 10
+subagentes viviam em `.opencode/agents/` com config inline no `opencode.json`
+(modelos e permissões por comando). O ZCode lê subagentes de
+`.zcode/agents/**/*.md` (workspace, recursivo) — caminho até então ignorado
+pelo `.gitignore`.
+
+### Decisão
+
+- **9 agentes portados** para `.zcode/agents/` (explore-repo, plan,
+  implement-frontend, implement-general, test-writer, verify, security-audit,
+  git, docs) com frontmatter nativo do ZCode: `name`, `description`,
+  `tools` (restrição por ferramenta, não por comando), `skills:` amarrando os
+  agentes às skills do ADR-032 (verify→pr-evidence/test-isolation etc.) e
+  `injectAgentsMd: true` para contexto do projeto.
+- **`orchestrator` não foi portado:** no ZCode o agente principal é o
+  orquestrador (subagente não delega) — a função já existe nativamente.
+- **Sem `model:` nos arquivos:** o usuário tem 2 modelos (GLM-5.3 e
+  GLM-5.3-Flash); IDs de entitlement não são estáveis para hardcode. Agentes
+  herdam o modelo da sessão; override por agente fica no Settings →
+  Subagents (grava o ID correto).
+- **`.gitignore`**: `.zcode/*` + `!.zcode/agents/` — plans/ de sessão
+  continuam fora, a frota fica versionada.
+- Prompts atualizados: referências a arquivos removidos (`docs/STATE.md`,
+  `docs/specs/`, `harness-bootstrap-plan.md`) substituídas por paths vivos;
+  plan/verify ganham EARS + proof-backed checks (ADR-032).
+
+### Consequências
+
+- Permissões deixam de ser por comando bash (opencode) e passam a ser por
+  ferramenta + disciplina de prompt; o gate determinístico equivalente é o
+  hook `guard-shell` (ADR-033) sob Claude Code, e no ZCode o modo de
+  permissão da sessão.
+- `.opencode/` permanece no repo (inerte, mantém AGT-01 do harness-score);
+  remoção é decisão futura — remover custa 5 pts de score e deve vir com
+  substituição do caminho canônico.
+- Descoberta de user scope (`~/.zcode/agents/`) só existe no runtime desktop;
+  a frota versionada no workspace funciona em qualquer runtime.

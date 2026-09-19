@@ -1,4 +1,5 @@
 ---
+name: verify
 description: Quality verifier - runs gates, collects evidence, reports gaps.
 mode: subagent
 model: opencode-go/deepseek-v4-flash
