@@ -1433,3 +1433,56 @@ pelo `.gitignore`.
   substituição do caminho canônico.
 - Descoberta de user scope (`~/.zcode/agents/`) só existe no runtime desktop;
   a frota versionada no workspace funciona em qualquer runtime.
+
+## ADR-035: Wave first-frame-legibility — presença na primeira dobra, badge de atribuição, sticky reparado e Colophon 115
+
+**Data:** 2026-09-19 · **Contexto:** avaliação visual ao vivo (2026-09-18,
+browser, 390/1440) contra a Design Bible encontrou: (1) a primeira dobra não
+tinha o personagem — cartão `OpeningTitleCard` opaco escondia a cena; (2) a
+atribuição CC-BY, duplicada em 4 seções, cruzava o personagem e colidia com a
+copy (Arsenal mobile); (3) texto sem scrim sobre o traje (Evolution) e título
+central cobrindo o símbolo do peito no hold do FullBody; (4) bordas duras dos
+ChapterCards e ~40% de viewport morto no fim do Colophon; (5) scrollbar nativa,
+ProgressBar lendo como linha solta, hint "clique no anel" quase invisível,
+moiré no close do traje. Spec: `docs/specs/first-frame-legibility.md`.
+
+### Decisão
+
+- **Opening translúcido:** gradiente vertical (opaco no topo para o título,
+  `0.55` na base) deixa a máscara fantasma na primeira dobra. O contrato do
+  landing fica intacto (`LandingTrigger` `top bottom`, mola/fire-once
+  inalterados) — emenda à spec `arrival-landing`.
+- **Atribuição vira chrome único:** `AttributionBadge` (`fixed`, chip
+  `bg-ink/70`, direita no mobile com texto compacto — título/nota de
+  modificação seguem para leitores de tela e desktop). Instâncias por seção
+  removidas de Hero/Arsenal/FullBody; Colophon mantém o rodapé legal
+  permanente (ADR-019) e o badge se esconde no beat `colophon`. StaticFallback
+  segue com o seu bloco inline.
+- **Sticky reparado (root cause):** `main` tinha `overflow-x-hidden`, virava
+  scroll container sem scroll e **desligava todos os overlays `sticky`** — os
+  holds de Evolution/Arsenal/FullBody nunca grudaram de fato. O corte
+  horizontal é feito só pelo `body` (propaga ao viewport). FullBodyOverlay
+  ganha hold sticky com título no terço inferior + `.scrim-b`; Evolution ganha
+  `.scrim-r`; Hero ganha `.scrim-b` no mobile. Scrims são funcionais
+  (legibilidade), não decorativos.
+- **Bordas suaves:** ChapterCards trocam `bg-ink` sólido por gradiente
+  (núcleo opaco 16–84%, bordas dissolvendo); scrim de topo do Colophon
+  dissolve mais tarde (40%/60%).
+- **Colophon 140→115dvh** na tabela `SECTION_SPANS` (beats derivam por
+  construção): fim da página sem viewport morto. Emenda ao ADR-025.
+- **Polish:** scrollbar `thin` ink/steel; ProgressBar `w-0.5`; hint do anel em
+  `text-signal` com text-shadow; anisotropy (cap 8) nas texturas KTX2 do
+  traverse (`curateMaterials`).
+
+### Consequências
+
+- Primeira dobra passa a ter presença do personagem (critério bloqueante da
+  rubrica) sem mudar o gearing do scroll; landing testes existentes continuam
+  válidos sem alteração de comportamento.
+- Holds de seção funcionam pela primeira vez como especificado — copy de
+  Evolution/Arsenal/FullBody sustenta durante o beat em vez de passar rápido.
+- Baselines visuais de `reduced-motion` e stills de evidência mudam (mudança
+  intencional, documentada na spec §11).
+- Badge compacto no mobile mostra © + creator + licença; título do trabalho e
+  nota de modificação permanecem acessíveis (SR) e visíveis ≥ `sm` e no
+  rodapé permanente do Colophon + `NOTICE.md`.
