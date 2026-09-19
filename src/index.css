@@ -206,6 +206,34 @@ html.lenis body {
   }
 }
 
+/* Hero mouse cue — ambient light ping near the lenses
+   (docs/specs/hero-mouse-cue.md). The anchor tracks the projected eyes: the
+   hero camera holds a vertical FOV, so screen position is linear in vh and
+   calc(50vw + K·vh) holds at any width (calibrated at 1024/1440/2560).
+   Margins (not transform) center the dot — GSAP owns `x` for the drift. */
+.hero-cue {
+  left: calc(50vw + 29vh);
+  top: calc(50vh + 18vh);
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  visibility: hidden;
+  background: radial-gradient(
+    circle,
+    #fff6ec 0%,
+    var(--color-glow) 18%,
+    color-mix(in srgb, var(--color-glow) 55%, transparent) 38%,
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cue {
+    display: none;
+  }
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }

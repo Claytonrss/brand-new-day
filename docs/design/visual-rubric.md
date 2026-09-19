@@ -82,3 +82,27 @@ texto/personagem (4) — todos ≥ 4.
 
 **Pendência que impede nota máxima:** FPS em dispositivo real não medido
 (TD-002 / Fase 7.3). Autoria (P1b) já endereçada pelo colofon.
+
+## Preenchimento — hero-mouse-cue (2026-09-19)
+
+Feature transitória e aditiva (dot de 34px, pico 0.35, ~2.75s, 1×/sessão, só
+desktop `pointer: fine`): os critérios não tocados **herdam a nota P0** — sem
+regressão (smoke 10/10; heroes 390/430/1440 idênticos ao baseline, cue ausente).
+Os 4 critérios afetados foram re-pontuados pelo verificador independente contra
+`test-results/visual/calib-{1024,1440,2560}.png` (dot congelado a opacity 1 =
+prova de posição/forma/cor) e a sonda runtime (pico 0.35, drift 48px, ciclo
+3181ms).
+
+| Critério                           | Peso |    Nota | Observação (contra evidência)                                                                             |
+| ---------------------------------- | ---: | ------: | --------------------------------------------------------------------------------------------------------- |
+| Primeira dobra / impacto imediato  |    3 |       5 | Cue soma atmosfera sem regressão; ciclo único, 1×/sessão; `1440-hero.png` limpo                           |
+| Composição mobile                  |    3 |       4 | Cue estruturalmente ausente em touch (attr null no spec; sem blob na âncora em 390/430) — paridade com P0 |
+| Integração texto + personagem      |    3 |       4 | Dot nasce na face (14/21/35px das lentes em 1024/1440/2560) e deriva 48px para a direita, away da copy    |
+| Iluminação e silhueta              |    2 |       5 | (P0) + cue emite `#eaf4ff` (mesmo token das lentes) — detector de cor não o distingue das lentes          |
+| Tipografia e hierarquia            |    2 |       4 | (P0, intocado)                                                                                            |
+| Ritmo de scroll e câmera           |    2 |       5 | (P0, intocado)                                                                                            |
+| Sensação cinematográfica/editorial |    2 |       5 | (P0) + "vaga-lume" diegético: gradiente radial sem borda dura, fade suave, nunca pop                      |
+| Originalidade de portfólio         |    2 |       5 | (P0, intocado)                                                                                            |
+| Performance percebida mobile       |    3 |       4 | (P0) + cue é DOM compositor-only (opacity/transform), 0 draw calls, 0 listeners após done                 |
+| Motion reduzida ainda bonita       |    1 |       4 | (P0) + cue nunca arma sob reduce (guard JS + `display:none` CSS)                                          |
+| **Média ponderada**                |      | **4,5** | 103/23 — bloqueantes ≥ 4                                                                                  |
