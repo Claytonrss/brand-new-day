@@ -6,9 +6,11 @@
 #   pnpm env:teardown            # graceful: stop THIS checkout's dev server on $PORT
 #   pnpm env:teardown --force    # + kill THIS checkout's orphan playwright/chromium
 #   pnpm env:teardown --clean    # + remove build/test artifacts (dist, test-results,
-#                                #   playwright-report). .env is kept — it is this
-#                                #   checkout's port identity.
+#                                #   playwright-report)
+#   pnpm env:teardown --deep     # = --clean + node_modules (full reset; recreate
+#                                #   everything with `pnpm bootstrap` / `pnpm env:init`)
 #
+# .env is always kept — it is this checkout's port identity.
 # Processes whose cwd is outside this checkout are reported, never killed:
 # another checkout's server or another agent's suite is coordination territory (§3).
 
@@ -25,16 +27,19 @@ PORT="${PORT:-5173}"
 
 FORCE=false
 CLEAN=false
+DEEP=false
 for arg in "$@"; do
   case "$arg" in
     --force) FORCE=true ;;
     --clean) CLEAN=true ;;
+    --deep) DEEP=true ;;
     *)
-      echo "unknown flag: $arg (use --force and/or --clean)"
+      echo "unknown flag: $arg (use --force, --clean and/or --deep)"
       exit 2
       ;;
   esac
 done
+[ "$DEEP" = true ] && CLEAN=true
 
 proc_cwd() {
   lsof -a -p "$1" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -1
@@ -120,6 +125,15 @@ if [ "$CLEAN" = true ]; then
       echo "[CLEANED] $dir/"
     fi
   done
+fi
+
+# 4) --deep: full reset — node_modules also goes (recreated by `pnpm bootstrap`
+#    or `pnpm env:init`). Premiss do contrato (§12): o projeto renasce limpo.
+if [ "$DEEP" = true ]; then
+  if [ -d node_modules ]; then
+    rm -rf node_modules
+    echo "[CLEANED] node_modules/"
+  fi
 fi
 
 if [ "$LEFT_ALONE" -gt 0 ]; then

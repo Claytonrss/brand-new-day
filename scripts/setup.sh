@@ -3,6 +3,19 @@ set -euo pipefail
 
 trap 'echo "STATUS: FAIL"; exit 1' ERR
 
+# --no-editor: for non-interactive bootstraps (envctl init) — same setup,
+# without launching VS Code.
+NO_EDITOR=false
+for arg in "$@"; do
+  case "$arg" in
+    --no-editor) NO_EDITOR=true ;;
+    *)
+      echo "unknown flag: $arg (use --no-editor)"
+      exit 2
+      ;;
+  esac
+done
+
 echo "== Setup: checking runtime =="
 node --version
 pnpm --version
@@ -37,11 +50,15 @@ else
   echo "  .env created with PORT=5173"
 fi
 
-echo "== Setup: opening VS Code on this checkout =="
-if command -v code >/dev/null 2>&1; then
-  code .
+if [ "$NO_EDITOR" = true ]; then
+  echo "== Setup: skipping editor launch (--no-editor) =="
 else
-  echo "  'code' CLI not found — open this folder in VS Code manually"
+  echo "== Setup: opening VS Code on this checkout =="
+  if command -v code >/dev/null 2>&1; then
+    code .
+  else
+    echo "  'code' CLI not found — open this folder in VS Code manually"
+  fi
 fi
 
 echo "STATUS: PASS"

@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# envctl — lightweight lifecycle for THIS checkout's dev server: up / health / logs.
+# envctl — lightweight lifecycle for THIS checkout's dev server: init / up / health / logs / ps.
 # doctor.sh stays the heavy pre-flight (suite exclusivity, capacity, orphans);
-# envctl is the everyday "boot / answer / observe" loop so an agent never works
-# in the dark. Conventions mirror doctor.sh exactly: port from .env, log and
-# pid under test-results/logs/, and the §3 coordination rule — another
-# checkout's server is reported, never touched.
+# envctl is the everyday "boot / answer / observe / repair" loop so an agent
+# never works in the dark. Conventions mirror doctor.sh exactly: port from
+# .env, log and pid under test-results/logs/, and the §3 coordination rule —
+# another checkout's server is reported, never touched.
 #
 # Usage:
+#   pnpm env:init          # zero-to-healthy: bootstrap missing pieces, then up
 #   pnpm env:up            # idempotent: boot this checkout's server + health check
 #   pnpm env:health        # quick: is THIS checkout serving? (exit 1 = no)
 #   pnpm env:logs          # last 80 lines of the dev-server log
 #   pnpm env:logs -f       # follow the log (tail -f)
 #   pnpm env:logs -n 200   # custom line count (any tail flags pass through)
+#   pnpm env:ps            # processes of this checkout (server/suite/chromium) vs. foreign
 
 set -u
 
@@ -31,9 +33,9 @@ DEV_PID_FILE="test-results/logs/dev-server.pid"
 
 CMD="${1:-}"
 case "$CMD" in
-  up | health | logs) ;;
+  init | up | health | logs | ps) ;;
   *)
-    echo "usage: envctl.sh up|health|logs [tail flags for logs]"
+    echo "usage: envctl.sh init|up|health|logs|ps [tail flags for logs]"
     exit 2
     ;;
 esac
@@ -134,6 +136,51 @@ boot_own_server() {
   return 1
 }
 
+cmd_init() {
+  if [ ! -d node_modules ] || [ ! -f .env ]; then
+    echo "== init: bootstrap missing pieces (setup.sh --no-editor) =="
+    bash scripts/setup.sh --no-editor || exit 1
+  else
+    echo "[OK] bootstrap already present (node_modules + .env, PORT=$PORT) — skipping setup"
+  fi
+  cmd_up
+}
+
+cmd_ps() {
+  echo "== env ps: $PROJECT_DIR (port $PORT) =="
+  check_port
+  for pid in $PORT_PIDS; do
+    cwd="$(proc_cwd "$pid")"
+    if in_this_checkout "$PROJECT_DIR" "$cwd"; then
+      echo "[SERVER] pid $pid: $(ps -o command= -p "$pid" 2>/dev/null | cut -c1-90)"
+    else
+      echo "[FOREIGN] pid $pid serves $cwd — not ours to touch (§3)"
+    fi
+  done
+  if [ -z "$PORT_PIDS" ]; then
+    echo "[OK] no server on port $PORT"
+  fi
+  SUITE_FOUND=0
+  for pid in $(pgrep -f 'playwright|collect-|ms-playwright/chromium' 2>/dev/null); do
+    cmd="$(ps -o command= -p "$pid" 2>/dev/null)" || continue
+    case "$cmd" in *envctl.sh*|*doctor.sh*|*teardown.sh*) continue ;; esac
+    # Same shape-matching as doctor.sh: " test " with a trailing space matches
+    # suite runs but not the resident `cli.js test-server` daemon.
+    case "$cmd" in
+      *playwright*" test "*|*playwright*screenshot*|*collect-*evidence*|*ms-playwright/chromium*) ;;
+      *) continue ;;
+    esac
+    cwd="$(proc_cwd "$pid")"
+    in_this_checkout "$PROJECT_DIR" "$cwd" || continue
+    SUITE_FOUND=1
+    echo "[SUITE/CHROMIUM] pid $pid: $(printf '%s' "$cmd" | cut -c1-90)"
+  done
+  if [ "$SUITE_FOUND" = 0 ]; then
+    echo "[OK] no suite/chromium processes in this checkout"
+  fi
+  exit 0
+}
+
 cmd_up() {
   check_port
   case "$PORT_STATE" in
@@ -198,7 +245,9 @@ cmd_logs() {
 }
 
 case "$CMD" in
+  init) cmd_init ;;
   up) cmd_up ;;
   health) cmd_health ;;
   logs) cmd_logs "$@" ;;
+  ps) cmd_ps ;;
 esac
