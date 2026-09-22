@@ -14,6 +14,7 @@ outro checkout na porta contamina a evidência).
 | ----------------- | --------------------------------------------------------------------------------- |
 | `verify-all.sh`   | lint + typecheck + test + build, log por gate em `test-results/logs/`             |
 | `doctor.sh`       | pre-flight de porta/suíte ativa/capacidade (`pnpm env:doctor`)                    |
+| `envctl.sh`       | ciclo de vida leve do server: `up` (idempotente), `health`, `logs`                |
 | `setup.sh`        | bootstrap do checkout: deps, `.env` com porta isolada, VS Code (`pnpm bootstrap`) |
 | `teardown.sh`     | stop do server **deste** checkout (`--force` órfãos seus, `--clean` artefatos)    |
 | `inspect-glb.mjs` | metadata do GLB (joints, materiais, extensões) — `pnpm inspect:glb`               |

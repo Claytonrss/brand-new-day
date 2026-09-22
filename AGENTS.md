@@ -86,6 +86,9 @@ pnpm verify           # All gates (lint + typecheck + test + build)
 pnpm evidence:visual  # Screenshots 390/430/1440 (evidência de PR)
 pnpm evidence:motion  # Vídeos de motion (calibração em device)
 pnpm inspect:glb      # Inspect GLB asset metadata
+pnpm env:up           # Sobe o dev server DESTE checkout (gerenciado, health check)
+pnpm env:health       # Resposta rápida: este checkout está servindo? (exit 1 = não)
+pnpm env:logs         # Log do dev server (tail; -f para seguir, -n N para linhas)
 pnpm env:doctor       # Pre-flight de ambiente (porta/suíte/capacidade) — exit 1 bloqueia
 pnpm env:teardown     # Stop escopado por checkout (--force órfãos, --clean artefatos)
 ```

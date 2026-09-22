@@ -7,7 +7,9 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default [
-  { ignores: ['dist', 'playwright-report', 'test-results', 'node_modules', 'public'] },
+  // .worktrees contém checkouts irmãos com package.json próprios — lintá-los
+  // quebra o gate no checkout principal (21k falsos no-extraneous-dependencies).
+  { ignores: ['dist', 'playwright-report', 'test-results', 'node_modules', 'public', '.worktrees'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
