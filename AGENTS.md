@@ -86,8 +86,13 @@ pnpm verify           # All gates (lint + typecheck + test + build)
 pnpm evidence:visual  # Screenshots 390/430/1440 (evidência de PR)
 pnpm evidence:motion  # Vídeos de motion (calibração em device)
 pnpm inspect:glb      # Inspect GLB asset metadata
+pnpm env:init         # Do zero ao saudável: bootstrap (se faltar) + server up
+pnpm env:up           # Sobe o dev server DESTE checkout (gerenciado, health check)
+pnpm env:health       # Resposta rápida: este checkout está servindo? (exit 1 = não)
+pnpm env:logs         # Log do dev server (tail; -f para seguir, -n N para linhas)
+pnpm env:ps           # Processos deste checkout (server/suíte/chromium) vs. alheios
 pnpm env:doctor       # Pre-flight de ambiente (porta/suíte/capacidade) — exit 1 bloqueia
-pnpm env:teardown     # Stop escopado por checkout (--force órfãos, --clean artefatos)
+pnpm env:teardown     # Stop escopado (--force órfãos, --clean artefatos, --deep + node_modules)
 ```
 
 Coletores de evidência avulsos (por feature): `scripts/collect-*.mjs` —
@@ -146,3 +151,32 @@ bootstrap` (deps + `.env` com porta isolada). Todos os comandos rodam a
 - **Autônomo:** criar/editar arquivos (exceto configs de agente) · rodar
   `pnpm lint`/`test`/`build`/`typecheck` · criar branches locais.
 - Paths sempre absolutos ou relativos ao root do projeto.
+
+## 12. Loop Operacional do Agente
+
+Toda tarefa segue o mesmo ciclo: contrato (este arquivo) → spec → subir →
+desenvolver → validar → observar → encerrar.
+
+1. **Ler** a Scene Spec relevante (`docs/specs/README.md`) antes de codar.
+2. **Subir:** `pnpm env:init` (do zero ao saudável: bootstrap se faltar +
+   server) ou `pnpm env:up` (idempotente). Health check embutido; falha
+   `[BLOCKED]` tem causa impressa — não contorne.
+3. **Desenvolver** na branch/worktree corretas (§5, §10).
+4. **Validar:** `pnpm verify` é o piso; gate de PR: + `pnpm test:smoke` +
+   evidências (§5.7). Testes vivem em `tests/unit` (Vitest) e `tests/visual`
+   (Playwright) — regras vinculantes: `.agents/rules/tests-playwright.md`.
+   Nunca enfraquecer asserção só para passar, salvo decisão documentada.
+5. **Observar:** `pnpm env:logs -f` (log do server), `pnpm env:ps` (processos
+   deste checkout vs. alheios), logs por gate em `test-results/logs/`.
+   Debug orientado por evidência: erro real → hipótese → mudança mínima.
+   Sem evidência, não há "deve funcionar".
+6. **Navegar:** inspeção interativa da UI complementa, nunca substitui, a
+   evidência reprodutível (specs + coletores `scripts/collect-*`).
+   Implementação funcional sem impacto visual conferido não está pronta (§7).
+7. **Encerrar:** `pnpm env:teardown` — gradação `--force` (órfãos seus),
+   `--clean` (artefatos) e `--deep` (= `--clean` + node_modules, reset
+   completo). Nunca deixar rastro; o projeto tem que renascer limpo via
+   `pnpm bootstrap` / `pnpm env:init`.
+
+Skills (`spec-driven`, `test-isolation`, `pr-evidence`) aceleram esta base —
+entram **depois** dela, nunca no lugar.
