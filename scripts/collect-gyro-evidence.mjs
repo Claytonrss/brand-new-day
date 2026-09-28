@@ -4,11 +4,11 @@ import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 
 /**
- * iOS gyro-permission chip evidence.
+ * Gyro permission chip evidence (mobile-gyro-sensor-polish §7.6).
  *
- * Headless Chromium has no `DeviceOrientationEvent`, so an iOS-like
- * `requestPermission` is injected before the app boots. Then the first gesture
- * reveals the chip.
+ * Headless Chromium has no motion sensor, so an iOS-like `requestPermission`
+ * is injected before the app boots. Since ADR-031 the chip appears by itself
+ * in the hero beat — no priming gesture — so the capture is a plain load.
  *
  * Usage: node scripts/collect-gyro-evidence.mjs [baseUrl] [outDir]
  */
@@ -39,8 +39,7 @@ await page
   .catch(() => {});
 await page.waitForTimeout(3500);
 
-// First gesture reveals the chip.
-await page.mouse.click(200, 500);
+// The chip announces itself in the hero (ADR-031) — no gesture needed.
 await page.getByText('Esta cena reage ao movimento.').waitFor({ state: 'visible', timeout: 5000 });
 const target = `${OUT_DIR}/390-gyro-prompt.png`;
 await page.screenshot({ path: target });

@@ -1,6 +1,7 @@
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { OverlayBody, OverlayKicker } from './overlay';
+import { GyroTiltCue } from './GyroTiltCue';
 
 export function HeroOverlay() {
   return (
@@ -40,6 +41,9 @@ export function HeroOverlay() {
       <footer className="pointer-events-auto mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-dim sm:mt-12">
         <ModelAttribution />
       </footer>
+
+      {/* Android tilt affordance — one shot per session (ADR-031) */}
+      <GyroTiltCue />
     </div>
   );
 }

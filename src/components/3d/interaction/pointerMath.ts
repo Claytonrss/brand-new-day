@@ -6,6 +6,7 @@ import { softClamp } from '@/lib/math';
  * tested and reasoned about.
  *
  * @see docs/specs/model-interaction.md
+ * @see docs/specs/mobile-gyro-sensor-polish.md
  */
 
 /** Degrees of freedom for the drag gesture. */
@@ -39,6 +40,80 @@ export function isTap(down: PointerSample, up: PointerSample): boolean {
 /** Device orientation authority (radians). */
 export const GYRO_LIMITS = { yaw: 0.12, pitch: 0.06 } as const;
 
+/** Sensor-noise filter tuning: hand tremor (small steps) vs. a real tilt. */
+export const GYRO_JUMP_DEG = 4;
+export const GYRO_ALPHA_FAST = 0.35;
+export const GYRO_ALPHA_SLOW = 0.08;
+
+/**
+ * Auto-recenter trigger: an output held near its clamp for this long means
+ * the user rotated the phone and the calibration baseline is stale.
+ */
+export const GYRO_SATURATION_RATIO = 0.8;
+export const GYRO_SATURATION_S = 2.5;
+
+export interface OrientationAxes {
+  /** Left/right tilt in degrees — feeds the gyro yaw. */
+  x: number;
+  /** Front/back tilt in degrees — feeds the gyro pitch. */
+  y: number;
+}
+
+/**
+ * Map raw `deviceorientation` axes into portrait-relative yaw/pitch degrees.
+ *
+ * Chrome remaps gamma/beta when the screen rotates; this restores the
+ * portrait meaning for every `screen.orientation.angle` so "tilt right"
+ * keeps meaning "yaw right" in landscape too.
+ */
+export function remapForOrientation(
+  gamma: number,
+  beta: number,
+  angleDeg: number,
+): OrientationAxes {
+  switch (((angleDeg % 360) + 360) % 360) {
+    case 90:
+      return { x: beta, y: -gamma };
+    case 180:
+      return { x: -gamma, y: -beta };
+    case 270:
+      return { x: -beta, y: gamma };
+    default:
+      return { x: gamma, y: beta };
+  }
+}
+
+/**
+ * Adaptive one-pole low-pass over one axis, in degrees.
+ *
+ * A jump larger than `GYRO_JUMP_DEG` is a deliberate move of the phone —
+ * converge quickly. Anything smaller is quantization/hand tremor — creep,
+ * so a resting arm produces a resting model. A `NaN` prev means "no sample
+ * yet": the filter starts exactly at the raw value (no startup jump).
+ */
+export function adaptiveLowPass(prev: number, raw: number): number {
+  if (Number.isNaN(prev)) return raw;
+  const alpha = Math.abs(raw - prev) > GYRO_JUMP_DEG ? GYRO_ALPHA_FAST : GYRO_ALPHA_SLOW;
+  return prev + (raw - prev) * alpha;
+}
+
+/** Shortest-path delta across the ±180° seam of gamma/beta. */
+export function wrapDeltaDeg(delta: number): number {
+  return ((delta + 540) % 360) - 180;
+}
+
+/**
+ * Saturation accumulator for the auto-recenter: adds time while the output
+ * is pinned near a clamp, resets the instant it is not.
+ */
+export function accumulateSaturation(
+  acc: number,
+  saturated: boolean,
+  deltaSeconds: number,
+): number {
+  return saturated ? acc + deltaSeconds : 0;
+}
+
 /**
  * Convert pointer travel (pixels, from the gesture origin) into a clamped
  * rotation offset. Dragging right turns the model toward the pointer.
@@ -51,23 +126,25 @@ export function dragTarget(deltaX: number, deltaY: number): { yaw: number; pitch
 }
 
 /**
- * Convert `deviceorientation` angles (degrees) into a clamped offset.
+ * Convert device tilt (degrees, relative to the calibration origin) into a
+ * clamped offset.
  *
- * `gamma` is left/right tilt, `beta` front/back. Values are relative to the
- * device's initial reading so the model does not jump when the listener
- * attaches.
+ * `x` is left/right tilt, `y` front/back — the output of `remapForOrientation`
+ * fed with the filtered stream. Values are relative to the origin captured at
+ * attach (or the last recenter) so the model does not jump. The sign matches
+ * the drag on purpose: tilt right = drag right = yaw+ (ADR-031).
  */
 export function gyroTarget(
-  gamma: number,
-  beta: number,
+  x: number,
+  y: number,
   origin: { gamma: number; beta: number } = { gamma: 0, beta: 0 },
 ): { yaw: number; pitch: number } {
-  const dGamma = (gamma - origin.gamma) * (Math.PI / 180);
-  const dBeta = (beta - origin.beta) * (Math.PI / 180);
+  const dGamma = wrapDeltaDeg(x - origin.gamma) * (Math.PI / 180);
+  const dBeta = wrapDeltaDeg(y - origin.beta) * (Math.PI / 180);
 
   return {
-    yaw: softClamp(-dGamma, GYRO_LIMITS.yaw),
-    pitch: softClamp(-dBeta, GYRO_LIMITS.pitch),
+    yaw: softClamp(dGamma, GYRO_LIMITS.yaw),
+    pitch: softClamp(dBeta, GYRO_LIMITS.pitch),
   };
 }
 
