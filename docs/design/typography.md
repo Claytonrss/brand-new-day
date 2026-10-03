@@ -12,8 +12,8 @@
 
 > **Entrega (2026-09-12):** fontes **self-hosted** em `public/fonts/`
 > (subset latin, SIL OFL — ADR-021). Space Grotesk é **variável (400–700)**
-> — aberto a weight/tracking dirigidos por velocidade (IDEIA-PAG-01,
-> `docs/plans/backlog.md`).
+> — aberto a weight/tracking dirigidos por velocidade (IDEIA-PAG-01 — catálogo
+> `IDEIA-*`/`FALHA-*` no git history: `docs/plans/backlog.md`).
 
 **Proibido:** cream + serif, eyebrow em caixa-alta decorativo, qualquer fonte
 fora dessas duas.
