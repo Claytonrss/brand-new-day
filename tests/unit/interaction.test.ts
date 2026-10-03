@@ -42,11 +42,19 @@ describe('gyro target', () => {
     expect(target.pitch).toBeCloseTo(0, 6);
   });
 
-  it('maps tilt to a clamped offset', () => {
+  it('maps tilt toward the tilt direction (parity with drag, ADR-031)', () => {
     const target = gyroTarget(35, 12, { gamma: 0, beta: 0 });
-    expect(target.yaw).toBeLessThan(0);
+    expect(target.yaw).toBeGreaterThan(0);
     expect(Math.abs(target.yaw)).toBeLessThanOrEqual(GYRO_LIMITS.yaw);
     expect(Math.abs(target.pitch)).toBeLessThanOrEqual(GYRO_LIMITS.pitch);
+  });
+
+  it('wraps the delta across the ±180° boundary (short path)', () => {
+    // -179° from an origin at +179° is a +2° tilt, not a -358° spin.
+    // (softClamp's knee bends even small values, hence 0.0340 ≈ 2°.)
+    const target = gyroTarget(-179, 0, { gamma: 179, beta: 0 });
+    expect(target.yaw).toBeGreaterThan(0);
+    expect(target.yaw).toBeCloseTo(0.034, 3);
   });
 
   it('stays clamped for extreme tilts', () => {

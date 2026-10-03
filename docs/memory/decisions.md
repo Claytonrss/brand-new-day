@@ -1433,3 +1433,34 @@ pelo `.gitignore`.
   substituição do caminho canônico.
 - Descoberta de user scope (`~/.zcode/agents/`) só existe no runtime desktop;
   a frota versionada no workspace funciona em qualquer runtime.
+
+## ADR-031: Ciclo de vida do gyro e re-engajamento de permissão
+
+**Data:** 2026-09-28 · **Contexto:** auditoria do sensor mobile — o throttle de sombra da ADR-023 era anulado pelo gyro (o `deviceorientation` entrega graus inteiros; um degrau de 1° = 0,0175 rad, 17× o ε de 0,001 rad medido contra o frame anterior → refresh de sombra em ~100% dos frames no tier `medium`, medido por probe: 33/33 frames com 46 draw calls vs. 30 em repouso), o stream entrava sem filtro, a baseline nunca era recalibrada, o listener nunca desligava e "ignorar o chip = recusa para sempre" matava a assinatura mobile. Emenda à ADR-018 e à ADR-023.
+
+### Decisão
+
+1. **Histerese no shadow throttle:** ε 0,001 → **0,005 rad**, medido contra a pose da **última atualização da sombra** (não do frame anterior); todo refresh (imediato ou heartbeat de 10 Hz) avança a referência. Ruído sub-ε deixa de encadear refreshes.
+2. **Stream filtrado:** low-pass por eixo com α adaptativo (salto > 4° = tilt real → α 0,35; senão tremor → α 0,08) + remap de gamma/beta por `screen.orientation.angle` (portrait-relative em qualquer orientação) + wrap de delta em ±180°. `gyroTarget` passa a consumir o stream filtrado; brutos ficam para o HUD `?debug`.
+3. **Baseline viva:** `recenterGyro()` no `orientationchange` (rebaseline no próximo evento) e auto-recenter após 2,5 s de saída saturada (> 80% do limite).
+4. **Ciclo de vida:** `suspend/resume(source)` com fontes independentes `tab` (`visibilitychange`) e `scene` (colophon — o modelo saiu de cena); listener anexado sse `granted` e sem pausas abertas; todo detach zera a baseline (o lerp existente devolve o modelo ao repouso).
+5. **Permissão re-trabalhada:** ignorar o chip deixa de ser terminal — vira contador (`spiderman-landing:gyro-dismissals`, máx. 3 aparições; legado `'dismissed'` conta como 1); recusa explícita (botão "não" → `decline()`, ou prompt do SO) permanece terminal. O chip aparece no **beat hero** (via `data-beat`, não no 1º gesto), com 15 s de visibilidade acumulada (pausa fora da viewport/aba) e copy a 12px com entrada animada. Re-ask silencioso de grant armazenado no 1º gesto: mantido.
+6. **Controle do visitante:** linha no colophon — "movimento ativo · desativar" / "movimento desativado · reativar" (`request()` ganha caminho Android: sem gate, o clique É o consentimento). Cue one-shot por sessão ("incline o aparelho") onde o gyro está ativo sem chip (Android). HUD `?debug` expõe a cadeia inteira: estado, Hz, bruto → filtrado → alvo → aplicado.
+7. **Sinal unificado com o drag:** tilt à direita = yaw+ (antes era yaw−) — paridade "em direção ao gesto" entre plataformas.
+
+### Alternativas Consideradas
+
+1. **Filtro Madgwick/Kalman completo** — rejeitado: custo e complexidade sem retorno visível para 2 eixos; o one-pole adaptativo cobre o problema real (quantização + tremor).
+2. **Re-ask infinito do chip** — rejeitado: spam; o orçamento de 3 aparições equilibra descoberta e respeito.
+3. **Remover o gyro do tier `medium`** — rejeitado: mata a feature exatamente no tier mais comum; o bug era o throttle, não a feature.
+4. **ε maior com comparação frame-a-frame** — rejeitado: qualquer ε sensível a tremor degrada a resposta real do drag; a histerese contra a última atualização separa as duas preocupações.
+
+### Consequências
+
+- ✅ O vale de ~16 draw calls da ADR-023 volta a existir com gyro ativo no `medium` (verificação em device pendente: p50 ≤ 40 com gyro ligado).
+- ✅ Tilt sem tremor visível em repouso; resposta rápida em tilt real.
+- ✅ Paridade de sinal com o drag desktop; landscape remapeado.
+- ✅ Sensor dorme com a aba e no colophon (bateria).
+- ✅ "Ignorar" deixa de ser punição permanente; o visitante tem opt-out/opt-in no colophon.
+- ⚠️ Com Chromium recente expondo `requestPermission` em contexto touch (medido em headless), o fluxo de chip tende a virar default de todo o mobile — o re-trabalho do chip (item 5) mitiga isso; confirmar em device real.
+- ⚠️ Verificação de sensor segue impossível em headless — comportamento provado por unit (funções puras + máquina de estados) e stub de `DeviceOrientationEvent` no Playwright; leituras reais (Hz, draw calls com gyro, landscape) pendentes da sessão de device (TD-002).

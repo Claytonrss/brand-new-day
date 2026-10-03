@@ -1,6 +1,9 @@
+import { useSyncExternalStore } from 'react';
 import { ModelAttribution } from './ModelAttribution';
 import { SplitTextHeadline } from './SplitTextHeadline';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { getGyroController } from '@/components/3d/interaction/gyroController';
 import { SECTION_SPANS } from '@/components/3d/beat/sections';
 
 const REPO_URL = 'https://github.com/Claytonrss/brand-new-day';
@@ -13,6 +16,49 @@ const CHALLENGES = [
   'Três tiers de performance sem corte visual brusco',
   '6,5 MB de GLB · 66 joints · zero requests externos no load',
 ] as const;
+
+/**
+ * GyroColophonToggle — the visitor's manual control over the motion sensor
+ * (ADR-031). The colophon is the piece's closing page, so it is also where
+ * a choice about the piece gets revised: one mono line, two directions.
+ * Hidden entirely when there is nothing to control (no sensor) or when the
+ * visitor already asked for less motion at the OS level.
+ */
+function GyroColophonToggle() {
+  const controller = getGyroController();
+  const state = useSyncExternalStore(
+    controller.subscribe,
+    controller.getState,
+    controller.getState,
+  );
+  const reduceMotion = usePrefersReducedMotion();
+
+  // `unavailable` covers both no-support and reduced-motion at init; the
+  // explicit reduceMotion check also covers a preference flipped mid-session.
+  if (state === 'unavailable' || state === 'prompt' || reduceMotion) return null;
+
+  const active = state === 'granted';
+  return (
+    <p
+      data-testid="gyro-colophon-toggle"
+      className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-dim"
+    >
+      movimento {active ? 'ativo' : 'desativado'} ·{' '}
+      <button
+        type="button"
+        aria-label={
+          active
+            ? 'Desativar reação ao movimento do dispositivo'
+            : 'Reativar reação ao movimento do dispositivo'
+        }
+        onClick={active ? () => controller.decline() : () => void controller.request()}
+        className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal underline decoration-signal/40 underline-offset-4 transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+      >
+        {active ? 'desativar' : 'reativar'}
+      </button>
+    </p>
+  );
+}
 
 /**
  * Colophon — the outro that turns the demo into a signed piece.
@@ -84,6 +130,8 @@ export function ColophonSection() {
         <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-dim">
           React 19 · Three.js · GSAP ScrollTrigger · Lenis · WebGL
         </p>
+
+        <GyroColophonToggle />
 
         <div className="mt-8 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-3 md:justify-start">
           <a

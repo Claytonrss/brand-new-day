@@ -10,9 +10,33 @@ import { smooth } from '@/lib/math';
 import { useQualityProfile } from '@/components/3d/perf/qualityContext';
 import { INTERACTION } from './interactionStore';
 import { arsenalReveal } from './arsenalReveal';
-import { dragTarget, gyroTarget, isTap, rimOffset, type PointerSample } from './pointerMath';
-import { getGyroController, gyroReading } from './gyroController';
+import {
+  accumulateSaturation,
+  dragTarget,
+  gyroTarget,
+  isTap,
+  rimOffset,
+  GYRO_LIMITS,
+  GYRO_SATURATION_RATIO,
+  GYRO_SATURATION_S,
+  type PointerSample,
+} from './pointerMath';
+import { getGyroController, gyroReading, recenterGyro, type GyroState } from './gyroController';
 import { windowPointer } from '@/components/3d/rig/windowPointer';
+
+/** `window.__interaction.gyro` — the full sensor chain for the `?debug` HUD. */
+export interface GyroDebugState {
+  state: GyroState;
+  eventsHz: number;
+  rawGamma: number;
+  rawBeta: number;
+  fGamma: number;
+  fBeta: number;
+  originGamma: number | null;
+  originBeta: number | null;
+  targetYaw: number;
+  targetPitch: number;
+}
 
 export interface InteractionDebugState {
   yaw: number;
@@ -23,6 +47,7 @@ export interface InteractionDebugState {
   rimX: number;
   rimY: number;
   arsenalHudRevealed: boolean;
+  gyro: GyroDebugState;
 }
 
 declare global {
@@ -45,7 +70,7 @@ const RETURN_K = 4;
 export function useInteraction() {
   const camera = useThree((state) => state.camera);
   const profile = useQualityProfile();
-  const { stateRef } = useBeat();
+  const { beat, stateRef } = useBeat();
   const prefersReducedMotion = usePrefersReducedMotion();
   // Drag-orbit is hover-only (same input-class gate as head tracking and the
   // camera/CSS parallax): on touch, every scroll swipe starts with a
@@ -57,6 +82,7 @@ export function useInteraction() {
   const target = useMemo(() => ({ yaw: 0, pitch: 0 }), []);
   const debug = useMemo(isDebugMode, []);
   const direction = useMemo(() => new THREE.Vector3(), []);
+  const saturationRef = useRef(0);
 
   // --- pointer drag --------------------------------------------------------
   useEffect(() => {
@@ -104,6 +130,17 @@ export function useInteraction() {
     if (prefersReducedMotion) return;
     getGyroController().init();
   }, [prefersReducedMotion]);
+
+  // The colophon hands the frame to the text — the model is out of the shot,
+  // so the sensor only burns battery there (ADR-031). The tab/scene sources
+  // are independent pauses: the controller only listens with none open.
+  useEffect(() => {
+    const controller = getGyroController();
+    if (prefersReducedMotion) return;
+    if (beat === 'colophon') controller.suspend('scene');
+    else controller.resume('scene');
+    return () => controller.resume('scene');
+  }, [beat, prefersReducedMotion]);
 
   // --- web-shot trigger (Beat 3) -------------------------------------------
   // Gate mirrors the hint (WebShootHint): the shot is one draw call and never
@@ -160,8 +197,10 @@ export function useInteraction() {
   }, [camera, direction, prefersReducedMotion, profile.tier, stateRef]);
 
   // --- per-frame integration ----------------------------------------------
-  const publish = () => {
+  const publish = (gyroTargetOut: { yaw: number; pitch: number }) => {
     if (!debug || typeof window === 'undefined') return;
+    const reading = gyroReading;
+    const filtered = Number.isNaN(reading.fGamma);
     window.__interaction = {
       yaw: INTERACTION.yaw,
       pitch: INTERACTION.pitch,
@@ -171,6 +210,18 @@ export function useInteraction() {
       rimX: INTERACTION.rimX,
       rimY: INTERACTION.rimY,
       arsenalHudRevealed: arsenalReveal.revealed,
+      gyro: {
+        state: getGyroController().getState(),
+        eventsHz: reading.hz,
+        rawGamma: reading.rawGamma,
+        rawBeta: reading.rawBeta,
+        fGamma: filtered ? reading.rawGamma : reading.fGamma,
+        fBeta: filtered ? reading.rawBeta : reading.fBeta,
+        originGamma: reading.origin?.gamma ?? null,
+        originBeta: reading.origin?.beta ?? null,
+        targetYaw: gyroTargetOut.yaw,
+        targetPitch: gyroTargetOut.pitch,
+      },
     };
   };
 
@@ -185,14 +236,27 @@ export function useInteraction() {
       INTERACTION.rimX = 0;
       INTERACTION.rimY = 0;
       // still publish, otherwise the probe disappears under reduced motion
-      publish();
+      publish({ yaw: 0, pitch: 0 });
       return;
     }
 
-    // drag and gyro add up, then release returns to rest with a spring
+    // drag and gyro add up, then release returns to rest with a spring.
+    // The gyro side reads the FILTERED stream — raw degrees would put the
+    // sensor's quantization steps straight into the pose.
     const gyro = gyroReading.origin
-      ? gyroTarget(gyroReading.gamma, gyroReading.beta, gyroReading.origin)
+      ? gyroTarget(gyroReading.fGamma, gyroReading.fBeta, gyroReading.origin)
       : { yaw: 0, pitch: 0 };
+
+    // A target pinned near a clamp for a while means the user turned the
+    // phone and the baseline is stale — rebaseline so the tilt recenters.
+    const saturated =
+      Math.abs(gyro.yaw) > GYRO_LIMITS.yaw * GYRO_SATURATION_RATIO ||
+      Math.abs(gyro.pitch) > GYRO_LIMITS.pitch * GYRO_SATURATION_RATIO;
+    saturationRef.current = accumulateSaturation(saturationRef.current, saturated, delta);
+    if (saturationRef.current >= GYRO_SATURATION_S) {
+      recenterGyro();
+      saturationRef.current = 0;
+    }
 
     target.yaw = (drag.active ? drag.yaw : 0) + gyro.yaw;
     target.pitch = (drag.active ? drag.pitch : 0) + gyro.pitch;
@@ -209,7 +273,7 @@ export function useInteraction() {
     INTERACTION.rimX = rim.x;
     INTERACTION.rimY = rim.y;
 
-    publish();
+    publish(gyro);
   });
 
   return INTERACTION;
