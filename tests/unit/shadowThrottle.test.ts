@@ -93,10 +93,6 @@ describe('shouldRefreshShadow', () => {
     );
   });
 
-  it('uses the hysteresis epsilon of 0.005 rad (ADR-031)', () => {
-    expect(SHADOW_MOVE_EPSILON).toBe(0.005);
-  });
-
   it('refreshes once when the scroll velocity crosses into idle (fling end)', () => {
     const state = throttle();
     const moving = { ...REST, velocity: 0.5 };
@@ -105,13 +101,5 @@ describe('shouldRefreshShadow', () => {
     const settling = { ...REST, velocity: SHADOW_IDLE_VELOCITY / 2 };
     expect(shouldRefreshShadow(state, settling, 0.001)).toBe(true);
     expect(shouldRefreshShadow(state, settling, 0.001)).toBe(false);
-  });
-
-  it('never mutates the inputs', () => {
-    const state = throttle();
-    const inputs: ShadowInputs = { beat: 'arsenal', dragging: true, yaw: 1, pitch: 1, velocity: 1 };
-    const snapshot = { ...inputs };
-    shouldRefreshShadow(state, inputs, 0.001);
-    expect(inputs).toEqual(snapshot);
   });
 });

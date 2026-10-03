@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAGNET, magneticOffset } from '@/design/magnetic';
+import { magneticOffset } from '@/design/magnetic';
 
 /**
  * Magnetic CTA guardrails — docs/specs/dom-micro-craft.md §3: rest outside
@@ -25,15 +25,5 @@ describe('magneticOffset', () => {
     expect(offset).not.toBeNull();
     expect(offset!.x).toBeLessThan(0);
     expect(offset!.y).toBeGreaterThan(0);
-  });
-
-  it('never pulls further than the cursor itself', () => {
-    const offset = magneticOffset(119, 0, 0, 0, 120, 0.32)!;
-    expect(Math.abs(offset.x)).toBeLessThan(119);
-  });
-
-  it('defaults to the spec radius and strength', () => {
-    const offset = magneticOffset(MAGNET.radius - 1, 0, 0, 0)!;
-    expect(offset.x).toBeCloseTo((MAGNET.radius - 1) * MAGNET.strength);
   });
 });

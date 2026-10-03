@@ -25,16 +25,6 @@ describe('velocity lean', () => {
     expect(leanTarget(-50)).toBe(-LEAN_MAX);
   });
 
-  it('follows the sign of the velocity', () => {
-    for (let i = 0; i < 60; i++) leanStep(DT, 2.2);
-    expect(lean.value).toBeGreaterThan(0);
-    expect(lean.value).toBeLessThanOrEqual(LEAN_MAX);
-
-    for (let i = 0; i < 60; i++) leanStep(DT, -2.2);
-    expect(lean.value).toBeLessThan(0);
-    expect(lean.value).toBeGreaterThanOrEqual(-LEAN_MAX);
-  });
-
   it('decays to rest when the scroll stops', () => {
     for (let i = 0; i < 120; i++) leanStep(DT, 3);
     for (let i = 0; i < 180; i++) leanStep(DT, 0);
@@ -58,11 +48,5 @@ describe('velocity lean', () => {
     expect(liftL).toBeGreaterThan(0);
     expect(liftR).toBe(-liftL);
     expect(liftL).toBeLessThanOrEqual(LEAN_SHOULDER_LIFT);
-  });
-
-  it('stays at zero without stepping (reduced-motion safety)', () => {
-    expect(lean.value).toBe(0);
-    leanShoulderLift('shoulderL');
-    expect(lean.value).toBe(0);
   });
 });

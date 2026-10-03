@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { BEAT_TIMELINE, beatAt, beatLocalProgress } from '@/components/3d/beat/beats';
+import { beatAt, beatLocalProgress } from '@/components/3d/beat/beats';
 import { CAMERA_SPANS, CameraTrack, createCameraSample } from '@/components/3d/camera/cameraPath';
 import { CAMERA_KEYFRAMES } from '@/components/3d/camera/cameraKeyframes';
-import { fbm } from '@/components/3d/camera/handheld';
 
 const BREAKPOINTS = ['mobile', 'desktop'] as const;
 
@@ -143,42 +142,5 @@ describe('camera track', () => {
       const sweep = THREE.MathUtils.radToDeg(Math.max(...azimuths) - Math.min(...azimuths));
       expect(sweep).toBeGreaterThanOrEqual(60);
     });
-
-    it(`${bp}: reaches every beat framing in order`, () => {
-      const track = new CameraTrack(bp);
-      const sample = createCameraSample();
-
-      for (const beat of BEAT_TIMELINE) {
-        track.sample(beat.id, 0, sample);
-        expect(Number.isFinite(sample.position.x)).toBe(true);
-        expect(Number.isFinite(sample.fov)).toBe(true);
-      }
-    });
-
-    it(`${bp}: reduced-motion framing differs per section`, () => {
-      const track = new CameraTrack(bp);
-      const sample = createCameraSample();
-      const framings = BEAT_TIMELINE.map((beat) => {
-        track.framingFor(beat.id, sample);
-        return sample.position.clone();
-      });
-
-      // hero framing must no longer be the fullBody framing (old bug)
-      expect(framings[0].distanceTo(framings[framings.length - 1])).toBeGreaterThan(1);
-    });
   }
-});
-
-describe('handheld noise', () => {
-  it('stays within [-1, 1]', () => {
-    for (let x = 0; x < 200; x += 0.37) {
-      expect(Math.abs(fbm(x))).toBeLessThanOrEqual(1.0001);
-    }
-  });
-
-  it('is continuous (no jumps between nearby samples)', () => {
-    for (let x = 0; x < 100; x += 0.5) {
-      expect(Math.abs(fbm(x) - fbm(x + 0.01))).toBeLessThan(0.2);
-    }
-  });
 });

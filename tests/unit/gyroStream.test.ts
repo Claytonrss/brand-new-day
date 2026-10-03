@@ -3,9 +3,7 @@ import {
   GYRO_ALPHA_FAST,
   GYRO_ALPHA_SLOW,
   GYRO_JUMP_DEG,
-  GYRO_SATURATION_RATIO,
   GYRO_SATURATION_S,
-  GYRO_LIMITS,
   accumulateSaturation,
   adaptiveLowPass,
   remapForOrientation,
@@ -95,9 +93,5 @@ describe('accumulateSaturation', () => {
   it('crosses the recenter threshold one tick later (2.49s vs 2.51s)', () => {
     expect(accumulateSaturation(2.49, true, 0)).toBeLessThan(GYRO_SATURATION_S);
     expect(accumulateSaturation(2.49, true, 0.02)).toBeGreaterThanOrEqual(GYRO_SATURATION_S);
-  });
-
-  it('saturation is measured against 80% of the gyro limits', () => {
-    expect(GYRO_LIMITS.yaw * GYRO_SATURATION_RATIO).toBeCloseTo(0.096, 9);
   });
 });

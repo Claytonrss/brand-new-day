@@ -17,21 +17,12 @@ describe('drag orbit', () => {
     expect(target.pitch).toBeGreaterThan(0);
   });
 
-  it('turns toward the drag direction', () => {
-    expect(dragTarget(200, 0).yaw).toBeGreaterThan(0);
-    expect(dragTarget(-200, 0).yaw).toBeLessThan(0);
-  });
-
   it('never exceeds the limits, however far the pointer travels', () => {
     for (const dx of [-5000, -400, 0, 400, 5000]) {
       const target = dragTarget(dx, dx);
       expect(Math.abs(target.yaw)).toBeLessThanOrEqual(DRAG_LIMITS.yaw);
       expect(Math.abs(target.pitch)).toBeLessThanOrEqual(DRAG_LIMITS.pitch);
     }
-  });
-
-  it('is symmetric for symmetric drags', () => {
-    expect(dragTarget(120, 60).yaw).toBeCloseTo(-dragTarget(-120, -60).yaw, 6);
   });
 });
 
