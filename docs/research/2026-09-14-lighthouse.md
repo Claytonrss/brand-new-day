@@ -42,8 +42,8 @@ npx lighthouse@latest https://brand-new-day-fan.vercel.app --preset=desktop \
 - **SEO 100 e Best Practices 100** pós-OG (PR #59) — o "cartão vazio" que a
   auditoria flagrou como C1 está fechado.
 
-**Ação ligada:** README publica estes números (C3); A6/A7 seguem no roadmap
-como os alvos diretos para subir o mobile/desktop performance.
+**Ação ligada:** os números vivem em `docs/performance.md` (C3; movidos do README); A6/A7
+seguem no roadmap como os alvos diretos para subir o mobile/desktop performance.
 
 ---
 
