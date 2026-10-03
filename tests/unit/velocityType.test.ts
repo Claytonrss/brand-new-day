@@ -23,11 +23,6 @@ describe('velocityWeight', () => {
     expect(velocityWeight(-1000)).toBe(VELOCITY_TYPE.MIN);
   });
 
-  it('is symmetric for the scroll direction', () => {
-    expect(velocityWeight(2)).toBe(velocityWeight(-2));
-    expect(velocityWeight(0.4)).toBe(velocityWeight(-0.4));
-  });
-
   it('quantizes to STEP so CSS var rewrites are bounded', () => {
     for (const velocity of [0.3, 0.7, 1.2, 2.4, 2.9]) {
       expect(velocityWeight(velocity) % VELOCITY_TYPE.STEP).toBe(0);

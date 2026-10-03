@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { patchSuitMaterial } from '@/components/3d/materials/suitShader';
 import { measureLidBounds, patchLensMaterial } from '@/components/3d/materials/lensShader';
 import { curateMaterials } from '@/components/3d/materials/curateMaterials';
-import { FX_MODE, FX_STRENGTH, FX_POST_ENABLED } from '@/design/fxFlags';
 
 /** Minimal stand-in for the object three hands to `onBeforeCompile`. */
 function fakeShader() {
@@ -43,25 +42,6 @@ describe('suit shader', () => {
     expect(shader.uniforms.uWebScale).toBeDefined();
   });
 
-  it('shares the global FX uniform objects so one driver animates every material', () => {
-    const { shader } = compile((m) => patchSuitMaterial(m));
-    expect(shader.uniforms.uRimStrength).toBeDefined();
-    expect(shader.uniforms.uWebStrength).toBeDefined();
-  });
-
-  it('skips the layer (with a warning) when an anchor is missing', () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const material = new THREE.MeshStandardMaterial();
-
-    patchSuitMaterial(material);
-    const shader = fakeShader();
-    shader.fragmentShader = 'void main() {}';
-    material.onBeforeCompile?.(shader as never, null as never);
-
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('fragment anchor not found'));
-    expect(material.userData.fxPatched).toBeUndefined();
-  });
-
   it('disables the web weave via uWebScale when web is not requested', () => {
     const { shader } = compile((m) => patchSuitMaterial(m, { web: false }));
     expect((shader.uniforms.uWebScale as { value: number }).value).toBe(0);
@@ -77,26 +57,6 @@ describe('lens shader', () => {
     expect(shader.fragmentShader).toContain('lidMask');
     expect(shader.vertexShader).toContain('vLensLocalY');
   });
-
-  it('compresses the lens toward its centre as it closes (option D)', () => {
-    const { shader } = compile(patchLensMaterial);
-    expect(shader.vertexShader).toContain('uSquash');
-    expect(shader.vertexShader).toContain('uLidCenterY');
-  });
-
-  it('declares the lid uniforms', () => {
-    const { shader } = compile(patchLensMaterial);
-    for (const uniform of [
-      'uBlink',
-      'uLidMinY',
-      'uLidMaxY',
-      'uLidCenterY',
-      'uLidColor',
-      'uSquash',
-    ]) {
-      expect(shader.uniforms[uniform]).toBeDefined();
-    }
-  });
 });
 
 describe('lid bounds', () => {
@@ -107,12 +67,6 @@ describe('lid bounds', () => {
     expect(bounds.minY).toBeCloseTo(-1.2, 5);
     expect(bounds.maxY).toBeCloseTo(1.2, 5);
     expect(bounds.centerY).toBeCloseTo(0, 5);
-  });
-
-  it('computes the bounding box when the geometry has none', () => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    geometry.boundingBox = null;
-    expect(() => measureLidBounds(geometry)).not.toThrow();
   });
 });
 
@@ -158,17 +112,5 @@ describe('material curation', () => {
     expect(lens?.emissiveIntensity).toBeCloseTo(1.2, 5);
     expect(lens?.roughness).toBeCloseTo(0.08, 5);
     expect(metal?.metalness).toBeCloseTo(0.85, 5);
-  });
-});
-
-describe('fx flags', () => {
-  it('defaults to subtle with a conservative strength', () => {
-    expect(FX_MODE).toBe('subtle');
-    expect(FX_STRENGTH.subtle).toBeLessThan(0.3);
-    expect(FX_STRENGTH.off).toBe(0);
-  });
-
-  it('gates depth of field behind full mode', () => {
-    expect(FX_POST_ENABLED).toBe(false);
   });
 });

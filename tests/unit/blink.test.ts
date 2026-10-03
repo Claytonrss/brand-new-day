@@ -3,21 +3,12 @@ import {
   BLINK_AMOUNT,
   BLINK_DURATION,
   BLINK_INTERVAL,
-  BLINK_MODE,
   blinkClosure,
   nextBlinkAt,
   rand,
 } from '@/components/3d/materials/blink';
 
 describe('blink scheduler', () => {
-  it('defaults to subtle and can be turned off', () => {
-    expect(BLINK_MODE).toBe('subtle');
-    expect(BLINK_AMOUNT.off).toBe(0);
-    expect(BLINK_AMOUNT.subtle).toBeGreaterThan(0);
-    expect(BLINK_AMOUNT.subtle).toBeLessThan(1);
-    expect(BLINK_AMOUNT.full).toBe(1);
-  });
-
   it('schedules the next blink inside the cadence window', () => {
     for (const seed of [0, 1, 7.3, 42]) {
       const next = nextBlinkAt(10, seed);

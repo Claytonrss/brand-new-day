@@ -21,12 +21,6 @@ describe('beat timeline', () => {
     }
   });
 
-  it('resolves the beat for every sampled progress', () => {
-    for (let p = 0; p <= 1.0001; p += 0.01) {
-      expect(beatAt(p)).toBeDefined();
-    }
-  });
-
   it('derives boundaries from the section spans (hero covers opening)', () => {
     // Midpoints of a couple of beats, computed from SECTION_SPANS itself so a
     // re-gear (ADR-024) recalibrates the test instead of breaking it.

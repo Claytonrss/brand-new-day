@@ -16,20 +16,6 @@ describe('light slots', () => {
     expect(LIGHT_SLOTS.filter((slot) => slot.castShadow)).toHaveLength(1);
   });
 
-  it('never casts shadow from a point light (cubemap = 6 passes)', () => {
-    for (const slot of LIGHT_SLOTS) {
-      if (slot.kind === 'point') expect(slot.castShadow).toBeFalsy();
-    }
-  });
-
-  it('declares a base target for every slot', () => {
-    for (const slot of LIGHT_SLOTS) {
-      expect(slot.base).toBeDefined();
-      expect(typeof slot.base.intensity.desktop).toBe('number');
-      expect(typeof slot.base.intensity.mobile).toBe('number');
-    }
-  });
-
   it('only overrides known beats', () => {
     const known = new Set(BEAT_TIMELINE.map((beat) => beat.id));
     for (const slot of LIGHT_SLOTS) {

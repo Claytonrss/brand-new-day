@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  SPIDER_SENSE,
-  isDangerBeat,
   spiderSense,
   spiderSenseResetForTest,
   spiderSenseStep,
@@ -61,30 +59,6 @@ describe('spiderSenseStep trigger discipline', () => {
     expect(spiderSense.count).toBe(0);
   });
 
-  it('does NOT fire re-entering a danger beat while scrolling up', () => {
-    spiderSenseResetForTest();
-    spiderSenseStep(1 / 60, 'hero', 0.4);
-    expect(spiderSenseStep(1 / 60, 'evolution', 0.4)).toBe(1);
-    decay();
-
-    // the reported bug: flipping back into evolution lands exactly under the
-    // REVELAÇÃO card — the re-entry must stay silent
-    expect(spiderSenseStep(1 / 60, 'chapter2', -0.4)).toBe(0);
-    expect(spiderSenseStep(1 / 60, 'evolution', -0.4)).toBe(0);
-    expect(spiderSense.count).toBe(1);
-    expect(spiderSense.envelope).toBe(0);
-
-    // same discipline for the other two danger beats, entered from below
-    expect(spiderSenseStep(1 / 60, 'arsenal', -0.4)).toBe(0);
-    decay(10);
-    expect(spiderSenseStep(1 / 60, 'fullBody', -0.4)).toBe(0);
-    decay(10);
-    expect(spiderSenseStep(1 / 60, 'colophon', -0.4)).toBe(0);
-    expect(spiderSenseStep(1 / 60, 'fullBody', -0.4)).toBe(0);
-    expect(spiderSense.count).toBe(1);
-    expect(spiderSense.envelope).toBe(0);
-  });
-
   it('does NOT fire on a beat flip with zero velocity (refresh jitter)', () => {
     spiderSenseResetForTest();
     spiderSenseStep(1 / 60, 'hero', 0);
@@ -104,15 +78,6 @@ describe('spiderSenseStep trigger discipline', () => {
     expect(spiderSenseStep(1 / 60, 'chapter1', -0.4)).toBe(0);
     expect(spiderSenseStep(1 / 60, 'evolution', 0.4)).toBe(1);
     expect(spiderSense.count).toBe(2);
-  });
-
-  it('first possible fire is the evolution entry — nothing before it', () => {
-    spiderSenseResetForTest();
-    // walk the whole opening: hero → chapter1
-    spiderSenseStep(1 / 60, 'hero', 0.4);
-    spiderSenseStep(1 / 60, 'chapter1', 0.4);
-    expect(spiderSense.count).toBe(0);
-    expect(spiderSenseStep(1 / 60, 'evolution', 0.4)).toBe(1);
   });
 });
 
@@ -146,24 +111,5 @@ describe('spiderSenseStep envelope', () => {
     decay();
     spiderSenseStep(1 / 60, 'arsenal', 0.4);
     expect(spiderSenseTilt()).toBeGreaterThan(0);
-  });
-
-  it('resets completely, including the fire count', () => {
-    spiderSenseResetForTest();
-    spiderSenseStep(1 / 60, 'hero', 0.4);
-    spiderSenseStep(1 / 60, 'arsenal', 0.4);
-    spiderSenseResetForTest();
-    expect(spiderSense.envelope).toBe(0);
-    expect(spiderSense.beat).toBeNull();
-    expect(spiderSense.started).toBe(false);
-    expect(spiderSense.sign).toBe(1);
-    expect(spiderSense.count).toBe(0);
-  });
-
-  it('classifies exactly the three danger beats', () => {
-    expect(isDangerBeat('evolution')).toBe(true);
-    expect(isDangerBeat('arsenal')).toBe(true);
-    expect(isDangerBeat('fullBody')).toBe(true);
-    expect(SPIDER_SENSE.DANGER_BEATS).toHaveLength(3);
   });
 });

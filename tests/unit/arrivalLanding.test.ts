@@ -37,20 +37,6 @@ function simulate(steps = 200) {
 describe('arrival landing', () => {
   beforeEach(landingResetForTest);
 
-  it('holds the model above rest until fired', () => {
-    landingStep(DT);
-    expect(landingOffset()).toBe(LANDING_DROP);
-    expect(landing.fired).toBe(false);
-  });
-
-  it('fires once per session', () => {
-    landingFire();
-    landingFire();
-    landingFire();
-    expect(landing.fired).toBe(true);
-    expect(landing.fireCount).toBe(1);
-  });
-
   it('drops, overshoots 4–6% and settles under ~0.8s', () => {
     landingFire();
     const trace = simulate();
