@@ -42,26 +42,28 @@ visual vinculante: `docs/design/design-bible.md`.
 
 Carregar apenas quando a tarefa exigir — **nunca preemptivamente**:
 
-| Documento                                      | Conteúdo                                          |
-| ---------------------------------------------- | ------------------------------------------------- |
-| `docs/design/design-bible.md`                  | direção visual vinculante                         |
-| `docs/design/storyboard.md`                    | seções como planos de câmera + copy               |
-| `docs/design/composition-rules.md`             | zonas seguras de texto                            |
-| `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo               |
-| `docs/design/visual-rubric.md`                 | rubrica de avaliação estética                     |
-| `docs/design/performance-design.md`            | FPS alvo, budgets, degradação                     |
-| `docs/specs/` (índice: `docs/specs/README.md`) | Scene Specs por feature                           |
-| `docs/workflow/spec-driven-contract.md`        | contrato Spec → Implement → Verify → PR           |
-| `docs/STATE.md`                                | estado narrativo atual (entregas, ADRs, métricas) |
-| `docs/memory/decisions.md`                     | registro completo de ADRs                         |
-| `docs/memory/tech-debt.md`                     | débitos aceitos conscientemente                   |
-| `docs/plans/backlog.md`                        | ideias não implementadas (curadas)                |
-| `docs/plans/wave0-s23-runbook.md`              | runbook ativo da sessão de device (S23)           |
-| `docs/agents/test-isolation.md`                | runbook: isolar ambiente/porta para testes        |
+| Documento                                      | Conteúdo                                                |
+| ---------------------------------------------- | ------------------------------------------------------- |
+| `docs/design/design-bible.md`                  | direção visual vinculante                               |
+| `docs/design/storyboard.md`                    | seções como planos de câmera + copy                     |
+| `docs/design/composition-rules.md`             | zonas seguras de texto                                  |
+| `docs/design/quality-matrix.md`                | perfis de qualidade por dispositivo                     |
+| `docs/design/visual-rubric.md`                 | rubrica de avaliação estética                           |
+| `docs/design/performance-design.md`            | FPS alvo, budgets, degradação                           |
+| `docs/specs/` (índice: `docs/specs/README.md`) | Scene Specs por feature (texto integral no git history) |
+| `docs/workflow/spec-driven-contract.md`        | contrato Spec → Implement → Verify → PR                 |
+| `docs/memory/decisions.md`                     | registro completo de ADRs                               |
+| `docs/memory/tech-debt.md`                     | débitos aceitos conscientemente                         |
+| `docs/agents/test-isolation.md`                | runbook: isolar ambiente/porta para testes              |
+
+Planos concluídos e o backlog (`PROGRESS.md`, `docs/STATE.md`, `docs/plans/*`)
+foram removidos na higiene de portfólio (`b63fdd0`) — texto integral no
+**git history**; o resumo vivo das decisões está nos ADRs.
 
 ## 5. Workflow
 
-1. Ler `PROGRESS.md` para estado atual.
+1. Ler `docs/memory/decisions.md` e `docs/memory/tech-debt.md` para estado
+   atual (ADRs + débitos abertos).
 2. Consultar Scene Spec relevante antes de implementar.
 3. Criar branch: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`, `chore/<slug>` — de preferência em **worktree própria** (ver §10).
 4. Implementar seguindo Design Bible e composition rules.
@@ -114,12 +116,11 @@ inventário em `scripts/README.md`.
 
 ## 9. Memória Persistente
 
-- `PROGRESS.md` — checklist de fechamento (o que falta, não o que foi feito)
-- `docs/STATE.md` — estado narrativo atual (entregas, ADRs resumidos, métricas)
-- `docs/memory/decisions.md` — ADRs completos
-- `docs/memory/tech-debt.md` — débitos aceitos
-- `docs/plans/backlog.md` — fila de ideias não implementadas + catálogo de IDs `FALHA-*`/`IDEIA-*`
-- Planos concluídos: removidos do repo — texto integral no **git history**; resumo vivo na tabela de arquivo do `PROGRESS.md`
+- `docs/memory/decisions.md` — ADRs completos (registro vivo de cada decisão)
+- `docs/memory/tech-debt.md` — débitos aceitos (o que falta, não o que foi feito)
+- Planos concluídos, `PROGRESS.md`, `docs/STATE.md` e `docs/plans/*`
+  (incl. backlog com IDs `FALHA-*`/`IDEIA-*`): removidos do repo na higiene
+  de portfólio (`b63fdd0`) — texto integral no **git history**
 
 ## 10. Isolamento de Ambiente para Testes (obrigatório)
 

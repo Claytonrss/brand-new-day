@@ -18,7 +18,7 @@ Portfólio precisa provar, não afirmar. Quatro competências, cada uma com a pr
 
 **3. Direção de arte com execução de engenharia.** Um rig procedural de 16 joints anima um asset que vem sem uma única animação embutida; uma câmera contínua de 7 beats carrega a narrativa; uma design doc vinculante define o enquadramento e o ritmo de cada seção. → a profundidade está em "A engenharia por trás", abaixo.
 
-**4. IA como ferramenta de engenharia, com governança.** Um harness delegation-only de 10 agentes, com allowlists de comandos por agente e 31 ADRs documentando cada decisão. → detalhes em "O harness de IA", abaixo.
+**4. IA como ferramenta de engenharia, com governança.** Um harness delegation-only de 10 agentes, com allowlists de comandos por agente e 34 ADRs documentando cada decisão. → detalhes em "O harness de IA", abaixo.
 
 ## A engenharia por trás
 
@@ -41,7 +41,7 @@ A parte interessante não são os agentes — são as restrições:
 - **Operações destrutivas negadas por padrão.** `rm -rf`, `git push --force` e `git reset --hard` bloqueados em todos os workers.
 - **Evidência ou não aconteceu.** Lint, typecheck, testes unitários, build e specs visuais rodam como gates; cada entrega carrega seus logs, a rubrica visual e os três viewports.
 
-31 ADRs em [`docs/memory/decisions.md`](docs/memory/decisions.md) registram cada decisão de arquitetura. O resultado é IA como mão de obra governada — não como fonte de verdade. O desenho completo do sistema: [case study](docs/case-study-ai-harness.md).
+34 ADRs em [`docs/memory/decisions.md`](docs/memory/decisions.md) registram cada decisão de arquitetura. O resultado é IA como mão de obra governada — não como fonte de verdade. O desenho completo do sistema: [case study](docs/case-study-ai-harness.md).
 
 ## Stack
 
@@ -96,7 +96,7 @@ Privacidade: Vercel Analytics + Speed Insights (sem cookies, same-origin — sem
 
 ## In English
 
-A scroll-driven 3D landing page built as a portfolio proof, not a demo: cinematic art direction (one continuous camera through seven narrative beats) executed under real engineering constraints — a 16-joint procedural rig on a model with zero baked animations, adaptive three-tier WebGL quality (44–46 draw calls on high, an automated budget gate holds the line at 48), and an AI agent harness with per-agent command allowlists (10 agents, 31 ADRs). Built with React 19, TypeScript, three.js/react-three-fiber, GSAP ScrollTrigger, Tailwind CSS v4 and Vite. State measured on 2026-09-15 against the live deploy: Lighthouse **58–67 mobile / 93–97 desktop** (3 runs each), A11y/Best Practices/SEO 100, TBT ~0.8 s, 6.5 MB meshopt GLB, 168 unit tests + 14 visual specs, all green. Known limitation: no real-device FPS validation ([TD-002](docs/memory/tech-debt.md)). Audit everything yourself: [`?debug`](https://brand-new-day-fan.vercel.app/?debug) exposes the live perf HUD; `pnpm install && pnpm dev` runs it locally (Node ≥ 22, pnpm 9). MIT-licensed code; the model is "Spider-Man Brand New Day" by Eskze, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Unofficial fan project, not affiliated with Marvel/Sony/Disney.
+A scroll-driven 3D landing page built as a portfolio proof, not a demo: cinematic art direction (one continuous camera through seven narrative beats) executed under real engineering constraints — a 16-joint procedural rig on a model with zero baked animations, adaptive three-tier WebGL quality (44–46 draw calls on high, an automated budget gate holds the line at 48), and an AI agent harness with per-agent command allowlists (10 agents, 34 ADRs). Built with React 19, TypeScript, three.js/react-three-fiber, GSAP ScrollTrigger, Tailwind CSS v4 and Vite. State measured on 2026-09-15 against the live deploy: Lighthouse **58–67 mobile / 93–97 desktop** (3 runs each), A11y/Best Practices/SEO 100, TBT ~0.8 s, 6.5 MB meshopt GLB, 168 unit tests + 14 visual specs, all green. Known limitation: no real-device FPS validation ([TD-002](docs/memory/tech-debt.md)). Audit everything yourself: [`?debug`](https://brand-new-day-fan.vercel.app/?debug) exposes the live perf HUD; `pnpm install && pnpm dev` runs it locally (Node ≥ 22, pnpm 9). MIT-licensed code; the model is "Spider-Man Brand New Day" by Eskze, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Unofficial fan project, not affiliated with Marvel/Sony/Disney.
 
 ---
 
